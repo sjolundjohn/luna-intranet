@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --midnight: #041e42;
+  --moonlight: #68d2df;
+  --white: #ffffff;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--midnight);
+  color: var(--white);
+  min-height: 100vh;
+}
+
+.btn-primary {
+  @apply bg-[#68d2df] text-[#041e42] px-6 py-3 rounded-lg font-semibold
+         hover:bg-[#4fc4d3] transition-colors duration-200;
+}
+
+.btn-secondary {
+  @apply border-2 border-[#68d2df] text-[#68d2df] px-6 py-3 rounded-lg font-semibold
+         hover:bg-[#68d2df] hover:text-[#041e42] transition-colors duration-200;
+}
+
+.card {
+  @apply bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20;
+}
+
+.input-field {
+  @apply w-full px-4 py-3 rounded-lg bg-white/10 border border-white/30
+         text-white placeholder-white/50 focus:outline-none focus:border-[#68d2df]
+         focus:ring-2 focus:ring-[#68d2df]/50 transition-all;
+}
