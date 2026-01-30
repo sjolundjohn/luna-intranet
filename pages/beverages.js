@@ -1,57 +1,99 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../lib/authContext';
 import { products, vendorEmail, vendorPhone } from '../lib/products';
 
 export default function Beverages() {
   const { user } = useAuth();
-  const [order, setOrder] = useState({});
+  const [selectedKombucha, setSelectedKombucha] = useState(null);
+  const [selectedColdBrew, setSelectedColdBrew] = useState(null);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [showRecentOrderWarning, setShowRecentOrderWarning] = useState(false);
+  const [lastOrderDate, setLastOrderDate] = useState(null);
 
-  const updateQuantity = (category, brandId, flavor, delta) => {
-    const key = `${category}-${brandId}-${flavor}`;
-    setOrder((prev) => {
-      const current = prev[key] || 0;
-      const newValue = Math.max(0, current + delta);
-      if (newValue === 0) {
-        const { [key]: _, ...rest } = prev;
-        return rest;
+  useEffect(() => {
+    // Check for recent orders
+    const orders = JSON.parse(localStorage.getItem('luna_orders') || '[]');
+    if (orders.length > 0) {
+      const lastOrder = new Date(orders[0].date);
+      const twoWeeksAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+      if (lastOrder > twoWeeksAgo) {
+        setLastOrderDate(lastOrder);
+        setShowRecentOrderWarning(true);
       }
-      return { ...prev, [key]: newValue };
-    });
+    }
+  }, []);
+
+  const selectItem = (category, brandId, brandName, flavor) => {
+    const item = { brandId, brandName, flavor };
+    if (category === 'kombucha') {
+      setSelectedKombucha(selectedKombucha?.brandId === brandId && selectedKombucha?.flavor === flavor ? null : item);
+    } else {
+      setSelectedColdBrew(selectedColdBrew?.brandId === brandId && selectedColdBrew?.flavor === flavor ? null : item);
+    }
   };
 
-  const getQuantity = (category, brandId, flavor) => {
-    const key = `${category}-${brandId}-${flavor}`;
-    return order[key] || 0;
+  const isSelected = (category, brandId, flavor) => {
+    if (category === 'kombucha') {
+      return selectedKombucha?.brandId === brandId && selectedKombucha?.flavor === flavor;
+    }
+    return selectedColdBrew?.brandId === brandId && selectedColdBrew?.flavor === flavor;
   };
 
-  const totalItems = Object.values(order).reduce((sum, qty) => sum + qty, 0);
+  const totalItems = (selectedKombucha ? 1 : 0) + (selectedColdBrew ? 1 : 0);
 
   const formatOrderForEmail = () => {
-    let orderText = `BEVERAGE ORDER REQUEST\n`;
-    orderText += `========================\n\n`;
-    orderText += `Ordered by: ${user?.name || 'Luna Team Member'}\n`;
-    orderText += `Date: ${new Date().toLocaleDateString()}\n\n`;
-    orderText += `ITEMS:\n`;
+    let orderText = `Hi there!\n\n`;
+    orderText += `This is John from Luna Health. Hope you're having a great day! ☀️\n\n`;
+    orderText += `We're running low on beverages and would love to place an order when you get a chance:\n\n`;
 
-    Object.entries(order).forEach(([key, qty]) => {
-      const [category, brandId, ...flavorParts] = key.split('-');
-      const flavor = flavorParts.join('-');
-      const categoryData = products[category];
-      const brand = categoryData?.brands.find((b) => b.id === brandId);
-      orderText += `  - ${qty}x ${brand?.name}: ${flavor}\n`;
-    });
-
-    if (notes) {
-      orderText += `\nNOTES:\n${notes}\n`;
+    if (selectedKombucha) {
+      orderText += `• 1x ${selectedKombucha.brandName} - ${selectedKombucha.flavor}\n`;
+    }
+    if (selectedColdBrew) {
+      orderText += `• 1x ${selectedColdBrew.brandName} - ${selectedColdBrew.flavor}\n`;
     }
 
-    orderText += `\n------------------------\n`;
-    orderText += `Sent from Luna Health Intranet`;
+    if (notes) {
+      orderText += `\nA quick note: ${notes}\n`;
+    }
+
+    orderText += `\nThanks so much for always taking great care of us! We really appreciate the partnership.\n\n`;
+    orderText += `Best,\n`;
+    orderText += `John\n`;
+    orderText += `Luna Health`;
 
     return orderText;
+  };
+
+  const saveOrderToHistory = () => {
+    const orders = JSON.parse(localStorage.getItem('luna_orders') || '[]');
+    const newOrder = {
+      id: Date.now(),
+      date: new Date().toISOString(),
+      items: [],
+    };
+
+    if (selectedKombucha) {
+      newOrder.items.push({
+        category: 'Kombucha',
+        brand: selectedKombucha.brandName,
+        flavor: selectedKombucha.flavor,
+      });
+    }
+    if (selectedColdBrew) {
+      newOrder.items.push({
+        category: 'Cold Brew',
+        brand: selectedColdBrew.brandName,
+        flavor: selectedColdBrew.flavor,
+      });
+    }
+
+    orders.unshift(newOrder);
+    localStorage.setItem('luna_orders', JSON.stringify(orders.slice(0, 50))); // Keep last 50 orders
   };
 
   const handleSubmit = async () => {
@@ -59,8 +101,11 @@ export default function Beverages() {
 
     setIsSubmitting(true);
 
+    // Save to order history
+    saveOrderToHistory();
+
     // Generate mailto link with order details
-    const subject = encodeURIComponent(`Luna Health Beverage Order - ${new Date().toLocaleDateString()}`);
+    const subject = encodeURIComponent(`Beverage Order from Luna Health 🌙`);
     const body = encodeURIComponent(formatOrderForEmail());
     const mailtoLink = `mailto:${vendorEmail}?subject=${subject}&body=${body}`;
 
@@ -75,7 +120,8 @@ export default function Beverages() {
   };
 
   const resetOrder = () => {
-    setOrder({});
+    setSelectedKombucha(null);
+    setSelectedColdBrew(null);
     setNotes('');
     setSubmitted(false);
   };
@@ -106,52 +152,83 @@ export default function Beverages() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Recent Order Warning Modal */}
+      {showRecentOrderWarning && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="card max-w-md w-full text-center">
+            <div className="text-5xl mb-4">⚠️</div>
+            <h2 className="text-xl font-bold mb-3">Recent Order Detected</h2>
+            <p className="text-white/70 mb-4">
+              You placed an order on <strong>{lastOrderDate?.toLocaleDateString()}</strong> — less than 2 weeks ago.
+            </p>
+            <p className="text-white/70 mb-6">
+              We probably still have kombucha and cold brew. Are you sure you need to order more?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowRecentOrderWarning(false)}
+                className="btn-secondary flex-1"
+              >
+                Continue Anyway
+              </button>
+              <button
+                onClick={() => window.history.back()}
+                className="btn-primary flex-1"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Order Beverages</h1>
         <p className="text-white/70">
-          Select items to order from KEGJOY. Your order will be emailed to {vendorEmail}.
+          Select <strong>one kombucha</strong> and/or <strong>one cold brew</strong> to order from KEGJOY.
         </p>
       </div>
 
       {/* Product Categories */}
       {Object.entries(products).map(([categoryKey, category]) => (
         <div key={categoryKey} className="mb-10">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <span>{category.icon}</span>
-            {category.name}
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <span>{category.icon}</span>
+              {category.name}
+            </h2>
+            {((categoryKey === 'kombucha' && selectedKombucha) ||
+              (categoryKey === 'coldBrew' && selectedColdBrew)) && (
+              <span className="text-sm text-[#68d2df] bg-[#68d2df]/20 px-3 py-1 rounded-full">
+                1 selected
+              </span>
+            )}
+          </div>
 
           <div className="space-y-4">
             {category.brands.map((brand) => (
               <div key={brand.id} className="card">
                 <h3 className="font-medium mb-4 text-[#68d2df]">{brand.name}</h3>
                 <div className="grid gap-3">
-                  {brand.flavors.map((flavor) => (
-                    <div
-                      key={flavor}
-                      className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
-                    >
-                      <span className="flex-1">{flavor}</span>
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => updateQuantity(categoryKey, brand.id, flavor, -1)}
-                          className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
-                          disabled={getQuantity(categoryKey, brand.id, flavor) === 0}
-                        >
-                          -
-                        </button>
-                        <span className="w-8 text-center font-mono">
-                          {getQuantity(categoryKey, brand.id, flavor)}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(categoryKey, brand.id, flavor, 1)}
-                          className="w-8 h-8 rounded-full bg-[#68d2df] text-[#041e42] hover:bg-[#4fc4d3] transition-colors flex items-center justify-center"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                  {brand.flavors.map((flavor) => {
+                    const selected = isSelected(categoryKey, brand.id, flavor);
+                    return (
+                      <button
+                        key={flavor}
+                        onClick={() => selectItem(categoryKey, brand.id, brand.name, flavor)}
+                        className={`flex items-center justify-between p-3 rounded-lg transition-all text-left ${
+                          selected
+                            ? 'bg-[#68d2df] text-[#041e42]'
+                            : 'bg-white/5 hover:bg-white/10'
+                        }`}
+                      >
+                        <span className="flex-1">{flavor}</span>
+                        {selected && (
+                          <span className="text-lg">✓</span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -165,7 +242,11 @@ export default function Beverages() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-semibold">Order Summary</h3>
-              <p className="text-sm text-white/60">{totalItems} item(s) selected</p>
+              <p className="text-sm text-white/60">
+                {totalItems === 0
+                  ? 'No items selected'
+                  : `${totalItems} item${totalItems > 1 ? 's' : ''} selected`}
+              </p>
             </div>
             {totalItems > 0 && (
               <button
@@ -178,17 +259,31 @@ export default function Beverages() {
           </div>
 
           {totalItems > 0 && (
-            <div className="mb-4">
-              <label className="block text-sm text-white/70 mb-2">
-                Additional notes (optional)
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="e.g., Delivery instructions, urgency..."
-                className="input-field resize-none h-20"
-              />
-            </div>
+            <>
+              <div className="mb-4 space-y-2">
+                {selectedKombucha && (
+                  <div className="text-sm bg-white/5 p-2 rounded">
+                    🍵 {selectedKombucha.brandName}: {selectedKombucha.flavor}
+                  </div>
+                )}
+                {selectedColdBrew && (
+                  <div className="text-sm bg-white/5 p-2 rounded">
+                    ☕ {selectedColdBrew.brandName}: {selectedColdBrew.flavor}
+                  </div>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm text-white/70 mb-2">
+                  Additional notes (optional)
+                </label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="e.g., Delivery instructions, urgency..."
+                  className="input-field resize-none h-20"
+                />
+              </div>
+            </>
           )}
 
           <button
@@ -198,7 +293,7 @@ export default function Beverages() {
               totalItems === 0 ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {isSubmitting ? 'Preparing Order...' : `Send Order (${totalItems} items)`}
+            {isSubmitting ? 'Preparing Order...' : `Send Order (${totalItems} item${totalItems > 1 ? 's' : ''})`}
           </button>
         </div>
       </div>
