@@ -1,8 +1,8 @@
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useAuth } from '../lib/authContext';
 
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
 
   const quickActions = [
     {
@@ -12,21 +12,13 @@ export default function Dashboard() {
       icon: '☕',
       color: 'bg-[#68d2df]/20 border-[#68d2df]/30',
     },
-    // Add more quick actions for future features:
-    // {
-    //   title: 'IT Support',
-    //   description: 'Submit a help desk ticket',
-    //   href: '/it-requests',
-    //   icon: '💻',
-    //   color: 'bg-purple-500/20 border-purple-500/30',
-    // },
   ];
 
   return (
     <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">
-          Welcome back, {session?.user?.name?.split(' ')[0]}!
+          Welcome back, {user?.name?.split(' ')[0]}!
         </h1>
         <p className="text-white/70">
           What would you like to do today?

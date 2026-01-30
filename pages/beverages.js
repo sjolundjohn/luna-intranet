@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '../lib/authContext';
 import { products, vendorEmail, vendorPhone } from '../lib/products';
 
 export default function Beverages() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
   const [order, setOrder] = useState({});
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,7 +32,7 @@ export default function Beverages() {
   const formatOrderForEmail = () => {
     let orderText = `BEVERAGE ORDER REQUEST\n`;
     orderText += `========================\n\n`;
-    orderText += `Ordered by: ${session?.user?.name} (${session?.user?.email})\n`;
+    orderText += `Ordered by: ${user?.name || 'Luna Team Member'}\n`;
     orderText += `Date: ${new Date().toLocaleDateString()}\n\n`;
     orderText += `ITEMS:\n`;
 
