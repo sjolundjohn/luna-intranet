@@ -2,143 +2,120 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
+import { vendorEmail, vendorPhone } from '../lib/products';
 
-export default function NDAApprove() {
+export default function BeverageApprove() {
   const router = useRouter();
   const { id, action } = router.query;
-  const [request, setRequest] = useState(null);
+  const [order, setOrder] = useState(null);
   const [status, setStatus] = useState('loading'); // loading, processing, success, error, not_found
   const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (!id || !action) return;
 
-    // Find the request
-    const requests = JSON.parse(localStorage.getItem('ndaRequests') || '[]');
-    const found = requests.find(r => r.id === id);
+    // Find the order
+    const orders = JSON.parse(localStorage.getItem('luna_orders') || '[]');
+    const found = orders.find(o => o.id === id);
 
     if (!found) {
       setStatus('not_found');
       return;
     }
 
-    setRequest(found);
+    setOrder(found);
 
     // Check if already processed
     if (found.status !== 'pending_approval') {
       setStatus('already_processed');
-      setMessage(`This request has already been ${found.status === 'denied' ? 'denied' : 'processed'}.`);
+      setMessage(`This order has already been ${found.status === 'denied' ? 'denied' : 'processed'}.`);
       return;
     }
 
     // Process the action
-    processAction(found, action, requests);
+    processAction(found, action, orders);
   }, [id, action]);
 
-  const processAction = async (req, actionType, allRequests) => {
+  const processAction = async (ord, actionType, allOrders) => {
     setStatus('processing');
 
     if (actionType === 'deny') {
       // Update status to denied
-      const updatedRequests = allRequests.map(r => {
-        if (r.id === req.id) {
+      const updatedOrders = allOrders.map(o => {
+        if (o.id === ord.id) {
           return {
-            ...r,
+            ...o,
             status: 'denied',
             statusHistory: [
-              ...r.statusHistory,
+              ...(o.statusHistory || []),
               {
                 status: 'denied',
                 timestamp: new Date().toISOString(),
-                note: 'Request denied by approver'
+                note: 'Order denied by John'
               }
             ]
           };
         }
-        return r;
+        return o;
       });
 
-      localStorage.setItem('ndaRequests', JSON.stringify(updatedRequests));
+      localStorage.setItem('luna_orders', JSON.stringify(updatedOrders));
       setStatus('success');
-      setMessage('The NDA request has been denied.');
+      setMessage('The beverage order has been denied.');
       return;
     }
 
     if (actionType === 'approve') {
-      // First update status to approved
-      let updatedRequests = allRequests.map(r => {
-        if (r.id === req.id) {
+      // Update status to approved
+      const updatedOrders = allOrders.map(o => {
+        if (o.id === ord.id) {
           return {
-            ...r,
+            ...o,
             status: 'approved',
             statusHistory: [
-              ...r.statusHistory,
+              ...(o.statusHistory || []),
               {
                 status: 'approved',
                 timestamp: new Date().toISOString(),
-                note: 'Request approved'
+                note: 'Order approved by John'
               }
             ]
           };
         }
-        return r;
+        return o;
       });
 
-      localStorage.setItem('ndaRequests', JSON.stringify(updatedRequests));
+      localStorage.setItem('luna_orders', JSON.stringify(updatedOrders));
 
-      // Now send the NDA via API
-      try {
-        const response = await fetch('/api/nda/send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: req.email,
-            firstName: req.firstName,
-            lastName: req.lastName,
-            companyName: req.companyName,
-            title: req.title,
-            phone: req.phone,
-            addressLine1: req.addressLine1,
-            addressLine2: req.addressLine2,
-            addressLine3: req.addressLine3,
-          }),
-        });
+      // Format items for KEGJOY email
+      let itemsList = '';
+      ord.items.forEach(item => {
+        itemsList += `• 1x ${item.brand} - ${item.flavor}\n`;
+      });
 
-        const data = await response.json();
+      // Create the order email for KEGJOY
+      const subject = encodeURIComponent(`Beverage Order from Luna Health`);
+      const body = encodeURIComponent(
+`Hi there!
 
-        // Update with send result
-        updatedRequests = updatedRequests.map(r => {
-          if (r.id === req.id) {
-            const newStatus = data.success ? 'sent' : 'error';
-            return {
-              ...r,
-              status: newStatus,
-              statusHistory: [
-                ...r.statusHistory,
-                {
-                  status: newStatus,
-                  timestamp: new Date().toISOString(),
-                  note: data.success ? 'NDA sent via Dropbox Sign' : `Error: ${data.error}`
-                }
-              ]
-            };
-          }
-          return r;
-        });
+This is John from Luna Health. Hope you're having a great day!
 
-        localStorage.setItem('ndaRequests', JSON.stringify(updatedRequests));
+We're running low on beverages and would love to place an order when you get a chance:
 
-        if (data.success) {
-          setStatus('success');
-          setMessage(`The NDA has been approved and sent to ${req.email} for signing.`);
-        } else {
-          setStatus('error');
-          setMessage(`The request was approved but there was an error sending the NDA: ${data.error}`);
-        }
-      } catch (err) {
-        setStatus('error');
-        setMessage('The request was approved but there was an error sending the NDA. Please try again from the NDA History page.');
-      }
+${itemsList}
+${ord.notes ? `A quick note: ${ord.notes}\n` : ''}
+Thanks so much for always taking great care of us! We really appreciate the partnership.
+
+Best,
+John
+Luna Health`
+      );
+
+      // Open email client to send to KEGJOY
+      window.location.href = `mailto:${vendorEmail}?subject=${subject}&body=${body}`;
+
+      setStatus('success');
+      setMessage(`Order approved! Your email client should open with the order ready to send to KEGJOY.`);
     }
   };
 
@@ -149,7 +126,7 @@ export default function NDAApprove() {
           {status === 'loading' && (
             <>
               <div className="animate-pulse text-[#68d2df] mb-4">Loading...</div>
-              <p className="text-white/70">Retrieving NDA request...</p>
+              <p className="text-white/70">Retrieving order...</p>
             </>
           )}
 
@@ -158,7 +135,7 @@ export default function NDAApprove() {
               <div className="w-16 h-16 border-4 border-[#68d2df] border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
               <h1 className="text-2xl font-bold mb-4">Processing...</h1>
               <p className="text-white/70">
-                {action === 'approve' ? 'Approving request and sending NDA...' : 'Processing your decision...'}
+                {action === 'approve' ? 'Approving order and preparing email...' : 'Processing your decision...'}
               </p>
             </>
           )}
@@ -171,18 +148,28 @@ export default function NDAApprove() {
                 </svg>
               </div>
               <h1 className="text-2xl font-bold mb-4">
-                {action === 'approve' ? 'Request Approved!' : 'Request Denied'}
+                {action === 'approve' ? 'Order Approved!' : 'Order Denied'}
               </h1>
               <p className="text-white/70 mb-6">{message}</p>
-              {request && (
+              {order && (
                 <div className="bg-white/5 rounded-lg p-4 mb-6 text-left">
-                  <p><strong>Company:</strong> {request.companyName}</p>
-                  <p><strong>Recipient:</strong> {request.firstName} {request.lastName}</p>
-                  <p><strong>Email:</strong> {request.email}</p>
+                  <p className="text-sm text-white/60 mb-2">Order Details:</p>
+                  <p><strong>Submitted by:</strong> {order.submittedBy}</p>
+                  <p><strong>Items:</strong></p>
+                  <ul className="ml-4 mt-1">
+                    {order.items.map((item, idx) => (
+                      <li key={idx}>• {item.brand}: {item.flavor}</li>
+                    ))}
+                  </ul>
+                  {action === 'approve' && (
+                    <p className="text-sm text-white/60 mt-4">
+                      <strong>Send to:</strong> {vendorEmail}
+                    </p>
+                  )}
                 </div>
               )}
-              <Link href="/nda-history" className="btn-primary">
-                View All Requests
+              <Link href="/history" className="btn-primary">
+                View Order History
               </Link>
             </>
           )}
@@ -196,8 +183,8 @@ export default function NDAApprove() {
               </div>
               <h1 className="text-2xl font-bold mb-4">Error</h1>
               <p className="text-white/70 mb-6">{message}</p>
-              <Link href="/nda-history" className="btn-primary">
-                Go to NDA History
+              <Link href="/history" className="btn-primary">
+                Go to Order History
               </Link>
             </>
           )}
@@ -209,12 +196,12 @@ export default function NDAApprove() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold mb-4">Request Not Found</h1>
+              <h1 className="text-2xl font-bold mb-4">Order Not Found</h1>
               <p className="text-white/70 mb-6">
-                This NDA request could not be found. It may have been deleted or the link may be invalid.
+                This order could not be found. It may have been deleted or the link may be invalid.
               </p>
-              <Link href="/nda-history" className="btn-primary">
-                View All Requests
+              <Link href="/history" className="btn-primary">
+                View Order History
               </Link>
             </>
           )}
@@ -228,15 +215,20 @@ export default function NDAApprove() {
               </div>
               <h1 className="text-2xl font-bold mb-4">Already Processed</h1>
               <p className="text-white/70 mb-6">{message}</p>
-              {request && (
+              {order && (
                 <div className="bg-white/5 rounded-lg p-4 mb-6 text-left">
-                  <p><strong>Company:</strong> {request.companyName}</p>
-                  <p><strong>Recipient:</strong> {request.firstName} {request.lastName}</p>
-                  <p><strong>Current Status:</strong> {request.status}</p>
+                  <p><strong>Submitted by:</strong> {order.submittedBy}</p>
+                  <p><strong>Items:</strong></p>
+                  <ul className="ml-4 mt-1">
+                    {order.items.map((item, idx) => (
+                      <li key={idx}>• {item.brand}: {item.flavor}</li>
+                    ))}
+                  </ul>
+                  <p><strong>Current Status:</strong> {order.status}</p>
                 </div>
               )}
-              <Link href="/nda-history" className="btn-primary">
-                View All Requests
+              <Link href="/history" className="btn-primary">
+                View Order History
               </Link>
             </>
           )}

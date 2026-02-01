@@ -57,6 +57,11 @@ export default function NDAHistory() {
           firstName: request.firstName,
           lastName: request.lastName,
           companyName: request.companyName,
+          title: request.title,
+          phone: request.phone,
+          addressLine1: request.addressLine1,
+          addressLine2: request.addressLine2,
+          addressLine3: request.addressLine3,
         }),
       });
 

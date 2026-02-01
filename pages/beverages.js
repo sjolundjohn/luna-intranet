@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useAuth } from '../lib/authContext';
 import { products, vendorEmail, vendorPhone } from '../lib/products';
 
@@ -13,10 +14,11 @@ export default function Beverages() {
   const [lastOrderDate, setLastOrderDate] = useState(null);
 
   useEffect(() => {
-    // Check for recent orders
+    // Check for recent orders (approved ones only)
     const orders = JSON.parse(localStorage.getItem('luna_orders') || '[]');
-    if (orders.length > 0) {
-      const lastOrder = new Date(orders[0].date);
+    const approvedOrders = orders.filter(o => o.status === 'approved' || o.status === 'sent');
+    if (approvedOrders.length > 0) {
+      const lastOrder = new Date(approvedOrders[0].date);
       const twoWeeksAgo = new Date();
       twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
@@ -45,36 +47,26 @@ export default function Beverages() {
 
   const totalItems = (selectedKombucha ? 1 : 0) + (selectedColdBrew ? 1 : 0);
 
-  const formatOrderForEmail = () => {
-    let orderText = `Hi there!\n\n`;
-    orderText += `This is John from Luna Health. Hope you're having a great day!\n\n`;
-    orderText += `We're running low on beverages and would love to place an order when you get a chance:\n\n`;
+  const handleSubmit = async () => {
+    if (totalItems === 0) return;
 
-    if (selectedKombucha) {
-      orderText += `• 1x ${selectedKombucha.brandName} - ${selectedKombucha.flavor}\n`;
-    }
-    if (selectedColdBrew) {
-      orderText += `• 1x ${selectedColdBrew.brandName} - ${selectedColdBrew.flavor}\n`;
-    }
+    setIsSubmitting(true);
 
-    if (notes) {
-      orderText += `\nA quick note: ${notes}\n`;
-    }
-
-    orderText += `\nThanks so much for always taking great care of us! We really appreciate the partnership.\n\n`;
-    orderText += `Best,\n`;
-    orderText += `John\n`;
-    orderText += `Luna Health`;
-
-    return orderText;
-  };
-
-  const saveOrderToHistory = () => {
-    const orders = JSON.parse(localStorage.getItem('luna_orders') || '[]');
+    // Create order object
     const newOrder = {
-      id: Date.now(),
+      id: Date.now().toString(),
       date: new Date().toISOString(),
+      status: 'pending_approval',
+      submittedBy: user?.name || 'Luna Team Member',
+      notes: notes,
       items: [],
+      statusHistory: [
+        {
+          status: 'pending_approval',
+          timestamp: new Date().toISOString(),
+          note: 'Order submitted, awaiting approval'
+        }
+      ]
     };
 
     if (selectedKombucha) {
@@ -92,25 +84,47 @@ export default function Beverages() {
       });
     }
 
+    // Save to localStorage
+    const orders = JSON.parse(localStorage.getItem('luna_orders') || '[]');
     orders.unshift(newOrder);
-    localStorage.setItem('luna_orders', JSON.stringify(orders.slice(0, 50))); // Keep last 50 orders
-  };
+    localStorage.setItem('luna_orders', JSON.stringify(orders.slice(0, 50)));
 
-  const handleSubmit = async () => {
-    if (totalItems === 0) return;
+    // Generate approval URLs
+    const baseUrl = window.location.origin;
+    const approveUrl = `${baseUrl}/beverage-approve?id=${newOrder.id}&action=approve`;
+    const denyUrl = `${baseUrl}/beverage-approve?id=${newOrder.id}&action=deny`;
 
-    setIsSubmitting(true);
+    // Format items for email
+    let itemsList = '';
+    newOrder.items.forEach(item => {
+      itemsList += `• 1x ${item.brand} - ${item.flavor}\n`;
+    });
 
-    // Save to order history
-    saveOrderToHistory();
+    // Create approval email content
+    const subject = encodeURIComponent(`Beverage Order Request - ${newOrder.submittedBy}`);
+    const body = encodeURIComponent(
+`Hi John,
 
-    // Generate mailto link with order details
-    const subject = encodeURIComponent(`Beverage Order from Luna Health`);
-    const body = encodeURIComponent(formatOrderForEmail());
-    const mailtoLink = `mailto:${vendorEmail}?subject=${subject}&body=${body}`;
+A beverage order has been submitted and requires your approval.
 
-    // Open email client
-    window.location.href = mailtoLink;
+Submitted by: ${newOrder.submittedBy}
+Date: ${new Date().toLocaleDateString()}
+
+Items:
+${itemsList}
+${notes ? `Notes: ${notes}\n` : ''}
+To APPROVE and send to KEGJOY:
+${approveUrl}
+
+To DENY this order:
+${denyUrl}
+
+Thanks,
+Luna Intranet`
+    );
+
+    // Open email client to send approval request
+    window.location.href = `mailto:john@lunadiabetes.com?subject=${subject}&body=${body}`;
 
     // Show success after a brief delay
     setTimeout(() => {
@@ -130,21 +144,26 @@ export default function Beverages() {
     return (
       <div className="max-w-2xl mx-auto text-center">
         <div className="card">
-          <div className="text-6xl mb-6">✅</div>
-          <h1 className="text-2xl font-bold mb-4">Order Ready to Send!</h1>
+          <div className="text-6xl mb-6">📧</div>
+          <h1 className="text-2xl font-bold mb-4">Order Submitted for Approval!</h1>
           <p className="text-white/70 mb-6">
-            Your email client should have opened with the order details.
-            Just hit send to complete your order!
+            Your order request has been submitted. An approval email has been prepared for John.
+            Once approved, the order will be sent to KEGJOY.
           </p>
           <div className="bg-white/5 rounded-lg p-4 mb-6 text-left">
-            <p className="text-sm text-white/60 mb-2">Order will be sent to:</p>
+            <p className="text-sm text-white/60 mb-2">Approval request sent to:</p>
+            <p className="font-mono">john@lunadiabetes.com</p>
+            <p className="text-sm text-white/60 mt-4">After approval, order goes to:</p>
             <p className="font-mono">{vendorEmail}</p>
-            <p className="text-sm text-white/60 mt-4">Questions? Call:</p>
-            <p className="font-mono">{vendorPhone}</p>
           </div>
-          <button onClick={resetOrder} className="btn-secondary">
-            Place Another Order
-          </button>
+          <div className="flex gap-4 justify-center">
+            <button onClick={resetOrder} className="btn-secondary">
+              Place Another Order
+            </button>
+            <Link href="/history" className="btn-primary">
+              View Order History
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -184,9 +203,15 @@ export default function Beverages() {
 
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Order Beverages</h1>
-        <p className="text-white/70">
+        <p className="text-white/70 mb-4">
           Select <strong>one kombucha</strong> and/or <strong>one cold brew</strong> to order from KEGJOY.
         </p>
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+          <p className="text-blue-300 text-sm">
+            <strong>Note:</strong> After submitting, an approval request will be sent to John.
+            Once approved, the order will be automatically sent to KEGJOY.
+          </p>
+        </div>
       </div>
 
       {/* Product Categories */}
@@ -293,7 +318,7 @@ export default function Beverages() {
               totalItems === 0 ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {isSubmitting ? 'Preparing Order...' : `Send Order (${totalItems} item${totalItems > 1 ? 's' : ''})`}
+            {isSubmitting ? 'Submitting...' : `Submit Order for Approval (${totalItems} item${totalItems > 1 ? 's' : ''})`}
           </button>
         </div>
       </div>

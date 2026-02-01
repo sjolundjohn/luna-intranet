@@ -7,7 +7,12 @@ export default function RequestNDA() {
     companyName: '',
     firstName: '',
     lastName: '',
+    title: '',
     email: '',
+    phone: '',
+    addressLine1: '',
+    addressLine2: '',
+    addressLine3: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -35,6 +40,7 @@ export default function RequestNDA() {
       const ndaRequest = {
         id: Date.now().toString(),
         ...formData,
+        fullName: `${formData.firstName} ${formData.lastName}`,
         status: 'pending_approval',
         createdAt: new Date().toISOString(),
         statusHistory: [
@@ -66,7 +72,10 @@ A new NDA request has been submitted and requires your approval.
 Details:
 - Company: ${formData.companyName}
 - Name: ${formData.firstName} ${formData.lastName}
+- Title: ${formData.title}
 - Email: ${formData.email}
+- Phone: ${formData.phone}
+- Address: ${formData.addressLine1}${formData.addressLine2 ? ', ' + formData.addressLine2 : ''}${formData.addressLine3 ? ', ' + formData.addressLine3 : ''}
 
 To APPROVE this request and send the NDA:
 ${approveUrl}
@@ -108,7 +117,7 @@ Luna Intranet`
               <button
                 onClick={() => {
                   setIsSubmitted(false);
-                  setFormData({ companyName: '', firstName: '', lastName: '', email: '' });
+                  setFormData({ companyName: '', firstName: '', lastName: '', title: '', email: '', phone: '', addressLine1: '', addressLine2: '', addressLine3: '' });
                 }}
                 className="btn-secondary"
               >
@@ -129,15 +138,21 @@ Luna Intranet`
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Request NDA</h1>
-          <p className="text-white/70">
-            Submit a request to send a Non-Disclosure Agreement. The request will be sent to an approver before the NDA is dispatched.
+          <p className="text-white/70 mb-4">
+            Submit a request to send a Non-Disclosure Agreement.
           </p>
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+            <p className="text-blue-300 text-sm">
+              <strong>Note:</strong> After submitting, an approval request will be sent to Jon Brilliant.
+              Once approved, the NDA will be automatically sent to the recipient for signing via Dropbox Sign.
+            </p>
+          </div>
         </div>
 
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Company Name</label>
+              <label className="block text-sm font-medium mb-2">Company Name *</label>
               <input
                 type="text"
                 name="companyName"
@@ -151,7 +166,7 @@ Luna Intranet`
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">First Name</label>
+                <label className="block text-sm font-medium mb-2">First Name *</label>
                 <input
                   type="text"
                   name="firstName"
@@ -163,7 +178,7 @@ Luna Intranet`
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Last Name</label>
+                <label className="block text-sm font-medium mb-2">Last Name *</label>
                 <input
                   type="text"
                   name="lastName"
@@ -177,17 +192,82 @@ Luna Intranet`
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Email Address</label>
+              <label className="block text-sm font-medium mb-2">Title *</label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                name="title"
+                value={formData.title}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-[#68d2df]"
-                placeholder="email@company.com"
+                placeholder="e.g., CEO, Director of Engineering"
               />
-              <p className="text-white/50 text-sm mt-2">The NDA will be sent to this email address for signing.</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Email Address *</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-[#68d2df]"
+                  placeholder="email@company.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Phone Number *</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-[#68d2df]"
+                  placeholder="(555) 123-4567"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Address Line 1 *</label>
+              <input
+                type="text"
+                name="addressLine1"
+                value={formData.addressLine1}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-[#68d2df]"
+                placeholder="Street address"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Address Line 2</label>
+                <input
+                  type="text"
+                  name="addressLine2"
+                  value={formData.addressLine2}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-[#68d2df]"
+                  placeholder="Suite, unit, etc."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">City, State, ZIP *</label>
+                <input
+                  type="text"
+                  name="addressLine3"
+                  value={formData.addressLine3}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-[#68d2df]"
+                  placeholder="City, ST 12345"
+                />
+              </div>
             </div>
 
             {error && (
