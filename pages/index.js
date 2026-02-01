@@ -12,6 +12,13 @@ export default function Dashboard() {
       icon: '☕',
       color: 'bg-[#68d2df]/20 border-[#68d2df]/30',
     },
+    {
+      title: 'Request NDA',
+      description: 'Send NDAs for signature via Dropbox Sign',
+      href: '/nda',
+      icon: '📄',
+      color: 'bg-purple-500/20 border-purple-500/30',
+    },
   ];
 
   return (
@@ -39,13 +46,6 @@ export default function Dashboard() {
           </Link>
         ))}
 
-        {/* Placeholder for future features */}
-        <div className="card bg-white/5 border-dashed border-white/20 flex items-center justify-center min-h-[160px]">
-          <div className="text-center text-white/40">
-            <div className="text-2xl mb-2">+</div>
-            <p className="text-sm">More features coming soon</p>
-          </div>
-        </div>
       </div>
 
       {/* Recent Activity / Announcements section */}
@@ -53,13 +53,23 @@ export default function Dashboard() {
         <h2 className="text-xl font-semibold mb-4">Company Updates</h2>
         <div className="space-y-4">
           <div className="flex items-start gap-4 p-4 bg-white/5 rounded-lg">
+            <div className="w-2 h-2 mt-2 rounded-full bg-purple-400"></div>
+            <div>
+              <p className="font-medium">NDA Request System Now Available!</p>
+              <p className="text-sm text-white/60 mt-1">
+                Request NDAs to be sent for signature through Dropbox Sign with approval workflow.
+              </p>
+              <p className="text-xs text-white/40 mt-2">New</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4 p-4 bg-white/5 rounded-lg">
             <div className="w-2 h-2 mt-2 rounded-full bg-[#68d2df]"></div>
             <div>
               <p className="font-medium">Beverage Ordering System Live!</p>
               <p className="text-sm text-white/60 mt-1">
                 You can now order kombucha and cold brew refills directly through the intranet.
               </p>
-              <p className="text-xs text-white/40 mt-2">Just now</p>
+              <p className="text-xs text-white/40 mt-2">Recent</p>
             </div>
           </div>
         </div>
