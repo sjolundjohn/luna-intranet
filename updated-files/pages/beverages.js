@@ -47,7 +47,7 @@ export default function Beverages() {
 
   const formatOrderForEmail = () => {
     let orderText = `Hi there!\n\n`;
-    orderText += `This is John from Luna Health. Hope you're having a great day!\n\n`;
+    orderText += `This is John from Luna Health. Hope you're having a great day! ☀️\n\n`;
     orderText += `We're running low on beverages and would love to place an order when you get a chance:\n\n`;
 
     if (selectedKombucha) {
@@ -105,7 +105,7 @@ export default function Beverages() {
     saveOrderToHistory();
 
     // Generate mailto link with order details
-    const subject = encodeURIComponent(`Beverage Order from Luna Health`);
+    const subject = encodeURIComponent(`Beverage Order from Luna Health 🌙`);
     const body = encodeURIComponent(formatOrderForEmail());
     const mailtoLink = `mailto:${vendorEmail}?subject=${subject}&body=${body}`;
 
