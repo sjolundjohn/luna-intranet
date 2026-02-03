@@ -14,14 +14,10 @@ export default function Layout({ children }) {
     { name: 'NDA History', path: '/nda-history', icon: '📁' },
   ];
 
-  const betaItems = [
-    { name: 'Clinical Trial Dashboard', path: '/clinical-trial', icon: '🔬' }
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
-      <header className="bg-navy shadow-lg">
+      <header className="bg-navy/50 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
@@ -60,9 +56,9 @@ export default function Layout({ children }) {
         {children}
       </main>
 
-      {/* Beta Features Banner - Show on main pages */}
+      {/* Beta Features Banner - Clinical Trial Dashboard */}
       {!currentPath.startsWith('/clinical-trial') && (
-        <div className="fixed bottom-6 right-6">
+        <div className="fixed bottom-6 right-6 z-50">
           <Link
             href="/clinical-trial"
             className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all hover:scale-105"
