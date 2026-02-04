@@ -235,6 +235,5 @@ export default function NDAApprove() {
           )}
         </div>
       </div>
-    </div>
   );
 }

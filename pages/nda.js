@@ -115,7 +115,6 @@ export default function NDARequest() {
             </div>
           </div>
         </div>
-      </div>
     );
   }
 
