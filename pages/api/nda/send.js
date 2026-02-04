@@ -1,3 +1,5 @@
+import * as DropboxSign from "@dropbox/sign";
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -5,84 +7,98 @@ export default async function handler(req, res) {
 
   const {
     email,
-    firstName,
-    lastName,
+    fullName,
     companyName,
     title,
-    phone,
     addressLine1,
     addressLine2,
-    addressLine3
+    addressLine3,
+    phone
   } = req.body;
 
-  if (!email || !firstName || !lastName || !companyName) {
-    return res.status(400).json({ error: 'Missing required fields' });
+  // Validate required fields
+  if (!email || !fullName) {
+    return res.status(400).json({ error: 'Email and full name are required' });
   }
 
   const apiKey = process.env.DROPBOX_SIGN_API_KEY;
   const templateId = process.env.NDA_TEMPLATE_ID;
 
   if (!apiKey || !templateId) {
-    return res.status(500).json({
-      success: false,
-      error: 'Server configuration error - missing API credentials'
-    });
+    console.error('Missing API credentials:', { hasApiKey: !!apiKey, hasTemplateId: !!templateId });
+    return res.status(500).json({ error: 'Missing API credentials' });
   }
 
   try {
-    const fullName = firstName + ' ' + lastName;
+    const signatureRequestApi = new DropboxSign.SignatureRequestApi();
+    signatureRequestApi.username = apiKey;
 
-    const requestBody = {
-      template_ids: [templateId],
-      subject: 'NDA - ' + companyName,
-      message: 'Please review and sign the Non-Disclosure Agreement for ' + companyName + '.',
-      signers: [
-        {
-          role: 'recipient_signer',
-          email_address: email,
-          name: fullName
-        }
-      ],
-      custom_fields: [
-        { name: 'recipient_company', value: companyName },
-        { name: 'recipient_full_name', value: fullName },
-        { name: 'recipient_title', value: title || '' },
-        { name: 'recipient_addressl1', value: addressLine1 || '' },
-        { name: 'recipient_addressL2', value: addressLine2 || '' },
-        { name: 'recipient_addressL3', value: addressLine3 || '' },
-        { name: 'recipient_phone', value: phone || '' },
-        { name: 'recipient_email', value: email }
-      ],
-      test_mode: true
+    // Create the signature request using the template
+    const signerData = {
+      role: "Signer",
+      emailAddress: email,
+      name: fullName,
     };
 
-    const response = await fetch('https://api.hellosign.com/v3/signature_request/send_with_template', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Basic ' + Buffer.from(apiKey + ':').toString('base64'),
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody),
-    });
+    const signer = new DropboxSign.SubSignatureRequestTemplateSigner(signerData);
 
-    const data = await response.json();
+    // IMPORTANT: These field names must EXACTLY match the template fields
+    // From Docsign.xlsx:
+    // - recipient_company
+    // - recipient_full_name
+    // - recipient_title
+    // - recipient_addressl1 (lowercase 'l')
+    // - recipient_addressL2 (uppercase 'L')
+    // - recipient_addressL3 (uppercase 'L')
+    // - recipient_phone
+    // - recipient_email
 
-    if (!response.ok) {
-      return res.status(response.status).json({
-        success: false,
-        error: data.error?.error_msg || 'Failed to send signature request'
-      });
-    }
+    const customFields = [
+      { name: 'recipient_company', value: companyName || '' },
+      { name: 'recipient_full_name', value: fullName || '' },
+      { name: 'recipient_title', value: title || '' },
+      { name: 'recipient_addressl1', value: addressLine1 || '' },
+      { name: 'recipient_addressL2', value: addressLine2 || '' },
+      { name: 'recipient_addressL3', value: addressLine3 || '' },
+      { name: 'recipient_phone', value: phone || '' },
+      { name: 'recipient_email', value: email || '' },
+    ];
+
+    const data = {
+      templateIds: [templateId],
+      subject: "NDA Agreement - Luna Health",
+      message: "Please review and sign this Non-Disclosure Agreement from Luna Health.",
+      signers: [signer],
+      customFields: customFields,
+      testMode: true, // Set to false for production
+    };
+
+    const request = new DropboxSign.SignatureRequestSendWithTemplateRequest(data);
+    const response = await signatureRequestApi.signatureRequestSendWithTemplate(request);
+
+    console.log('Dropbox Sign Response:', JSON.stringify(response.body, null, 2));
 
     return res.status(200).json({
       success: true,
-      signatureRequestId: data.signature_request?.signature_request_id
+      signatureRequestId: response.body.signatureRequest.signatureRequestId,
+      message: 'NDA sent successfully'
     });
 
   } catch (error) {
+    console.error('Dropbox Sign Error:', error);
+
+    // Handle specific API errors
+    if (error.body) {
+      console.error('Error body:', JSON.stringify(error.body, null, 2));
+      return res.status(400).json({
+        error: 'Failed to send NDA',
+        details: error.body.error?.errorMsg || 'Unknown error'
+      });
+    }
+
     return res.status(500).json({
-      success: false,
-      error: 'Internal server error: ' + error.message
+      error: 'Failed to send NDA',
+      details: error.message
     });
   }
 }
