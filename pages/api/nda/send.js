@@ -33,14 +33,12 @@ export default async function handler(req, res) {
     const signatureRequestApi = new DropboxSign.SignatureRequestApi();
     signatureRequestApi.username = apiKey;
 
-    // Create the signature request using the template
-    const signerData = {
+    // Create signer
+    const signer1 = {
       role: "Signer",
       emailAddress: email,
       name: fullName,
     };
-
-    const signer = new DropboxSign.SubSignatureRequestTemplateSigner(signerData);
 
     // IMPORTANT: These field names must EXACTLY match the template fields
     // From Docsign.xlsx:
@@ -68,13 +66,14 @@ export default async function handler(req, res) {
       templateIds: [templateId],
       subject: "NDA Agreement - Luna Health",
       message: "Please review and sign this Non-Disclosure Agreement from Luna Health.",
-      signers: [signer],
+      signers: [signer1],
       customFields: customFields,
-      testMode: true, // Set to false for production
+      testMode: true,
     };
 
-    const request = new DropboxSign.SignatureRequestSendWithTemplateRequest(data);
-    const response = await signatureRequestApi.signatureRequestSendWithTemplate(request);
+    console.log('Sending to Dropbox Sign:', JSON.stringify(data, null, 2));
+
+    const response = await signatureRequestApi.signatureRequestSendWithTemplate(data);
 
     console.log('Dropbox Sign Response:', JSON.stringify(response.body, null, 2));
 
@@ -86,19 +85,21 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Dropbox Sign Error:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
 
     // Handle specific API errors
     if (error.body) {
       console.error('Error body:', JSON.stringify(error.body, null, 2));
       return res.status(400).json({
         error: 'Failed to send NDA',
-        details: error.body.error?.errorMsg || 'Unknown error'
+        details: error.body.error?.errorMsg || error.body.error?.errorName || 'API error'
       });
     }
 
     return res.status(500).json({
       error: 'Failed to send NDA',
-      details: error.message
+      details: error.message || 'Unknown error'
     });
   }
 }
