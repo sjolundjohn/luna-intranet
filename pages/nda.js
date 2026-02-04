@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../components/Layout';
 
 export default function NDARequest() {
   const router = useRouter();
@@ -77,8 +76,7 @@ export default function NDARequest() {
 
   if (submitted) {
     return (
-      <Layout>
-        <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto">
           <div className="card text-center">
             <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,12 +115,12 @@ export default function NDARequest() {
             </div>
           </div>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   return (
-    <Layout>
+    <>
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Request NDA</h1>
         <p className="text-white/70 mb-8">
@@ -253,6 +251,6 @@ export default function NDARequest() {
           </div>
         </form>
       </div>
-    </Layout>
+    </>
   );
 }

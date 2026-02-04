@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../components/Layout';
 
 export default function NDAApprove() {
   const router = useRouter();
@@ -153,9 +152,8 @@ export default function NDAApprove() {
   };
 
   return (
-    <Layout>
-      <div className="max-w-2xl mx-auto">
-        <div className="card text-center">
+    <div className="max-w-2xl mx-auto">
+      <div className="card text-center">
           {getStatusIcon()}
 
           <h1 className="text-2xl font-bold mb-2">
@@ -237,6 +235,6 @@ export default function NDAApprove() {
           )}
         </div>
       </div>
-    </Layout>
+    </div>
   );
 }
