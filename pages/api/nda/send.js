@@ -30,15 +30,15 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Configure API with authentication
     const signatureRequestApi = new DropboxSign.SignatureRequestApi();
     signatureRequestApi.username = apiKey;
 
-    // Create signer
-    const signer1 = {
-      role: "Signer",
-      emailAddress: email,
-      name: fullName,
-    };
+    // Create signer using SDK model
+    const signer1 = new DropboxSign.SubSignatureRequestTemplateSigner();
+    signer1.role = "Signer";
+    signer1.emailAddress = email;
+    signer1.name = fullName;
 
     // IMPORTANT: These field names must EXACTLY match the template fields
     // From Docsign.xlsx:
@@ -51,27 +51,61 @@ export default async function handler(req, res) {
     // - recipient_phone
     // - recipient_email
 
-    const customFields = [
-      { name: 'recipient_company', value: companyName || '' },
-      { name: 'recipient_full_name', value: fullName || '' },
-      { name: 'recipient_title', value: title || '' },
-      { name: 'recipient_addressl1', value: addressLine1 || '' },
-      { name: 'recipient_addressL2', value: addressLine2 || '' },
-      { name: 'recipient_addressL3', value: addressLine3 || '' },
-      { name: 'recipient_phone', value: phone || '' },
-      { name: 'recipient_email', value: email || '' },
-    ];
+    // Create custom fields using SDK models
+    const customFields = [];
 
-    const data = {
-      templateIds: [templateId],
-      subject: "NDA Agreement - Luna Health",
-      message: "Please review and sign this Non-Disclosure Agreement from Luna Health.",
-      signers: [signer1],
-      customFields: customFields,
-      testMode: true,
-    };
+    const field1 = new DropboxSign.SubCustomField();
+    field1.name = 'recipient_company';
+    field1.value = companyName || '';
+    customFields.push(field1);
 
-    console.log('Sending to Dropbox Sign:', JSON.stringify(data, null, 2));
+    const field2 = new DropboxSign.SubCustomField();
+    field2.name = 'recipient_full_name';
+    field2.value = fullName || '';
+    customFields.push(field2);
+
+    const field3 = new DropboxSign.SubCustomField();
+    field3.name = 'recipient_title';
+    field3.value = title || '';
+    customFields.push(field3);
+
+    const field4 = new DropboxSign.SubCustomField();
+    field4.name = 'recipient_addressl1';
+    field4.value = addressLine1 || '';
+    customFields.push(field4);
+
+    const field5 = new DropboxSign.SubCustomField();
+    field5.name = 'recipient_addressL2';
+    field5.value = addressLine2 || '';
+    customFields.push(field5);
+
+    const field6 = new DropboxSign.SubCustomField();
+    field6.name = 'recipient_addressL3';
+    field6.value = addressLine3 || '';
+    customFields.push(field6);
+
+    const field7 = new DropboxSign.SubCustomField();
+    field7.name = 'recipient_phone';
+    field7.value = phone || '';
+    customFields.push(field7);
+
+    const field8 = new DropboxSign.SubCustomField();
+    field8.name = 'recipient_email';
+    field8.value = email || '';
+    customFields.push(field8);
+
+    // Create the signature request using SDK model
+    const data = new DropboxSign.SignatureRequestSendWithTemplateRequest();
+    data.templateIds = [templateId];
+    data.subject = "NDA Agreement - Luna Health";
+    data.message = "Please review and sign this Non-Disclosure Agreement from Luna Health.";
+    data.signers = [signer1];
+    data.customFields = customFields;
+    data.testMode = true;
+
+    console.log('Sending to Dropbox Sign with template:', templateId);
+    console.log('Signer:', { email, fullName });
+    console.log('Custom fields count:', customFields.length);
 
     const response = await signatureRequestApi.signatureRequestSendWithTemplate(data);
 
@@ -86,14 +120,13 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Dropbox Sign Error:', error);
     console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
 
-    // Handle specific API errors
     if (error.body) {
       console.error('Error body:', JSON.stringify(error.body, null, 2));
+      const errorDetail = error.body.error?.errorMsg || error.body.error?.errorName || JSON.stringify(error.body);
       return res.status(400).json({
         error: 'Failed to send NDA',
-        details: error.body.error?.errorMsg || error.body.error?.errorName || 'API error'
+        details: errorDetail
       });
     }
 
