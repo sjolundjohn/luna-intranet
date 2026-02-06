@@ -34,78 +34,46 @@ export default async function handler(req, res) {
     const signatureRequestApi = new DropboxSign.SignatureRequestApi();
     signatureRequestApi.username = apiKey;
 
-    // Create signer using SDK model
-    const signer1 = new DropboxSign.SubSignatureRequestTemplateSigner();
-    signer1.role = "recipient_signer";
-    signer1.emailAddress = email;
-    signer1.name = fullName;
+    // Log all incoming field values
+    console.log('=== NDA SEND REQUEST ===');
+    console.log('Email:', email);
+    console.log('Full Name:', fullName);
+    console.log('Company:', companyName);
+    console.log('Title:', title);
+    console.log('Address Line 1:', addressLine1);
+    console.log('Address Line 2:', addressLine2);
+    console.log('Address Line 3:', addressLine3);
+    console.log('Phone:', phone);
 
-    // IMPORTANT: These field names must EXACTLY match the template fields
-    // From Docsign.xlsx:
-    // - recipient_company
-    // - recipient_full_name
-    // - recipient_title
-    // - recipient_addressl1 (lowercase 'l')
-    // - recipient_addressL2 (uppercase 'L')
-    // - recipient_addressL3 (uppercase 'L')
-    // - recipient_phone
-    // - recipient_email
+    // Using plain objects as per official SDK documentation
+    // https://developers.hellosign.com/docs/sdks/node/migration-guide/
+    const data = {
+      templateIds: [templateId],
+      subject: "NDA Agreement - Luna Health",
+      message: "Please review and sign this Non-Disclosure Agreement from Luna Health.",
+      signers: [
+        {
+          role: "recipient_signer",
+          emailAddress: email,
+          name: fullName,
+        }
+      ],
+      // IMPORTANT: Field names must EXACTLY match the template
+      // From Docsign.xlsx - note the inconsistent capitalization
+      customFields: [
+        { name: "recipient_company", value: companyName || "" },
+        { name: "recipient_full_name", value: fullName || "" },
+        { name: "recipient_title", value: title || "" },
+        { name: "recipient_addressl1", value: addressLine1 || "" },
+        { name: "recipient_addressL2", value: addressLine2 || "" },
+        { name: "recipient_addressL3", value: addressLine3 || "" },
+        { name: "recipient_phone", value: phone || "" },
+        { name: "recipient_email", value: email || "" },
+      ],
+      testMode: true,
+    };
 
-    // Create custom fields using SDK models
-    const customFields = [];
-
-    const field1 = new DropboxSign.SubCustomField();
-    field1.name = 'recipient_company';
-    field1.value = companyName || '';
-    customFields.push(field1);
-
-    const field2 = new DropboxSign.SubCustomField();
-    field2.name = 'recipient_full_name';
-    field2.value = fullName || '';
-    customFields.push(field2);
-
-    const field3 = new DropboxSign.SubCustomField();
-    field3.name = 'recipient_title';
-    field3.value = title || '';
-    customFields.push(field3);
-
-    const field4 = new DropboxSign.SubCustomField();
-    field4.name = 'recipient_addressl1';
-    field4.value = addressLine1 || '';
-    customFields.push(field4);
-
-    const field5 = new DropboxSign.SubCustomField();
-    field5.name = 'recipient_addressL2';
-    field5.value = addressLine2 || '';
-    customFields.push(field5);
-
-    const field6 = new DropboxSign.SubCustomField();
-    field6.name = 'recipient_addressL3';
-    field6.value = addressLine3 || '';
-    customFields.push(field6);
-
-    const field7 = new DropboxSign.SubCustomField();
-    field7.name = 'recipient_phone';
-    field7.value = phone || '';
-    customFields.push(field7);
-
-    const field8 = new DropboxSign.SubCustomField();
-    field8.name = 'recipient_email';
-    field8.value = email || '';
-    customFields.push(field8);
-
-    // Create the signature request using SDK model
-    const data = new DropboxSign.SignatureRequestSendWithTemplateRequest();
-    data.templateIds = [templateId];
-    data.subject = "NDA Agreement - Luna Health";
-    data.message = "Please review and sign this Non-Disclosure Agreement from Luna Health.";
-    data.signers = [signer1];
-    data.customFields = customFields;
-    data.testMode = true;
-
-    console.log('Sending to Dropbox Sign with template:', templateId);
-    console.log('Signer:', { email, fullName });
-    console.log('Custom fields count:', customFields.length);
+    console.log('Sending to Dropbox Sign:', JSON.stringify(data, null, 2));
 
     const response = await signatureRequestApi.signatureRequestSendWithTemplate(data);
 
