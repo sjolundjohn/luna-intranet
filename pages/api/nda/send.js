@@ -58,16 +58,16 @@ export default async function handler(req, res) {
           name: fullName,
         }
       ],
-      // Using API IDs from Docsign.xlsx as field names
+      // Text tag field names from updated template
       customFields: [
-        { name: "608af3aa-0112-4555-b508-58de5338533d", value: companyName || "" },
-        { name: "86dd0dfb-435a-40a6-9bdd-cee1533bf60d", value: fullName || "" },
-        { name: "afa71294-589d-4afd-9f7d-99c4a01e802c", value: title || "" },
-        { name: "67ea968c-2735-46f4-a8e3-c0e9b62e4f7d", value: addressLine1 || "" },
-        { name: "16e87bea-ab75-4fd7-a204-05d6e06e6381", value: addressLine2 || "" },
-        { name: "55b87e9b-db85-44c0-861c-163281881c42", value: addressLine3 || "" },
-        { name: "5fe1655f-d47d-47f2-90ac-7f9581b225a4", value: phone || "" },
-        { name: "33ccd4ac-5a35-4919-993d-7a6f296cf725", value: email || "" },
+        { name: "recipient_company", value: companyName || "" },
+        { name: "recipient_full_name", value: fullName || "" },
+        { name: "recipient_title", value: title || "" },
+        { name: "recipient_addressl1", value: addressLine1 || "" },
+        { name: "recipient_addressL2", value: addressLine2 || "" },
+        { name: "recipient_addressL3", value: addressLine3 || "" },
+        { name: "recipient_phone", value: phone || "" },
+        { name: "recipient_email", value: email || "" },
       ],
       testMode: true,
     };
