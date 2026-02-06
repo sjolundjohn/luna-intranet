@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 
     // Create signer using SDK model
     const signer1 = new DropboxSign.SubSignatureRequestTemplateSigner();
-    signer1.role = "Signer";
+    signer1.role = "recipient_signer";
     signer1.emailAddress = email;
     signer1.name = fullName;
 
