@@ -58,16 +58,16 @@ export default async function handler(req, res) {
           name: fullName,
         }
       ],
-      // Text tag field names from updated template
+      // Text tag field names - must include brackets as shown in template
       customFields: [
-        { name: "recipient_company", value: companyName || "" },
-        { name: "recipient_full_name", value: fullName || "" },
-        { name: "recipient_title", value: title || "" },
-        { name: "recipient_addressl1", value: addressLine1 || "" },
-        { name: "recipient_addressL2", value: addressLine2 || "" },
-        { name: "recipient_addressL3", value: addressLine3 || "" },
-        { name: "recipient_phone", value: phone || "" },
-        { name: "recipient_email", value: email || "" },
+        { name: "[text|recipient_company]", value: companyName || "" },
+        { name: "[text|recipient_full_name]", value: fullName || "" },
+        { name: "[text|recipient_title]", value: title || "" },
+        { name: "[text|recipient_addressl1]", value: addressLine1 || "" },
+        { name: "[text|recipient_addressL2]", value: addressLine2 || "" },
+        { name: "[text|recipient_addressL3]", value: addressLine3 || "" },
+        { name: "[text|recipient_phone]", value: phone || "" },
+        { name: "[text|recipient_email]", value: email || "" },
       ],
       testMode: true,
     };
