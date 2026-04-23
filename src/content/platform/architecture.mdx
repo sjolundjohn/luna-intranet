@@ -1,0 +1,36 @@
+---
+title: "How it works"
+summary: "A walk through what actually happens when you message Basal — told without jargon."
+order: 1
+---
+
+When you send a message to Basal in Slack, it travels through a short chain of services that each do one specific thing. Here's the flow.
+
+## 1 · Slack receives your message
+
+Slack sends the event to a Luna-owned endpoint — a small service called **`luna-slack-dm`**. Before this service does anything, it verifies that the event actually came from Slack (cryptographic signature check) and that the message came from an `@lunadiabetes.com` email. If either check fails, the message is dropped.
+
+## 2 · The router decides who should handle it
+
+`luna-slack-dm` hands the verified message to **`luna-router`**. The router is a dispatcher — today it always routes to Basal, but as more agents come online (like the Data Agent) it's the router that decides which agent gets the message.
+
+## 3 · The agent handles your conversation
+
+**`luna-agent-basal`** receives the message along with your conversation history. Each Lunite has their own dedicated agent instance with its own memory, so your conversations stay separate from everyone else's. The agent builds up the right context — recent messages, a system prompt that describes Basal's role, your identity — and asks the model a question.
+
+## 4 · The model call goes through a proxy
+
+Instead of calling the AI model directly, the agent goes through **`luna-ai-proxy`**. This is Luna's single point of egress for all model API calls. It:
+
+- Holds the API keys so individual agents never touch credentials.
+- Strips any headers that could identify you personally before forwarding.
+- Adds hashed metadata so we can measure usage without logging conversations.
+- Talks to Cloudflare's **AI Gateway** — a layer that handles rate limiting, cost caps, and audit logging for every model request.
+
+## 5 · The model responds
+
+The response flows back through the same chain — gateway → proxy → agent → router → Slack — and lands in your DM.
+
+## Why so many pieces?
+
+Each service does one thing. That means any one of them can be replaced, upgraded, or monitored independently. It also means when something breaks, it's easy to tell where. See [Privacy & security](/platform/privacy) for how this architecture keeps your conversations safe.

@@ -1,0 +1,61 @@
+---
+import "~/styles/global.css";
+import Nav from "~/components/Nav.astro";
+import Footer from "~/components/Footer.astro";
+import { ClientRouter } from "astro:transitions";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Set to true on pages whose first block above the fold is Midnight. */
+  heroIsDark?: boolean;
+  /** Override the og image path (must be in /public). */
+  ogImage?: string;
+}
+
+const {
+  title = "Luna, internal.",
+  description = "The tools, agents, and systems Luna is building — in one place.",
+  heroIsDark = true,
+  ogImage = "/og-default.png",
+} = Astro.props;
+
+const fullTitle = title === "Luna, internal." ? title : `${title} · Luna`;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#041E42" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Favicons (moon glyph, svg + fallback). -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph / social. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Luna" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Robots: internal site, never surface to search. -->
+    <meta name="robots" content="noindex, nofollow" />
+
+    <ClientRouter />
+  </head>
+  <body class="bg-white text-ink">
+    <Nav heroIsDark={heroIsDark} />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

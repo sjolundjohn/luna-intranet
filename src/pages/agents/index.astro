@@ -1,0 +1,51 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import AgentCard from "~/components/AgentCard.astro";
+
+const allAgents = await getCollection("agents");
+
+// Sort: live → by-request → coming-soon, then by `order`.
+const statusRank: Record<string, number> = {
+  "live": 0,
+  "by-request": 1,
+  "coming-soon": 2,
+};
+const agents = allAgents.sort((a, b) => {
+  const diff = statusRank[a.data.status] - statusRank[b.data.status];
+  if (diff !== 0) return diff;
+  return a.data.order - b.data.order;
+});
+---
+
+<BaseLayout
+  title="Agents"
+  description="The AI agents Luna is building for the team."
+  heroIsDark={true}
+>
+  <Hero eyebrow="01 · People" size="tall">
+    <Fragment slot="headline">The agents.</Fragment>
+    <Fragment slot="subcopy">
+      Shared AI agents Luna has built — or is building — to help the team do its work.
+      Each one has a specific job; most live in Slack. Start with Basal.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="grid gap-6 md:gap-7 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        agents.map((agent) => (
+          <AgentCard
+            href={`/agents/${agent.id}`}
+            name={agent.data.name}
+            status={agent.data.status}
+            summary={agent.data.summary}
+            accessHint={agent.data.accessHint}
+          />
+        ))
+      }
+    </div>
+  </WhiteSection>
+</BaseLayout>

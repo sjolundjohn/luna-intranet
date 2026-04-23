@@ -1,0 +1,23 @@
+---
+title: "Request flow"
+summary: "The same story, but drawn: every service a message touches from Slack to Anthropic."
+order: 3
+---
+
+import FlowDiagram from "~/components/FlowDiagram.astro";
+
+Below is the path of a single message from the moment you hit send in Slack to the moment the reply lands in your DM. Each box is a separate Luna-owned service; each arrow is an internal call.
+
+<FlowDiagram />
+
+## What each service does
+
+- **Slack** — your interface. Sends signed webhook events for every message it sees that involves Basal.
+- **`luna-slack-dm`** — verifies the webhook signature, checks your email domain, and passes the message on.
+- **`luna-router`** — picks the agent. Today it's always Basal. Tomorrow it could be the Data Agent or any new agent we add.
+- **`luna-agent-basal`** — holds your private conversation history and builds the model request with the right context.
+- **`luna-ai-proxy`** — the single egress point for every model call. Injects credentials, strips identifying headers, adds audit metadata.
+- **AI Gateway** — Cloudflare's layer for rate limits, cost caps, and the authoritative audit log.
+- **Anthropic** — the model (Claude) that actually generates the response.
+
+Internal hops between Luna services stay inside Cloudflare's private network — they don't traverse the public internet. The only external call is the last step, from the AI Gateway to Anthropic.

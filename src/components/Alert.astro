@@ -1,0 +1,44 @@
+---
+/**
+ * Inline alert banner. v1.0: soft bg, ink text, required label word.
+ * One alert at a time — never stacked.
+ */
+type Level = "success" | "info" | "warning" | "critical";
+
+interface Props {
+  level: Level;
+  label?: string;
+  class?: string;
+}
+
+const labels: Record<Level, string> = {
+  success: "SUCCESS",
+  info: "INFO",
+  warning: "WARNING",
+  critical: "CRITICAL",
+};
+
+const styles: Record<Level, string> = {
+  success: "bg-success-bg text-success-ink border-success-fill",
+  info: "bg-info-bg text-info-ink border-info-fill",
+  warning: "bg-warning-bg text-warning-ink border-warning-fill",
+  critical: "bg-critical-bg text-critical-ink border-critical-fill",
+};
+
+const { level, label, class: className = "" } = Astro.props;
+const labelText = label ?? labels[level];
+---
+
+<aside
+  role={level === "critical" || level === "warning" ? "alert" : "status"}
+  class:list={[
+    "flex items-start gap-3 rounded-[12px] border px-4 py-3",
+    styles[level],
+    className,
+  ]}
+>
+  <span class="eyebrow mt-0.5" style="color: currentColor;">{labelText}</span>
+  <div class="font-body text-[15px] leading-[1.5] flex-1">
+    <slot />
+  </div>
+</aside>

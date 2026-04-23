@@ -1,0 +1,81 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MidnightBand from "~/components/MidnightBand.astro";
+import SectionCard from "~/components/SectionCard.astro";
+import CTAButton from "~/components/CTAButton.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+---
+
+<BaseLayout
+  title="Luna, internal."
+  description="The tools, agents, and systems Luna is building — in one place."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Internal" size="full">
+    <Fragment slot="headline">Luna,<br />internal.</Fragment>
+    <Fragment slot="subcopy">
+      The tools, agents, and systems we're building for the team — in one place.
+      Start with an agent that knows your calendar, a data agent that speaks your dashboards,
+      or a look under the hood at how it all fits together.
+    </Fragment>
+    <Fragment slot="cta">
+      <CTAButton href="/agents" variant="primary-dark" arrow>Meet the agents</CTAButton>
+      <CTAButton href="/platform" variant="ghost">How it works</CTAButton>
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="max-w-[720px]">
+      <p class="eyebrow mb-5">What's here</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(36px, 4.6vw, 56px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Three places to start.
+      </h2>
+      <div class="mt-6"><MoonlightRule width={48} color="midnight" /></div>
+      <p class="mt-8 text-graphite text-[18px] leading-[1.6] max-w-[58ch]">
+        Everything on this site is built by Luna, for Luna. It's early, it will grow,
+        and it's designed so that adding the next capability doesn't require asking permission.
+      </p>
+    </div>
+
+    <div class="mt-16 md:mt-20 grid gap-6 md:gap-8 md:grid-cols-3">
+      <SectionCard
+        href="/agents"
+        eyebrow="01 · People"
+        title="Shared agents."
+        description="Basal helps you think, write, and summarize. More agents are on the way — including one that knows our data."
+      />
+      <SectionCard
+        href="/agents/personal"
+        eyebrow="02 · Yours"
+        title="Personal agents."
+        description="When a shared agent isn't the right fit, we can spin up one dedicated to a role, workflow, or team."
+      />
+      <SectionCard
+        href="/platform"
+        eyebrow="03 · Under the hood"
+        title="Platform."
+        description="How Luna's agents actually work — the pieces, the flow, and why your data stays private."
+      />
+    </div>
+  </WhiteSection>
+
+  <MidnightBand size="compact" class="text-center">
+    <p class="eyebrow eyebrow-on-dark mb-6">Our brand promise</p>
+    <h2
+      class="font-display text-white font-normal mx-auto"
+      style="font-size: clamp(52px, 7vw, 88px); line-height: 1; letter-spacing: -0.03em;"
+    >
+      true to you.
+    </h2>
+    <div class="mt-8 flex justify-center"><MoonlightRule width={64} /></div>
+    <p class="mt-10 max-w-[540px] mx-auto text-white/72 text-[17px] leading-[1.6]">
+      Internal tools should feel as considered as the products we ship.
+      This site is our first pass.
+    </p>
+  </MidnightBand>
+</BaseLayout>

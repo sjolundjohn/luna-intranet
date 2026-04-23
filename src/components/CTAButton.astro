@@ -1,0 +1,90 @@
+---
+/**
+ * Pill CTA — keyed to v1.0 buttons spec.
+ *
+ *   Radius:      58px (pill)
+ *   Padding:     15px 40px (primary/secondary), 15px 16px (ghost)
+ *   Label:       Inter 18/700 (primary/secondary), 16/500 (ghost)
+ *   Min target:  44px mobile, 40px web
+ *
+ * Variants:
+ *   primary-light  → Midnight fill, white label, for White backgrounds
+ *   primary-dark   → Moonlight fill, Midnight label, for Midnight backgrounds
+ *   secondary      → transparent, 1.5px Midnight border, Midnight label
+ *   ghost          → no border, 0 radius, Inter 16/500
+ */
+type Variant = "primary-light" | "primary-dark" | "secondary" | "ghost";
+
+interface Props {
+  href?: string;
+  variant?: Variant;
+  /** Render as <button> instead of <a>. */
+  button?: boolean;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+  /** Icon-only right arrow when link is navigational. */
+  arrow?: boolean;
+}
+
+const {
+  href,
+  variant = "primary-light",
+  button = false,
+  disabled = false,
+  type = "button",
+  class: className = "",
+  arrow = false,
+} = Astro.props;
+
+const base =
+  "inline-flex items-center justify-center font-body font-bold transition-all duration-[160ms] ease-out select-none";
+
+const sizing: Record<Variant, string> = {
+  "primary-light": "rounded-[58px] px-10 py-[15px] text-[18px] leading-none min-h-[44px] md:min-h-[40px]",
+  "primary-dark":  "rounded-[58px] px-10 py-[15px] text-[18px] leading-none min-h-[44px] md:min-h-[40px]",
+  "secondary":     "rounded-[58px] px-10 py-[13.5px] text-[18px] leading-none min-h-[44px] md:min-h-[40px] border-[1.5px]",
+  "ghost":         "rounded-none px-4 py-[15px] text-[16px] leading-none font-medium",
+};
+
+const color: Record<Variant, string> = {
+  "primary-light": "bg-midnight text-white shadow-[0_2px_8px_rgba(4,30,66,0.2)] hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(4,30,66,0.3)]",
+  "primary-dark":  "bg-moonlight text-midnight shadow-[0_3px_10px_rgba(104,210,223,0.4)] hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(104,210,223,0.5)]",
+  "secondary":     "bg-transparent text-ink border-midnight hover:bg-midnight hover:text-white",
+  "ghost":         "bg-transparent text-ink hover:bg-cloud-lilac",
+};
+
+const disabledClass = disabled
+  ? "!bg-pebble-blue !text-white !shadow-none !cursor-not-allowed pointer-events-none"
+  : "";
+
+const classList = `${base} ${sizing[variant]} ${color[variant]} ${disabledClass} ${className}`;
+
+const Tag = button || !href ? "button" : "a";
+---
+
+<Tag
+  href={!button ? href : undefined}
+  type={button ? type : undefined}
+  disabled={button && disabled ? true : undefined}
+  class={classList}
+>
+  <slot />
+  {arrow && (
+    <svg
+      class="ml-2 inline-block"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12 5 19 12 12 19" />
+    </svg>
+  )}
+</Tag>

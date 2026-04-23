@@ -1,0 +1,28 @@
+---
+/**
+ * Reusable Midnight band — used for closer sections, mid-page emphasis, etc.
+ * Flat Midnight by default; pass `gradient` for the atmospheric hero gradient.
+ */
+interface Props {
+  gradient?: boolean;
+  size?: "full" | "tall" | "compact";
+  id?: string;
+  class?: string;
+}
+
+const { gradient = false, size = "tall", id, class: className = "" } = Astro.props;
+
+const padding: Record<NonNullable<Props["size"]>, string> = {
+  "full":    "py-32 md:py-40",
+  "tall":    "py-24 md:py-32",
+  "compact": "py-16 md:py-24",
+};
+
+const bg = gradient ? "bg-hero-gradient" : "bg-midnight";
+---
+
+<section id={id} class:list={[bg, "text-white", padding[size], className]}>
+  <div class="mx-auto w-full max-w-[1200px] px-6 md:px-10">
+    <slot />
+  </div>
+</section>

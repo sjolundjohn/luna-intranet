@@ -1,0 +1,48 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import StatusChip from "~/components/StatusChip.astro";
+import Prose from "~/components/Prose.astro";
+import CTAButton from "~/components/CTAButton.astro";
+
+export async function getStaticPaths() {
+  const agents = await getCollection("agents");
+  return agents.map((agent) => ({
+    params: { slug: agent.id },
+    props: { agent },
+  }));
+}
+
+const { agent } = Astro.props;
+const { Content } = await render(agent);
+---
+
+<BaseLayout
+  title={agent.data.name}
+  description={agent.data.summary}
+  heroIsDark={true}
+>
+  <Hero eyebrow="Agent" size="tall">
+    <Fragment slot="headline">{agent.data.name}.</Fragment>
+    <Fragment slot="subcopy">{agent.data.summary}</Fragment>
+    <Fragment slot="cta">
+      <div class="flex flex-wrap items-center gap-4">
+        <StatusChip status={agent.data.status} />
+        {agent.data.accessHint && (
+          <span class="eyebrow eyebrow-on-dark">{agent.data.accessHint}</span>
+        )}
+      </div>
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="mb-10">
+      <CTAButton href="/agents" variant="ghost">← All agents</CTAButton>
+    </div>
+    <Prose>
+      <Content />
+    </Prose>
+  </WhiteSection>
+</BaseLayout>

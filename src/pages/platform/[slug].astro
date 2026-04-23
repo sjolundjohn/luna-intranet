@@ -1,0 +1,39 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import Prose from "~/components/Prose.astro";
+import CTAButton from "~/components/CTAButton.astro";
+
+export async function getStaticPaths() {
+  const topics = await getCollection("platform");
+  return topics.map((topic) => ({
+    params: { slug: topic.id },
+    props: { topic },
+  }));
+}
+
+const { topic } = Astro.props;
+const { Content } = await render(topic);
+---
+
+<BaseLayout
+  title={topic.data.title}
+  description={topic.data.summary}
+  heroIsDark={true}
+>
+  <Hero eyebrow="Platform" size="tall">
+    <Fragment slot="headline">{topic.data.title}</Fragment>
+    <Fragment slot="subcopy">{topic.data.summary}</Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="mb-10">
+      <CTAButton href="/platform" variant="ghost">← Platform</CTAButton>
+    </div>
+    <Prose>
+      <Content />
+    </Prose>
+  </WhiteSection>
+</BaseLayout>

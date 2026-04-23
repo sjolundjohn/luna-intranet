@@ -1,0 +1,26 @@
+---
+/**
+ * White section wrapper. Enforces generous vertical padding so every content
+ * block stays in the 60%+ whitespace band that v1.0 calls for.
+ */
+interface Props {
+  /** Override vertical padding. */
+  size?: "full" | "tall" | "compact";
+  id?: string;
+  class?: string;
+}
+
+const { size = "tall", id, class: className = "" } = Astro.props;
+
+const padding: Record<NonNullable<Props["size"]>, string> = {
+  "full":    "py-32 md:py-40",
+  "tall":    "py-24 md:py-32",
+  "compact": "py-16 md:py-24",
+};
+---
+
+<section id={id} class:list={["bg-white text-ink", padding[size], className]}>
+  <div class="mx-auto w-full max-w-[1200px] px-6 md:px-10">
+    <slot />
+  </div>
+</section>

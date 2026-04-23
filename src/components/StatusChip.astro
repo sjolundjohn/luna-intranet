@@ -1,0 +1,41 @@
+---
+/**
+ * Status badge — 999px pill, 22px tall, Inter 12/600.
+ * v1.0: soft alert fills for success/warning/critical,
+ * Periwinkle Mist for neutral/factual.
+ */
+type Status = "live" | "coming-soon" | "by-request" | "neutral";
+
+interface Props {
+  status: Status;
+  label?: string;
+  class?: string;
+}
+
+const labels: Record<Status, string> = {
+  "live": "Live",
+  "coming-soon": "Coming soon",
+  "by-request": "By request",
+  "neutral": "",
+};
+
+const fills: Record<Status, string> = {
+  "live":        "bg-success-bg text-success-ink",
+  "coming-soon": "bg-info-bg text-info-ink",
+  "by-request": "bg-periwinkle-mist text-ink",
+  "neutral":     "bg-periwinkle-mist text-ink",
+};
+
+const { status, label, class: className = "" } = Astro.props;
+const text = label ?? labels[status];
+---
+
+<span
+  class={`inline-flex items-center gap-[6px] h-[22px] px-3 rounded-full font-body text-[12px] font-semibold ${fills[status]} ${className}`}
+>
+  <span
+    class="block h-[6px] w-[6px] rounded-full bg-current"
+    aria-hidden="true"
+  ></span>
+  {text}
+</span>

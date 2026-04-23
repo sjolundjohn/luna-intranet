@@ -1,0 +1,262 @@
+/* ============================================================
+   Luna Intranet — global stylesheet
+   Source of truth: docs/brand/luna-design-system-v1.0.pdf
+   ============================================================ */
+
+@import "tailwindcss";
+
+/* ---- Fonts ---------------------------------------------------
+   D-DIN: display only (hero 96, page title 48). Self-hosted from
+   /public/fonts/ (source: @sarap422/font-d-din, SIL OFL-1.1).
+   Inter: everything else (body, UI). Variable font via
+   @fontsource-variable/inter, which ships working woff2s.
+   ------------------------------------------------------------- */
+@import "@fontsource-variable/inter";
+
+@font-face {
+  font-family: "D-DIN";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url("/fonts/d-din-regular.woff2") format("woff2"),
+    url("/fonts/d-din-regular.woff") format("woff");
+}
+@font-face {
+  font-family: "D-DIN";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    url("/fonts/d-din-bold.woff2") format("woff2"),
+    url("/fonts/d-din-bold.woff") format("woff");
+}
+
+/* ============================================================
+   @theme — Tailwind v4 CSS-first config
+   Maps every v1.0 design token to a Tailwind utility.
+   ============================================================ */
+@theme {
+  /* --- Fonts ------------------------------------------------ */
+  --font-display: "D-DIN", "Inter Variable", "Inter", -apple-system, system-ui, sans-serif;
+  --font-body: "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: var(--font-body);
+
+  /* --- Primary colors -------------------------------------- */
+  --color-midnight: #041E42;
+  --color-moonlight: #68D2DF;
+  --color-white: #FFFFFF;
+
+  /* --- Moonlight tints (sparingly) ------------------------- */
+  --color-midnight-deep: #133465;
+  --color-midnight-soft: #0F1C40;
+  --color-midnight-floor: #031632;   /* bottom of hero gradient */
+  --color-moonlight-deep: #0A9AAE;
+  --color-moonlight-ice: #C9F8FE;
+  --color-moonlight-tint: #E8FCFF;
+
+  /* --- Neutral scale --------------------------------------- */
+  --color-soft-paper: #FBFDFE;
+  --color-cloud-lilac: #F2F3FA;
+  --color-periwinkle-mist: #E7EBF8;
+  --color-lunar-lavender: #D6D3E9;
+  --color-pebble-blue: #BAC4D9;
+
+  /* --- Text & ink ------------------------------------------ */
+  --color-ink: #041E42;          /* primary text */
+  --color-graphite: #535D65;     /* secondary copy */
+  --color-slate: #7A8892;        /* tertiary, timestamps */
+  --color-disabled: #BAC4D9;
+  --color-on-dark-sub: #ACC1DF;  /* quiet copy on Midnight */
+
+  /* --- Borders --------------------------------------------- */
+  --color-border-subtle: #EDF0F7;
+  --color-border-default: #D1D1D1;
+  --color-border-strong: #ACC1DF;
+  --color-border-focus: #68D2DF;
+
+  /* --- Status: Success (Emerald) --------------------------- */
+  --color-success-ink: #2E7D32;
+  --color-success-fill: #B0F9B3;
+  --color-success-bg: #E7F8E8;
+
+  /* --- Status: Info (Moonlight) ---------------------------- */
+  --color-info-ink: #0A9AAE;
+  --color-info-fill: #C9F8FE;
+  --color-info-bg: #E8FCFF;
+
+  /* --- Status: Warning (Amber) ----------------------------- */
+  --color-warning-ink: #6B4B10;
+  --color-warning-fill: #F9CD85;
+  --color-warning-bg: #FFF3DC;
+
+  /* --- Status: Critical (Plum, NOT red) -------------------- */
+  --color-critical-ink: #8E3655;
+  --color-critical-fill: #E0A4B8;
+  --color-critical-bg: #F7E4EA;
+
+  /* --- Radii ----------------------------------------------- */
+  --radius-chip: 4px;
+  --radius-input: 8px;
+  --radius-card: 16px;
+  --radius-modal: 24px;
+  --radius-well: 60px;
+  --radius-pill: 58px;
+  --radius-full: 999px;
+
+  /* --- Shadows (never layered) ----------------------------- */
+  --shadow-hairline: 0 0.5px 0 rgba(4, 30, 66, 0.15);
+  --shadow-raised: 0 2px 8px rgba(4, 30, 66, 0.08);
+  --shadow-card: 0 5px 50px rgba(0, 0, 0, 0.10);
+  --shadow-modal: 0 20px 60px rgba(4, 30, 66, 0.25);
+  --shadow-button-dark: 0 3px 10px rgba(104, 210, 223, 0.40);
+  --shadow-button-dark-hover: 0 6px 20px rgba(104, 210, 223, 0.50);
+  --shadow-button-light: 0 2px 8px rgba(4, 30, 66, 0.20);
+  --shadow-button-light-hover: 0 6px 20px rgba(4, 30, 66, 0.30);
+
+  /* --- Spacing (8pt scale + semantic aliases) -------------- */
+  --spacing-tight: 4px;
+  --spacing-inline: 8px;
+  --spacing-stack: 12px;
+  --spacing-default: 16px;
+  --spacing-card-gap: 20px;
+  --spacing-section: 24px;
+  --spacing-card-pad: 30px;
+  --spacing-block: 40px;
+  --spacing-page-gap: 60px;
+  --spacing-hero: 80px;
+}
+
+/* ============================================================
+   Base — minimal reset + body defaults
+   ============================================================ */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background: var(--color-white);
+    font-size: 17px;
+    line-height: 1.6;
+    font-feature-settings: "cv11", "ss01", "ss03", "cv02";
+  }
+
+  /* Display headings use D-DIN only. */
+  .font-display,
+  h1.display,
+  .display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  /* Standard h1–h3 stay in Inter — per v1.0, only hero/page-title use D-DIN. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--color-moonlight);
+    color: var(--color-midnight);
+  }
+
+  /* Focus ring — single, consistent, Moonlight. */
+  :focus-visible {
+    outline: 2px solid var(--color-moonlight);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Smooth anchor scrolling. */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ============================================================
+   Utilities — tiny set for recurring brand patterns
+   (Prefer Tailwind utilities; add here only when composition
+   would be clumsy inline.)
+   ============================================================ */
+@layer utilities {
+  /* Hero gradient (Midnight Deep → Midnight Floor). */
+  .bg-hero-gradient {
+    background: linear-gradient(
+      to bottom,
+      var(--color-midnight-deep) 0%,
+      var(--color-midnight) 55%,
+      var(--color-midnight-floor) 100%
+    );
+  }
+
+  /* 60%+ whitespace rule: capped content measure for long-form prose. */
+  .measure {
+    max-width: 65ch;
+  }
+  .measure-wide {
+    max-width: 75ch;
+  }
+
+  /* Eyebrow text pattern used across the site. */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-slate);
+  }
+  .eyebrow-on-dark {
+    color: var(--color-moonlight);
+  }
+
+  /* Glass nav — translucent + backdrop blur, with light/dark variants. */
+  .glass-on-dark {
+    background: color-mix(in oklab, var(--color-midnight) 72%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--color-midnight-soft);
+  }
+  .glass-on-light {
+    background: color-mix(in oklab, var(--color-white) 80%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+}
+
+/* ============================================================
+   View Transitions — global defaults
+   ============================================================ */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}

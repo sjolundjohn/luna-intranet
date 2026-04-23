@@ -1,0 +1,39 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import SectionCard from "~/components/SectionCard.astro";
+
+const all = await getCollection("platform");
+const topics = all.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Platform"
+  description="How Luna's agents actually work — the pieces, the flow, and why your data stays private."
+  heroIsDark={true}
+>
+  <Hero eyebrow="03 · Under the hood" size="tall">
+    <Fragment slot="headline">Platform.</Fragment>
+    <Fragment slot="subcopy">
+      The infrastructure underneath every Luna agent — explained for anyone on the team, not just engineers.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="grid gap-6 md:gap-8 md:grid-cols-3">
+      {
+        topics.map((topic, i) => (
+          <SectionCard
+            href={`/platform/${topic.id}`}
+            eyebrow={`0${i + 1}`}
+            title={topic.data.title}
+            description={topic.data.summary}
+            showMoons={false}
+          />
+        ))
+      }
+    </div>
+  </WhiteSection>
+</BaseLayout>

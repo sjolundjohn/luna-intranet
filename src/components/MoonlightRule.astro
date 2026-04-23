@@ -1,0 +1,22 @@
+---
+/**
+ * 2px Moonlight bar — the signature hero accent from the v1.0 handoff
+ * (sits under the hero sub-copy; also used to introduce sections).
+ */
+interface Props {
+  width?: number;
+  class?: string;
+  /** Color override — defaults to Moonlight. */
+  color?: "moonlight" | "midnight";
+}
+
+const { width = 48, class: className = "", color = "moonlight" } = Astro.props;
+
+const bg = color === "moonlight" ? "bg-moonlight" : "bg-midnight";
+---
+
+<span
+  class={`block h-[2px] ${bg} ${className}`}
+  style={`width: ${width}px;`}
+  aria-hidden="true"
+></span>

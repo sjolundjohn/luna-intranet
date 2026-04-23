@@ -1,0 +1,77 @@
+---
+/**
+ * Four-phase moon mark — Luna's secondary logo.
+ * Reused as: hero decoration, section dividers, card glyph, nav active.
+ * The three middle phases are filled against `currentColor`; the first is
+ * outlined — matches the brand-book storytelling (○ ☽ ☾ ●).
+ */
+interface Props {
+  size?: number;
+  /** Spacing between phases, in px. */
+  gap?: number;
+  /** Tailwind class for color, e.g. "text-moonlight" or "text-midnight". */
+  class?: string;
+  /** Animate the phases cycling. Use sparingly. */
+  animate?: boolean;
+}
+
+const {
+  size = 24,
+  gap = 10,
+  class: className = "text-moonlight",
+  animate = false,
+} = Astro.props;
+
+const r = size / 2;
+const cx = r;
+const cy = r;
+const phaseWidth = size;
+const totalW = 4 * phaseWidth + 3 * gap;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox={`0 0 ${totalW} ${size}`}
+  width={totalW}
+  height={size}
+  class={`inline-block ${className}`}
+  fill="currentColor"
+  aria-hidden="true"
+  data-animate={animate ? "true" : undefined}
+>
+  {/* new moon — outlined ring */}
+  <circle cx={cx} cy={cy} r={r - 1.5} fill="none" stroke="currentColor" stroke-width="1.5" />
+  {/* waxing crescent — right half + crescent cutout */}
+  <g transform={`translate(${phaseWidth + gap},0)`}>
+    <path d={`M ${cx} 0 A ${r} ${r} 0 0 1 ${cx} ${size} A ${r * 0.6} ${r} 0 0 0 ${cx} 0 Z`} />
+  </g>
+  {/* waning crescent — left half + crescent cutout */}
+  <g transform={`translate(${2 * (phaseWidth + gap)},0)`}>
+    <path d={`M ${cx} 0 A ${r} ${r} 0 0 0 ${cx} ${size} A ${r * 0.6} ${r} 0 0 1 ${cx} 0 Z`} />
+  </g>
+  {/* full moon — solid */}
+  <g transform={`translate(${3 * (phaseWidth + gap)},0)`}>
+    <circle cx={cx} cy={cy} r={r - 0.5} />
+  </g>
+</svg>
+
+<style>
+  svg[data-animate="true"] > * {
+    animation: moon-fade 4s ease-in-out infinite;
+  }
+  svg[data-animate="true"] > *:nth-child(1) { animation-delay: 0s; }
+  svg[data-animate="true"] > *:nth-child(2) { animation-delay: 0.4s; }
+  svg[data-animate="true"] > *:nth-child(3) { animation-delay: 0.8s; }
+  svg[data-animate="true"] > *:nth-child(4) { animation-delay: 1.2s; }
+
+  @keyframes moon-fade {
+    0%, 80%, 100% { opacity: 1; }
+    40% { opacity: 0.4; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    svg[data-animate="true"] > * {
+      animation: none;
+    }
+  }
+</style>

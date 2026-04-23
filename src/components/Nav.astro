@@ -1,0 +1,160 @@
+---
+/**
+ * Sticky glass nav. 64px tall. Scroll-reactive:
+ *   - At top of page, over a Midnight hero → translucent Midnight glass.
+ *   - After scroll past hero, or over White sections → translucent White glass.
+ * The switch is driven by an IntersectionObserver watching for a sentinel
+ * that the Hero component emits.
+ */
+interface Props {
+  heroIsDark?: boolean;
+}
+
+const { heroIsDark = true } = Astro.props;
+
+const navLinks = [
+  { href: "/agents", label: "Agents" },
+  { href: "/platform", label: "Platform" },
+];
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  currentPath === href || currentPath.startsWith(href + "/");
+---
+
+<nav
+  data-nav
+  data-mode={heroIsDark ? "dark" : "light"}
+  class="fixed top-0 left-0 right-0 z-50 h-16 flex items-center"
+  transition:persist
+>
+  <div class="mx-auto w-full max-w-[1200px] px-6 md:px-10 flex items-center justify-between">
+    <a
+      href="/"
+      class="flex items-center gap-3 focus-visible:outline-none"
+      aria-label="Luna — home"
+    >
+      <img
+        data-logo-dark
+        src="/luna-on-dark.svg"
+        alt=""
+        height="28"
+        width="auto"
+        class="h-7 w-auto"
+      />
+      <img
+        data-logo-light
+        src="/luna-on-white.svg"
+        alt=""
+        height="28"
+        width="auto"
+        class="hidden h-7 w-auto"
+      />
+      <span class="sr-only">Luna, internal</span>
+    </a>
+
+    <div class="flex items-center gap-1 md:gap-2">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              "relative px-3 py-2 font-body text-[15px] font-medium transition-colors",
+              "hover:opacity-100",
+              isActive(link.href)
+                ? "nav-link-active"
+                : "nav-link",
+            ]}
+            data-active={isActive(link.href) ? "true" : undefined}
+          >
+            {link.label}
+            {isActive(link.href) && (
+              <span
+                class="absolute left-3 right-3 bottom-[6px] h-[2px] bg-moonlight"
+                aria-hidden="true"
+              />
+            )}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</nav>
+
+{/* Spacer so content doesn't sit under the fixed nav. Heroes position themselves beneath. */}
+<div aria-hidden="true" class="h-16"></div>
+
+<style>
+  nav[data-mode="dark"] {
+    background: color-mix(in oklab, var(--color-midnight) 72%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--color-midnight-soft);
+  }
+  nav[data-mode="light"] {
+    background: color-mix(in oklab, var(--color-white) 80%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  /* link colors — scoped by nav mode */
+  nav[data-mode="dark"] .nav-link {
+    color: rgba(255, 255, 255, 0.72);
+  }
+  nav[data-mode="dark"] .nav-link:hover {
+    color: #fff;
+  }
+  nav[data-mode="dark"] .nav-link-active {
+    color: #fff;
+  }
+  nav[data-mode="light"] .nav-link {
+    color: var(--color-graphite);
+  }
+  nav[data-mode="light"] .nav-link:hover {
+    color: var(--color-ink);
+  }
+  nav[data-mode="light"] .nav-link-active {
+    color: var(--color-ink);
+  }
+
+  /* logo swap by mode */
+  nav[data-mode="dark"] [data-logo-light] { display: none; }
+  nav[data-mode="dark"] [data-logo-dark] { display: block; }
+  nav[data-mode="light"] [data-logo-dark] { display: none; }
+  nav[data-mode="light"] [data-logo-light] { display: block; }
+</style>
+
+<script>
+  // Scroll-reactive mode switch: after we scroll past 80vh, flip to light
+  // if the hero was dark. Cheap, no observer needed — one scroll handler.
+  function setupNav() {
+    const nav = document.querySelector("nav[data-nav]") as HTMLElement | null;
+    if (!nav) return;
+    const startMode = nav.dataset.mode as "dark" | "light" | undefined;
+    if (!startMode) return;
+
+    let rafId = 0;
+    const threshold = () => window.innerHeight * 0.7;
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        if (startMode === "dark") {
+          // Start dark, flip to light once we've scrolled past the hero.
+          nav.dataset.mode = window.scrollY > threshold() ? "light" : "dark";
+        } else {
+          // Start light and stay light — no dark content above the fold.
+          nav.dataset.mode = "light";
+        }
+        rafId = 0;
+      });
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  setupNav();
+  document.addEventListener("astro:page-load", setupNav);
+</script>

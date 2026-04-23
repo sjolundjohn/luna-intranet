@@ -1,0 +1,38 @@
+---
+title: "Privacy & security"
+summary: "How we keep your conversations private — and what to watch for anyway."
+order: 2
+---
+
+Basal and the rest of Luna's agents run on Luna's own infrastructure, not a third-party SaaS. That means the posture is ours to set. Here's what's in place today.
+
+## Your conversations are private
+
+Each Lunite gets their own dedicated agent instance with its own memory. Conversations are stored separately per user — your messages with Basal are not visible to other employees, and Basal can't confuse your conversation with anyone else's.
+
+## Zero Data Retention at the model layer
+
+Basal uses Claude (Anthropic's AI model) as the underlying language model. Luna's Anthropic workspace has **Zero Data Retention** enabled. In plain terms: Anthropic does not log, store, or train on the messages you send through our API.
+
+## Luna-owned egress
+
+All model calls flow through `luna-ai-proxy`, a Luna-owned service. That's the only place API keys live. Individual agents never hold credentials, and request metadata is hashed before being sent to the AI Gateway — so the audit log shows _that_ a request happened without exposing _what_ was said.
+
+## Identity verification
+
+Every message Basal receives is tied to a verified `@lunadiabetes.com` email address from Slack. There's no way for someone outside the company to reach Basal through the Slack app, and there's no anonymous access.
+
+## Audit logging
+
+All interactions are logged through Cloudflare's AI Gateway for security and observability. The log captures request metadata — timing, cost, which agent responded — not message contents.
+
+## What not to send
+
+Even with these controls in place, treat Basal as an internal productivity tool, not a cleared system for regulated data. **Do not paste:**
+
+- Protected health information (PHI) or patient identifiers.
+- Personally identifiable information of customers or trial participants.
+- Confidential third-party information under NDA.
+- Proprietary competitive intelligence you've been asked not to share.
+
+Questions about whether something is safe to share with an agent? Ask **john@lunadiabetes.com**.

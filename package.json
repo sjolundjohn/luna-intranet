@@ -1,0 +1,31 @@
+{
+  "name": "luna-intranet",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Luna's internal home — agents, platform, and everything we're building",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.0.0",
+    "@fontsource-variable/inter": "^5.1.0",
+    "@sarap422/font-d-din": "^1.0.6",
+    "@tailwindcss/vite": "^4.0.0",
+    "astro": "^5.1.0",
+    "tailwindcss": "^4.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "sharp": "^0.33.5",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

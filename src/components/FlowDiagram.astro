@@ -1,0 +1,135 @@
+---
+/**
+ * Request-flow diagram. Hand-drawn SVG — each box is a service, arrows show
+ * the direction messages flow. Purely decorative (the page prose carries the
+ * meaning); diagram is aria-hidden but legible.
+ */
+---
+
+<figure class="my-12 overflow-x-auto">
+  <svg
+    viewBox="0 0 900 260"
+    xmlns="http://www.w3.org/2000/svg"
+    class="w-full max-w-[900px] mx-auto"
+    role="img"
+    aria-label="Request flow from Slack through four Luna services to Anthropic"
+  >
+    <defs>
+      <marker
+        id="arrow"
+        viewBox="0 0 10 10"
+        refX="10"
+        refY="5"
+        markerUnits="strokeWidth"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto"
+      >
+        <path d="M0,0 L10,5 L0,10 Z" fill="#68D2DF"></path>
+      </marker>
+    </defs>
+
+    {/* row: forward path */}
+    {[
+      { x: 10, label: "Slack", sub: "interface" },
+      { x: 155, label: "slack-dm", sub: "verify" },
+      { x: 300, label: "router", sub: "dispatch" },
+      { x: 445, label: "agent-basal", sub: "conversation" },
+      { x: 590, label: "ai-proxy", sub: "credentials" },
+      { x: 735, label: "AI Gateway", sub: "audit · limits" },
+    ].map((node) => (
+      <g>
+        <rect
+          x={node.x}
+          y="45"
+          width="130"
+          height="80"
+          rx="16"
+          fill="#FFFFFF"
+          stroke="#ACC1DF"
+          stroke-width="1"
+        />
+        <text
+          x={node.x + 65}
+          y="78"
+          text-anchor="middle"
+          fill="#041E42"
+          font-family="Inter Variable, Inter, system-ui, sans-serif"
+          font-size="15"
+          font-weight="700"
+        >
+          {node.label}
+        </text>
+        <text
+          x={node.x + 65}
+          y="100"
+          text-anchor="middle"
+          fill="#7A8892"
+          font-family="Inter Variable, Inter, system-ui, sans-serif"
+          font-size="11"
+          font-weight="500"
+          style="letter-spacing: 0.04em; text-transform: uppercase;"
+        >
+          {node.sub}
+        </text>
+      </g>
+    ))}
+
+    {/* Anthropic box — stands alone, centered under the ai-gateway */}
+    <g>
+      <rect
+        x="400"
+        y="180"
+        width="170"
+        height="60"
+        rx="16"
+        fill="#041E42"
+      />
+      <text
+        x="485"
+        y="210"
+        text-anchor="middle"
+        fill="#FFFFFF"
+        font-family="Inter Variable, Inter, system-ui, sans-serif"
+        font-size="14"
+        font-weight="700"
+      >
+        Anthropic · Claude
+      </text>
+      <text
+        x="485"
+        y="228"
+        text-anchor="middle"
+        fill="#68D2DF"
+        font-family="Inter Variable, Inter, system-ui, sans-serif"
+        font-size="10"
+        font-weight="500"
+        style="letter-spacing: 0.08em; text-transform: uppercase;"
+      >
+        External
+      </text>
+    </g>
+
+    {/* arrows between nodes in the top row */}
+    {[140, 285, 430, 575, 720].map((x) => (
+      <line
+        x1={x}
+        y1="85"
+        x2={x + 15}
+        y2="85"
+        stroke="#68D2DF"
+        stroke-width="2"
+        marker-end="url(#arrow)"
+      />
+    ))}
+
+    {/* arrow down from ai-gateway to anthropic */}
+    <path
+      d="M 800 125 C 800 165, 530 165, 530 180"
+      stroke="#68D2DF"
+      stroke-width="2"
+      fill="none"
+      marker-end="url(#arrow)"
+    />
+  </svg>
+</figure>

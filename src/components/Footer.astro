@@ -1,0 +1,23 @@
+---
+/**
+ * Single-line footer. White bg, Inter 14, Ink at 56%.
+ */
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-white border-t border-border-subtle">
+  <div class="mx-auto max-w-[1200px] px-6 md:px-10 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
+    <p class="font-body text-[14px] text-slate">
+      Internal to Luna Health, Inc. &middot; &copy; {year}
+    </p>
+    <p class="font-body text-[14px] text-slate">
+      Questions?
+      <a
+        href="mailto:john@lunadiabetes.com"
+        class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:text-moonlight-deep transition-colors"
+      >
+        john@lunadiabetes.com
+      </a>
+    </p>
+  </div>
+</footer>
