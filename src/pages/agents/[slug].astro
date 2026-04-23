@@ -6,6 +6,9 @@ import WhiteSection from "~/components/WhiteSection.astro";
 import StatusChip from "~/components/StatusChip.astro";
 import Prose from "~/components/Prose.astro";
 import CTAButton from "~/components/CTAButton.astro";
+import AgentAvatar from "~/components/AgentAvatar.astro";
+import ChatBox from "~/components/ChatBox.astro";
+import { TEAM_LABELS } from "~/content.config";
 
 export async function getStaticPaths() {
   const agents = await getCollection("agents");
@@ -17,6 +20,9 @@ export async function getStaticPaths() {
 
 const { agent } = Astro.props;
 const { Content } = await render(agent);
+
+const teams = agent.data.teams ?? ["all"];
+const isAllTeams = teams.includes("all");
 ---
 
 <BaseLayout
@@ -24,8 +30,8 @@ const { Content } = await render(agent);
   description={agent.data.summary}
   heroIsDark={true}
 >
-  <Hero eyebrow="Agent" size="tall">
-    <Fragment slot="headline">{agent.data.name}.</Fragment>
+  <Hero eyebrow="Agent" size="compact">
+    <Fragment slot="headline">{agent.data.name}</Fragment>
     <Fragment slot="subcopy">{agent.data.summary}</Fragment>
     <Fragment slot="cta">
       <div class="flex flex-wrap items-center gap-4">
@@ -38,11 +44,73 @@ const { Content } = await render(agent);
   </Hero>
 
   <WhiteSection size="tall">
-    <div class="mb-10">
+    <div class="mb-10 flex items-center justify-between">
       <CTAButton href="/agents" variant="ghost">← All agents</CTAButton>
+      <div class="flex items-center gap-3">
+        <AgentAvatar name={agent.data.name} slug={agent.id} src={agent.data.avatar} size={48} />
+      </div>
     </div>
-    <Prose>
-      <Content />
-    </Prose>
+
+    <div class="grid gap-12 lg:grid-cols-[1fr_280px] lg:gap-16">
+      <div>
+        <Prose>
+          <Content />
+        </Prose>
+      </div>
+
+      {/* Sidebar metadata */}
+      <aside class="lg:pt-8">
+        <div class="sticky top-24 space-y-8">
+          <div>
+            <p class="eyebrow mb-3">Available to</p>
+            {isAllTeams ? (
+              <p class="text-ink text-[15px]">Everyone at Luna.</p>
+            ) : (
+              <ul class="space-y-1.5">
+                {teams.filter((t) => t !== "all").map((t) => (
+                  <li class="text-ink text-[14px] inline-flex items-center gap-2 mr-2">
+                    <span class="block w-1.5 h-1.5 rounded-full bg-moonlight"></span>
+                    {TEAM_LABELS[t as keyof typeof TEAM_LABELS]}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {agent.data.owner && (
+            <div>
+              <p class="eyebrow mb-3">Owner</p>
+              <p class="text-ink text-[15px]">
+                <a href={`/org/by-person#${agent.data.owner}`} class="underline decoration-moonlight decoration-2 underline-offset-4">
+                  {agent.data.owner}
+                </a>
+              </p>
+            </div>
+          )}
+          <div>
+            <p class="eyebrow mb-3">Status</p>
+            <StatusChip status={agent.data.status} />
+          </div>
+        </div>
+      </aside>
+    </div>
   </WhiteSection>
+
+  {/* Inline chat for the live agent. */}
+  {agent.data.status === "live" && (
+    <WhiteSection size="compact" id="try" class="bg-soft-paper">
+      <div class="max-w-[720px] mb-10">
+        <p class="eyebrow mb-4">Try it</p>
+        <h2
+          class="font-display text-ink font-normal"
+          style="font-size: clamp(28px, 3.6vw, 42px); line-height: 1.1; letter-spacing: -0.02em;"
+        >
+          Chat with {agent.data.name}.
+        </h2>
+        <p class="mt-4 text-graphite text-[17px] leading-[1.55]">
+          Same model and guardrails as Slack. Not saved to your conversation history — this is for quick trials.
+        </p>
+      </div>
+      <ChatBox agent="basal" placeholder={`Ask ${agent.data.name} anything…`} />
+    </WhiteSection>
+  )}
 </BaseLayout>

@@ -39,10 +39,12 @@ const agents = allAgents.sort((a, b) => {
         agents.map((agent) => (
           <AgentCard
             href={`/agents/${agent.id}`}
+            slug={agent.id}
             name={agent.data.name}
             status={agent.data.status}
             summary={agent.data.summary}
             accessHint={agent.data.accessHint}
+            avatar={agent.data.avatar}
           />
         ))
       }

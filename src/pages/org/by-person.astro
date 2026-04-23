@@ -1,0 +1,142 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import StatusChip from "~/components/StatusChip.astro";
+import AgentAvatar from "~/components/AgentAvatar.astro";
+import CTAButton from "~/components/CTAButton.astro";
+import { TEAM_LABELS } from "~/content.config";
+
+const agents = await getCollection("agents");
+const people = (await getCollection("people")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+// For each person: which agents are available to their team + which they actively use.
+const agentsForPerson = (personId: string, team: string) => {
+  const available = agents.filter((a) => {
+    const t = a.data.teams ?? ["all"];
+    return t.includes("all") || t.includes(team as never);
+  });
+  return available.map((a) => ({
+    agent: a,
+    usedByThem: (a.data.usedBy ?? []).includes(personId),
+    ownedByThem: a.data.owner === personId,
+  }));
+};
+---
+
+<BaseLayout
+  title="Org chart · By person"
+  description="Who at Luna uses which agents."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Org chart · People" size="compact">
+    <Fragment slot="headline">By person.</Fragment>
+    <Fragment slot="subcopy">
+      A row for every Lunite. Shows their team, the agents they have
+      access to, and which ones they actively use.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="mb-8">
+      <CTAButton href="/org" variant="ghost">← Org chart</CTAButton>
+    </div>
+
+    {people.length === 0 ? (
+      <div class="max-w-[680px] p-8 border border-border-subtle rounded-[16px] bg-soft-paper">
+        <p class="text-graphite">
+          No people yet. Add MDX files to <code class="bg-cloud-lilac px-1.5 rounded">src/content/people/</code> —
+          each one needs at minimum <code>name</code>, <code>role</code>, and <code>team</code>.
+        </p>
+      </div>
+    ) : (
+      <div class="space-y-12">
+        {
+          people.map((person) => {
+            const available = agentsForPerson(person.id, person.data.team);
+            return (
+              <section id={person.id} class="grid gap-8 md:grid-cols-[280px_1fr]">
+                <div class="flex items-start gap-4">
+                  <AgentAvatar
+                    name={person.data.name}
+                    slug={person.id}
+                    src={person.data.avatar}
+                    size={64}
+                  />
+                  <div>
+                    <h2 class="font-body text-[22px] font-bold text-ink leading-tight">{person.data.name}</h2>
+                    <p class="mt-1 text-graphite text-[15px]">{person.data.role}</p>
+                    <p class="mt-3 eyebrow">{TEAM_LABELS[person.data.team]}</p>
+                    {person.data.email && (
+                      <p class="mt-2 text-[13px]">
+                        <a href={`mailto:${person.data.email}`} class="text-ink underline decoration-moonlight decoration-2 underline-offset-2">
+                          {person.data.email}
+                        </a>
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <p class="eyebrow mb-4">Agents available to them</p>
+                  <ul class="space-y-3">
+                    {available.map(({ agent, usedByThem, ownedByThem }) => (
+                      <li>
+                        <a
+                          href={`/agents/${agent.id}`}
+                          class="group flex items-center gap-4 p-3 -m-3 rounded-[12px] hover:bg-cloud-lilac transition-colors"
+                        >
+                          <AgentAvatar
+                            name={agent.data.name}
+                            slug={agent.id}
+                            src={agent.data.avatar}
+                            size={40}
+                          />
+                          <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                              <p class="text-ink font-medium text-[15px]">{agent.data.name}</p>
+                              <StatusChip status={agent.data.status} />
+                              {ownedByThem && (
+                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-moonlight-deep">
+                                  Owns
+                                </span>
+                              )}
+                              {usedByThem && !ownedByThem && (
+                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate">
+                                  Uses
+                                </span>
+                              )}
+                            </div>
+                            <p class="text-slate text-[13px] mt-0.5 line-clamp-1">{agent.data.summary}</p>
+                          </div>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            );
+          })
+        }
+      </div>
+    )}
+
+    <div class="mt-16 p-6 border border-border-subtle rounded-[16px] bg-soft-paper max-w-[680px]">
+      <p class="eyebrow mb-2">Add yourself</p>
+      <p class="text-graphite text-[15px] leading-[1.6]">
+        This page is pre-wired but mostly empty. To add someone, drop an MDX file under{" "}
+        <code class="bg-cloud-lilac px-1.5 rounded">src/content/people/</code> with frontmatter:
+      </p>
+      <pre class="mt-4 text-[13px] bg-midnight text-white p-4 rounded-[8px] overflow-x-auto"><code>---
+name: "Jane Doe"
+role: "Software Engineer"
+team: "software"
+email: "jane@lunadiabetes.com"
+order: 2
+---</code></pre>
+    </div>
+  </WhiteSection>
+</BaseLayout>

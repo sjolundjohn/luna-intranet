@@ -1,0 +1,37 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import SectionCard from "~/components/SectionCard.astro";
+---
+
+<BaseLayout
+  title="Org chart"
+  description="Who does what at Luna — agents and teammates, by team or by person."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Org chart" size="compact">
+    <Fragment slot="headline">Who does what.</Fragment>
+    <Fragment slot="subcopy">
+      Two views of the same thing. Teams on the left, people on the right.
+      Each row shows which agents they use today and which ones are on the way.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="grid gap-6 md:gap-8 md:grid-cols-2">
+      <SectionCard
+        href="/org/by-team"
+        eyebrow="View · Teams"
+        title="By team."
+        description="Luna's seven functions and the agents available to each."
+      />
+      <SectionCard
+        href="/org/by-person"
+        eyebrow="View · People"
+        title="By person."
+        description="Who at Luna uses which agent, and who owns each one."
+      />
+    </div>
+  </WhiteSection>
+</BaseLayout>

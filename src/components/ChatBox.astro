@@ -1,0 +1,303 @@
+---
+/**
+ * In-browser chat against a Luna agent. Posts to /api/chat, which is a
+ * Cloudflare Pages Function that proxies to luna-ai-proxy → luna-agents
+ * gateway → Claude. Streams responses back as plain SSE chunks.
+ *
+ * Usage:
+ *   <ChatBox agent="basal" />
+ */
+interface Props {
+  agent?: "basal";
+  placeholder?: string;
+  /** Initial system prompt override (optional — defaults set server-side). */
+  systemPrompt?: string;
+  class?: string;
+}
+
+const {
+  agent = "basal",
+  placeholder = "Ask anything…",
+  systemPrompt,
+  class: className = "",
+} = Astro.props;
+---
+
+<div
+  data-chat
+  data-agent={agent}
+  data-system-prompt={systemPrompt ?? ""}
+  class:list={[
+    "bg-white rounded-[16px] shadow-[0_5px_50px_rgba(0,0,0,0.07)] border border-border-subtle overflow-hidden",
+    className,
+  ]}
+>
+  {/* Messages pane */}
+  <div
+    data-chat-messages
+    class="px-6 md:px-8 py-8 min-h-[280px] max-h-[560px] overflow-y-auto space-y-6"
+    aria-live="polite"
+  >
+    <div data-chat-empty class="text-slate text-[15px] italic">
+      Try: <button class="text-ink font-medium hover:text-moonlight-deep underline decoration-moonlight decoration-2 underline-offset-4" data-suggest="Rewrite this in a friendlier tone: 'Per my last email, please advise.'">Rewrite a stiff email</button>
+      &middot;
+      <button class="text-ink font-medium hover:text-moonlight-deep underline decoration-moonlight decoration-2 underline-offset-4" data-suggest="Explain what a continuous glucose monitor is, in one paragraph, to a non-technical friend.">Explain a CGM simply</button>
+      &middot;
+      <button class="text-ink font-medium hover:text-moonlight-deep underline decoration-moonlight decoration-2 underline-offset-4" data-suggest="Summarize the four main phases of the moon cycle in two sentences.">Summarize something</button>
+    </div>
+  </div>
+
+  {/* Composer */}
+  <form data-chat-form class="border-t border-border-subtle bg-soft-paper p-4 md:p-5">
+    <div class="flex items-end gap-3">
+      <label class="sr-only" for="chat-input">Message</label>
+      <textarea
+        id="chat-input"
+        data-chat-input
+        rows="1"
+        placeholder={placeholder}
+        class="flex-1 resize-none bg-white rounded-[12px] px-4 py-3 font-body text-[15px] text-ink placeholder:text-slate border border-border-default focus:outline-none focus:border-border-focus focus:ring-2 focus:ring-moonlight/30 max-h-[160px]"
+      ></textarea>
+      <button
+        type="submit"
+        data-chat-send
+        class="inline-flex items-center justify-center bg-midnight text-white rounded-full h-11 w-11 shadow-[0_2px_8px_rgba(4,30,66,0.2)] hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(4,30,66,0.3)] transition-all duration-[160ms] disabled:bg-pebble-blue disabled:cursor-not-allowed disabled:shadow-none"
+        aria-label="Send"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="19" x2="12" y2="5"/>
+          <polyline points="5 12 12 5 19 12"/>
+        </svg>
+      </button>
+    </div>
+    <p class="mt-3 text-slate text-[12px] leading-tight">
+      Powered by Claude via Luna's private Cloudflare infrastructure. Don't paste PHI or confidential data.
+    </p>
+  </form>
+</div>
+
+<style>
+  .msg {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .msg-user {
+    justify-content: flex-end;
+  }
+  .msg-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    max-width: 86%;
+    white-space: pre-wrap;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .msg-user .msg-bubble {
+    background: var(--color-midnight);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .msg-assistant .msg-bubble {
+    background: var(--color-cloud-lilac);
+    color: var(--color-ink);
+    border-bottom-left-radius: 4px;
+  }
+  .msg-avatar {
+    flex: 0 0 32px;
+    height: 32px;
+    width: 32px;
+    border-radius: 999px;
+    background: var(--color-midnight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--color-moonlight);
+    letter-spacing: -0.02em;
+  }
+  .msg-user .msg-avatar {
+    background: var(--color-periwinkle-mist);
+    color: var(--color-ink);
+    order: 2;
+  }
+
+  /* streaming caret */
+  .msg-streaming::after {
+    content: "▍";
+    display: inline-block;
+    margin-left: 2px;
+    animation: blink 1s steps(2, end) infinite;
+    color: var(--color-moonlight);
+  }
+  @keyframes blink {
+    to { visibility: hidden; }
+  }
+</style>
+
+<script>
+  interface ChatMessage {
+    role: "user" | "assistant";
+    content: string;
+  }
+
+  function setupChat(root: HTMLElement) {
+    const messagesEl = root.querySelector<HTMLElement>("[data-chat-messages]")!;
+    const emptyEl = root.querySelector<HTMLElement>("[data-chat-empty]");
+    const form = root.querySelector<HTMLFormElement>("[data-chat-form]")!;
+    const input = root.querySelector<HTMLTextAreaElement>("[data-chat-input]")!;
+    const sendBtn = root.querySelector<HTMLButtonElement>("[data-chat-send]")!;
+    const agent = root.dataset.agent ?? "basal";
+    const systemPrompt = root.dataset.systemPrompt || undefined;
+    const history: ChatMessage[] = [];
+
+    // Auto-grow textarea.
+    const autosize = () => {
+      input.style.height = "auto";
+      input.style.height = Math.min(input.scrollHeight, 160) + "px";
+    };
+    input.addEventListener("input", autosize);
+
+    // Suggestion chips: click to fill the input.
+    root.querySelectorAll<HTMLButtonElement>("[data-suggest]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        input.value = btn.dataset.suggest ?? "";
+        autosize();
+        input.focus();
+      });
+    });
+
+    const appendMessage = (role: "user" | "assistant", content: string) => {
+      if (emptyEl) emptyEl.remove();
+      const msg = document.createElement("div");
+      msg.className = `msg msg-${role}`;
+      const avatar = document.createElement("div");
+      avatar.className = "msg-avatar";
+      avatar.textContent = role === "user" ? "you" : "b";
+      const bubble = document.createElement("div");
+      bubble.className = "msg-bubble";
+      bubble.textContent = content;
+      msg.appendChild(avatar);
+      msg.appendChild(bubble);
+      messagesEl.appendChild(msg);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return bubble;
+    };
+
+    const appendError = (text: string) => {
+      if (emptyEl) emptyEl.remove();
+      const err = document.createElement("div");
+      err.className = "bg-critical-bg text-critical-ink rounded-[12px] border border-critical-fill px-4 py-3 text-[14px]";
+      err.innerHTML = `<strong class="font-semibold uppercase text-[11px] tracking-[0.08em] block mb-1">Error</strong>${text}`;
+      messagesEl.appendChild(err);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    };
+
+    // Enter to send, shift+enter for newline.
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendMessage("user", text);
+      history.push({ role: "user", content: text });
+      input.value = "";
+      autosize();
+      sendBtn.disabled = true;
+
+      // Placeholder for streaming assistant reply.
+      const bubble = appendMessage("assistant", "");
+      bubble.classList.add("msg-streaming");
+      let reply = "";
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            agent,
+            messages: history,
+            systemPrompt,
+          }),
+        });
+
+        if (!res.ok) {
+          bubble.classList.remove("msg-streaming");
+          bubble.parentElement?.remove();
+          const errText = await res.text().catch(() => "");
+          if (res.status === 503) {
+            appendError(
+              "The chat backend isn't wired up yet — this works once the site is deployed to Cloudflare Pages with the PROXY_BEARER secret configured."
+            );
+          } else {
+            appendError(`${res.status}: ${errText || res.statusText}`);
+          }
+          return;
+        }
+
+        if (!res.body) throw new Error("No response body");
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+
+          // Parse SSE events (blank-line-separated).
+          const events = buffer.split("\n\n");
+          buffer = events.pop() ?? "";
+
+          for (const event of events) {
+            const line = event.split("\n").find((l) => l.startsWith("data:"));
+            if (!line) continue;
+            const payload = line.slice(5).trim();
+            if (!payload || payload === "[DONE]") continue;
+            try {
+              const parsed = JSON.parse(payload);
+              // Anthropic SSE format: content_block_delta.delta.text
+              if (parsed.type === "content_block_delta" && parsed.delta?.type === "text_delta") {
+                reply += parsed.delta.text;
+                bubble.textContent = reply;
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+              }
+            } catch {
+              // Ignore non-JSON frames.
+            }
+          }
+        }
+
+        bubble.classList.remove("msg-streaming");
+        if (reply) {
+          history.push({ role: "assistant", content: reply });
+        } else {
+          bubble.textContent = "(no response)";
+        }
+      } catch (err) {
+        bubble.classList.remove("msg-streaming");
+        bubble.parentElement?.remove();
+        const msg = err instanceof Error ? err.message : String(err);
+        appendError(msg);
+      } finally {
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    });
+  }
+
+  const init = () => {
+    document.querySelectorAll<HTMLElement>("[data-chat]").forEach(setupChat);
+  };
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

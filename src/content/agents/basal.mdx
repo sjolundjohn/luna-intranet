@@ -3,35 +3,65 @@ name: "Basal"
 status: "live"
 summary: "A general-purpose AI assistant that lives in Slack. Each Lunite gets their own conversation with its own memory."
 accessHint: "Slack DM · @Basal"
+teams: ["all"]
+owner: "john"
+usedBy: ["john"]
 order: 1
 ---
 
-Basal is Luna's first shared agent. You talk to it in Slack the same way you'd talk to a colleague — direct message the **@Basal** app, or mention it in a channel it's been added to. It has its own conversation history with you, so you don't need to re-explain context every time.
+Basal is Luna's first shared agent — a chat assistant you can DM in Slack like any colleague. Each Lunite gets their own private conversation with its own history, so you don't have to re-explain context every time.
 
-## What Basal can help with today
+## How to use it
 
-- **General questions and brainstorming.** Ask Basal to help you think through a problem, generate ideas, or explore a topic.
-- **Writing and editing.** Draft emails, refine copy, rewrite paragraphs for clarity, or adjust tone.
-- **Summarizing information.** Paste in long text and ask for a summary or the key takeaways.
-- **Analyzing data or documents.** Paste content directly into the chat and ask Basal to analyze, compare, or extract insights.
-- **Company knowledge questions.** Basal can answer questions based on its general training data. Dedicated access to Luna's internal documents is coming soon.
+### In Slack
 
-## How to talk to Basal
+1. Open Slack and search for **Basal** in the sidebar (or the `@` mention list).
+2. Click the app to open a direct-message thread.
+3. Type your question the way you'd ask a person. You can be informal — Basal is not picky.
+4. Follow-ups work. Basal remembers the last several messages in your thread.
 
-Open Slack and DM **@Basal** like any other person. Your messages are private — other employees can't see your conversations. You can ask follow-up questions, and Basal will remember what you said earlier in the thread.
+You can also mention **@Basal** in a channel Basal has been added to — handy for quick lookups in front of the team. Channel mentions don't carry over to your DM thread.
+
+### On this site
+
+Scroll to the [Try it](#try) section below to chat with Basal right here, no Slack required. The responses are the same, but the trial conversations aren't saved — each refresh starts over.
+
+## What to ask
+
+Basal is good at:
+
+- **Drafting and editing.** "Rewrite this email in a warmer tone." "Punch up this paragraph."
+- **Summarizing.** Paste a long thread, a meeting transcript, a doc, or a blog post and ask for the key points.
+- **Brainstorming.** "Give me five angles on …" or "What are the arguments against …"
+- **Explaining.** "Explain continuous glucose monitoring like I'm new to diabetes." "What's a FDA 510(k)?"
+- **Analysis of content you paste in.** Comparing two documents, pulling numbers out of a table, identifying patterns.
+- **Writing code.** Small scripts, config snippets, SQL queries. Not a replacement for a real dev environment, but useful for one-offs.
+
+Basal is less good at:
+
+- **Real-time information.** It doesn't browse the web. Recent news, today's calendar, latest pull requests — Basal doesn't see those yet.
+- **Luna-specific knowledge.** For now Basal only knows what's in its general training data. It can't read our internal documents. (Retrieval over Luna's documents is on the roadmap.)
+- **Remembering across threads.** Your DM thread has memory, but context doesn't cross between threads or channels.
+
+## A few useful prompts
+
+- _"Rewrite this to be one paragraph and half the length: \[paste\]"_
+- _"I'm about to send this email to a regulator. Tell me what's unclear or could be misread."_
+- _"Summarize this meeting transcript in three bullet points and then list any open questions: \[paste\]"_
+- _"I'm designing a survey about device comfort. Suggest five short questions a user could answer in under a minute each."_
 
 ## Privacy & security
 
 - **Your conversations are private.** Other employees cannot see your messages with Basal.
 - **Luna-owned infrastructure.** Basal runs on Luna's own Cloudflare infrastructure. It is not a third-party SaaS product.
-- **No AI training on your data.** Basal is powered by Claude, Anthropic's AI model. Zero Data Retention is enabled, meaning Anthropic does not use Luna's interactions to train its models.
-- **Audit logging.** All interactions are logged for security and observability purposes.
+- **No AI training on your data.** Basal is powered by Claude. Zero Data Retention is enabled on Luna's Anthropic workspace, meaning Anthropic does not use our interactions to train its models.
+- **Audit logging.** All interactions go through Cloudflare's AI Gateway and are logged for security and observability. The log captures metadata (timing, tokens, cost), not message content.
 - **Identity verification.** Your identity is confirmed through your Slack account's `@lunadiabetes.com` email address.
 
 ## Don't put in Basal
 
-Don't paste protected health information, patient identifiers, or any confidential third-party data covered by an NDA. Basal is an internal productivity tool, not a system cleared for regulated data.
+Don't paste protected health information, patient identifiers, or any confidential third-party data covered by NDA. Basal is an internal productivity tool, not a cleared system for regulated data.
 
-## Under the hood
+Questions? [john@lunadiabetes.com](mailto:john@lunadiabetes.com).
 
-Want to know how Basal actually works? [See the platform architecture](/platform/architecture).
+Want to know how it actually works? [See the platform page](/platform).

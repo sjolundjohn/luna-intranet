@@ -1,0 +1,64 @@
+---
+title: "Tech stack"
+summary: "The specific pieces we use — Cloudflare Workers, Claude, AI Gateway — and how we built it so we can swap any of them."
+order: 3
+---
+
+A short tour of the technologies under Luna's agent platform, what each one does for us, and why we chose it.
+
+## Cloudflare — where the whole thing runs
+
+Every Luna-owned piece of this system runs on [Cloudflare](https://cloudflare.com). We picked it for three reasons:
+
+- **One account, many building blocks.** Workers (stateless compute), Durable Objects (stateful storage at the edge), R2 (object storage), Pages (static sites — including this intranet), AI Gateway (LLM audit + rate limiting), Access (Zero Trust auth). They all share billing, authentication, and observability, which means we don't stitch together five different vendors.
+- **Service bindings.** Internal Workers can call each other without going over the public internet. When `luna-router` calls `luna-agent-basal`, there's no DNS lookup, no TLS handshake — it's an edge-private call. Faster and harder to attack.
+- **Cost structure.** We pay per-request and per-GB, not per-instance. An idle agent costs nothing.
+
+### The specific Cloudflare primitives we use
+
+| Primitive | What we use it for |
+|---|---|
+| **Workers** | Every Luna service (`luna-slack-dm`, `luna-router`, `luna-agent-basal`, `luna-ai-proxy`) is a Worker. |
+| **Durable Objects** | One per Lunite — holds your Basal conversation history in SQLite. |
+| **R2** | Stores prompt templates, agent configs, and audit logs. No egress fees. |
+| **AI Gateway** | Sits in front of every model call. Rate limits, cost caps, audit trail, provider-key injection. |
+| **Access** | Zero Trust auth — gates this intranet (and the future admin dashboard) behind Google Workspace SSO for `@lunadiabetes.com`. |
+| **Pages** | Hosts this intranet. Static HTML built with Astro, deployed on every push. |
+
+## Claude — the model behind the answers
+
+The language model powering Basal today is **Claude**, from [Anthropic](https://www.anthropic.com). Specifically, we default to **Claude Opus 4.7** (Anthropic's flagship reasoning model), with the ability to fall back to **Claude Sonnet 4.6** for lower-latency work and **Claude Haiku 4.5** for cheap, fast classification tasks.
+
+We picked Claude for four reasons specific to Luna's situation:
+
+- **Safety and refusal behavior.** Medical context is full of edge cases where an AI could give dangerous advice. Claude is trained to be careful in exactly those situations without being uselessly hedged.
+- **Zero Data Retention.** Luna's Anthropic workspace has ZDR enabled, meaning our interactions are never logged, stored, or used to train Anthropic's models. This is a contractual guarantee, not a setting.
+- **Long context.** Claude's 200K-token context window means we can feed it long documents, transcripts, or conversation histories without awkward chunking.
+- **Tool use.** Claude is built to call tools (APIs, searches, code) reliably. That matters a lot for the next wave of agents — like the Data Agent, which needs to reliably call a SQL tool.
+
+## Model switching — designed for it from day one
+
+Here's an architectural choice worth calling out: the agents (`luna-agent-basal`, future ones) **don't know which model they're talking to**. They just post a message to `luna-ai-proxy` and get a response.
+
+The proxy is where model selection happens. Switching from Claude Opus 4.7 to Sonnet 4.6, or from Claude to OpenAI GPT, or to a Workers AI model running on Cloudflare itself, is a configuration change in one place — not a rewrite across every agent.
+
+Routes we already have configured on the gateway:
+
+- **`default`** → Claude Opus 4.7 for conversational work.
+- **`cheap`** → a smaller Workers AI model (Llama 3.1 8B) for classification and routing decisions.
+- **`embed`** → Workers AI BGE embeddings for memory retrieval.
+- **`image`** → Google's Imagen model for the occasional image generation.
+
+Agents don't pick the route by name — they send the message and the proxy decides. That means we can A/B test models, auto-fail-over, or change providers entirely without anyone noticing.
+
+## This site
+
+The intranet you're reading runs on the same stack:
+
+- **Astro** — static-site generator, builds pure HTML.
+- **Tailwind CSS** — styling, keyed to Luna's design system.
+- **Cloudflare Pages** — hosts the built HTML.
+- **Cloudflare Pages Functions** — the `/api/chat` endpoint that powers the in-browser chat box. It lives at the network edge and forwards requests into `luna-ai-proxy`, so the browser never sees any model API keys.
+- **Cloudflare Access** — wraps everything, enforcing Google Workspace SSO before any request reaches the site.
+
+You can [see the architecture](/platform/architecture) for the request flow, or the [privacy page](/platform/privacy) for what's kept private and what isn't.

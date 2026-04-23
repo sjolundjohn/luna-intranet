@@ -1,0 +1,65 @@
+---
+/**
+ * Round agent avatar. If an image path is provided, renders that; otherwise
+ * falls back to a Moonlight-on-Midnight moon-phase glyph keyed to the agent's
+ * slug so different agents get distinguishable defaults.
+ */
+interface Props {
+  name: string;
+  slug: string;
+  src?: string;
+  size?: number;
+  class?: string;
+}
+
+const { name, slug, src, size = 56, class: className = "" } = Astro.props;
+
+// Pick a moon phase for the default glyph based on the slug's first char —
+// stable, no state, works at build time.
+const phaseForSlug = (s: string) => {
+  const code = s.charCodeAt(0) || 0;
+  return code % 4; // 0: new, 1: waxing, 2: waning, 3: full
+};
+const phase = phaseForSlug(slug);
+const r = size / 2;
+---
+
+{
+  src ? (
+    <img
+      src={src}
+      alt={`${name} avatar`}
+      width={size}
+      height={size}
+      class:list={["rounded-full object-cover", className]}
+      style={`width:${size}px;height:${size}px;`}
+    />
+  ) : (
+    <span
+      class:list={["inline-flex items-center justify-center rounded-full bg-midnight flex-shrink-0", className]}
+      style={`width:${size}px;height:${size}px;`}
+      role="img"
+      aria-label={`${name} avatar`}
+    >
+      <svg
+        width={size * 0.52}
+        height={size * 0.52}
+        viewBox={`0 0 ${size} ${size}`}
+        xmlns="http://www.w3.org/2000/svg"
+        fill="#68D2DF"
+        aria-hidden="true"
+      >
+        {phase === 0 && (
+          <circle cx={r} cy={r} r={r - 2} fill="none" stroke="#68D2DF" stroke-width="3" />
+        )}
+        {phase === 1 && (
+          <path d={`M ${r} 0 A ${r} ${r} 0 0 1 ${r} ${size} A ${r * 0.55} ${r} 0 0 0 ${r} 0 Z`} />
+        )}
+        {phase === 2 && (
+          <path d={`M ${r} 0 A ${r} ${r} 0 0 0 ${r} ${size} A ${r * 0.55} ${r} 0 0 1 ${r} 0 Z`} />
+        )}
+        {phase === 3 && <circle cx={r} cy={r} r={r - 1} />}
+      </svg>
+    </span>
+  )
+}

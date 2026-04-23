@@ -1,0 +1,143 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import StatusChip from "~/components/StatusChip.astro";
+import AgentAvatar from "~/components/AgentAvatar.astro";
+import CTAButton from "~/components/CTAButton.astro";
+import { TEAM_LABELS, TEAM_ORDER } from "~/content.config";
+
+const agents = await getCollection("agents");
+const people = await getCollection("people");
+
+const agentsForTeam = (team: string) =>
+  agents.filter((a) => {
+    const t = a.data.teams ?? ["all"];
+    return t.includes("all") || t.includes(team as never);
+  });
+
+const peopleForTeam = (team: string) =>
+  people
+    .filter((p) => p.data.team === team)
+    .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Org chart · By team"
+  description="Luna's seven functions and the agents available to each."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Org chart · Teams" size="compact">
+    <Fragment slot="headline">By team.</Fragment>
+    <Fragment slot="subcopy">
+      The seven functions at Luna. Each card shows who's on the team and
+      which agents they have access to today.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="mb-8">
+      <CTAButton href="/org" variant="ghost">← Org chart</CTAButton>
+    </div>
+
+    <div class="space-y-14">
+      {
+        TEAM_ORDER.map((team) => {
+          const teamAgents = agentsForTeam(team);
+          const teamPeople = peopleForTeam(team);
+          return (
+            <section>
+              <div class="flex items-end justify-between gap-6 border-b border-border-subtle pb-4">
+                <h2
+                  class="font-display text-ink font-normal"
+                  style="font-size: clamp(28px, 3.2vw, 40px); line-height: 1.1; letter-spacing: -0.02em;"
+                >
+                  {TEAM_LABELS[team]}
+                </h2>
+                <p class="text-slate font-body text-[14px]">
+                  {teamPeople.length} {teamPeople.length === 1 ? "person" : "people"} · {teamAgents.length}{" "}
+                  {teamAgents.length === 1 ? "agent" : "agents"}
+                </p>
+              </div>
+
+              <div class="mt-8 grid gap-10 md:grid-cols-[1fr_1.5fr]">
+                {/* People */}
+                <div>
+                  <p class="eyebrow mb-4">People</p>
+                  {teamPeople.length === 0 ? (
+                    <p class="text-slate text-[15px] italic">
+                      Roster not yet populated. Add an MDX file to{" "}
+                      <code class="bg-cloud-lilac px-1.5 rounded">src/content/people/</code>.
+                    </p>
+                  ) : (
+                    <ul class="space-y-3">
+                      {teamPeople.map((p) => (
+                        <li class="flex items-center gap-3">
+                          <AgentAvatar
+                            name={p.data.name}
+                            slug={p.id}
+                            src={p.data.avatar}
+                            size={36}
+                          />
+                          <div>
+                            <p class="text-ink font-medium text-[15px]" id={p.id}>{p.data.name}</p>
+                            <p class="text-slate text-[13px]">{p.data.role}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                {/* Agents */}
+                <div>
+                  <p class="eyebrow mb-4">Agents available</p>
+                  <ul class="space-y-3">
+                    {teamAgents.map((a) => (
+                      <li>
+                        <a
+                          href={`/agents/${a.id}`}
+                          class="group flex items-center gap-4 p-3 -m-3 rounded-[12px] hover:bg-cloud-lilac transition-colors"
+                        >
+                          <AgentAvatar
+                            name={a.data.name}
+                            slug={a.id}
+                            src={a.data.avatar}
+                            size={44}
+                          />
+                          <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                              <p class="text-ink font-medium text-[15px]">{a.data.name}</p>
+                              <StatusChip status={a.data.status} />
+                            </div>
+                            <p class="text-slate text-[13px] mt-0.5 line-clamp-2">{a.data.summary}</p>
+                          </div>
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="text-slate group-hover:text-ink group-hover:translate-x-0.5 transition-all flex-shrink-0"
+                            aria-hidden="true"
+                          >
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                          </svg>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
+          );
+        })
+      }
+    </div>
+  </WhiteSection>
+</BaseLayout>

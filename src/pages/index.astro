@@ -4,78 +4,92 @@ import Hero from "~/components/Hero.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
 import MidnightBand from "~/components/MidnightBand.astro";
 import SectionCard from "~/components/SectionCard.astro";
-import CTAButton from "~/components/CTAButton.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
+import ChatBox from "~/components/ChatBox.astro";
 ---
 
 <BaseLayout
   title="Luna, internal."
-  description="The tools, agents, and systems Luna is building — in one place."
+  description="Luna's internal home — agents, people, platform, and everything we're building."
   heroIsDark={true}
 >
-  <Hero eyebrow="Luna · Internal" size="full">
-    <Fragment slot="headline">Luna,<br />internal.</Fragment>
+  <Hero eyebrow="Luna · Internal" size="compact" animateMoons={true}>
+    <Fragment slot="headline">Luna, internal.</Fragment>
     <Fragment slot="subcopy">
-      The tools, agents, and systems we're building for the team — in one place.
-      Start with an agent that knows your calendar, a data agent that speaks your dashboards,
-      or a look under the hood at how it all fits together.
-    </Fragment>
-    <Fragment slot="cta">
-      <CTAButton href="/agents" variant="primary-dark" arrow>Meet the agents</CTAButton>
-      <CTAButton href="/platform" variant="ghost">How it works</CTAButton>
+      The place to find what we're building, who's building it, and how to use it.
     </Fragment>
   </Hero>
 
+  {/* Four-tile grid — less agent-focused, more intranet. */}
   <WhiteSection size="tall">
-    <div class="max-w-[720px]">
-      <p class="eyebrow mb-5">What's here</p>
+    <div class="max-w-[720px] mb-14 md:mb-16">
+      <p class="eyebrow mb-4">What's here</p>
       <h2
         class="font-display text-ink font-normal"
-        style="font-size: clamp(36px, 4.6vw, 56px); line-height: 1.05; letter-spacing: -0.02em;"
+        style="font-size: clamp(32px, 4.2vw, 48px); line-height: 1.05; letter-spacing: -0.02em;"
       >
-        Three places to start.
+        Four places to start.
       </h2>
-      <div class="mt-6"><MoonlightRule width={48} color="midnight" /></div>
-      <p class="mt-8 text-graphite text-[18px] leading-[1.6] max-w-[58ch]">
-        Everything on this site is built by Luna, for Luna. It's early, it will grow,
-        and it's designed so that adding the next capability doesn't require asking permission.
-      </p>
+      <div class="mt-5"><MoonlightRule width={40} color="midnight" /></div>
     </div>
 
-    <div class="mt-16 md:mt-20 grid gap-6 md:gap-8 md:grid-cols-3">
+    <div class="grid gap-6 md:gap-7 md:grid-cols-2 xl:grid-cols-4">
       <SectionCard
         href="/agents"
-        eyebrow="01 · People"
-        title="Shared agents."
-        description="Basal helps you think, write, and summarize. More agents are on the way — including one that knows our data."
+        eyebrow="Agents"
+        title="AI agents."
+        description="The AI assistants Luna is building for the team — starting with Basal."
       />
       <SectionCard
-        href="/agents/personal"
-        eyebrow="02 · Yours"
-        title="Personal agents."
-        description="When a shared agent isn't the right fit, we can spin up one dedicated to a role, workflow, or team."
+        href="/org"
+        eyebrow="Org chart"
+        title="Who does what."
+        description="Agents and teammates, by function and by person. See who owns what."
       />
       <SectionCard
         href="/platform"
-        eyebrow="03 · Under the hood"
-        title="Platform."
-        description="How Luna's agents actually work — the pieces, the flow, and why your data stays private."
+        eyebrow="Platform"
+        title="Under the hood."
+        description="How it actually works — Cloudflare, Claude, and why your data stays private."
+      />
+      <SectionCard
+        href="#playground"
+        eyebrow="Playground"
+        title="Try it."
+        description="Chat with Basal right here — no Slack needed. Test drive how it responds."
       />
     </div>
+  </WhiteSection>
+
+  {/* Inline playground — chat with Basal without leaving the site. */}
+  <WhiteSection size="compact" id="playground" class="bg-soft-paper">
+    <div class="max-w-[720px] mb-10">
+      <p class="eyebrow mb-4">Playground · Try Basal</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 42px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Ask Basal anything.
+      </h2>
+      <p class="mt-4 text-graphite text-[17px] leading-[1.55] max-w-[56ch]">
+        Same model and guardrails as the Slack experience. Conversations here aren't saved
+        to your Slack history — this is for quick trials.
+      </p>
+    </div>
+    <ChatBox agent="basal" placeholder="Ask Basal something..." />
   </WhiteSection>
 
   <MidnightBand size="compact" class="text-center">
     <p class="eyebrow eyebrow-on-dark mb-6">Our brand promise</p>
     <h2
-      class="font-display text-white font-normal mx-auto"
-      style="font-size: clamp(52px, 7vw, 88px); line-height: 1; letter-spacing: -0.03em;"
+      class="font-display text-white font-normal"
+      style="font-size: clamp(48px, 6vw, 80px); line-height: 1; letter-spacing: -0.03em;"
     >
       true to you.
     </h2>
     <div class="mt-8 flex justify-center"><MoonlightRule width={64} /></div>
     <p class="mt-10 max-w-[540px] mx-auto text-white/72 text-[17px] leading-[1.6]">
-      Internal tools should feel as considered as the products we ship.
-      This site is our first pass.
+      Internal tools should feel as considered as the products we ship. This site is our first pass.
     </p>
   </MidnightBand>
 </BaseLayout>

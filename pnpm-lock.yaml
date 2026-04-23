@@ -30,6 +30,9 @@ importers:
       '@astrojs/check':
         specifier: ^0.9.4
         version: 0.9.8(prettier@3.8.3)(typescript@5.9.3)
+      '@cloudflare/workers-types':
+        specifier: ^4.20260423.1
+        version: 4.20260423.1
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
@@ -103,6 +106,9 @@ packages:
   '@capsizecss/unpack@4.0.0':
     resolution: {integrity: sha512-VERIM64vtTP1C4mxQ5thVT9fK0apjPFobqybMtA1UdUujWka24ERHbRHFGmpbbhp73MhV+KSsHQH9C6uOTdEQA==}
     engines: {node: '>=18'}
+
+  '@cloudflare/workers-types@4.20260423.1':
+    resolution: {integrity: sha512-SHIc0NeJMtn0sW043eWtMxYFbJ9VPSLkcx+FEqCk0uZLD3HrWT+5xWhm6EYiOYDg0vnrlXNHcu2ly/01zDh3bw==}
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -2542,6 +2548,8 @@ snapshots:
   '@capsizecss/unpack@4.0.0':
     dependencies:
       fontkitten: 1.0.3
+
+  '@cloudflare/workers-types@4.20260423.1': {}
 
   '@emmetio/abbreviation@2.3.3':
     dependencies:

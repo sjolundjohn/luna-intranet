@@ -8,29 +8,33 @@ When you send a message to Basal in Slack, it travels through a short chain of s
 
 ## 1 · Slack receives your message
 
-Slack sends the event to a Luna-owned endpoint — a small service called **`luna-slack-dm`**. Before this service does anything, it verifies that the event actually came from Slack (cryptographic signature check) and that the message came from an `@lunadiabetes.com` email. If either check fails, the message is dropped.
+Slack sends the event to a Luna-owned endpoint — a Cloudflare Worker called **`luna-slack-dm`**. Before it does anything, it verifies the message actually came from Slack (cryptographic signature check) and that the sender's email is `@lunadiabetes.com`. If either check fails, the message is dropped.
 
 ## 2 · The router decides who should handle it
 
-`luna-slack-dm` hands the verified message to **`luna-router`**. The router is a dispatcher — today it always routes to Basal, but as more agents come online (like the Data Agent) it's the router that decides which agent gets the message.
+`luna-slack-dm` hands the verified message to **`luna-router`**. The router is a dispatcher — today it always routes to Basal, but as more agents come online (like the Data Agent) the router will pick based on the channel, a slash command, or the question itself.
 
 ## 3 · The agent handles your conversation
 
-**`luna-agent-basal`** receives the message along with your conversation history. Each Lunite has their own dedicated agent instance with its own memory, so your conversations stay separate from everyone else's. The agent builds up the right context — recent messages, a system prompt that describes Basal's role, your identity — and asks the model a question.
+**`luna-agent-basal`** receives the message along with your conversation history. Each Lunite has their own dedicated Durable Object instance — essentially a small, stateful mini-server in Cloudflare's edge network — with their own SQLite table of messages. Your conversations stay separate from everyone else's, automatically.
 
 ## 4 · The model call goes through a proxy
 
 Instead of calling the AI model directly, the agent goes through **`luna-ai-proxy`**. This is Luna's single point of egress for all model API calls. It:
 
 - Holds the API keys so individual agents never touch credentials.
-- Strips any headers that could identify you personally before forwarding.
+- Strips any identifying headers before forwarding.
 - Adds hashed metadata so we can measure usage without logging conversations.
-- Talks to Cloudflare's **AI Gateway** — a layer that handles rate limiting, cost caps, and audit logging for every model request.
+- Forwards to Cloudflare's **AI Gateway** — a layer that handles rate limiting, cost caps, and audit logging for every model request.
 
 ## 5 · The model responds
 
-The response flows back through the same chain — gateway → proxy → agent → router → Slack — and lands in your DM.
+The gateway forwards the request to the actual model (see [Tech stack](/platform/tech-stack) for which model). The response streams back through the same chain in reverse — gateway → proxy → agent → router → Slack — and lands in your DM.
 
 ## Why so many pieces?
 
-Each service does one thing. That means any one of them can be replaced, upgraded, or monitored independently. It also means when something breaks, it's easy to tell where. See [Privacy & security](/platform/privacy) for how this architecture keeps your conversations safe.
+Each Worker does one thing. That makes any one of them easy to replace, upgrade, or monitor in isolation. It also means when something breaks, it's obvious where.
+
+The chain is also what makes **switching models trivial**: a new model provider is a one-line change in `luna-ai-proxy`, not a rewrite of every agent. See [Tech stack](/platform/tech-stack) for more on that.
+
+Next: [privacy & security](/platform/privacy) covers how this architecture keeps your conversations safe.

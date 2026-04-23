@@ -14,6 +14,7 @@ const { heroIsDark = true } = Astro.props;
 
 const navLinks = [
   { href: "/agents", label: "Agents" },
+  { href: "/org", label: "Org chart" },
   { href: "/platform", label: "Platform" },
 ];
 
@@ -25,7 +26,7 @@ const isActive = (href: string) =>
 <nav
   data-nav
   data-mode={heroIsDark ? "dark" : "light"}
-  class="fixed top-0 left-0 right-0 z-50 h-16 flex items-center"
+  class="fixed top-0 left-0 right-0 z-50 h-[72px] flex items-center"
   transition:persist
 >
   <div class="mx-auto w-full max-w-[1200px] px-6 md:px-10 flex items-center justify-between">
@@ -38,17 +39,17 @@ const isActive = (href: string) =>
         data-logo-dark
         src="/luna-on-dark.svg"
         alt=""
-        height="28"
+        height="40"
         width="auto"
-        class="h-7 w-auto"
+        class="h-10 w-auto"
       />
       <img
         data-logo-light
         src="/luna-on-white.svg"
         alt=""
-        height="28"
+        height="40"
         width="auto"
-        class="hidden h-7 w-auto"
+        class="hidden h-10 w-auto"
       />
       <span class="sr-only">Luna, internal</span>
     </a>
@@ -77,12 +78,26 @@ const isActive = (href: string) =>
           </a>
         ))
       }
+
+      {/* Sign out — hits Cloudflare Access logout. No-op in local dev. */}
+      <a
+        href="/cdn-cgi/access/logout"
+        class="ml-2 md:ml-4 inline-flex items-center gap-1.5 px-3 py-2 font-body text-[13px] font-medium rounded-full border border-current opacity-70 hover:opacity-100 transition-opacity nav-link"
+        title="Sign out of Luna"
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span class="hidden sm:inline">Sign out</span>
+      </a>
     </div>
   </div>
 </nav>
 
 {/* Spacer so content doesn't sit under the fixed nav. Heroes position themselves beneath. */}
-<div aria-hidden="true" class="h-16"></div>
+<div aria-hidden="true" class="h-[72px]"></div>
 
 <style>
   nav[data-mode="dark"] {
