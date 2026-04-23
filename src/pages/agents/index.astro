@@ -1,53 +1,76 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/Hero.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
-import AgentCard from "~/components/AgentCard.astro";
+import FAQ from "~/components/FAQ.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
 
-const allAgents = await getCollection("agents");
-
-// Sort: live → by-request → coming-soon, then by `order`.
-const statusRank: Record<string, number> = {
-  "live": 0,
-  "by-request": 1,
-  "coming-soon": 2,
-};
-const agents = allAgents.sort((a, b) => {
-  const diff = statusRank[a.data.status] - statusRank[b.data.status];
-  if (diff !== 0) return diff;
-  return a.data.order - b.data.order;
-});
+const faqs = [
+  {
+    q: "What's an agent?",
+    a: "An agent is a language model (like Claude or GPT) that's been given a job, a personality, and — crucially — tools it can use on your behalf.\n\nIf ChatGPT is a conversation partner and Claude Code is a coding collaborator, an agent is closer to a teammate: it can read documents you give it, call APIs, run queries, remember context between sessions, and take actions — not just reply. It's the same underlying tech, wrapped in the specific context and permissions needed to do real work.",
+  },
+  {
+    q: "What's an agent at Luna?",
+    a: "A Luna agent is an AI teammate built on top of Claude, wired into our systems (Slack, our data warehouse, our documents), and gated so it only sees what it's supposed to. Every agent has:\n\n• A clear job — \"help Lunites with general questions\" (Basal), or \"answer questions about our data\" (the upcoming Data Agent).\n• A dedicated place to use it — Slack DM, inside a tool, or here on the intranet.\n• Zero Data Retention — your conversations aren't used to train any model and aren't logged long-term.\n• Identity awareness — it knows it's talking to you specifically, so memory and permissions are per-person.",
+  },
+  {
+    q: "How is this different from using ChatGPT or Claude directly?",
+    a: "Three differences worth knowing:\n\n1. Context. A Luna agent already knows it's inside Luna — it has the background, docs, and tone pre-loaded, so you don't re-explain \"we're a diabetes company, here's what a CGM is\" every session.\n\n2. Data access. An agent can be given safe, scoped access to real Luna data (our warehouse, our files) — something a generic chatbot can't do without you copy-pasting.\n\n3. Privacy. Everything routes through Luna-owned infrastructure with ZDR and audit logging. Pasting something into chat.openai.com is a different risk profile than asking Basal in Slack.",
+  },
+  {
+    q: "How do I access an agent?",
+    a: "Depends on the agent:\n\n• Basal — DM @Basal in Slack, or try it in the Playground on the home page of this intranet.\n• Data Agent (coming soon) — it'll live inside Luna's data-viz tool; you'll ask questions in the sidebar there.\n• Personal agents — currently by request. Ping John in Slack with what you want it to do.\n\nAll agents are gated to @lunadiabetes.com accounts. No external access, no shared logins.",
+  },
+  {
+    q: "Where should I use an agent vs. just Google or ChatGPT?",
+    a: "Use a Luna agent when:\n\n• The question involves Luna data, Luna people, or Luna documents.\n• You'd otherwise paste sensitive info into a public tool (customer details, internal strategy, unreleased work).\n• You want memory across sessions — Basal remembers your past conversations; ChatGPT's free tier doesn't.\n\nKeep using ChatGPT / Claude / Google for: general learning, public info, creative drafts that aren't Luna-specific, anything you'd happily post on Twitter.",
+  },
+  {
+    q: "How do I \"train\" an agent?",
+    a: "You don't train it in the machine-learning sense — the underlying model (Claude) is already trained. What you do is give it the right context:\n\n• Prompt it well. Say what you want, who the audience is, what format you'd like back. Agents follow direction.\n• Give it documents. Paste in the spec, the meeting notes, the data — it'll use them.\n• Correct it when it's wrong. Basal in particular has per-user memory, so telling it \"actually we call that a cohort, not a segment\" sticks for your future chats.\n\nFor deeper customization (a personal agent with a specific persona, tools, or knowledge base), that's a one-off build — ping John.",
+  },
+  {
+    q: "Is my conversation private?",
+    a: "Yes — by design, not just by policy.\n\n• Each Lunite has their own private conversation history. Nobody else can see your chats with Basal, including admins.\n• Anthropic (the company behind Claude) doesn't log or train on our traffic. Zero Data Retention is contractual, not a setting.\n• Luna keeps hashed usage metrics (message count, cost, latency) but not message contents.\n\nIf you want a deeper explanation, see the Platform page under \"How it works\" and \"Privacy & security.\"",
+  },
+  {
+    q: "What if the agent is wrong?",
+    a: "Assume it can be. Agents are great at synthesis, drafting, and answering well-scoped questions, but they still hallucinate — especially on recent events, numbers, and edge cases.\n\nRule of thumb: if the answer would matter in a regulatory filing, a customer conversation, or a code review, verify it. Agents are a force multiplier on your judgment, not a replacement for it.\n\nIf you spot a consistent failure mode, tell John — that's often the signal to add a tool or document to fix the gap.",
+  },
+  {
+    q: "Can I build my own agent?",
+    a: "Not yet, but that's the direction. Today Luna's agents are built by the engineering team because they need access to infrastructure (Slack, data warehouse, secrets). As the platform matures, the plan is:\n\n• Phase 1 (now) — engineering builds shared + personal agents on request.\n• Phase 2 — templated personal agents you can configure yourself via a form.\n• Phase 3 — an agent-builder tool inside this intranet.\n\nIf you have an agent idea today, describe it in Slack and we'll scope whether it's personal, shared, or a feature request on an existing one.",
+  },
+];
 ---
 
 <BaseLayout
-  title="Agents"
-  description="The AI agents Luna is building for the team."
+  title="Agents 101"
+  description="What an agent is, how they work at Luna, and how to use them."
   heroIsDark={true}
 >
-  <Hero eyebrow="01 · People" size="tall">
-    <Fragment slot="headline">The agents.</Fragment>
+  <Hero eyebrow="Luna · Agents 101" size="compact">
+    <Fragment slot="headline">New to agents? Start here.</Fragment>
     <Fragment slot="subcopy">
-      Shared AI agents Luna has built — or is building — to help the team do its work.
-      Each one has a specific job; most live in Slack. Start with Basal.
+      If you've used ChatGPT, Claude, or Claude Code, you're already most of the way there.
     </Fragment>
   </Hero>
 
-  <WhiteSection size="tall">
-    <div class="grid gap-6 md:gap-7 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        agents.map((agent) => (
-          <AgentCard
-            href={`/agents/${agent.id}`}
-            slug={agent.id}
-            name={agent.data.name}
-            status={agent.data.status}
-            summary={agent.data.summary}
-            accessHint={agent.data.accessHint}
-            avatar={agent.data.avatar}
-          />
-        ))
-      }
+  <WhiteSection size="compact">
+    <div class="max-w-[720px] mb-10 md:mb-12">
+      <p class="eyebrow mb-4">Frequently asked</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.2vw, 40px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Everything you'd ask a teammate.
+      </h2>
+      <div class="mt-5"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-6 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        Looking for a specific agent? See <a href="/org/by-team" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">which agents each team uses</a> on the org chart.
+      </p>
     </div>
+    <FAQ items={faqs} openFirst />
   </WhiteSection>
 </BaseLayout>

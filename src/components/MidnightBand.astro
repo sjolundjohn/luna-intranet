@@ -13,9 +13,9 @@ interface Props {
 const { gradient = false, size = "tall", id, class: className = "" } = Astro.props;
 
 const padding: Record<NonNullable<Props["size"]>, string> = {
-  "full":    "py-32 md:py-40",
-  "tall":    "py-24 md:py-32",
-  "compact": "py-16 md:py-24",
+  "full":    "py-20 md:py-28",
+  "tall":    "py-14 md:py-20",
+  "compact": "py-10 md:py-14",
 };
 
 const bg = gradient ? "bg-hero-gradient" : "bg-midnight";

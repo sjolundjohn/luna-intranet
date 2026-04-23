@@ -66,10 +66,7 @@ const peopleForTeam = (team: string) =>
                 <div>
                   <p class="eyebrow mb-4">People</p>
                   {teamPeople.length === 0 ? (
-                    <p class="text-slate text-[15px] italic">
-                      Roster not yet populated. Add an MDX file to{" "}
-                      <code class="bg-cloud-lilac px-1.5 rounded">src/content/people/</code>.
-                    </p>
+                    <p class="text-slate text-[15px]">Coming soon.</p>
                   ) : (
                     <ul class="space-y-3">
                       {teamPeople.map((p) => (
@@ -93,6 +90,9 @@ const peopleForTeam = (team: string) =>
                 {/* Agents */}
                 <div>
                   <p class="eyebrow mb-4">Agents available</p>
+                  {teamAgents.length === 0 ? (
+                    <p class="text-slate text-[15px]">Coming soon.</p>
+                  ) : (
                   <ul class="space-y-3">
                     {teamAgents.map((a) => (
                       <li>
@@ -132,6 +132,7 @@ const peopleForTeam = (team: string) =>
                       </li>
                     ))}
                   </ul>
+                  )}
                 </div>
               </div>
             </section>

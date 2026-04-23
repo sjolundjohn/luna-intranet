@@ -21,42 +21,42 @@ import ChatBox from "~/components/ChatBox.astro";
   </Hero>
 
   {/* Four-tile grid — less agent-focused, more intranet. */}
-  <WhiteSection size="tall">
-    <div class="max-w-[720px] mb-14 md:mb-16">
-      <p class="eyebrow mb-4">What's here</p>
+  <WhiteSection size="compact">
+    <div class="max-w-[720px] mb-6 md:mb-8">
+      <p class="eyebrow mb-3">What's here</p>
       <h2
         class="font-display text-ink font-normal"
-        style="font-size: clamp(32px, 4.2vw, 48px); line-height: 1.05; letter-spacing: -0.02em;"
+        style="font-size: clamp(28px, 3.6vw, 40px); line-height: 1.05; letter-spacing: -0.02em;"
       >
         Four places to start.
       </h2>
-      <div class="mt-5"><MoonlightRule width={40} color="midnight" /></div>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
     </div>
 
-    <div class="grid gap-6 md:gap-7 md:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-6 md:gap-7 md:grid-cols-2 auto-rows-fr">
       <SectionCard
         href="/agents"
-        eyebrow="Agents"
+        eyebrow="01 · Agents"
         title="AI agents."
         description="The AI assistants Luna is building for the team — starting with Basal."
       />
       <SectionCard
+        href="#playground"
+        eyebrow="02 · Playground"
+        title="Try it."
+        description="Chat with Basal right here — no Slack needed. Test drive how it responds."
+      />
+      <SectionCard
         href="/org"
-        eyebrow="Org chart"
+        eyebrow="03 · Org chart"
         title="Who does what."
         description="Agents and teammates, by function and by person. See who owns what."
       />
       <SectionCard
         href="/platform"
-        eyebrow="Platform"
+        eyebrow="04 · Platform"
         title="Under the hood."
         description="How it actually works — Cloudflare, Claude, and why your data stays private."
-      />
-      <SectionCard
-        href="#playground"
-        eyebrow="Playground"
-        title="Try it."
-        description="Chat with Basal right here — no Slack needed. Test drive how it responds."
       />
     </div>
   </WhiteSection>

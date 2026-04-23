@@ -29,7 +29,7 @@ const {
 <a
   href={href}
   class:list={[
-    "group relative block bg-white rounded-[16px] shadow-[0_5px_50px_rgba(0,0,0,0.07)]",
+    "group relative flex flex-col h-full bg-white rounded-[16px] shadow-[0_5px_50px_rgba(0,0,0,0.07)]",
     "p-8 md:p-10 transition-all duration-[160ms] ease-out",
     "hover:-translate-y-[1px] hover:shadow-[0_12px_60px_rgba(4,30,66,0.14)]",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moonlight focus-visible:ring-offset-2",
@@ -47,17 +47,17 @@ const {
   {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
 
   <h3
-    class="font-display text-ink font-normal"
-    style="font-size: clamp(32px, 3.6vw, 48px); line-height: 1.05; letter-spacing: -0.02em;"
+    class="font-display text-ink font-normal whitespace-nowrap"
+    style="font-size: clamp(30px, 2.8vw, 40px); line-height: 1.05; letter-spacing: -0.02em;"
   >
     {title}
   </h3>
 
-  <p class="mt-4 text-graphite text-[17px] leading-[1.55] max-w-[34ch]">
+  <p class="mt-4 text-graphite text-[17px] leading-[1.55] max-w-[38ch]">
     {description}
   </p>
 
-  <div class="mt-8 inline-flex items-center gap-2 text-ink font-body text-[15px] font-medium">
+  <div class="mt-auto pt-8 inline-flex items-center gap-2 text-ink font-body text-[15px] font-medium">
     <span class="relative">
       Explore
       <span
