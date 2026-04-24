@@ -19,6 +19,10 @@ interface Env {
   PROXY_BEARER?: string;
   AI_PROXY_URL?: string;
   MODEL?: string;
+  // CF Access Service Token so we can reach ai-proxy.nightluna.com now
+  // that it's gated by the `Luna Workers` Access app.
+  CF_ACCESS_CLIENT_ID?: string;
+  CF_ACCESS_CLIENT_SECRET?: string;
 }
 
 interface ChatMessage {
@@ -73,14 +77,24 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
     messages: body.messages.map((m) => ({ role: m.role, content: m.content })),
   };
 
+  const upstreamHeaders: Record<string, string> = {
+    "content-type": "application/json",
+    authorization: `Bearer ${env.PROXY_BEARER}`,
+    "x-user-id": userEmail,
+    "x-luna-agent": body.agent ?? "basal",
+  };
+  // If the ai-proxy hostname is gated by CF Access, we need the Service
+  // Token headers to get past it. Set once via
+  //   wrangler pages secret put CF_ACCESS_CLIENT_ID
+  //   wrangler pages secret put CF_ACCESS_CLIENT_SECRET
+  if (env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET) {
+    upstreamHeaders["CF-Access-Client-Id"] = env.CF_ACCESS_CLIENT_ID;
+    upstreamHeaders["CF-Access-Client-Secret"] = env.CF_ACCESS_CLIENT_SECRET;
+  }
+
   const upstream = await fetch(upstreamUrl, {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${env.PROXY_BEARER}`,
-      "x-user-id": userEmail,
-      "x-luna-agent": body.agent ?? "basal",
-    },
+    headers: upstreamHeaders,
     body: JSON.stringify(upstreamReq),
   });
 
