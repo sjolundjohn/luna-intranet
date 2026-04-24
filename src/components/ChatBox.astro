@@ -223,12 +223,26 @@ const {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          redirect: "manual",
           body: JSON.stringify({
             agent,
             messages: history,
             systemPrompt,
           }),
         });
+
+        // If Cloudflare Access intercepted us (no valid session cookie),
+        // the response type is "opaqueredirect". Tell the user to refresh
+        // rather than showing a cryptic "Failed to fetch".
+        if (res.type === "opaqueredirect") {
+          bubble.classList.remove("msg-streaming");
+          bubble.parentElement?.remove();
+          appendError(
+            "Your Cloudflare Access session expired. Please refresh the page and sign in again."
+          );
+          return;
+        }
 
         if (!res.ok) {
           bubble.classList.remove("msg-streaming");
