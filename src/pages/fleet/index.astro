@@ -17,13 +17,12 @@ const fleetMetrics: Record<
   string,
   { invocations7d: number; uniqueUsers7d: number; costUsd7d: number; killed?: boolean; health?: "ok" | "warn" | "crit" }
 > = {
-  basal:   { invocations7d: 318, uniqueUsers7d: 7, costUsd7d: 12.4, health: "ok" },
-  clara:   { invocations7d: 84,  uniqueUsers7d: 1, costUsd7d: 6.2,  health: "ok" },
-  jonah:   { invocations7d: 0,   uniqueUsers7d: 0, costUsd7d: 0,    health: "ok" },
-  data:    { invocations7d: 22,  uniqueUsers7d: 1, costUsd7d: 1.9,  health: "ok" },
+  basal:   { invocations7d: 142, uniqueUsers7d: 2, costUsd7d: 6.8,  health: "ok" },
   pen:     { invocations7d: 16,  uniqueUsers7d: 1, costUsd7d: 1.1,  health: "ok" },
+  clara:   { invocations7d: 0,   uniqueUsers7d: 0, costUsd7d: 0,    health: "ok" },
+  data:    { invocations7d: 0,   uniqueUsers7d: 0, costUsd7d: 0,    health: "ok" },
   pump:    { invocations7d: 38,  uniqueUsers7d: 1, costUsd7d: 4.4,  health: "ok" },
-  sensor:  { invocations7d: 27,  uniqueUsers7d: 1, costUsd7d: 3.8,  health: "warn" },
+  sensor:  { invocations7d: 27,  uniqueUsers7d: 1, costUsd7d: 3.8,  health: "ok" },
 };
 
 // Per-team breakdown — aggregate only, no individual names.

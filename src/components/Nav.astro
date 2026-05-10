@@ -13,15 +13,17 @@ interface Props {
 const { heroIsDark = true } = Astro.props;
 
 /**
- * Operational-first nav. Home is the dashboard; Help is the
- * information layer (one click). Chat is contextual — it lives on
- * agent pages and the dashboard, not in the top nav.
+ * Operational-first nav. Home is the dashboard; Onboarding is the
+ * front door for new people; Help is the broader information layer.
+ * Chat is contextual — it lives on agent pages and the dashboard,
+ * not in the top nav.
  */
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/agents", label: "Agents" },
   { href: "/workflows", label: "Workflows" },
   { href: "/fleet", label: "Fleet" },
+  { href: "/onboarding", label: "Onboarding" },
   { href: "/help", label: "Help" },
 ];
 
