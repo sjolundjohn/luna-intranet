@@ -1,0 +1,6 @@
+# Luna Intranet monorepo.
+# Root is the Astro frontend (Cloudflare Pages). apps/ are independently
+# deployable Cloudflare Workers. packages/ are shared TypeScript modules.
+packages:
+  - "apps/*"
+  - "packages/*"

@@ -104,3 +104,92 @@ All Phase 1 routes shipped + reviewed + green. Summary:
 - Real per-user writes on /agents/me — Phase 2 territory.
 
 Opening Phase 1 PR next.
+
+### Phase 1 PR opened — `2026-05-10T00:33Z`
+
+[luna-intranet#1](https://github.com/sjolundjohn/luna-intranet/pull/1) — _v0.3 Phase 1: AI workplace IA, copy, and component scaffolds._
+
+41 files changed, 3,728 lines added. PR description includes full test plan and explicit "what's intentionally NOT in this PR" so the review surface is small.
+
+### Phase 0 build complete — `2026-05-10T00:49Z`
+
+The Cloudflare-native Worker skeleton. Code-only; **no `terraform apply`, no `wrangler deploy`, no D1 migrations applied.** Every Worker scaffolds, typechecks, and `wrangler deploy --dry-run` bundles cleanly with all bindings resolving.
+
+**Monorepo layout** (new `pnpm-workspace.yaml`):
+
+```
+apps/
+  agent-router/        — dispatcher Worker. Parses agent slug from body, looks up
+                         permissions in D1, checks kill-switch in KV, forwards via
+                         service binding to per-agent Worker. Default-deny on
+                         unknown agents.
+  agent-basal/         — Worker + Durable Object using Cloudflare Agents SDK
+                         (`agents` ^0.12.3). BasalAgent extends LunaAgent.
+                         One DO per (agent, user) — keyed `basal:<email>` so a
+                         Lunite's thread persists across reconnects without us
+                         writing sync code.
+  agent-data/          — placeholder Worker, returns 503 "coming-soon"
+  agent-personal/      — placeholder Worker, returns 503 "by-request"
+  config-api/          — per-user config writes (GET /me, PUT /me/agents/:slug,
+                         DELETE /me/agents/:slug/memory, POST /me/data/export)
+  fleet-api/           — read aggregates for /fleet, with admin-only column
+                         selection so non-admins literally cannot get user_email
+                         out of the query.
+  workflow-control/    — control plane: list/inspect/trigger/cancel workflow runs
+  workflow-runner/     — Cloudflare Workflows definitions:
+                           * MorningBriefingWorkflow (per-Lunite fan-out)
+                           * DailyFleetBriefingWorkflow (Queues fan-out + compose)
+                           * SupportTriageWorkflow (drafts only, non-skippable
+                             human-approval step)
+                         + cron triggers (7am weekdays, 6pm daily, every 2h)
+                         + Queues consumer for briefing fan-out
+packages/
+  shared/              — Types (Role, ActorIdentity, AgentPermissions,
+                         AuditLogRow, KillSwitchRecord, CostCap, InvokeRequest)
+                       — auth: extractActor() / requireRole()
+                       — audit: writeAudit() / sha256Hex() / nowUtcIso()
+                       — killswitch: isKilled() / setKilled(); fail-closed for PHI
+  agents-sdk-glue/     — LunaAgent abstract base class extending Cloudflare
+                         Agents SDK Agent. One place enforces:
+                           * kill-switch check before model call
+                           * SHA-256 prompt/response hashing
+                           * AI Gateway routing (never direct Anthropic)
+                           * audit-log row written via @luna/shared/audit
+                           * stream tee-and-hash for response capture
+                         Subclasses just supply `agentSlug`, `piiScope`,
+                         `getSystemPrompt(userInstructions?)`.
+infra/terraform/       — D1, KV (kill_switch + platform_cache), R2 (briefings +
+                         attachments), Vectorize (basal-memory), Queues (briefing
+                         fan-out + audit ingest), Analytics Engine, AI Gateway
+                         placeholder (resource not yet in CF provider — uses
+                         locals + dashboard creation per README).
+migrations/0001_init.sql — Full schema:
+  agents, users, user_agent_config, audit_log, kill_switches, cost_caps,
+  workflows, workflow_versions, workflow_runs, chat_threads, briefing_episodes.
+  Indexes justified inline. Seeds basal/data-agent/personal rows so the
+  router can dispatch on day one.
+```
+
+**Quality gates passed:**
+- ✅ Every Worker `pnpm exec tsc --noEmit` → 0 errors
+- ✅ Frontend `pnpm typecheck` → 0/0/0 across 59 files
+- ✅ Frontend `pnpm build` → 36 pages clean
+- ✅ `wrangler deploy --dry-run` on agent-router, agent-basal, workflow-runner — all bind, all bundle. agent-basal's Durable Object class registers cleanly under Agents SDK.
+- ✅ pnpm-workspace.yaml resolves; `agents` SDK installed at the right peer deps; existing Astro frontend still builds.
+
+**Hardening notes filed for follow-up (non-blockers):**
+- `auth.ts` doesn't cryptographically verify the CF Access JWT yet — for any Worker fronting public traffic (none today; everything is service-binding-only or behind Access), JWT verification against the JWKS must land before exposure. Tracked.
+- `audit.ts` token-count parsing isn't wired (Anthropic SSE `usage` events). Phase 2 deliverable; rows still write with `tokens_in/out: 0` for now.
+- `workflow-runner` uses `cloudflare:workers` import for `WorkflowEntrypoint` — the runtime resolves this at deploy. Wrangler dry-run validates the workflow class registration.
+- `ai_gateway.tf` is a placeholder — the `cloudflare_ai_gateway` Terraform resource isn't shipped yet in the CF provider. Created via `wrangler ai-gateway create` for now; replaced when the resource lands.
+
+**What John needs to do in the morning to actually deploy any of this:**
+1. `cd infra/terraform && terraform init && terraform plan -out=plan.tfplan`
+2. Review `plan.tfplan` (it'll create D1, 2× KV, 2× R2, 1× Vectorize, 2× Queues, 1× Analytics Engine dataset)
+3. `terraform apply plan.tfplan` — when ready
+4. Run `wrangler d1 migrations apply luna-platform --remote` to apply `migrations/0001_init.sql`
+5. Replace `PLACEHOLDER_FILL_VIA_TERRAFORM` ids in each Worker's `wrangler.toml` from `terraform output -json` (or run the small wire-bindings script when it lands in Phase 2)
+6. `pnpm -r --filter "@luna/*" deploy` — deploys every Worker via the workspace filter
+7. The existing `functions/api/chat.ts` Pages Function is **untouched** — production chat flow unchanged until you flip a feature flag.
+
+Phase 0 PR next.

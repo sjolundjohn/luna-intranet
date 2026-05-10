@@ -1,0 +1,62 @@
+# agent-router — entry point Worker for browser → agent dispatch.
+#
+# Receives requests from the Pages Function (functions/api/chat.ts in the
+# luna-intranet root) over a service binding, validates auth, looks up
+# the requested agent's permissions + kill-switch, and forwards via
+# service binding to the per-agent Worker (agent-basal, agent-data, ...).
+#
+# Why a separate router rather than calling agents directly:
+#   - One place to enforce the permissions matrix and kill-switch.
+#   - One place to log "router dispatched" for ops visibility.
+#   - Migration path: as we add agents, only the router's dispatch
+#     ternary changes — no Pages Function edits.
+
+name = "luna-agent-router"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Lock the public *.workers.dev URL — every Luna Worker is reachable
+# only through CF Access + service bindings. Defense in depth: even if
+# CF Access is misconfigured, no public surface is open.
+workers_dev = false
+preview_urls = false
+
+[observability]
+enabled = true
+
+# KV: per-agent kill flag store. Hot read on every dispatch.
+[[kv_namespaces]]
+binding = "KILL_SWITCH"
+id = "PLACEHOLDER_FILL_VIA_TERRAFORM"
+
+# D1: shared platform DB. Router reads agent permission matrix; doesn't write.
+[[d1_databases]]
+binding = "D1"
+database_name = "luna-platform"
+database_id = "PLACEHOLDER_FILL_VIA_TERRAFORM"
+
+# Service bindings to per-agent Workers. Adding a new agent = add one
+# binding here + one case in the dispatch ternary in src/index.ts.
+[[services]]
+binding = "AGENT_BASAL"
+service = "luna-agent-basal"
+
+[[services]]
+binding = "AGENT_DATA"
+service = "luna-agent-data"
+
+[[services]]
+binding = "AGENT_PERSONAL"
+service = "luna-agent-personal"
+
+# Custom domain. Pages Functions reach the router via service binding,
+# but the custom domain exists for cross-Worker callers (Workflow runner,
+# admin tools) that need a stable hostname.
+[[routes]]
+pattern = "agent-router.nightluna.com"
+custom_domain = true
+
+# AI Gateway binding is held by the per-agent Workers, not the router —
+# the router never calls the model directly. This keeps the model-call
+# blast radius small.
