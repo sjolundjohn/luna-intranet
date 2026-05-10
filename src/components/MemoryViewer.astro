@@ -1,0 +1,99 @@
+---
+/**
+ * "Show what this agent remembers about me" surface on /agents/me.
+ * Per CCPA-style transparency principle in /governance: every fact
+ * a Luna agent retains about an employee should be inspectable and
+ * deletable by that employee.
+ *
+ * Phase 1: mock data. Phase 2: reads from agent DO + Vectorize via
+ * the config-api Worker, with delete buttons that actually clear.
+ */
+interface MemoryFact {
+  ts: string;
+  fact: string;
+  /** Agent that observed this. */
+  source: string;
+}
+
+interface Props {
+  agent: string;
+  facts: MemoryFact[];
+  memoryEnabled: boolean;
+}
+
+const { agent, facts, memoryEnabled } = Astro.props;
+---
+
+<section
+  class="bg-white border border-border-subtle rounded-[16px] p-6 md:p-8"
+  aria-labelledby={`mem-${agent}`}
+>
+  <div class="flex items-start justify-between gap-4 flex-wrap">
+    <div>
+      <h3 id={`mem-${agent}`} class="text-ink font-body text-[18px] font-semibold">
+        What {agent} remembers about you
+      </h3>
+      <p class="mt-1 text-graphite text-[14px] leading-[1.55] max-w-[60ch]">
+        These are the durable facts the agent holds across conversations.
+        You can clear individual entries or wipe all of them.
+      </p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span
+        class={`inline-flex items-center h-[24px] px-3 rounded-full font-body text-[12px] font-semibold ${
+          memoryEnabled ? "bg-info-bg text-info-ink" : "bg-periwinkle-mist text-slate"
+        }`}
+      >
+        Memory {memoryEnabled ? "on" : "off"}
+      </span>
+    </div>
+  </div>
+
+  {
+    facts.length === 0 ? (
+      <p class="mt-6 text-slate text-[14px] italic">
+        Nothing stored yet — the agent has no facts about you to surface.
+      </p>
+    ) : (
+      <ul class="mt-6 divide-y divide-border-subtle">
+        {facts.map((f) => (
+          <li class="py-3 grid grid-cols-[auto_1fr_auto] gap-4 items-start">
+            <span class="text-slate font-mono text-[12px] tabular-nums whitespace-nowrap pt-0.5">
+              {f.ts}
+            </span>
+            <span class="text-ink text-[14px] leading-[1.5]">{f.fact}</span>
+            <button
+              type="button"
+              class="text-slate hover:text-critical-ink text-[12px] font-medium transition-colors flex-shrink-0"
+              data-fact-delete
+              aria-label="Delete this memory"
+              disabled
+              title="Phase 2: wired to live config-api"
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="mt-6 pt-5 border-t border-border-subtle flex flex-wrap gap-3">
+    <button
+      type="button"
+      class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border-default text-graphite text-[13px] font-medium hover:border-ink hover:text-ink transition-colors"
+      disabled
+      title="Phase 2: wired to live config-api"
+    >
+      Export my data
+    </button>
+    <button
+      type="button"
+      class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-critical-ink text-critical-ink text-[13px] font-medium hover:bg-critical-bg transition-colors"
+      disabled
+      title="Phase 2: wired to live config-api"
+    >
+      Wipe all memory for {agent}
+    </button>
+  </div>
+</section>

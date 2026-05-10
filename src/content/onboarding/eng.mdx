@@ -1,0 +1,22 @@
+---
+role: "engineering"
+title: "Engineering at Luna with AI alongside"
+summary: "Where to put agents in your loop, how to give them context safely, and what's still your call."
+order: 1
+modules:
+  - title: "What we're not asking you to do"
+    body: "You're not being asked to use AI for everything, prove your usage to your manager, paste internal-only code into anything outside Luna's perimeter, or replace code review with agent review. The bar for shipping code is the same it's always been — your name on the PR, your judgment behind the merge."
+    task: "Mentally rule out 'AI usage as a metric.' If you ever feel pressure to use an agent for the optics, that's a bug — surface it."
+  - title: "Where agents fit in an engineering loop"
+    body: "The loop that benefits most: triage, scaffolding, and explaining unfamiliar code. Drafting commit messages, writing the first pass at a test, summarizing a long thread of CI failures, generating boilerplate from a spec. The parts where you're typing more than thinking are the parts an agent earns its keep."
+    task: "Pick one repetitive coding task you did in the last week. Hand it to Basal in Slack and see if the result clears your bar."
+  - title: "Giving an agent context — without leaking"
+    body: "Agents are only as good as the context they're given. Pasting a function and saying 'review this' is fine. Pasting a customer's PHI, an unreleased competitor doc, or production credentials is not. If you're not sure, default to 'no, paste it into the PHI-scoped path' or 'no, redact first.'"
+    task: "Re-read the 'Don't put in Basal' section on /agents/basal. Bookmark it; you'll reference it more than you think."
+  - title: "When to escalate to a human review"
+    body: "Anything that goes to a regulator, a clinician, a patient, or an investor crosses a bar that an agent's draft does not clear on its own. Treat agent output for those as a first draft, not a final. The audit log records when a human reviewed an artifact — that's what makes 'AI-assisted' defensible later."
+    task: "On your next regulatory or clinical-facing artifact, log the human review explicitly in the PR or doc — 'reviewed by &lt;name&gt;'."
+  - title: "Filing a workflow"
+    body: "If you're doing the same multi-step thing twice a week, that's a workflow. Drop a one-paragraph description in #ai-platform with the trigger, the steps, and what 'done' looks like. We'll either point you at an existing workflow or scaffold a new one."
+    task: "Identify one repeating multi-step task in your week. Write it up in #ai-platform — even if you don't end up automating it, the act of writing it down is its own clarity."
+---

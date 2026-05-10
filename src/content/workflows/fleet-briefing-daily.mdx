@@ -1,0 +1,36 @@
+---
+name: "Daily fleet briefing"
+summary: "Generates a short written report and a podcast-format audio episode of what the fleet has been working on in the last 24 hours."
+owner: "john"
+trigger: "scheduled"
+schedule: "0 18 * * *"
+status: "drafting"
+order: 2
+steps:
+  - name: "Pull yesterday's audit log"
+    kind: "fetch"
+    summary: "All agent invocations grouped by agent and team. Aggregate-only — no individual employee names."
+  - name: "Pull workflow run summaries"
+    kind: "fetch"
+    summary: "Workflow runs that completed, failed, or are in flight. Step-level timing and cost."
+  - name: "Per-team summarizers (parallel)"
+    kind: "agent"
+    agent: "basal"
+    summary: "Fan out via Queues — one summarizer per team, each writes a 3-bullet digest of its team's AI activity."
+  - name: "Compose master briefing"
+    kind: "agent"
+    agent: "basal"
+    summary: "Stitch the per-team digests into a single executive briefing. Sections: shipped, hot, anomalies, coming next."
+  - name: "Render to TTS"
+    kind: "transform"
+    summary: "Phase 4: synthesize the briefing as MP3 audio for the podcast feed. Stored in R2."
+  - name: "Publish"
+    kind: "deliver"
+    summary: "Write episode row to D1; static page reads latest. RSS feed regenerates."
+---
+
+The daily fleet briefing is the single most visible Cloudflare Workflow on the platform. It's the surface that makes the AI fleet's work legible to leadership and the team, in a form that respects their time — read it in 90 seconds or listen while making coffee.
+
+The privacy discipline is built into the workflow: aggregation happens at the per-team level, individual employee names never appear in the output, and prompt content is never quoted. The briefing reports on the work, not on who did it.
+
+The workflow lives in `apps/workflow-runner/` once Phase 3 lands; today it's an MDX-defined shape we read into the catalog page.

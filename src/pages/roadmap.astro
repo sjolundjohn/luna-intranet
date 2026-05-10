@@ -1,0 +1,165 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+
+interface Item {
+  title: string;
+  detail: string;
+  ref?: string;
+}
+
+const phases: { name: string; status: "shipped" | "now" | "next" | "later" | "deferred"; goal: string; items: Item[] }[] = [
+  {
+    name: "Phase 0 · Cloudflare-native skeleton",
+    status: "now",
+    goal: "Stand up the platform on Workers, Durable Objects, Workflows, Queues, AI Gateway, Vectorize, D1, R2 — used the way Cloudflare intended.",
+    items: [
+      { title: "Monorepo layout (apps/, packages/, infra/)", detail: "agent-router, agent-basal, config-api, fleet-api, workflow-control, workflow-runner, shared, agents-sdk-glue." },
+      { title: "Each Worker scaffolded with proper bindings", detail: "workers_dev=false, observability on, no hand-rolled JSON-RPC. Reviewed by DevOps before any deploy." },
+      { title: "Existing /api/chat path migrated through agent-router", detail: "Behind a feature flag defaulting OFF — production behavior unchanged until flipped." },
+      { title: "D1 schema + Terraform plan only", detail: "No migrations applied, no terraform apply, until reviewed in the morning." },
+    ],
+  },
+  {
+    name: "Phase 1 · IA + copy + walkthroughs",
+    status: "now",
+    goal: "Every page exists with full Shannon-reviewed copy and mock data. The vision and governance are reviewable by leadership before backend wiring lands.",
+    items: [
+      { title: "/vision", detail: "Highest-value-work principle, fear-and-answer pattern, what's changing / what isn't." },
+      { title: "/governance", detail: "Roles, permissions, kill-switch, audit, cost caps, PHI scope, change control, honest gaps." },
+      { title: "/agents, /agents/me, /chat, /workflows, /fleet, /fleet/briefing, /onboarding, /roadmap", detail: "All routes live with mock data; structure validated end-to-end." },
+      { title: "/styleguide updated with new components", detail: "FearAndAnswer, RoleBadge, AuditRow, CostMeter, FleetTile, WorkflowCard, BriefingPlayer, AgentConfigCard, etc." },
+    ],
+  },
+  {
+    name: "Phase 2 · Per-user state on Cloudflare Agents",
+    status: "next",
+    goal: "Real per-user agent configuration, real memory, real audit log — written through the config-api Worker and the agent's Durable Object.",
+    items: [
+      { title: "D1 schema applied", detail: "users, user_agent_config, audit_log, chat_threads, chat_messages_index, kill_switches, cost_caps, workflows, workflow_versions, workflow_runs, briefing_episodes." },
+      { title: "agent-basal Worker + DO live", detail: "Cloudflare Agents SDK; per-user thread + memory pointer." },
+      { title: "Vectorize index for memory", detail: "Save/recall round-trip; 'show what this agent remembers about me' surface real." },
+      { title: "/agents/me writes through config-api", detail: "Toggle, custom instructions, memory delete — all audit-logged." },
+    ],
+  },
+  {
+    name: "Phase 3 · Live fleet + workflow runtime",
+    status: "later",
+    goal: "Cloudflare Workflows execute the seeded list. Fleet aggregates from real audit data. AI Gateway in front of every model call. Kill-switches enforced server-side.",
+    items: [
+      { title: "Audit ingestion webhook", detail: "ai-proxy posts to /api/audit/ingest; D1 + Analytics Engine populated." },
+      { title: "/fleet aggregates", detail: "team-only by default; ai-admin sees full; per-employee leaderboards never." },
+      { title: "Kill-switch round-trip", detail: "KV flag, defense-in-depth check at router and at agent Worker." },
+      { title: "Cloudflare Workflows runtime", detail: "Seeded workflows: morning briefing, support triage, daily fleet briefing, weekly company briefing." },
+      { title: "/chat persisted threads + R2 attachments", detail: "Per-user DO threads + signed-URL upload to R2." },
+      { title: "AI Gateway in front of Anthropic", detail: "Caching, observability, per-agent budget enforcement." },
+    ],
+  },
+  {
+    name: "Phase 4 · Designer + podcast + onboarding",
+    status: "later",
+    goal: "Workflows are designable in the UI; the daily briefing has a real podcast feed; first-visit onboarding is wired.",
+    items: [
+      { title: "Workflow designer", detail: "Edit steps, save versions, A/B promote a candidate version when it wins." },
+      { title: "Briefing TTS pipeline + RSS", detail: "Audio MP3s in R2; subscribable podcast feed at /fleet/briefing/feed.xml." },
+      { title: "First-visit onboarding redirect", detail: "Role-based path triggered until completed; never fires again." },
+      { title: "PHI-authorized gate enforced", detail: "All agents tagged piiScope:phi require the phi-authorized group." },
+      { title: "Champions opt-in directory", detail: "Per-agent 'ask me about this' surface on each agent page." },
+    ],
+  },
+  {
+    name: "Deferred · California employment-law guardrails",
+    status: "deferred",
+    goal: "Important, real, scoped — and parked until we're ready to ship them with counsel review rather than as filler.",
+    items: [
+      { title: "CCPA employee data export endpoint", detail: "Self-serve 'export everything stored about me.' Hooks are in the schema; export endpoint awaits counsel pass." },
+      { title: "AB 2930 automated-decision flag", detail: "Mandatory human-in-the-loop documentation for any agent that affects employment decisions. We don't run any such agents today." },
+      { title: "Surveillance policy text", detail: "Explicit, written-down policy on what the Fleet view is and isn't. Drafted; needs counsel review." },
+    ],
+  },
+];
+
+const statusStyle: Record<typeof phases[number]["status"], string> = {
+  "shipped": "bg-success-bg text-success-ink",
+  "now": "bg-info-bg text-info-ink",
+  "next": "bg-moonlight-tint text-info-ink",
+  "later": "bg-periwinkle-mist text-graphite",
+  "deferred": "bg-warning-bg text-warning-ink",
+};
+
+const statusLabel: Record<typeof phases[number]["status"], string> = {
+  "shipped": "Shipped",
+  "now": "In flight",
+  "next": "Up next",
+  "later": "Later",
+  "deferred": "Deferred",
+};
+---
+
+<BaseLayout
+  title="Roadmap"
+  description="What's shipping, what's next, and what we're explicitly deferring."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Roadmap" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Show, don't promise.
+    </Fragment>
+    <Fragment slot="subcopy">
+      What's shipping, what's queued, and what we're deferring on purpose.
+      If a control isn't here, it isn't shipped — and we'd rather say so
+      than fake it.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="space-y-12">
+      {
+        phases.map((p) => (
+          <article>
+            <div class="flex items-center gap-3 flex-wrap mb-3">
+              <span class={`inline-flex items-center h-[24px] px-3 rounded-full font-body text-[12px] font-semibold ${statusStyle[p.status]}`}>
+                {statusLabel[p.status]}
+              </span>
+              <h2 class="font-display text-ink font-normal text-[24px] md:text-[32px] leading-tight">
+                {p.name}
+              </h2>
+            </div>
+            <p class="mt-2 text-graphite text-[16px] leading-[1.6] max-w-[64ch]">{p.goal}</p>
+            <div class="mt-5"><MoonlightRule width={40} color="midnight" /></div>
+
+            <ul class="mt-6 grid md:grid-cols-2 gap-x-10 gap-y-4">
+              {p.items.map((item) => (
+                <li class="flex gap-3">
+                  <span class="mt-2 block h-[6px] w-[6px] rounded-full bg-moonlight flex-shrink-0" aria-hidden="true" />
+                  <div>
+                    <p class="text-ink text-[15px] font-semibold leading-snug">{item.title}</p>
+                    <p class="mt-1 text-graphite text-[14px] leading-[1.55]">{item.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </WhiteSection>
+
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[720px]">
+      <p class="eyebrow mb-3">If you don't see something here</p>
+      <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-[1.1]">
+        We probably haven't decided yet.
+      </h2>
+      <p class="mt-4 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        The roadmap is a living artifact, not a contract. If a thing you
+        need is missing — or a thing here is in the wrong column — say so
+        in <span class="font-mono text-[14px]">#ai-platform</span>. The
+        bar is "would a Lunite be better off if this existed today?" If
+        yes, it moves up.
+      </p>
+    </div>
+  </WhiteSection>
+</BaseLayout>

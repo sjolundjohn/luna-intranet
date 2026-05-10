@@ -37,6 +37,82 @@ const agents = defineCollection({
     /** People who actively use this agent (ids from people collection). */
     usedBy: z.array(z.string()).default([]),
     order: z.number().default(99),
+    /**
+     * Class A = 1:many shared agent (e.g. Basal). Class B = 1:1 personal.
+     * Drives change-control: Class A configure-edits require ai-admin review.
+     */
+    agentClass: z.enum(["A", "B"]).default("A"),
+    /**
+     * Per-role gates enforced server-side. Defaults align with default-deny
+     * for shared (Class A) agents and self-serve for personal (Class B).
+     */
+    permissions: z
+      .object({
+        invoke: z.array(z.string()).default(["employee"]),
+        configure: z.array(z.string()).default(["ai-admin"]),
+        viewLogs: z.array(z.string()).default(["ai-admin"]),
+      })
+      .default({ invoke: ["employee"], configure: ["ai-admin"], viewLogs: ["ai-admin"] }),
+    /** Patient/PHI scope. PHI agents require `phi-authorized` group. */
+    piiScope: z.enum(["none", "employee", "phi"]).default("none"),
+  }),
+});
+
+/**
+ * Workflows: named, versioned multi-step tasks. Examples: morning Personal
+ * Briefing, support-ticket triage, fleet briefing generation.
+ *
+ * Phase 1 stores definitions as MDX so the catalog page renders without a
+ * backend; Phase 2 moves authoritative storage to D1 and treats MDX as seed.
+ */
+const workflows = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/workflows" }),
+  schema: z.object({
+    name: z.string(),
+    summary: z.string(),
+    owner: z.string().optional(),
+    /** Trigger model. */
+    trigger: z.enum(["manual", "scheduled", "event"]),
+    /** Cron expression if trigger=scheduled. */
+    schedule: z.string().optional(),
+    status: z.enum(["active", "paused", "drafting"]).default("drafting"),
+    /** Ordered list of step descriptors used by WorkflowStepList. */
+    steps: z
+      .array(
+        z.object({
+          name: z.string(),
+          agent: z.string().optional(),
+          kind: z
+            .enum(["agent", "fetch", "decision", "human-approval", "transform", "deliver"])
+            .default("agent"),
+          summary: z.string().optional(),
+        }),
+      )
+      .default([]),
+    order: z.number().default(99),
+  }),
+});
+
+/**
+ * Onboarding role tracks. One MDX per role (eng, ops, clinical, exec, admin).
+ * Each track is 3–5 modules; the first module is always
+ * "What we're not asking you to do."
+ */
+const onboarding = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/onboarding" }),
+  schema: z.object({
+    role: z.string(),
+    title: z.string(),
+    summary: z.string(),
+    /** Each module ends in a real concrete task the reader does. */
+    modules: z.array(
+      z.object({
+        title: z.string(),
+        body: z.string(),
+        task: z.string().optional(),
+      }),
+    ),
+    order: z.number().default(99),
   }),
 });
 
@@ -88,7 +164,16 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { agents, platform, people, handbook, engineering, news };
+export const collections = {
+  agents,
+  platform,
+  people,
+  handbook,
+  engineering,
+  news,
+  workflows,
+  onboarding,
+};
 
 /** Human-readable team labels (source of truth for UI). */
 export const TEAM_LABELS: Record<(typeof TEAMS)[number], string> = {

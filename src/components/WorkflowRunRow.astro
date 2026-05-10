@@ -1,0 +1,50 @@
+---
+/**
+ * One run history row on /workflows/[id]. Phase 1 mock; Phase 3 reads
+ * from the workflow_runs D1 table.
+ */
+interface Props {
+  ts: string;
+  durationMs: number;
+  status: "success" | "running" | "failed" | "cancelled";
+  triggeredBy: string;
+  costUsd: number;
+  /** Workflow version this run executed against. */
+  version: string;
+}
+
+const { ts, durationMs, status, triggeredBy, costUsd, version } = Astro.props;
+
+const fmtDuration = (ms: number) =>
+  ms < 1000 ? `${ms}ms` : ms < 60000 ? `${(ms / 1000).toFixed(1)}s` : `${Math.round(ms / 60000)}m`;
+
+const fmtCost = (n: number) =>
+  n < 0.01 ? "<$0.01" : `$${n.toFixed(n < 1 ? 3 : 2)}`;
+
+const statusStyle: Record<typeof status, string> = {
+  "success": "bg-success-bg text-success-ink",
+  "running": "bg-info-bg text-info-ink",
+  "failed": "bg-critical-bg text-critical-ink",
+  "cancelled": "bg-periwinkle-mist text-graphite",
+};
+
+const statusLabel: Record<typeof status, string> = {
+  "success": "Success",
+  "running": "Running",
+  "failed": "Failed",
+  "cancelled": "Cancelled",
+};
+---
+
+<tr class="border-t border-border-subtle text-[14px]">
+  <td class="py-3 pr-4 whitespace-nowrap text-slate font-mono text-[12px]">{ts}</td>
+  <td class="py-3 pr-4">
+    <span class={`inline-flex items-center h-[20px] px-[10px] rounded-full font-body text-[11px] font-semibold tracking-[0.02em] ${statusStyle[status]}`}>
+      {statusLabel[status]}
+    </span>
+  </td>
+  <td class="py-3 pr-4 font-mono text-[12px] text-slate tabular-nums">{fmtDuration(durationMs)}</td>
+  <td class="py-3 pr-4 text-graphite">{triggeredBy}</td>
+  <td class="py-3 pr-4 text-slate font-mono text-[12px]">{version}</td>
+  <td class="py-3 text-right tabular-nums text-ink">{fmtCost(costUsd)}</td>
+</tr>

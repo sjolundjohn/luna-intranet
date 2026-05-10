@@ -1,0 +1,132 @@
+---
+/**
+ * Full-page chat surface used by /chat. Wraps the existing ChatBox
+ * so the streaming/SSE plumbing stays in one place; this component
+ * adds the agent picker, history sidebar, and full-bleed layout.
+ *
+ * Phase 1 keeps the picker and sidebar as static markup (no live
+ * thread persistence yet). Phase 2 wires per-user threads to the
+ * agent's Durable Object via the agent-router service binding;
+ * Phase 3 lifts attachments to R2.
+ */
+import ChatBox from "~/components/ChatBox.astro";
+
+interface Agent {
+  slug: string;
+  name: string;
+  status: "live" | "coming-soon" | "by-request";
+}
+
+interface Thread {
+  id: string;
+  title: string;
+  agent: string;
+  ts: string;
+}
+
+interface Props {
+  agents: Agent[];
+  /** Slug of the agent the page should open against. */
+  defaultAgent: string;
+  /** Recent threads for the signed-in user. */
+  recentThreads: Thread[];
+}
+
+const { agents, defaultAgent, recentThreads } = Astro.props;
+const active = agents.find((a) => a.slug === defaultAgent) ?? agents[0];
+---
+
+<div class="grid md:grid-cols-[260px_minmax(0,1fr)] min-h-[calc(100vh-72px)] bg-soft-paper">
+  {/* Sidebar: agent picker + recent threads. */}
+  <aside class="bg-white border-r border-border-subtle p-5 md:p-6 flex flex-col gap-6">
+    <div>
+      <p class="eyebrow mb-3">Talk to</p>
+      <ul class="space-y-1">
+        {
+          agents.map((a) => (
+            <li>
+              <a
+                href={`/chat?agent=${a.slug}`}
+                class:list={[
+                  "flex items-center gap-2 px-3 py-2 rounded-[10px] text-[14px] transition-colors",
+                  a.slug === active?.slug
+                    ? "bg-periwinkle-mist text-ink font-semibold"
+                    : "text-graphite hover:text-ink hover:bg-soft-paper",
+                  a.status !== "live" && "opacity-60",
+                ]}
+                aria-current={a.slug === active?.slug ? "page" : undefined}
+              >
+                {a.name}
+                {a.status === "coming-soon" && (
+                  <span class="text-slate text-[11px]">· soon</span>
+                )}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <p class="eyebrow mb-3">Your recent threads</p>
+      {
+        recentThreads.length === 0 ? (
+          <p class="text-slate text-[13px] italic">
+            No threads yet. Conversations land here once you've sent a message.
+          </p>
+        ) : (
+          <ul class="space-y-1">
+            {recentThreads.map((t) => (
+              <li>
+                <a
+                  href={`/chat?thread=${t.id}`}
+                  class="block px-3 py-2 rounded-[10px] text-[13px] text-graphite hover:text-ink hover:bg-soft-paper transition-colors"
+                >
+                  <span class="block truncate font-medium">{t.title}</span>
+                  <span class="block text-slate text-[11px] mt-0.5">
+                    {t.agent} · {t.ts}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    <div class="mt-auto pt-5 border-t border-border-subtle text-slate text-[12px] leading-[1.5]">
+      <p>
+        Threads are private to you. Anthropic ZDR is on. Audit metadata
+        only — never message content.
+        <a href="/governance" class="text-graphite underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">Learn how</a>.
+      </p>
+    </div>
+  </aside>
+
+  {/* Main chat surface. */}
+  <main class="flex flex-col">
+    <header class="px-6 md:px-10 py-5 bg-white border-b border-border-subtle flex items-center justify-between gap-4 flex-wrap">
+      <div>
+        <p class="eyebrow mb-1">Chat</p>
+        <h1 class="text-ink font-body text-[18px] font-semibold leading-tight">
+          {active?.name ?? "Pick an agent"}
+        </h1>
+      </div>
+      <a
+        href={`/agents/${active?.slug ?? "basal"}`}
+        class="text-graphite hover:text-ink text-[13px] font-medium transition-colors"
+      >
+        About this agent →
+      </a>
+    </header>
+
+    <div class="flex-1 px-4 md:px-10 py-6 md:py-10">
+      <div class="mx-auto w-full max-w-[840px]">
+        <ChatBox
+          agent={active?.slug ?? "basal"}
+          placeholder={`Ask ${active?.name ?? "an agent"} something…`}
+        />
+      </div>
+    </div>
+  </main>
+</div>

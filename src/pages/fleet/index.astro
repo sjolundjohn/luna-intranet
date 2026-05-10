@@ -1,0 +1,219 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MidnightBand from "~/components/MidnightBand.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import FleetTile from "~/components/FleetTile.astro";
+import CostMeter from "~/components/CostMeter.astro";
+
+const agents = (await getCollection("agents")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+// Phase 1 mock metrics. Phase 3 reads real D1 + Analytics Engine.
+const fleetMetrics: Record<
+  string,
+  { invocations7d: number; uniqueUsers7d: number; costUsd7d: number; killed?: boolean; health?: "ok" | "warn" | "crit" }
+> = {
+  basal:         { invocations7d: 318, uniqueUsers7d: 7, costUsd7d: 12.4,  health: "ok" },
+  "data-agent":  { invocations7d: 0,   uniqueUsers7d: 0, costUsd7d: 0,     health: "ok" },
+  personal:      { invocations7d: 12,  uniqueUsers7d: 1, costUsd7d: 0.34,  health: "ok" },
+};
+
+// Per-team breakdown — aggregate only, no individual names.
+const teamUsage = [
+  { team: "Software",                 invocations7d: 142, uniqueLunites: 3 },
+  { team: "Exec",                     invocations7d: 88,  uniqueLunites: 1 },
+  { team: "Clinical",                 invocations7d: 41,  uniqueLunites: 2 },
+  { team: "Regulatory",               invocations7d: 28,  uniqueLunites: 1 },
+  { team: "Data Science",             invocations7d: 24,  uniqueLunites: 1 },
+  { team: "Hardware",                 invocations7d: 7,   uniqueLunites: 1 },
+];
+---
+
+<BaseLayout
+  title="Fleet"
+  description="Live status of every Luna agent. Aggregates only — no per-employee usage, by design."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Fleet" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      What the fleet<br />is working on.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Live status, recent usage, and cost — across every Luna agent.
+      Aggregated by team. Never by individual employee.
+    </Fragment>
+  </Hero>
+
+  {/* Privacy framing band — said up-front, not buried. */}
+  <WhiteSection size="compact">
+    <div class="bg-soft-paper border border-border-subtle rounded-[20px] p-6 md:p-8">
+      <p class="eyebrow mb-3">A note on what this page is, and isn't</p>
+      <div class="grid md:grid-cols-2 gap-6 md:gap-10">
+        <div>
+          <p class="text-ink text-[15px] font-semibold">This page is for</p>
+          <ul class="mt-2 space-y-2 text-graphite text-[14px] leading-[1.55]">
+            <li class="flex gap-2"><span class="mt-1.5 h-[5px] w-[5px] rounded-full bg-success-ink flex-shrink-0"></span>Knowing what the fleet is doing right now</li>
+            <li class="flex gap-2"><span class="mt-1.5 h-[5px] w-[5px] rounded-full bg-success-ink flex-shrink-0"></span>Spotting cost or reliability issues before they hit prod</li>
+            <li class="flex gap-2"><span class="mt-1.5 h-[5px] w-[5px] rounded-full bg-success-ink flex-shrink-0"></span>Understanding which workflows are paying off — at the team level</li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-ink text-[15px] font-semibold">This page isn't for</p>
+          <ul class="mt-2 space-y-2 text-graphite text-[14px] leading-[1.55]">
+            <li class="flex gap-2"><span class="mt-1.5 h-[5px] w-[5px] rounded-full bg-critical-ink flex-shrink-0"></span>Per-employee leaderboards or rankings</li>
+            <li class="flex gap-2"><span class="mt-1.5 h-[5px] w-[5px] rounded-full bg-critical-ink flex-shrink-0"></span>Manager visibility into individual usage</li>
+            <li class="flex gap-2"><span class="mt-1.5 h-[5px] w-[5px] rounded-full bg-critical-ink flex-shrink-0"></span>Performance evaluation of any kind</li>
+          </ul>
+        </div>
+      </div>
+      <p class="mt-6 pt-5 border-t border-border-subtle text-slate text-[13px] leading-[1.55]">
+        These constraints are enforced in the query layer, not just in
+        policy. See <a href="/governance" class="text-graphite underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">/governance</a> for how.
+      </p>
+    </div>
+  </WhiteSection>
+
+  {/* Agent grid. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Per-agent status</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Every agent, at a glance.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {
+        agents.map((a) => {
+          const m = fleetMetrics[a.id] ?? { invocations7d: 0, uniqueUsers7d: 0, costUsd7d: 0 };
+          return (
+            <FleetTile
+              slug={a.id}
+              name={a.data.name}
+              status={a.data.status}
+              killed={m.killed}
+              invocations7d={m.invocations7d}
+              uniqueUsers7d={m.uniqueUsers7d}
+              costUsd7d={m.costUsd7d}
+              health={m.health}
+            />
+          );
+        })
+      }
+    </div>
+  </WhiteSection>
+
+  {/* Cost panel. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Cost</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Per-agent budgets, enforced at the gateway.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
+        Each agent has a daily and monthly cap configured at the AI Gateway.
+        Crossing 80% goes amber; crossing 100% trips the cap and the agent
+        starts refusing new requests until the cap resets or an admin lifts it.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <CostMeter label="Basal · monthly" spentUsd={48.7} capUsd={150} period="this month" />
+      </div>
+      <div class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <CostMeter label="Data Agent · monthly" spentUsd={0} capUsd={50} period="this month" />
+      </div>
+      <div class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <CostMeter label="Total fleet · monthly" spentUsd={49.0} capUsd={500} period="this month" />
+      </div>
+    </div>
+  </WhiteSection>
+
+  {/* Team usage. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Usage by team</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Where the work is happening.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
+        7-day rollup. Teams with one Lunite still show as one — we don't
+        suppress small teams, but the table reports them as a team, not
+        as that person.
+      </p>
+    </div>
+
+    <div class="bg-white border border-border-subtle rounded-[16px] overflow-hidden">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-soft-paper text-slate text-[12px] font-semibold uppercase tracking-[0.06em]">
+            <th class="py-3 pl-5 pr-4">Team</th>
+            <th class="py-3 pr-4 text-right">Invocations · 7d</th>
+            <th class="py-3 pr-5 text-right">Lunites active</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            teamUsage.map((t) => (
+              <tr class="border-t border-border-subtle">
+                <td class="py-3 pl-5 pr-4 text-ink font-medium text-[14px]">{t.team}</td>
+                <td class="py-3 pr-4 text-right tabular-nums font-mono text-[13px] text-ink">
+                  {t.invocations7d.toLocaleString()}
+                </td>
+                <td class="py-3 pr-5 text-right tabular-nums text-graphite text-[13px]">
+                  {t.uniqueLunites}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </WhiteSection>
+
+  <MidnightBand size="compact">
+    <div class="max-w-[720px]">
+      <p class="eyebrow eyebrow-on-dark mb-3">The briefing</p>
+      <h2
+        class="font-display text-white font-normal"
+        style="font-size: clamp(28px, 4vw, 40px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Read or listen to today's fleet briefing.
+      </h2>
+      <p class="mt-5 text-white/72 text-[16px] leading-[1.6] max-w-[56ch]">
+        A daily and weekly summary of what the fleet has been working on.
+        Same content as a Markdown report or a 3-minute podcast — pick
+        your channel.
+      </p>
+      <div class="mt-7">
+        <a
+          href="/fleet/briefing"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-moonlight text-midnight font-body text-[15px] font-semibold shadow-[0_3px_10px_rgba(104,210,223,0.4)] hover:shadow-[0_6px_20px_rgba(104,210,223,0.5)] transition-shadow"
+        >
+          Today's briefing
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </MidnightBand>
+</BaseLayout>

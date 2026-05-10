@@ -1,0 +1,247 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import AgentConfigCard from "~/components/AgentConfigCard.astro";
+import MemoryViewer from "~/components/MemoryViewer.astro";
+import CostMeter from "~/components/CostMeter.astro";
+import AuditRow from "~/components/AuditRow.astro";
+
+// Phase 1 mock data. Phase 2 reads from D1 + Vectorize via config-api.
+const myAgents = [
+  {
+    slug: "basal",
+    name: "Basal",
+    status: "live" as const,
+    agentClass: "A" as const,
+    summary: "General-purpose chat assistant. Lives in Slack and here.",
+    enabled: true,
+    memoryEnabled: true,
+    customInstructionLength: 0,
+  },
+  {
+    slug: "data-agent",
+    name: "Data Agent",
+    status: "coming-soon" as const,
+    agentClass: "A" as const,
+    summary: "Answers questions about Luna's data warehouse with safe, scoped read-only access.",
+    enabled: false,
+    memoryEnabled: false,
+    customInstructionLength: 0,
+  },
+  {
+    slug: "personal",
+    name: "Personal",
+    status: "by-request" as const,
+    agentClass: "B" as const,
+    summary: "Your personal agent — tuned to your role, your inbox, your patterns.",
+    enabled: false,
+    memoryEnabled: false,
+    customInstructionLength: 0,
+  },
+];
+
+const memoryFacts = [
+  {
+    ts: "2026-05-08",
+    fact: "Prefers concise responses without bullet lists unless asked.",
+    source: "basal",
+  },
+  {
+    ts: "2026-05-06",
+    fact: "Working on the AI platform website expansion.",
+    source: "basal",
+  },
+  {
+    ts: "2026-05-02",
+    fact: "Uses pnpm, not npm. Repo is sjolundjohn/luna-intranet.",
+    source: "basal",
+  },
+];
+
+const recentActivity = [
+  { ts: "2026-05-09 14:22", agent: "Basal", actor: "you", model: "claude-opus-4-7", tokens: 4128, costUsd: 0.082 },
+  { ts: "2026-05-09 11:08", agent: "Basal", actor: "you", model: "claude-opus-4-7", tokens: 1840, costUsd: 0.037 },
+  { ts: "2026-05-09 09:14", agent: "Basal", actor: "you", model: "claude-opus-4-7", tokens: 920,  costUsd: 0.018, workflow: "Morning briefing" },
+  { ts: "2026-05-08 16:45", agent: "Basal", actor: "you", model: "claude-opus-4-7", tokens: 6210, costUsd: 0.124 },
+  { ts: "2026-05-08 09:14", agent: "Basal", actor: "you", model: "claude-opus-4-7", tokens: 880,  costUsd: 0.018, workflow: "Morning briefing" },
+  { ts: "2026-05-07 13:30", agent: "Basal", actor: "you", model: "claude-opus-4-7", tokens: 2240, costUsd: 0.045 },
+];
+---
+
+<BaseLayout
+  title="My Agents"
+  description="Configure your agents — toggles, custom instructions, memory, and your own activity log."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · My Agents" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Your agents.<br />Your settings.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Toggle, tune, and inspect what each agent remembers. This page is
+      yours alone — nothing here is shown to your manager or anyone else.
+    </Fragment>
+  </Hero>
+
+  {/* Agents list. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Your agents</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 38px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Three agents, three sets of controls.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="space-y-5">
+      {
+        myAgents.map((a) => <AgentConfigCard {...a} />)
+      }
+    </div>
+
+    <p class="mt-6 text-slate text-[13px] italic">
+      Phase 1 preview: the toggles render but don't persist yet. Writes
+      land with Phase 2 via the config-api Worker. See <a href="/roadmap" class="text-graphite underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">/roadmap</a>.
+    </p>
+  </WhiteSection>
+
+  {/* Custom instructions. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Custom instructions</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        How you want to be talked to.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
+        Add a few lines that any agent will append to its default
+        prompt when it talks to you — preferred reply length, tone,
+        format, anything you'd otherwise re-explain every conversation.
+      </p>
+    </div>
+
+    <div class="bg-white border border-border-subtle rounded-[16px] p-5 md:p-6">
+      <label class="block">
+        <span class="eyebrow">Append to system prompt for all agents</span>
+        <textarea
+          class="mt-3 w-full min-h-[140px] rounded-[12px] border border-border-default bg-white px-4 py-3 font-body text-[14px] text-ink placeholder:text-slate focus:outline-none focus:border-border-focus focus:ring-2 focus:ring-moonlight/30"
+          placeholder="e.g. Keep replies under 200 words unless I ask for more. Skip preamble. Use plain text — no markdown headings."
+          disabled
+          aria-describedby="ci-help"
+        ></textarea>
+      </label>
+      <p id="ci-help" class="mt-3 text-slate text-[12px]">
+        Phase 2 wires this to config-api. Until then, the field renders
+        but doesn't persist. Capped at 1,000 characters.
+      </p>
+    </div>
+  </WhiteSection>
+
+  {/* Memory viewer (Basal). */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Memory</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        See what's remembered. Delete what isn't yours to keep.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <MemoryViewer agent="Basal" facts={memoryFacts} memoryEnabled={true} />
+  </WhiteSection>
+
+  {/* Activity. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Your activity</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Last 30 days, your invocations only.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
+        Every row is one agent invocation by you. Metadata only — never
+        prompt or response content. This view is private to you and AI
+        admins; nobody else (including managers) can see it.
+      </p>
+    </div>
+
+    <div class="bg-white border border-border-subtle rounded-[16px] overflow-hidden">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-soft-paper text-slate text-[12px] font-semibold uppercase tracking-[0.06em]">
+            <th class="py-3 pl-5 pr-4 font-semibold">When</th>
+            <th class="py-3 pr-4 font-semibold">Agent</th>
+            <th class="py-3 pr-4 font-semibold">Actor</th>
+            <th class="py-3 pr-4 font-semibold">Model</th>
+            <th class="py-3 pr-4 font-semibold text-right">Tokens</th>
+            <th class="py-3 pr-5 font-semibold text-right">Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            recentActivity.map((row) => (
+              <AuditRow {...row} />
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 grid md:grid-cols-2 gap-5">
+      <div class="bg-white border border-border-subtle rounded-[16px] p-5 md:p-6">
+        <CostMeter label="Your spend · Basal" spentUsd={3.24} capUsd={20} period="this month" />
+      </div>
+      <div class="bg-white border border-border-subtle rounded-[16px] p-5 md:p-6">
+        <CostMeter label="Your spend · all agents" spentUsd={3.24} capUsd={50} period="this month" />
+      </div>
+    </div>
+  </WhiteSection>
+
+  {/* Data export / delete. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px]">
+      <p class="eyebrow mb-3">Your data</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 32px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Take it. Delete it. Or both.
+      </h2>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        You can export everything Luna agents have stored about you —
+        memory entries, audit log rows, chat-thread metadata — and you
+        can wipe an agent's memory of you to start over. The full export
+        endpoint lands with Phase 2; today the request goes through an
+        AI admin and turnaround is within 24 hours.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a
+          href="mailto:john@lunadiabetes.com?subject=My%20data%20export"
+          class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors"
+        >
+          Request my data
+        </a>
+        <a
+          href="mailto:john@lunadiabetes.com?subject=Wipe%20agent%20memory"
+          class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-critical-ink text-critical-ink font-body text-[14px] font-medium hover:bg-critical-bg transition-colors"
+        >
+          Wipe agent memory
+        </a>
+      </div>
+    </div>
+  </WhiteSection>
+</BaseLayout>

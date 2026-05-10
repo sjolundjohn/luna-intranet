@@ -12,10 +12,19 @@ interface Props {
 
 const { heroIsDark = true } = Astro.props;
 
+/**
+ * Nav grouping: five primary destinations.
+ *  - "Use" (Chat, Agents, Workflows) — what employees do day-to-day
+ *  - "See" (Fleet) — what the fleet is doing
+ *  - "Learn" — index of context pages: Vision, Governance, Onboarding,
+ *    Roadmap, Org chart, Platform.
+ */
 const navLinks = [
+  { href: "/chat", label: "Chat" },
   { href: "/agents", label: "Agents" },
-  { href: "/org", label: "Org chart" },
-  { href: "/platform", label: "Platform" },
+  { href: "/workflows", label: "Workflows" },
+  { href: "/fleet", label: "Fleet" },
+  { href: "/learn", label: "Learn" },
 ];
 
 const currentPath = Astro.url.pathname;

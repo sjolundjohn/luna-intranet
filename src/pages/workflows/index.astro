@@ -1,0 +1,110 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import WorkflowCard from "~/components/WorkflowCard.astro";
+
+const workflows = (await getCollection("workflows")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+// Mock last-run summaries for Phase 1.
+const mockRuns: Record<string, { lastRun?: string; successRatePct?: number }> = {
+  "morning-briefing": { lastRun: "today, 7:00", successRatePct: 100 },
+  "fleet-briefing-daily": { lastRun: "—", successRatePct: undefined },
+  "support-triage": { lastRun: "today, 14:00", successRatePct: 96 },
+  "monthly-platform-audit": { lastRun: "—", successRatePct: undefined },
+};
+---
+
+<BaseLayout
+  title="Workflows"
+  description="Multi-step tasks Luna runs over and over — designed, observed, and tuned in one place."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Workflows" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Repeat the work,<br />consistently.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Agents are <em>who</em>. Workflows are <em>what they do, repeatedly.</em>
+      The catalog below is everything we run on a schedule, on a trigger,
+      or on a manual call.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="compact">
+    <div class="max-w-[760px]">
+      <p class="eyebrow mb-3">What a workflow is</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        A named, versioned, multi-step task.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-6 text-graphite text-[16px] leading-[1.65] max-w-[60ch]">
+        Each workflow has a trigger (manual, scheduled, or event-driven),
+        an ordered list of steps that may include agent calls, fetches,
+        decisions, and human approvals, and an output. They run on
+        Cloudflare Workflows for durable execution — automatic retries,
+        step-level checkpoints, and the ability to pause and resume
+        without losing state.
+      </p>
+    </div>
+  </WhiteSection>
+
+  <WhiteSection size="tall" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">The catalog</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        What we're running today.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+      {
+        workflows.map((wf) => (
+          <WorkflowCard
+            id={wf.id}
+            name={wf.data.name}
+            summary={wf.data.summary}
+            trigger={wf.data.trigger}
+            schedule={wf.data.schedule}
+            status={wf.data.status}
+            owner={wf.data.owner}
+            stepCount={wf.data.steps.length}
+            lastRun={mockRuns[wf.id]?.lastRun}
+            successRatePct={mockRuns[wf.id]?.successRatePct}
+          />
+        ))
+      }
+    </div>
+  </WhiteSection>
+
+  <WhiteSection size="compact">
+    <div class="max-w-[720px]">
+      <p class="eyebrow mb-3">How to file a workflow</p>
+      <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-[1.05]">
+        If you do it twice a week, write it down.
+      </h2>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.65] max-w-[60ch]">
+        The bar for a workflow isn't "this should be automated" — it's
+        "this is shaped enough to be written down." Drop a paragraph in
+        <span class="font-mono text-[14px]">#ai-platform</span> with the
+        trigger, the steps, and what "done" looks like. We'll either
+        point you at an existing workflow or scaffold a new one.
+      </p>
+      <p class="mt-4 text-slate text-[14px] leading-[1.6] max-w-[60ch]">
+        Phase 4 lands the in-UI designer. Until then, new workflows are
+        proposed in Slack and added to this catalog by a platform-team PR.
+      </p>
+    </div>
+  </WhiteSection>
+</BaseLayout>

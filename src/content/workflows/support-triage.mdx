@@ -1,0 +1,29 @@
+---
+name: "Support ticket triage"
+summary: "Reads new HubSpot support tickets, drafts compliant responses for review, and surfaces the queue to John."
+owner: "john"
+trigger: "scheduled"
+schedule: "0 */2 * * *"
+status: "active"
+order: 3
+steps:
+  - name: "Pull unanswered tickets"
+    kind: "fetch"
+    summary: "Open or unresponded HubSpot tickets touched in the last 48h."
+  - name: "Classify"
+    kind: "decision"
+    summary: "Sort into: regulatory-sensitive (escalate to Cara), product question, account/billing, hardware, other."
+  - name: "Draft replies"
+    kind: "agent"
+    agent: "basal"
+    summary: "One draft per ticket. PHI-redacted, citation-aware, never sends — only drafts."
+  - name: "Surface for review"
+    kind: "human-approval"
+    summary: "Drafts surfaced in HubSpot for John's review. Sends only after explicit approve."
+---
+
+Support triage is the canonical "agent drafts, human sends" workflow. It runs every two hours during business hours and never auto-sends — the human-approval step is non-skippable.
+
+When a ticket is regulatory-sensitive (anything mentioning adverse events, prescribing, or specific patient outcomes), the workflow escalates immediately and does not draft a reply. That's a guardrail at the workflow level — Cara, the support agent, is configured the same way.
+
+The output discipline is the same as the morning briefing's: short, structured, and oriented toward what the human is going to do next.

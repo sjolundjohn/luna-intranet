@@ -1,0 +1,78 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import OnboardingPath from "~/components/OnboardingPath.astro";
+
+const tracks = (await getCollection("onboarding")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout
+  title="Onboarding"
+  description="Short, role-specific paths for getting started with Luna's AI workplace."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Onboarding" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Twenty minutes.<br />Pick your path.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Five short modules tailored to your role, ending in a real task you
+      do with an agent. The first module on every track is the same:
+      what we're not asking you to do.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="max-w-[760px] mb-10">
+      <p class="eyebrow mb-3">Choose the track for your work</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 40px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Five role-specific tracks.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-6 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        If your work crosses two of these, do both — they're short. The
+        engineering and clinical tracks share material; the ops and exec
+        tracks address how to use AI without setting wrong incentives for
+        the people around you.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+      {
+        tracks.map((track) => (
+          <OnboardingPath
+            role={track.data.role}
+            title={track.data.title}
+            summary={track.data.summary}
+            moduleCount={track.data.modules.length}
+            href={`/onboarding/${track.id}`}
+          />
+        ))
+      }
+    </div>
+  </WhiteSection>
+
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[720px]">
+      <p class="eyebrow mb-3">Why we have onboarding at all</p>
+      <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-[1.1]">
+        Because the platform is half technical, half cultural.
+      </h2>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.65] max-w-[60ch]">
+        The hardest work in shipping an AI workplace isn't the Cloudflare
+        plumbing. It's making sure the team trusts what we built — that
+        the boundaries are real, that the metrics aren't being misread,
+        that "AI assisted" doesn't mean "the human is off the hook." The
+        first module on every track exists for that reason.
+      </p>
+    </div>
+  </WhiteSection>
+</BaseLayout>

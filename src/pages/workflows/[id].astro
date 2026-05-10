@@ -1,0 +1,163 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import StatusChip from "~/components/StatusChip.astro";
+import WorkflowStepList from "~/components/WorkflowStepList.astro";
+import WorkflowRunRow from "~/components/WorkflowRunRow.astro";
+import Prose from "~/components/Prose.astro";
+
+export async function getStaticPaths() {
+  const workflows = await getCollection("workflows");
+  return workflows.map((wf) => ({
+    params: { id: wf.id },
+    props: { workflow: wf },
+  }));
+}
+
+const { workflow } = Astro.props;
+const data = workflow.data;
+const { Content } = await render(workflow);
+
+// Mock run history. Phase 3 reads from D1 workflow_runs.
+const mockRuns = [
+  { ts: "2026-05-10 07:00", durationMs: 14200, status: "success" as const, triggeredBy: "cron", costUsd: 0.084, version: "v3" },
+  { ts: "2026-05-09 07:00", durationMs: 12800, status: "success" as const, triggeredBy: "cron", costUsd: 0.079, version: "v3" },
+  { ts: "2026-05-08 07:00", durationMs: 19400, status: "success" as const, triggeredBy: "cron", costUsd: 0.094, version: "v3" },
+  { ts: "2026-05-07 07:00", durationMs: 11700, status: "failed"  as const, triggeredBy: "cron", costUsd: 0.012, version: "v3" },
+  { ts: "2026-05-06 07:00", durationMs: 13100, status: "success" as const, triggeredBy: "cron", costUsd: 0.081, version: "v2" },
+  { ts: "2026-05-05 07:00", durationMs: 16400, status: "success" as const, triggeredBy: "cron", costUsd: 0.090, version: "v2" },
+];
+
+const statusChip =
+  data.status === "active" ? "live" : data.status === "drafting" ? "coming-soon" : "by-request";
+
+const triggerCopy =
+  data.trigger === "scheduled"
+    ? `Scheduled · ${data.schedule ?? "cron"}`
+    : data.trigger === "manual"
+      ? "Manual trigger"
+      : "Event-driven";
+---
+
+<BaseLayout
+  title={`Workflow · ${data.name}`}
+  description={data.summary}
+  heroIsDark={true}
+>
+  <Hero eyebrow={triggerCopy} size="compact" animateMoons={false}>
+    <Fragment slot="headline">{data.name}</Fragment>
+    <Fragment slot="subcopy">{data.summary}</Fragment>
+  </Hero>
+
+  {/* Quick facts. */}
+  <WhiteSection size="compact">
+    <div class="grid md:grid-cols-4 gap-5">
+      <div>
+        <p class="eyebrow mb-2">Status</p>
+        <StatusChip
+          status={statusChip as "live" | "coming-soon" | "by-request"}
+          label={data.status === "active" ? "Active" : data.status === "drafting" ? "Draft" : "Paused"}
+        />
+      </div>
+      <div>
+        <p class="eyebrow mb-2">Trigger</p>
+        <p class="text-ink font-body text-[15px] font-medium">{triggerCopy}</p>
+      </div>
+      <div>
+        <p class="eyebrow mb-2">Owner</p>
+        <p class="text-ink font-body text-[15px] font-medium">{data.owner ?? "—"}</p>
+      </div>
+      <div>
+        <p class="eyebrow mb-2">Steps</p>
+        <p class="text-ink font-body text-[15px] font-medium">{data.steps.length}</p>
+      </div>
+    </div>
+  </WhiteSection>
+
+  {/* Definition. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Definition</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Steps, top to bottom.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="bg-white border border-border-subtle rounded-[16px] p-6 md:p-8">
+      <WorkflowStepList steps={data.steps} />
+    </div>
+  </WhiteSection>
+
+  {/* Long-form description from MDX body. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[720px]">
+      <p class="eyebrow mb-3">Why we run this</p>
+      <Prose>
+        <Content />
+      </Prose>
+    </div>
+  </WhiteSection>
+
+  {/* Run history. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Run history</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Last six runs.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
+        Phase 1 mock data. Phase 3 reads from the workflow_runs D1 table —
+        actual durations, actual outcomes, actual cost per run. The table
+        renders the same; the source of truth changes.
+      </p>
+    </div>
+
+    <div class="bg-white border border-border-subtle rounded-[16px] overflow-hidden">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-soft-paper text-slate text-[12px] font-semibold uppercase tracking-[0.06em]">
+            <th class="py-3 pl-5 pr-4">When</th>
+            <th class="py-3 pr-4">Status</th>
+            <th class="py-3 pr-4">Duration</th>
+            <th class="py-3 pr-4">Triggered by</th>
+            <th class="py-3 pr-4">Version</th>
+            <th class="py-3 pr-5 text-right">Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {mockRuns.map((r) => <WorkflowRunRow {...r} />)}
+        </tbody>
+      </table>
+    </div>
+  </WhiteSection>
+
+  {/* Designer placeholder. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[720px]">
+      <p class="eyebrow mb-3">Designer · Phase 4</p>
+      <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-[1.05]">
+        Edit, version, A/B promote.
+      </h2>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.65] max-w-[60ch]">
+        The in-UI designer lets you edit step lists, swap agents, adjust
+        prompts and parameters, save a new version (immutable history),
+        and promote a candidate when it wins on cost, latency, or quality.
+        Wired with Phase 4. Today's edits go through a platform-team PR.
+      </p>
+      <p class="mt-4 text-slate text-[13px] italic">
+        See <a href="/roadmap" class="text-graphite underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">/roadmap</a> for sequencing.
+      </p>
+    </div>
+  </WhiteSection>
+</BaseLayout>

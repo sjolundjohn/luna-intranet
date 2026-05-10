@@ -1,0 +1,36 @@
+---
+/**
+ * Tiny chip showing a role from the auth-group taxonomy.
+ *
+ * Roles map to Cloudflare Access Workspace groups — see /governance for
+ * how the JWT claim drives this server-side.
+ */
+type Role = "employee" | "manager" | "ai-admin" | "phi-authorized";
+
+interface Props {
+  role: Role;
+  class?: string;
+}
+
+const { role, class: className = "" } = Astro.props;
+
+const labels: Record<Role, string> = {
+  "employee": "Employee",
+  "manager": "Manager",
+  "ai-admin": "AI admin",
+  "phi-authorized": "PHI authorized",
+};
+
+const fills: Record<Role, string> = {
+  "employee": "bg-periwinkle-mist text-ink",
+  "manager": "bg-info-bg text-info-ink",
+  "ai-admin": "bg-warning-bg text-warning-ink",
+  "phi-authorized": "bg-critical-bg text-critical-ink",
+};
+---
+
+<span
+  class={`inline-flex items-center h-[20px] px-[10px] rounded-full font-body text-[11px] font-semibold tracking-[0.02em] ${fills[role]} ${className}`}
+>
+  {labels[role]}
+</span>

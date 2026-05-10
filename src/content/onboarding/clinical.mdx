@@ -1,0 +1,22 @@
+---
+role: "clinical"
+title: "Clinical work at Luna with AI alongside"
+summary: "How to use agents for the parts of clinical and regulatory work that aren't your highest-judgment work — and where the boundary lives."
+order: 2
+modules:
+  - title: "What we're not asking you to do"
+    body: "You're not being asked to put PHI into a general-purpose agent, replace your clinical judgment with a model's draft, or skip the human-review step on anything that goes to a regulator, a site, or a patient. The boundaries here are the same boundaries Luna's clinical work has always had — just written down so the agents respect them too."
+    task: "If you ever feel like the system is asking you to skip a step you'd normally take, that's a bug. Tell us — that's a workflow we need to fix."
+  - title: "PHI scope and the separate path"
+    body: "Most Luna agents are not cleared for PHI. The ones that are have piiScope: phi in their declaration and live behind the phi-authorized Workspace group. If you're working with patient identifiers, trial data, or anything you'd treat as PHI in a clinical setting, route it through the PHI-scoped agent. There's no shortcut, and no agent will accept the data outside that path."
+    task: "Confirm your phi-authorized group membership with John. Bookmark the PHI-scoped agent (when it lands — flagged on the roadmap)."
+  - title: "Where agents earn their keep in regulatory and clinical work"
+    body: "Drafting protocol synopses, summarizing a long thread of monitor visits, comparing two versions of a study report, generating a plain-English explainer of a 510(k) decision letter, pulling structure from a wall of free-text deviation reports. The pattern: turn a wall of text into a structured starting point you then verify."
+    task: "Pick one regulatory or clinical artifact from the last month. Ask Basal (general scope, no PHI) for a structured outline of an analogous one. Compare its structure to yours."
+  - title: "Always-human steps"
+    body: "Final review of any document going to FDA, an IRB, a site PI, or a patient. Adverse-event causality assessments. Any judgment that would normally carry your signature. These aren't 'AI-assisted.' They're yours, and the audit log records them as such — the agent's contribution stops at the prior step."
+    task: "Add 'human review by &lt;name&gt;' as an explicit row in your project tracker for any agent-assisted regulatory artifact."
+  - title: "Surfacing risks back to the platform"
+    body: "If an agent gives you a confidently wrong answer about a clinical or regulatory question, that's the most useful signal we get. Log it (a screenshot is fine), drop it in #ai-platform, and we'll either correct the prompt, narrow the scope, or remove the agent from that path entirely. Hallucinations on regulated work are not 'a known limitation' — they're a fix."
+    task: "Find one moment in the last month where an agent (here or elsewhere) was wrong about a clinical-adjacent topic. Write it up; it informs the guardrails we ship next."
+---

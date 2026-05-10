@@ -1,0 +1,39 @@
+---
+/**
+ * One row of the audit log. Used on /agents/me ("my activity") and
+ * /fleet ("recent invocations"). Shows what was logged — never the
+ * prompt content, never the response content.
+ */
+interface Props {
+  ts: string;
+  agent: string;
+  /** "you" on /agents/me, team or aggregate on /fleet. */
+  actor?: string;
+  model: string;
+  tokens: number;
+  costUsd: number;
+  /** Workflow this invocation was part of, if any. */
+  workflow?: string;
+}
+
+const { ts, agent, actor = "you", model, tokens, costUsd, workflow } = Astro.props;
+
+const fmtCost = (n: number) =>
+  n < 0.01 ? "<$0.01" : `$${n.toFixed(n < 1 ? 3 : 2)}`;
+---
+
+<tr class="border-t border-border-subtle text-[14px] text-graphite">
+  <td class="py-3 pr-4 whitespace-nowrap text-slate font-mono text-[12px]">{ts}</td>
+  <td class="py-3 pr-4">
+    <span class="text-ink font-medium">{agent}</span>
+    {workflow && (
+      <span class="ml-2 text-slate text-[12px]">
+        via <span class="text-graphite">{workflow}</span>
+      </span>
+    )}
+  </td>
+  <td class="py-3 pr-4 text-slate">{actor}</td>
+  <td class="py-3 pr-4 font-mono text-[12px] text-slate">{model}</td>
+  <td class="py-3 pr-4 text-right tabular-nums">{tokens.toLocaleString()}</td>
+  <td class="py-3 text-right tabular-nums text-ink">{fmtCost(costUsd)}</td>
+</tr>
