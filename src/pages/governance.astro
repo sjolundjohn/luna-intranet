@@ -65,7 +65,7 @@ import FearAndAnswer from "~/components/FearAndAnswer.astro";
         <RoleBadge role="employee" />
         <h3 class="mt-3 text-ink font-body text-[17px] font-semibold">Employee</h3>
         <p class="mt-2 text-graphite text-[14px] leading-[1.6]">
-          Default for every Lunite. Can chat with shared agents, configure
+          Default for everyone on the team. Can chat with shared agents, configure
           personal ones, view own audit log. Cannot view anyone else's data.
         </p>
       </article>
@@ -125,7 +125,7 @@ agentClass: "A"        # 1:many shared agent
 piiScope: "none"        # touches no PHI
 
 permissions:
-  invoke:    [employee]              # any signed-in Lunite
+  invoke:    [employee]              # any signed-in team member
   configure: [ai-admin]               # only AI admins edit shared agents
   viewLogs:  [ai-admin]               # full audit visible to admins only
 
@@ -204,11 +204,11 @@ owner: john
         </div>
         <h3 class="text-ink font-body text-[18px] font-semibold">Shared agents</h3>
         <p class="mt-2 text-graphite text-[15px] leading-[1.6]">
-          One agent, many Lunites. Basal, the Data Agent, the briefing generator.
+          One agent, many people. Basal, the Data Agent, the briefing generator.
         </p>
         <ul class="mt-4 space-y-2 text-graphite text-[14px] leading-[1.55]">
           <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-info-ink flex-shrink-0"></span>Edits to definition, prompt, or permissions require an AI-admin reviewer.</li>
-          <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-info-ink flex-shrink-0"></span>Every Lunite can still set personal overlays — custom instructions, memory off — without review.</li>
+          <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-info-ink flex-shrink-0"></span>Every team member can still set personal overlays — custom instructions, memory off — without review.</li>
           <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-info-ink flex-shrink-0"></span>Versioned: prior definitions stay queryable so we can attribute past behavior.</li>
         </ul>
       </article>
@@ -220,7 +220,7 @@ owner: john
         </div>
         <h3 class="text-ink font-body text-[18px] font-semibold">Personal agents</h3>
         <p class="mt-2 text-graphite text-[15px] leading-[1.6]">
-          One agent, one Lunite. Tuned to your work, your inbox, your patterns.
+          One agent, one person. Tuned to your work, your inbox, your patterns.
         </p>
         <ul class="mt-4 space-y-2 text-graphite text-[14px] leading-[1.55]">
           <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-success-ink flex-shrink-0"></span>Self-serve: you own it, you configure it, no review queue.</li>

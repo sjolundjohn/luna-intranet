@@ -24,12 +24,12 @@ const fleetMetrics: Record<
 
 // Per-team breakdown — aggregate only, no individual names.
 const teamUsage = [
-  { team: "Software",                 invocations7d: 142, uniqueLunites: 3 },
-  { team: "Exec",                     invocations7d: 88,  uniqueLunites: 1 },
-  { team: "Clinical",                 invocations7d: 41,  uniqueLunites: 2 },
-  { team: "Regulatory",               invocations7d: 28,  uniqueLunites: 1 },
-  { team: "Data Science",             invocations7d: 24,  uniqueLunites: 1 },
-  { team: "Hardware",                 invocations7d: 7,   uniqueLunites: 1 },
+  { team: "Software",                 invocations7d: 142, uniqueUsers: 3 },
+  { team: "Exec",                     invocations7d: 88,  uniqueUsers: 1 },
+  { team: "Clinical",                 invocations7d: 41,  uniqueUsers: 2 },
+  { team: "Regulatory",               invocations7d: 28,  uniqueUsers: 1 },
+  { team: "Data Science",             invocations7d: 24,  uniqueUsers: 1 },
+  { team: "Hardware",                 invocations7d: 7,   uniqueUsers: 1 },
 ];
 ---
 
@@ -154,7 +154,7 @@ const teamUsage = [
       </h2>
       <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
       <p class="mt-5 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
-        7-day rollup. Teams with one Lunite still show as one — we don't
+        7-day rollup. Teams with one person still show as one — we don't
         suppress small teams, but the table reports them as a team, not
         as that person.
       </p>
@@ -166,7 +166,7 @@ const teamUsage = [
           <tr class="bg-soft-paper text-slate text-[12px] font-semibold uppercase tracking-[0.06em]">
             <th class="py-3 pl-5 pr-4">Team</th>
             <th class="py-3 pr-4 text-right">Invocations · 7d</th>
-            <th class="py-3 pr-5 text-right">Lunites active</th>
+            <th class="py-3 pr-5 text-right">People active</th>
           </tr>
         </thead>
         <tbody>
@@ -178,7 +178,7 @@ const teamUsage = [
                   {t.invocations7d.toLocaleString()}
                 </td>
                 <td class="py-3 pr-5 text-right tabular-nums text-graphite text-[13px]">
-                  {t.uniqueLunites}
+                  {t.uniqueUsers}
                 </td>
               </tr>
             ))

@@ -16,7 +16,7 @@ Slack sends the event to a Luna-owned endpoint — a Cloudflare Worker called **
 
 ## 3 · The agent handles your conversation
 
-**`luna-agent-basal`** receives the message along with your conversation history. Each Lunite has their own dedicated Durable Object instance — essentially a small, stateful mini-server in Cloudflare's edge network — with their own SQLite table of messages. Your conversations stay separate from everyone else's, automatically.
+**`luna-agent-basal`** receives the message along with your conversation history. Each person has their own dedicated Durable Object instance — essentially a small, stateful mini-server in Cloudflare's edge network — with their own SQLite table of messages. Your conversations stay separate from everyone else's, automatically.
 
 ## 4 · The model call goes through a proxy
 

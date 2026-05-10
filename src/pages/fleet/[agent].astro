@@ -23,7 +23,7 @@ const data = agent.data;
 // Phase 1 mock — Phase 3 reads from D1 + Analytics Engine.
 const metrics = {
   invocations7d: 318,
-  uniqueLunites7d: 7,
+  uniqueUsers7d: 7,
   costUsd7d: 12.4,
   costUsdMTD: 48.7,
   capUsdMonth: 150,
@@ -107,8 +107,8 @@ const recentInvocations = [
         <p class="text-ink font-mono tabular-nums text-[28px]">{metrics.invocations7d.toLocaleString()}</p>
       </div>
       <div class="bg-white border border-border-subtle rounded-[16px] p-5">
-        <p class="eyebrow mb-2">Lunites</p>
-        <p class="text-ink font-mono tabular-nums text-[28px]">{metrics.uniqueLunites7d}</p>
+        <p class="eyebrow mb-2">People</p>
+        <p class="text-ink font-mono tabular-nums text-[28px]">{metrics.uniqueUsers7d}</p>
       </div>
       <div class="bg-white border border-border-subtle rounded-[16px] p-5">
         <p class="eyebrow mb-2">P50 latency</p>
@@ -144,7 +144,7 @@ const recentInvocations = [
       <p class="mt-5 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
         Individual employee identifiers are not shown on this page. AI
         admins viewing the full audit log on a separate route see emails;
-        managers and other Lunites do not.
+        managers and other team members do not.
       </p>
     </div>
 

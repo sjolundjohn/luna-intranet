@@ -8,7 +8,7 @@ modules:
     body: "Even with the keys, AI admins are not asked to: open the audit log to investigate individual employees on a hunch, deploy new shared agents without the team that owns the work being part of the decision, or override a human-in-the-loop step to ship faster. The role is governance, not surveillance."
     task: "Internalize: 'because I can' is not 'because I should.' Every audit-log query is logged itself."
   - title: "What the role does"
-    body: "Configures shared (Class A) agents. Reviews proposed edits to shared agents. Holds the per-agent kill-switch. Sees the full audit log. Approves new shared-agent rollouts. That's the surface. Personal-agent configuration stays with the Lunite who owns it."
+    body: "Configures shared (Class A) agents. Reviews proposed edits to shared agents. Holds the per-agent kill-switch. Sees the full audit log. Approves new shared-agent rollouts. That's the surface. Personal-agent configuration stays with the person who owns it."
     task: "Read /governance end-to-end. The role's authority is documented there; if anything is unclear, that's a doc bug — fix it."
   - title: "When to use the kill-switch"
     body: "When an agent is producing wrong outputs in a domain that matters (regulatory, clinical, customer-facing), or when usage is spiking in a way that suggests a misuse, or when a vendor incident makes the agent's calls suspect. Pause first, investigate second. The cost of pausing for a few hours is small; the cost of letting a wrong agent run in regulated work is not."
