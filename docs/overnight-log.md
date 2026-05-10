@@ -6,9 +6,78 @@ This is Claude's working journal while John sleeps. Newest entries on top, but t
 
 ---
 
-## Morning briefing (TBD — written when work wraps up)
+## Morning briefing — written `2026-05-10T00:55Z`
 
-_This section is filled in last so it's the freshest view. Skip past it for the chronological log._
+> **TL;DR:** Both phases shipped. One PR, two atomic commits. Branch is `claude/nostalgic-shtern-e1f753`. Nothing was deployed. Nothing was merged. Coffee, walk through `/vision`, then merge or ask for revisions.
+
+### What landed
+
+**[luna-intranet#1](https://github.com/sjolundjohn/luna-intranet/pull/1)** — _v0.3+v0.4: AI workplace platform — frontend (Phase 1) + Cloudflare-native skeleton (Phase 0)_
+
+Two commits, separable on review:
+
+| Commit | What |
+|---|---|
+| `72748bd` | **Phase 1** — 13 new routes, 14 new components, schema extensions, restructured nav. Static frontend with mock data. Existing `/api/chat` path untouched. |
+| `402930c` | **Phase 0** — pnpm monorepo, 8 Workers, 2 shared packages, Cloudflare Agents SDK base class, full D1 schema, Terraform plans. Code-only — no infra apply. |
+
+Combined diff: ~50 new files, ~5,000 lines added in well-commented chunks. Build journal below.
+
+### What to do first thing
+
+1. **Open `/vision`** in `pnpm dev` and read it cold. The fear-and-answer pattern is the heart of the change-management voice — if any row reads as marketing rather than as a design choice, that's the first thing to revise. I leaned on the brand-essentials one-pager for canonical product phrasing ("overnight glucose control... for people on long-acting insulin"); anywhere I went beyond that, I stayed general rather than inventing specifics.
+2. **Then `/governance`.** This is where I'd most want a leadership / regulatory pass before showing the team. The roles, kill-switch, audit, and PHI sections are the contract Luna's making to its employees — they need to be both accurate and defensible. The "what we haven't built yet" block is the trust-compounding part; flag anything I claimed that we shouldn't claim, or any control we have that I didn't surface.
+3. **Then `/onboarding/{eng,clinical,ops,exec,admin}`.** Each is 5 modules, ~20 minutes per role. The first module on every track is "what we're not asking you to do" — that's the design discipline. Reread the one for your own role first; if it doesn't land for you, it won't land for the team.
+4. **`pnpm dev` walkthrough of the rest.** `/agents/me`, `/workflows`, `/fleet`, `/fleet/briefing`, `/chat`, `/learn`, `/roadmap`, `/styleguide`. All routes render with mock data.
+
+### What I'd flag for the team's review (not blockers)
+
+- **Shannon copy pass.** I cross-checked voice against existing `/agents` and `/platform/*` pages — direct, second-person, no marketing puff — but a human pass on `/vision`, `/governance`, and the 5 onboarding tracks before public-to-team rollout will catch nits I won't.
+- **DQ citations.** I couldn't run DQ from this worktree (no `gdrive_luna__*` MCP mounted). Anywhere I'd want to anchor a sentence in research data (segmentation n-sizes, HCP T2B percentages, willingness-to-pay), I left the language general rather than fabricate numbers. Run DQ from your main env to slot in primary-source citations if you want them.
+- **Legal pass on `/governance`** before the page goes live to the team — particularly the HIPAA/PHI section. The roadmap explicitly defers California employment-law work (CCPA-employee, AB 2930) until counsel review; I want to make sure we're consistent on that line.
+
+### Phase 0 deploy checklist (when you're ready)
+
+Nothing here is required to merge the PR — Phase 0 is code-only. When you decide to actually stand up the infrastructure:
+
+1. `cd infra/terraform && terraform init && terraform plan -out=plan.tfplan`
+2. Review the plan (creates D1, 2× KV, 2× R2, 1× Vectorize, 2× Queues, 1× Analytics Engine dataset; no destructive ops)
+3. `terraform apply plan.tfplan`
+4. `wrangler d1 migrations apply luna-platform --remote` to apply `migrations/0001_init.sql`
+5. Replace `PLACEHOLDER_FILL_VIA_TERRAFORM` ids in each `wrangler.toml` from `terraform output -json` (Phase 2 lands a wire-bindings script to automate)
+6. `pnpm -r --filter "@luna/*" deploy` to deploy every Worker
+7. Production `/api/chat` is **untouched** — it still goes through the existing Pages Function path. To migrate to the new agent-router, flip a feature flag (planned for Phase 2).
+
+### Hardening follow-ups I deliberately left for later
+
+- **CF Access JWT signature verification in `auth.ts`** — not required today (every Worker is service-bound or behind Access). Required before any Worker is exposed publicly. Easy to slot in (verify against the CF JWKS).
+- **Anthropic SSE `usage` parsing** for token counts in audit rows. Today rows write with `tokens_in/out: 0`. Phase 2 deliverable.
+- **Replace AI Gateway terraform placeholder** when the `cloudflare_ai_gateway` resource ships in the CF provider. Today the gateway is created via `wrangler ai-gateway create` and referenced by name.
+- **Empty-collection warnings** at build time for `handbook`, `engineering`, `news` collections in `content.config.ts` — the directories don't exist yet. Either create empty stubs or remove those collection definitions from the config; I left them as-is since they were pre-wired by your prior work.
+
+### Decisions I made under uncertainty
+
+- **No JWT verification in Phase 0.** Reasoning above. If you want this hardened immediately, it's a 30-line follow-up.
+- **`exactOptionalPropertyTypes: true`** across all Workers. Slightly stricter; required me to use `...(x ? { foo: x } : {})` spread patterns when forwarding optional fields. Worth it; keeps `undefined` from sneaking into D1 inserts.
+- **AI Gateway endpoint hardcoded to `gateway.ai.cloudflare.com/v1/anthropic/v1/messages`** in `LunaAgent.invoke()`. The `[ai] binding` should provide a typed gateway helper that takes care of the URL — replace the literal when you wire the real binding.
+- **Workflow definitions stubbed but cron-triggered.** The cron triggers in `workflow-runner/wrangler.toml` are real; they'll fire as soon as the Worker is deployed. Phase 0 cron handlers create instances but the workflow steps just return stub data. Acceptable because nothing's deployed; flag for me if you want me to disable the cron triggers until Phase 3 fills in the steps.
+
+### Things I did NOT do (per the autonomy rules)
+
+- ❌ No `terraform apply`
+- ❌ No `wrangler deploy` to production custom domains (only `--dry-run`)
+- ❌ No D1 migrations applied
+- ❌ No production secrets read or written
+- ❌ No external API calls beyond a few cents of test usage (didn't actually trigger any)
+- ❌ No merges
+- ❌ No force-push or destructive git ops
+- ❌ No external messages sent
+- ❌ No HIPAA-scoped agents wired live
+- ❌ No changes to `ai-proxy.nightluna.com` (separate repo, separate change-management story)
+
+---
+
+_Skip past this section for the chronological log of what landed when._
 
 ---
 
