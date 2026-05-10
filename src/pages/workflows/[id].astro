@@ -108,7 +108,15 @@ const triggerCopy =
   {/* Run history. */}
   <WhiteSection size="compact" class="bg-soft-paper">
     <div class="max-w-[760px] mb-8">
-      <p class="eyebrow mb-3">Run history</p>
+      <div class="flex items-center gap-3 flex-wrap mb-3">
+        <p class="eyebrow">Run history</p>
+        <span
+          class="inline-flex items-center h-[20px] px-[10px] rounded-full font-body text-[10px] font-semibold tracking-[0.04em] bg-warning-bg text-warning-ink"
+          title="Mock data — the workforce audit-log + fleet-api Workers ship in Blocks 3 + 4"
+        >
+          Mock data
+        </span>
+      </div>
       <h2
         class="font-display text-ink font-normal"
         style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
@@ -117,9 +125,11 @@ const triggerCopy =
       </h2>
       <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
       <p class="mt-5 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
-        Phase 1 mock data. Phase 3 reads from the workflow_runs D1 table —
-        actual durations, actual outcomes, actual cost per run. The table
-        renders the same; the source of truth changes.
+        Durations, outcomes, and costs below are <strong class="text-ink">mock data</strong> —
+        every number on this table is fabricated for the demo. The real run history
+        will come from the workforce audit log + fleet-api Worker once Blocks 3 and 4
+        land (see <a href="/roadmap" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/roadmap</a>).
+        The table renders the same; the source of truth changes.
       </p>
     </div>
 
