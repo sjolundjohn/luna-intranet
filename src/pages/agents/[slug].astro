@@ -21,8 +21,9 @@ export async function getStaticPaths() {
 const { agent } = Astro.props;
 const { Content } = await render(agent);
 
-const teams = agent.data.teams ?? ["all"];
-const isAllTeams = teams.includes("all");
+const department = agent.data.department;
+const departmentLabel = TEAM_LABELS[department];
+const scopeLabel = agent.data.scope === "1:many" ? "Shared (1:many)" : "Owner agent (1:1)";
 ---
 
 <BaseLayout
@@ -62,20 +63,29 @@ const isAllTeams = teams.includes("all");
       <aside class="lg:pt-8">
         <div class="sticky top-24 space-y-8">
           <div>
-            <p class="eyebrow mb-3">Available to</p>
-            {isAllTeams ? (
-              <p class="text-ink text-[15px]">Everyone at Luna.</p>
-            ) : (
+            <p class="eyebrow mb-3">Department</p>
+            <p class="text-ink text-[15px]">{departmentLabel}</p>
+          </div>
+          <div>
+            <p class="eyebrow mb-3">Scope</p>
+            <p class="text-ink text-[15px]">{scopeLabel}</p>
+          </div>
+          {agent.data.allowedUsers.length > 0 && (
+            <div>
+              <p class="eyebrow mb-3">Allowed</p>
               <ul class="space-y-1.5">
-                {teams.filter((t) => t !== "all").map((t) => (
-                  <li class="text-ink text-[14px] inline-flex items-center gap-2 mr-2">
-                    <span class="block w-1.5 h-1.5 rounded-full bg-moonlight"></span>
-                    {TEAM_LABELS[t as keyof typeof TEAM_LABELS]}
-                  </li>
+                {agent.data.allowedUsers.map((email) => (
+                  <li class="text-ink text-[13px] font-mono break-all">{email}</li>
                 ))}
               </ul>
-            )}
-          </div>
+            </div>
+          )}
+          {agent.data.piiScope === "phi" && (
+            <div>
+              <p class="eyebrow mb-3">PHI scope</p>
+              <p class="text-critical-ink text-[14px] font-medium">PHI · phi-authorized required</p>
+            </div>
+          )}
           {agent.data.owner && (
             <div>
               <p class="eyebrow mb-3">Owner</p>

@@ -365,8 +365,8 @@ const alerts = [
     {/* Agent config card */}
     <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Agent config card</h3>
     <div class="mt-3 space-y-4">
-      <AgentConfigCard slug="basal" name="Basal" status="live" agentClass="A" summary="General-purpose chat assistant." enabled={true} memoryEnabled={true} customInstructionLength={142} />
-      <AgentConfigCard slug="data-agent" name="Data Agent" status="coming-soon" agentClass="A" summary="Answers questions about Luna's data warehouse." enabled={false} memoryEnabled={false} customInstructionLength={0} />
+      <AgentConfigCard slug="basal" name="Basal" status="live" scope="1:many" summary="General-purpose chat assistant." enabled={true} memoryEnabled={true} customInstructionLength={142} />
+      <AgentConfigCard slug="clara" name="Clara" status="live" scope="1:1" summary="Chief of Staff to Luna's CFO." enabled={true} memoryEnabled={true} customInstructionLength={0} />
     </div>
 
     {/* Memory viewer */}

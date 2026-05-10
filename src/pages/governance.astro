@@ -121,21 +121,27 @@ import FearAndAnswer from "~/components/FearAndAnswer.astro";
     ><code>{`---
 name: "Basal"
 status: "live"
-agentClass: "A"        # 1:many shared agent
-piiScope: "none"        # touches no PHI
+scope: "1:many"          # 1:many = shared (Class A); 1:1 = owner (Class B)
+piiScope: "none"          # touches no PHI
 
-permissions:
-  invoke:    [employee]              # any signed-in team member
-  configure: [ai-admin]               # only AI admins edit shared agents
-  viewLogs:  [ai-admin]               # full audit visible to admins only
+allowedUsers:             # default-deny — only these emails reach this agent
+  - john@lunadiabetes.com
+  - jb@lunadiabetes.com
 
-teams: [all]
-owner: john
+department: "platform"
+owner: "john"
+
+skills:                   # knowledge files loaded into the prompt at runtime
+  - shared/memory-protocol
+  - shared/luna-agent-onboarding
 ---`}</code></pre>
 
     <p class="mt-5 text-slate text-[13px] leading-[1.6] max-w-[60ch]">
-      This is the actual schema enforced by <span class="font-mono">src/content.config.ts</span>.
-      Default-deny: anything not listed in <span class="font-mono">permissions.invoke</span> is blocked at the agent-router.
+      This is the actual schema enforced by <span class="font-mono">src/content.config.ts</span>,
+      mirrored from the Workforce config repo (<span class="font-mono">facets/&lt;slug&gt;.md</span>).
+      Default-deny: anything not in <span class="font-mono">allowedUsers</span> is blocked at the
+      agent-router. PHI agents additionally require the <span class="font-mono">phi-authorized</span>
+      Workspace group.
     </p>
   </WhiteSection>
 

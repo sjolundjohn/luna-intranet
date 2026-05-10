@@ -1,0 +1,81 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import SectionCard from "~/components/SectionCard.astro";
+---
+
+<BaseLayout
+  title="Help"
+  description="How to use the platform, why we're building it, how it's governed, and where to find everything."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Help" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Help and context.
+    </Fragment>
+    <Fragment slot="subcopy">
+      How to use the platform, why we're building it, how it's governed, and
+      where to find everything. Reference material — read what's relevant.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="max-w-[760px] mb-10">
+      <p class="eyebrow mb-3">Seven pages</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 38px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Read in any order.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="grid gap-6 md:gap-7 md:grid-cols-2 auto-rows-fr">
+      <SectionCard
+        href="/help/how-to"
+        eyebrow="01 · How to use it"
+        title="The user guide."
+        description="Reference manual for the platform. How to chat with an agent, configure yours, request a new one, watch the fleet, read the briefing — and where to find everything."
+      />
+      <SectionCard
+        href="/vision"
+        eyebrow="02 · Vision"
+        title="Why we're building this."
+        description="The principle behind Luna's AI workplace, what's changing, what isn't, and the fears we're tackling."
+      />
+      <SectionCard
+        href="/onboarding"
+        eyebrow="03 · Onboarding"
+        title="Pick your path."
+        description="Five role-specific tracks. The first module on every track is the same: what we're not asking you to do."
+      />
+      <SectionCard
+        href="/governance"
+        eyebrow="04 · Governance"
+        title="How it's scoped and stopped."
+        description="Roles, permissions, kill-switches, audit log, cost caps, PHI scope, change control — written down because trust compounds."
+      />
+      <SectionCard
+        href="/roadmap"
+        eyebrow="05 · Roadmap"
+        title="Shipped, next, deferred."
+        description="The honest view: what's in flight, what's queued, and what we're parking on purpose."
+      />
+      <SectionCard
+        href="/org"
+        eyebrow="06 · Org chart"
+        title="Who works on what."
+        description="Agents and people by team and by person. Which agents each function uses, who owns each one."
+      />
+      <SectionCard
+        href="/platform"
+        eyebrow="07 · Platform"
+        title="Under the hood."
+        description="Tech stack, request flow, and architecture — the Cloudflare-native plumbing that makes the rest possible."
+      />
+    </div>
+  </WhiteSection>
+</BaseLayout>

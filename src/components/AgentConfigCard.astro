@@ -13,7 +13,11 @@ interface Props {
   slug: string;
   name: string;
   status: "live" | "coming-soon" | "by-request";
-  agentClass: "A" | "B";
+  /**
+   * Workforce-aligned scope. "1:many" = shared (Class A), "1:1" = owner (Class B).
+   * Drives the small chip in the header and the title-text fallback.
+   */
+  scope: "1:many" | "1:1";
   summary: string;
   enabled: boolean;
   memoryEnabled: boolean;
@@ -24,12 +28,15 @@ const {
   slug,
   name,
   status,
-  agentClass,
+  scope,
   summary,
   enabled,
   memoryEnabled,
   customInstructionLength,
 } = Astro.props;
+
+const scopeLabel = scope === "1:many" ? "Shared" : "Owner agent";
+const scopeTitle = scope === "1:many" ? "1:many — shared agent" : "1:1 — personal owner agent";
 ---
 
 <article
@@ -43,9 +50,9 @@ const {
         <StatusChip status={status} />
         <span
           class="inline-flex items-center h-[20px] px-[10px] rounded-full font-body text-[11px] font-semibold tracking-[0.02em] bg-periwinkle-mist text-ink"
-          title={agentClass === "A" ? "1:many shared agent" : "1:1 personal agent"}
+          title={scopeTitle}
         >
-          Class {agentClass}
+          {scopeLabel}
         </span>
       </div>
       <p class="mt-2 text-graphite text-[14px] leading-[1.55] max-w-[60ch]">{summary}</p>

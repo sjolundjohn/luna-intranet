@@ -12,10 +12,7 @@ const agents = await getCollection("agents");
 const people = await getCollection("people");
 
 const agentsForTeam = (team: string) =>
-  agents.filter((a) => {
-    const t = a.data.teams ?? ["all"];
-    return t.includes("all") || t.includes(team as never);
-  });
+  agents.filter((a) => a.data.department === team);
 
 const peopleForTeam = (team: string) =>
   people

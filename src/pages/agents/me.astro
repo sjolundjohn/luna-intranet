@@ -8,35 +8,46 @@ import MemoryViewer from "~/components/MemoryViewer.astro";
 import CostMeter from "~/components/CostMeter.astro";
 import AuditRow from "~/components/AuditRow.astro";
 
-// Phase 1 mock data. Phase 2 reads from D1 + Vectorize via config-api.
+// Phase 1 mock data shows the four agents John actually has access to today.
+// Phase 6 wires this to the config-api Worker for real per-user reads/writes.
 const myAgents = [
   {
     slug: "basal",
     name: "Basal",
     status: "live" as const,
-    agentClass: "A" as const,
-    summary: "General-purpose chat assistant. Lives in Slack and here.",
+    scope: "1:many" as const,
+    summary: "Internal AI assistant for the team. Day-to-day questions about Luna.",
     enabled: true,
     memoryEnabled: true,
     customInstructionLength: 0,
   },
   {
-    slug: "data-agent",
-    name: "Data Agent",
-    status: "coming-soon" as const,
-    agentClass: "A" as const,
-    summary: "Answers questions about Luna's data warehouse with safe, scoped read-only access.",
-    enabled: false,
-    memoryEnabled: false,
+    slug: "pen",
+    name: "Pen",
+    status: "live" as const,
+    scope: "1:many" as const,
+    summary: "HR for the AI Workforce. Drafts persona files, runs intake interviews.",
+    enabled: true,
+    memoryEnabled: true,
     customInstructionLength: 0,
   },
   {
-    slug: "personal",
-    name: "Personal",
-    status: "by-request" as const,
-    agentClass: "B" as const,
-    summary: "Your personal agent — tuned to your role, your inbox, your patterns.",
-    enabled: false,
+    slug: "pump",
+    name: "Pump",
+    status: "live" as const,
+    scope: "1:many" as const,
+    summary: "Platform builder. Scaffolds Workers, opens PRs.",
+    enabled: true,
+    memoryEnabled: true,
+    customInstructionLength: 0,
+  },
+  {
+    slug: "sensor",
+    name: "Sensor",
+    status: "live" as const,
+    scope: "1:many" as const,
+    summary: "Adversarial code reviewer. Reviews Pump's plans + PRs.",
+    enabled: true,
     memoryEnabled: false,
     customInstructionLength: 0,
   },

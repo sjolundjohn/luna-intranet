@@ -1,95 +1,273 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Hero from "~/components/Hero.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
 import MidnightBand from "~/components/MidnightBand.astro";
-import SectionCard from "~/components/SectionCard.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
-import ChatBox from "~/components/ChatBox.astro";
+import StatusChip from "~/components/StatusChip.astro";
+import AgentAvatar from "~/components/AgentAvatar.astro";
+
+// Phase 1 dashboard runs against mock signed-in user (John). Block 6 wires
+// the real CF Access email into a Pages Function loader and reads
+// `config-api/me` for the personalized view.
+const SIGNED_IN_EMAIL = "john@lunadiabetes.com";
+
+const allAgents = await getCollection("agents");
+const myAgents = allAgents
+  .filter(
+    (a) =>
+      a.data.allowedUsers.includes(SIGNED_IN_EMAIL) ||
+      a.data.owner === "john" ||
+      (a.data.usedBy ?? []).includes("john"),
+  )
+  .filter((a) => a.data.status === "live")
+  .sort((a, b) => a.data.order - b.data.order);
+
+// Greeting + date.
+const today = new Date();
+const dateLabel = today.toLocaleDateString("en-US", {
+  weekday: "long",
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+const hour = today.getHours();
+const greeting =
+  hour < 5 ? "Hello" : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+const firstName = "John";
+
+// Mock data — replaced by fleet-api in Block 6.
+const fleetGlance = {
+  agentsHealthy: 6,
+  agentsTotal: 7,
+  monthSpendPctOfCap: 32,
+  anomalies24h: 1,
+};
+
+const recentActivity = [
+  { ts: "today, 14:22", text: "Basal · drafted board update reply", href: "/chat" },
+  { ts: "today, 09:14", text: "Workflow morning-briefing ran (success, 13.4s)", href: "/workflows/morning-briefing" },
+  { ts: "today, 08:42", text: "Sensor reviewed luna-killswitch plan (NEEDS CHANGES)", href: "/workflows" },
+  { ts: "yesterday", text: "Pen drafted persona for new clinical-ops agent", href: "/agents/pen" },
+  { ts: "yesterday", text: "Daily fleet briefing published", href: "/fleet/briefing" },
+];
+
+const briefingPreview = {
+  cadence: "Daily" as const,
+  date: dateLabel,
+  oneLine:
+    "The fleet shipped 318 invocations across 7 lunites this week. Software heaviest user; one workflow retry, no caps tripped.",
+};
 ---
 
 <BaseLayout
-  title="Luna, internal."
-  description="Luna's internal home — agents, people, platform, and everything we're building."
-  heroIsDark={true}
+  title="Luna · Home"
+  description="Luna's AI workplace — your agents, today's briefing, and what the fleet is doing."
+  heroIsDark={false}
 >
-  <Hero eyebrow="Luna · Internal" size="compact" animateMoons={true}>
-    <Fragment slot="headline">Luna, internal.</Fragment>
-    <Fragment slot="subcopy">
-      The place to find what we're building, who's building it, and how to use it.
-    </Fragment>
-  </Hero>
-
-  {/* Four-tile grid — less agent-focused, more intranet. */}
-  <WhiteSection size="compact">
-    <div class="max-w-[720px] mb-6 md:mb-8">
-      <p class="eyebrow mb-3">What's here</p>
-      <h2
+  {/* Greeting strip — light hero, no marketing fluff. */}
+  <section class="bg-white border-b border-border-subtle">
+    <div class="mx-auto w-full max-w-[1200px] px-6 md:px-10 py-10 md:py-14">
+      <p class="eyebrow mb-3">{dateLabel}</p>
+      <h1
         class="font-display text-ink font-normal"
-        style="font-size: clamp(28px, 3.6vw, 40px); line-height: 1.05; letter-spacing: -0.02em;"
+        style="font-size: clamp(36px, 5vw, 64px); line-height: 1.05; letter-spacing: -0.025em;"
       >
-        Four places to start.
-      </h2>
-      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
-    </div>
-
-    <div class="grid gap-6 md:gap-7 md:grid-cols-2 auto-rows-fr">
-      <SectionCard
-        href="/agents"
-        eyebrow="01 · Agents"
-        title="AI agents."
-        description="The AI assistants Luna is building for the team — starting with Basal."
-      />
-      <SectionCard
-        href="#playground"
-        eyebrow="02 · Playground"
-        title="Try it."
-        description="Chat with Basal right here — no Slack needed. Test drive how it responds."
-      />
-      <SectionCard
-        href="/org"
-        eyebrow="03 · Org chart"
-        title="Who does what."
-        description="Agents and teammates, by function and by person. See who owns what."
-      />
-      <SectionCard
-        href="/platform"
-        eyebrow="04 · Platform"
-        title="Under the hood."
-        description="How it actually works — Cloudflare, Claude, and why your data stays private."
-      />
-    </div>
-  </WhiteSection>
-
-  {/* Inline playground — chat with Basal without leaving the site. */}
-  <WhiteSection size="compact" id="playground" class="bg-soft-paper">
-    <div class="max-w-[720px] mb-10">
-      <p class="eyebrow mb-4">Playground · Try Basal</p>
-      <h2
-        class="font-display text-ink font-normal"
-        style="font-size: clamp(28px, 3.6vw, 42px); line-height: 1.1; letter-spacing: -0.02em;"
-      >
-        Ask Basal anything.
-      </h2>
-      <p class="mt-4 text-graphite text-[17px] leading-[1.55] max-w-[56ch]">
-        Same model and guardrails as the Slack experience. Conversations here aren't saved
-        to your Slack history — this is for quick trials.
+        {greeting}, {firstName}.
+      </h1>
+      <div class="mt-5"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-6 text-graphite text-[17px] leading-[1.55] max-w-[60ch]">
+        Here's what's happening across your AI workplace right now.
       </p>
     </div>
-    <ChatBox agent="basal" placeholder="Ask Basal something..." />
+  </section>
+
+  {/* Your agents — grid with quick chat actions. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
+      <div>
+        <p class="eyebrow mb-2">Your agents</p>
+        <h2 class="font-body text-ink font-bold text-[24px] leading-tight">
+          {myAgents.length} agents available to you
+        </h2>
+      </div>
+      <div class="flex gap-3">
+        <a
+          href="/agents/me"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border-default text-ink font-body text-[13px] font-medium hover:border-ink transition-colors"
+        >
+          Configure
+        </a>
+        <a
+          href="/agents/new"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-midnight text-white font-body text-[13px] font-medium hover:bg-midnight-deep transition-colors"
+        >
+          Request new
+        </a>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {
+        myAgents.map((a) => (
+          <article class="bg-white border border-border-subtle rounded-[16px] p-5 transition-shadow hover:shadow-[0_8px_32px_rgba(4,30,66,0.06)]">
+            <div class="flex items-start gap-3">
+              <AgentAvatar slug={a.id} name={a.data.name} size={40} src={a.data.avatar} />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-body text-[16px] font-semibold text-ink leading-tight">{a.data.name}</h3>
+                  <StatusChip status={a.data.status} />
+                </div>
+                <p class="mt-1 text-slate text-[13px] line-clamp-2">{a.data.summary}</p>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+              <a
+                href={`/chat?agent=${a.id}`}
+                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-midnight text-white text-[12px] font-semibold hover:bg-midnight-deep transition-colors"
+              >
+                Chat
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </a>
+              <a
+                href={`/agents/${a.id}`}
+                class="text-graphite text-[12px] hover:text-ink transition-colors"
+              >
+                About
+              </a>
+              <a
+                href={`/agents/me#${a.id}`}
+                class="text-graphite text-[12px] hover:text-ink transition-colors ml-auto"
+              >
+                Configure
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
   </WhiteSection>
 
-  <MidnightBand size="compact" class="text-center">
-    <p class="eyebrow eyebrow-on-dark mb-6">Our brand promise</p>
-    <h2
-      class="font-display text-white font-normal"
-      style="font-size: clamp(48px, 6vw, 80px); line-height: 1; letter-spacing: -0.03em;"
-    >
-      true to you.
-    </h2>
-    <div class="mt-8 flex justify-center"><MoonlightRule width={64} /></div>
-    <p class="mt-10 max-w-[540px] mx-auto text-white/72 text-[17px] leading-[1.6]">
-      Internal tools should feel as considered as the products we ship. This site is our first pass.
-    </p>
+  {/* Today's briefing card. */}
+  <WhiteSection size="compact">
+    <div class="grid md:grid-cols-[1.5fr_1fr] gap-6 md:gap-8 items-stretch">
+      <a
+        href="/fleet/briefing"
+        class="group bg-midnight text-white rounded-[20px] p-6 md:p-8 flex flex-col justify-between transition-shadow hover:shadow-[0_12px_40px_rgba(4,30,66,0.18)]"
+      >
+        <div>
+          <p class="eyebrow eyebrow-on-dark mb-3">{briefingPreview.cadence} fleet briefing</p>
+          <p class="font-display text-white font-normal text-[28px] md:text-[32px] leading-[1.1]">
+            {briefingPreview.date}
+          </p>
+          <p class="mt-4 text-white/72 text-[15px] leading-[1.55] max-w-[44ch]">{briefingPreview.oneLine}</p>
+        </div>
+        <div class="mt-6 inline-flex items-center gap-3 text-moonlight font-body text-[14px] font-medium">
+          <span>Read</span>
+          <span class="text-white/30">·</span>
+          <span>Listen</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ml-1 group-hover:translate-x-0.5 transition-transform" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </div>
+      </a>
+
+      {/* Fleet at a glance */}
+      <a
+        href="/fleet"
+        class="group bg-white border border-border-subtle rounded-[20px] p-6 md:p-8 flex flex-col justify-between transition-all hover:border-ink hover:shadow-[0_8px_32px_rgba(4,30,66,0.08)]"
+      >
+        <div>
+          <p class="eyebrow mb-3">Fleet at a glance</p>
+          <dl class="grid grid-cols-3 gap-3">
+            <div>
+              <dt class="text-slate text-[11px] uppercase tracking-[0.06em]">Healthy</dt>
+              <dd class="text-ink font-mono tabular-nums text-[24px] mt-1">
+                {fleetGlance.agentsHealthy}<span class="text-slate text-[16px]">/{fleetGlance.agentsTotal}</span>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-slate text-[11px] uppercase tracking-[0.06em]">Spend</dt>
+              <dd class="text-ink font-mono tabular-nums text-[24px] mt-1">
+                {fleetGlance.monthSpendPctOfCap}<span class="text-slate text-[14px]">%</span>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-slate text-[11px] uppercase tracking-[0.06em]">Anomalies</dt>
+              <dd class="text-ink font-mono tabular-nums text-[24px] mt-1">
+                {fleetGlance.anomalies24h}
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <div class="mt-6 inline-flex items-center gap-2 text-ink font-body text-[14px] font-medium">
+          <span>See the fleet</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-0.5 transition-transform" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </div>
+      </a>
+    </div>
+  </WhiteSection>
+
+  {/* Recent activity */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="mb-5">
+      <p class="eyebrow mb-2">Recent activity</p>
+      <h2 class="font-body text-ink font-bold text-[20px]">Across your agents and workflows</h2>
+    </div>
+    <ul class="space-y-1 bg-white border border-border-subtle rounded-[16px] divide-y divide-border-subtle overflow-hidden">
+      {
+        recentActivity.map((row) => (
+          <li>
+            <a
+              href={row.href}
+              class="flex items-center gap-4 px-5 py-3 hover:bg-soft-paper transition-colors"
+            >
+              <span class="text-slate font-mono text-[12px] tabular-nums whitespace-nowrap min-w-[110px]">{row.ts}</span>
+              <span class="text-ink text-[14px] flex-1">{row.text}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="text-slate flex-shrink-0" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </WhiteSection>
+
+  {/* Quick actions */}
+  <WhiteSection size="compact">
+    <p class="eyebrow mb-4">Quick actions</p>
+    <div class="flex flex-wrap gap-3">
+      <a href="/chat" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-midnight text-white font-body text-[14px] font-semibold hover:bg-midnight-deep transition-colors">Open chat</a>
+      <a href="/agents/me" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Configure my agents</a>
+      <a href="/agents/new" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Request a new agent</a>
+      <a href="/workflows" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">See workflows</a>
+      <a href="/fleet/briefing" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Read briefing</a>
+    </div>
+  </WhiteSection>
+
+  {/* Quiet footer band — link to context if needed */}
+  <MidnightBand size="compact">
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <p class="eyebrow eyebrow-on-dark mb-3">New here?</p>
+        <h3 class="font-display text-white font-normal text-[24px] md:text-[28px] leading-tight">
+          Start with the why, then pick your onboarding path.
+        </h3>
+      </div>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href="/vision" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Vision</a>
+        <a href="/onboarding" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Onboarding</a>
+        <a href="/help" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-moonlight text-midnight font-body text-[14px] font-semibold hover:opacity-90 transition-opacity">Help</a>
+      </div>
+    </div>
   </MidnightBand>
 </BaseLayout>

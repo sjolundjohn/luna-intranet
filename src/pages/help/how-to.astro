@@ -1,0 +1,181 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+---
+
+<BaseLayout
+  title="How to use it"
+  description="Reference manual for the Luna AI workplace platform — chat, configure, request, watch."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Help · How to use it" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      How to use the platform.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Reference material. Read top-to-bottom or jump to what you need.
+      Updated as things change.
+    </Fragment>
+  </Hero>
+
+  {/* TOC */}
+  <WhiteSection size="compact">
+    <nav aria-label="Table of contents" class="bg-soft-paper border border-border-subtle rounded-[16px] p-6 max-w-[760px]">
+      <p class="eyebrow mb-3">On this page</p>
+      <ol class="space-y-1.5 text-[14px]">
+        <li><a class="text-ink hover:underline decoration-moonlight decoration-2 underline-offset-4" href="#shape">1. The shape of the platform</a></li>
+        <li><a class="text-ink hover:underline decoration-moonlight decoration-2 underline-offset-4" href="#chatting">2. Chatting with an agent</a></li>
+        <li><a class="text-ink hover:underline decoration-moonlight decoration-2 underline-offset-4" href="#configuring">3. Configuring an agent</a></li>
+        <li><a class="text-ink hover:underline decoration-moonlight decoration-2 underline-offset-4" href="#requesting-new-agents">4. Requesting a new agent</a></li>
+        <li><a class="text-ink hover:underline decoration-moonlight decoration-2 underline-offset-4" href="#fleet">5. Watching the fleet</a></li>
+        <li><a class="text-ink hover:underline decoration-moonlight decoration-2 underline-offset-4" href="#briefing">6. Reading or subscribing to the briefing</a></li>
+        <li><a class="text-ink hover:underline decoration-moonlight decoration-2 underline-offset-4" href="#quick-ref">7. Quick reference</a></li>
+        <li><a class="text-ink hover:underline decoration-moonlight decoration-2 underline-offset-4" href="#asking-for-help">8. Where to ask for help</a></li>
+      </ol>
+    </nav>
+  </WhiteSection>
+
+  <WhiteSection size="tall">
+    <article class="prose-host max-w-[720px] space-y-12">
+
+      <section id="shape">
+        <p class="eyebrow mb-2">01</p>
+        <h2 class="font-display text-ink font-normal text-[28px] md:text-[32px] leading-tight">The shape of the platform</h2>
+        <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+        <div class="mt-6 space-y-4 text-graphite text-[16px] leading-[1.65]">
+          <p>The platform has five operational pages and one help layer:</p>
+          <ul class="space-y-2 ml-5 list-disc">
+            <li><strong class="text-ink">Home</strong> — your dashboard. Today's briefing, your agents, recent activity.</li>
+            <li><strong class="text-ink">Agents</strong> — the catalog. Yours at the top, the rest below. Configure or request a new one from here.</li>
+            <li><strong class="text-ink">Workflows</strong> — repeated multi-step tasks the platform runs (briefing, support triage, monthly audit, etc).</li>
+            <li><strong class="text-ink">Fleet</strong> — what every agent is doing right now, plus the daily and weekly fleet briefing.</li>
+            <li><strong class="text-ink">Help</strong> — this page, vision, governance, onboarding, roadmap, org chart, platform docs.</li>
+          </ul>
+          <p>Chat happens contextually — every agent page has a Chat button, and the dashboard's "Your agents" tiles all link straight to chat.</p>
+        </div>
+      </section>
+
+      <section id="chatting">
+        <p class="eyebrow mb-2">02</p>
+        <h2 class="font-display text-ink font-normal text-[28px] md:text-[32px] leading-tight">Chatting with an agent</h2>
+        <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+        <div class="mt-6 space-y-4 text-graphite text-[16px] leading-[1.65]">
+          <p>Three ways to chat with a Luna agent:</p>
+          <ol class="space-y-3 ml-5 list-decimal">
+            <li><strong class="text-ink">Slack DM.</strong> Search for the agent in Slack's sidebar (e.g. <span class="font-mono text-[14px]">@Basal</span>) and DM it. Conversations persist across reconnects in the agent's per-user Durable Object.</li>
+            <li><strong class="text-ink">/chat on this site.</strong> Full-page surface. Pick the agent in the left sidebar; recent threads list below.</li>
+            <li><strong class="text-ink">Inline on agent pages.</strong> Each <span class="font-mono text-[14px]">/agents/&lt;slug&gt;</span> page has an inline chat box for quick trial conversations.</li>
+          </ol>
+          <p>Identity is verified by your <span class="font-mono text-[14px]">@lunadiabetes.com</span> email at every entry point. There's no anonymous access. You only see and can invoke agents that explicitly list your email in <span class="font-mono text-[14px]">allowedUsers</span>.</p>
+        </div>
+      </section>
+
+      <section id="configuring">
+        <p class="eyebrow mb-2">03</p>
+        <h2 class="font-display text-ink font-normal text-[28px] md:text-[32px] leading-tight">Configuring an agent</h2>
+        <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+        <div class="mt-6 space-y-4 text-graphite text-[16px] leading-[1.65]">
+          <p>Go to <a href="/agents/me" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/agents/me</a>. Per-agent toggles you control today:</p>
+          <ul class="space-y-2 ml-5 list-disc">
+            <li><strong class="text-ink">Enabled / disabled</strong> — turn an agent off without deprovisioning it.</li>
+            <li><strong class="text-ink">Custom instructions</strong> — a few lines appended to the agent's system prompt every time you talk to it. Capped at 1,000 characters.</li>
+            <li><strong class="text-ink">Memory on / off</strong> — control whether durable facts are retained across conversations.</li>
+            <li><strong class="text-ink">Notifications</strong> — when an async agent finishes a long task, where to ping you.</li>
+          </ul>
+          <p>You can also see what each agent <em>remembers</em> about you and delete individual entries, or wipe an agent's memory of you entirely. Memory delete is irreversible — the agent forgets and starts over.</p>
+          <p>Shared (Class A) agents have shared definitions you don't change — the system prompt, allowed tools, and core scope are managed at the platform level. What you customize is your overlay on top of that. Personal (Class B) agents are entirely yours.</p>
+        </div>
+      </section>
+
+      <section id="requesting-new-agents">
+        <p class="eyebrow mb-2">04</p>
+        <h2 class="font-display text-ink font-normal text-[28px] md:text-[32px] leading-tight">Requesting a new agent</h2>
+        <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+        <div class="mt-6 space-y-4 text-graphite text-[16px] leading-[1.65]">
+          <p>Go to <a href="/agents/new" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/agents/new</a>. The flow:</p>
+          <ol class="space-y-3 ml-5 list-decimal">
+            <li>You file a request — DM <span class="font-mono text-[14px]">@pen</span> in Slack with the intake template.</li>
+            <li>Pen runs a 5-minute interview against the field checklist.</li>
+            <li>Pen drafts the persona file (<span class="font-mono text-[14px]">facets/&lt;name&gt;.md</span>).</li>
+            <li>For 1:many shared agents, John approves the scope. For 1:1 owner agents, the owner approves their own.</li>
+            <li>Sensor adversarially reviews the persona.</li>
+            <li>Pump scaffolds the Worker. Sensor reviews. John merges. CI deploys.</li>
+          </ol>
+          <p>You'll get a working agent in a few days. Status is visible on <a href="/agents/new" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/agents/new</a> and (Phase 2) on the dashboard.</p>
+        </div>
+      </section>
+
+      <section id="fleet">
+        <p class="eyebrow mb-2">05</p>
+        <h2 class="font-display text-ink font-normal text-[28px] md:text-[32px] leading-tight">Watching the fleet</h2>
+        <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+        <div class="mt-6 space-y-4 text-graphite text-[16px] leading-[1.65]">
+          <p><a href="/fleet" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/fleet</a> shows what every agent is doing — aggregate only. Per-employee usage is never shown to anyone (including managers and AI admins on this page). The constraint is enforced in the query layer, not just in policy.</p>
+          <p>What's visible to whom:</p>
+          <ul class="space-y-2 ml-5 list-disc">
+            <li><strong class="text-ink">Everyone</strong> — agent status, healthy/down, monthly spend vs cap, per-team rollups</li>
+            <li><strong class="text-ink">Managers</strong> — same as everyone, plus team-level adoption metrics for their team</li>
+            <li><strong class="text-ink">AI admins</strong> — full audit log access via a separate route; not exposed on /fleet itself</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="briefing">
+        <p class="eyebrow mb-2">06</p>
+        <h2 class="font-display text-ink font-normal text-[28px] md:text-[32px] leading-tight">Reading or subscribing to the briefing</h2>
+        <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+        <div class="mt-6 space-y-4 text-graphite text-[16px] leading-[1.65]">
+          <p>The fleet briefing comes in two cadences: a short daily briefing (3 minutes) and a longer weekly company briefing. Both as written report and audio podcast — pick how you want to consume it.</p>
+          <p>Read at <a href="/fleet/briefing" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/fleet/briefing</a>. Subscribe to the podcast feed at <span class="font-mono text-[14px]">/fleet/briefing/feed.xml</span> in your podcast app — Apple Podcasts, Overcast, Pocket Casts all work.</p>
+          <p>The briefing aggregates by team. No individual employee names appear in any episode, ever.</p>
+        </div>
+      </section>
+
+      <section id="quick-ref">
+        <p class="eyebrow mb-2">07</p>
+        <h2 class="font-display text-ink font-normal text-[28px] md:text-[32px] leading-tight">Quick reference</h2>
+        <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+        <div class="mt-6">
+          <table class="w-full text-left text-[14px]">
+            <thead>
+              <tr class="border-b border-border-default text-slate text-[12px] font-semibold uppercase tracking-[0.06em]">
+                <th class="pb-3 pr-4">I want to…</th>
+                <th class="pb-3">Go here</th>
+              </tr>
+            </thead>
+            <tbody class="text-graphite">
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">Chat with one of my agents</td><td class="py-3"><a href="/chat" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/chat</a> or click an agent on the dashboard</td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">Configure my agents</td><td class="py-3"><a href="/agents/me" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/agents/me</a></td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">Request a new agent</td><td class="py-3"><a href="/agents/new" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/agents/new</a></td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">See what a workflow does</td><td class="py-3"><a href="/workflows" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/workflows</a></td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">Watch what the fleet's doing</td><td class="py-3"><a href="/fleet" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/fleet</a></td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">Read or subscribe to the briefing</td><td class="py-3"><a href="/fleet/briefing" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/fleet/briefing</a></td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">See the audit log of my own activity</td><td class="py-3"><a href="/agents/me" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/agents/me</a> → "Your activity"</td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">Wipe an agent's memory of me</td><td class="py-3"><a href="/agents/me" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/agents/me</a> → Memory section → Wipe</td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">Read why we're building this</td><td class="py-3"><a href="/vision" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/vision</a></td></tr>
+              <tr class="border-b border-border-subtle"><td class="py-3 pr-4">Read the governance model</td><td class="py-3"><a href="/governance" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/governance</a></td></tr>
+              <tr><td class="py-3 pr-4">Onboard for my role</td><td class="py-3"><a href="/onboarding" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/onboarding</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="asking-for-help">
+        <p class="eyebrow mb-2">08</p>
+        <h2 class="font-display text-ink font-normal text-[28px] md:text-[32px] leading-tight">Where to ask for help</h2>
+        <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+        <div class="mt-6 space-y-4 text-graphite text-[16px] leading-[1.65]">
+          <p>Two channels:</p>
+          <ul class="space-y-2 ml-5 list-disc">
+            <li><strong class="text-ink"><span class="font-mono text-[14px]">#ai-platform</span> in Slack</strong> — open conversation about the platform; the right place for "is this a bug or am I doing it wrong?" questions.</li>
+            <li><strong class="text-ink"><a href="mailto:john@lunadiabetes.com" class="underline decoration-moonlight decoration-2 underline-offset-4">john@lunadiabetes.com</a></strong> — anything you'd rather not put in a public channel, or governance questions.</li>
+          </ul>
+          <p>If something doesn't work, the audit log will help us debug — please include the rough timestamp when you reach out.</p>
+        </div>
+      </section>
+
+    </article>
+  </WhiteSection>
+</BaseLayout>

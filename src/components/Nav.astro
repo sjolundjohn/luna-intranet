@@ -13,18 +13,16 @@ interface Props {
 const { heroIsDark = true } = Astro.props;
 
 /**
- * Nav grouping: five primary destinations.
- *  - "Use" (Chat, Agents, Workflows) — what employees do day-to-day
- *  - "See" (Fleet) — what the fleet is doing
- *  - "Learn" — index of context pages: Vision, Governance, Onboarding,
- *    Roadmap, Org chart, Platform.
+ * Operational-first nav. Home is the dashboard; Help is the
+ * information layer (one click). Chat is contextual — it lives on
+ * agent pages and the dashboard, not in the top nav.
  */
 const navLinks = [
-  { href: "/chat", label: "Chat" },
+  { href: "/", label: "Home" },
   { href: "/agents", label: "Agents" },
   { href: "/workflows", label: "Workflows" },
   { href: "/fleet", label: "Fleet" },
-  { href: "/learn", label: "Learn" },
+  { href: "/help", label: "Help" },
 ];
 
 const currentPath = Astro.url.pathname;
