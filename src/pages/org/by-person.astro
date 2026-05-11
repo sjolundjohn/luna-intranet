@@ -13,11 +13,14 @@ const people = (await getCollection("people")).sort(
   (a, b) => a.data.order - b.data.order,
 );
 
-// For each person: which agents are available to their team + which they actively use.
-const agentsForPerson = (personId: string, team: string) => {
+// For each person: every agent they're authorized to invoke (by email),
+// plus the ones they own or actively use.
+const agentsForPerson = (personId: string, email?: string) => {
   const available = agents.filter((a) => {
-    const t = a.data.teams ?? ["all"];
-    return t.includes("all") || t.includes(team as never);
+    if (a.data.owner === personId) return true;
+    if ((a.data.usedBy ?? []).includes(personId)) return true;
+    if (email && a.data.allowedUsers.includes(email)) return true;
+    return false;
   });
   return available.map((a) => ({
     agent: a,
@@ -35,7 +38,7 @@ const agentsForPerson = (personId: string, team: string) => {
   <Hero eyebrow="Org chart · People" size="compact">
     <Fragment slot="headline">By person.</Fragment>
     <Fragment slot="subcopy">
-      A row for every Lunite. Shows their team, the agents they have
+      A row for every person on the team. Shows their team, the agents they have
       access to, and which ones they actively use.
     </Fragment>
   </Hero>
@@ -56,7 +59,7 @@ const agentsForPerson = (personId: string, team: string) => {
       <div class="space-y-12">
         {
           people.map((person) => {
-            const available = agentsForPerson(person.id, person.data.team);
+            const available = agentsForPerson(person.id, person.data.email);
             return (
               <section id={person.id} class="grid gap-8 md:grid-cols-[280px_1fr]">
                 <div class="flex items-start gap-4">

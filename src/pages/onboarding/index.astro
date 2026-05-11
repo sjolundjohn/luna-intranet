@@ -70,11 +70,11 @@ const steps = [
 ---
 
 <BaseLayout
-  title="Luna · Welcome"
-  description="Welcome to Luna's AI workplace — the five-step first-run experience for new employees."
+  title="Onboarding"
+  description="The five-step first-run experience for new Luna employees joining the AI workplace."
   heroIsDark={true}
 >
-  <Hero eyebrow="Luna · The AI workplace" size="compact" animateMoons={true}>
+  <Hero eyebrow="Luna · Onboarding" size="compact" animateMoons={true}>
     <Fragment slot="headline">
       Welcome to the AI workplace.
     </Fragment>
@@ -105,26 +105,6 @@ const steps = [
       </div>
     </Fragment>
   </Hero>
-
-  {/* Returning-user bypass — small, quiet, top of the page. */}
-  <section class="bg-soft-paper border-b border-border-subtle">
-    <div class="mx-auto w-full max-w-[1200px] px-6 md:px-10 py-4 flex flex-wrap items-center justify-between gap-4">
-      <p class="text-graphite text-[14px] leading-tight">
-        <span class="text-ink font-medium">Been here before?</span>
-        <span class="text-slate"> · skip the onboarding and go straight to your daily view</span>
-      </p>
-      <a
-        href="/dashboard"
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-midnight text-white font-body text-[13px] font-semibold hover:bg-midnight-deep transition-colors"
-      >
-        Go to Dashboard
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
-      </a>
-    </div>
-  </section>
 
   {/* Five-step first-run flow. */}
   <WhiteSection size="tall">

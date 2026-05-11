@@ -1,0 +1,81 @@
+---
+/**
+ * Vertical step diagram for a workflow's definition. Each step shows
+ * its kind (agent/fetch/decision/human-approval/transform/deliver) and
+ * the agent it's bound to (if any).
+ *
+ * Renders a connector line between steps via CSS so the visual stays
+ * crisp without external assets.
+ */
+type StepKind = "agent" | "fetch" | "decision" | "human-approval" | "transform" | "deliver";
+
+interface Step {
+  name: string;
+  kind: StepKind;
+  agent?: string;
+  summary?: string;
+}
+
+interface Props {
+  steps: Step[];
+}
+
+const { steps } = Astro.props;
+
+const kindLabels: Record<StepKind, string> = {
+  "agent": "Agent",
+  "fetch": "Fetch",
+  "decision": "Decision",
+  "human-approval": "Human approval",
+  "transform": "Transform",
+  "deliver": "Deliver",
+};
+
+const kindStyle: Record<StepKind, string> = {
+  "agent": "bg-info-bg text-info-ink",
+  "fetch": "bg-periwinkle-mist text-ink",
+  "decision": "bg-warning-bg text-warning-ink",
+  "human-approval": "bg-critical-bg text-critical-ink",
+  "transform": "bg-cloud-lilac text-ink",
+  "deliver": "bg-success-bg text-success-ink",
+};
+---
+
+<ol class="relative">
+  {
+    steps.map((step, i) => (
+      <li class="relative pl-12 pb-6 last:pb-0">
+        {i < steps.length - 1 && (
+          <span
+            class="absolute left-[15px] top-9 bottom-0 w-px bg-border-default"
+            aria-hidden="true"
+          />
+        )}
+        <span
+          class="absolute left-0 top-1 inline-flex items-center justify-center w-[30px] h-[30px] rounded-full bg-midnight text-moonlight font-mono text-[12px] font-semibold tabular-nums"
+          aria-hidden="true"
+        >
+          {(i + 1).toString().padStart(2, "0")}
+        </span>
+        <div class="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h4 class="text-ink font-body text-[15px] font-semibold leading-tight">{step.name}</h4>
+            {step.summary && (
+              <p class="mt-1 text-graphite text-[14px] leading-[1.55] max-w-[60ch]">
+                {step.summary}
+              </p>
+            )}
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span class={`inline-flex items-center h-[20px] px-[10px] rounded-full font-body text-[11px] font-semibold tracking-[0.02em] ${kindStyle[step.kind]}`}>
+              {kindLabels[step.kind]}
+            </span>
+            {step.agent && (
+              <span class="text-slate font-mono text-[12px]">→ {step.agent}</span>
+            )}
+          </div>
+        </div>
+      </li>
+    ))
+  }
+</ol>

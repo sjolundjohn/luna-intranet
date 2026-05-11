@@ -1,33 +1,176 @@
 ---
 /**
- * Sticky glass nav. 64px tall. Scroll-reactive:
- *   - At top of page, over a Midnight hero → translucent Midnight glass.
- *   - After scroll past hero, or over White sections → translucent White glass.
- * The switch is driven by an IntersectionObserver watching for a sentinel
- * that the Hero component emits.
+ * Sticky glass nav. 72px tall. Scroll-reactive mode (Midnight glass over
+ * dark heroes; White glass elsewhere). Hover dropdowns on items that
+ * have sub-pages, expanded on focus-within for keyboard users.
+ *
+ * NOTE: this component is NOT persisted across page transitions. Astro's
+ * View Transitions ClientRouter persists the rest of the layout but the
+ * nav re-renders each navigation so the active underline tracks the
+ * current path. Persisting it caused a stale active-bar bug.
  */
+import { getCollection } from "astro:content";
+
 interface Props {
   heroIsDark?: boolean;
 }
 
 const { heroIsDark = true } = Astro.props;
 
-const navLinks = [
-  { href: "/agents", label: "Agents" },
-  { href: "/org", label: "Org chart" },
-  { href: "/platform", label: "Platform" },
+const agents = (await getCollection("agents")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const workflows = (await getCollection("workflows")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const onboardingTracks = (await getCollection("onboarding")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+interface SubLink {
+  href: string;
+  label: string;
+  /** Optional tiny right-side annotation, e.g. status. */
+  hint?: string;
+}
+
+interface NavItem {
+  href: string;
+  label: string;
+  sub?: { groups: { label?: string; links: SubLink[] }[] };
+}
+
+const navLinks: NavItem[] = [
+  { href: "/dashboard", label: "Dashboard" },
+  {
+    href: "/agents",
+    label: "Agents",
+    sub: {
+      groups: [
+        {
+          links: [
+            { href: "/agents", label: "Agents catalog" },
+            { href: "/agents/me", label: "My agents" },
+            { href: "/agents/new", label: "Request a new agent" },
+          ],
+        },
+        {
+          label: "Live agents",
+          links: agents
+            .filter((a) => a.data.status === "live")
+            .map((a) => ({
+              href: `/agents/${a.id}`,
+              label: a.data.name,
+              hint: "Live",
+            })),
+        },
+        {
+          label: "Coming online",
+          links: agents
+            .filter((a) => a.data.status !== "live")
+            .map((a) => ({
+              href: `/agents/${a.id}`,
+              label: a.data.name,
+              hint: a.data.status === "coming-soon" ? "Soon" : "By req",
+            })),
+        },
+      ],
+    },
+  },
+  {
+    href: "/workflows",
+    label: "Workflows",
+    sub: {
+      groups: [
+        {
+          links: [{ href: "/workflows", label: "Workflows catalog" }],
+        },
+        {
+          label: "Defined workflows",
+          links: workflows.map((w) => ({
+            href: `/workflows/${w.id}`,
+            label: w.data.name,
+          })),
+        },
+      ],
+    },
+  },
+  {
+    href: "/fleet",
+    label: "Fleet",
+    sub: {
+      groups: [
+        {
+          links: [
+            { href: "/fleet", label: "Fleet overview" },
+            { href: "/fleet/briefing", label: "Today's briefing" },
+          ],
+        },
+        {
+          label: "Per-agent",
+          links: agents.map((a) => ({
+            href: `/fleet/${a.id}`,
+            label: a.data.name,
+          })),
+        },
+      ],
+    },
+  },
+  {
+    href: "/onboarding",
+    label: "Onboarding",
+    sub: {
+      groups: [
+        {
+          links: [{ href: "/onboarding", label: "Start onboarding" }],
+        },
+        {
+          label: "By role",
+          links: onboardingTracks.map((t) => ({
+            href: `/onboarding/${t.id}`,
+            label: t.data.role.charAt(0).toUpperCase() + t.data.role.slice(1),
+          })),
+        },
+      ],
+    },
+  },
+  {
+    href: "/foundation",
+    label: "Foundation",
+    sub: {
+      groups: [
+        {
+          links: [
+            { href: "/foundation", label: "Foundation" },
+            { href: "/foundation/how-to", label: "How to use it" },
+          ],
+        },
+        {
+          label: "Why & how",
+          links: [
+            { href: "/vision", label: "Vision" },
+            { href: "/governance", label: "Governance" },
+            { href: "/roadmap", label: "Roadmap" },
+            { href: "/org", label: "Org chart" },
+            { href: "/platform", label: "Platform docs" },
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 const currentPath = Astro.url.pathname;
-const isActive = (href: string) =>
-  currentPath === href || currentPath.startsWith(href + "/");
+const isActive = (href: string) => {
+  if (href === "/") return currentPath === "/";
+  return currentPath === href || currentPath.startsWith(href + "/");
+};
 ---
 
 <nav
   data-nav
   data-mode={heroIsDark ? "dark" : "light"}
   class="fixed top-0 left-0 right-0 z-50 h-[72px] flex items-center"
-  transition:persist
 >
   <div class="mx-auto w-full max-w-[1200px] px-6 md:px-10 flex items-center justify-between">
     <a
@@ -54,29 +197,65 @@ const isActive = (href: string) =>
       <span class="sr-only">Luna, internal</span>
     </a>
 
-    <div class="flex items-center gap-1 md:gap-2">
+    <div class="flex items-center gap-0.5 md:gap-1">
       {
-        navLinks.map((link) => (
-          <a
-            href={link.href}
-            class:list={[
-              "relative px-3 py-2 font-body text-[15px] font-medium transition-colors",
-              "hover:opacity-100",
-              isActive(link.href)
-                ? "nav-link-active"
-                : "nav-link",
-            ]}
-            data-active={isActive(link.href) ? "true" : undefined}
-          >
-            {link.label}
-            {isActive(link.href) && (
-              <span
-                class="absolute left-3 right-3 bottom-[6px] h-[2px] bg-moonlight"
-                aria-hidden="true"
-              />
-            )}
-          </a>
-        ))
+        navLinks.map((link) => {
+          const active = isActive(link.href);
+          return (
+            <div class="nav-item-wrap relative" data-has-sub={link.sub ? "true" : undefined}>
+              <a
+                href={link.href}
+                class:list={[
+                  "relative inline-flex items-center px-3 py-2 font-body text-[15px] font-medium transition-colors",
+                  active ? "nav-link-active" : "nav-link",
+                ]}
+                data-active={active ? "true" : undefined}
+                aria-haspopup={link.sub ? "true" : undefined}
+              >
+                {link.label}
+                {active && (
+                  <span
+                    class="absolute left-3 right-3 bottom-[6px] h-[2px] bg-moonlight"
+                    aria-hidden="true"
+                  />
+                )}
+              </a>
+
+              {link.sub && (
+                <div
+                  class="nav-dropdown absolute top-full right-0 mt-1 w-[280px] origin-top-right rounded-[12px] bg-white shadow-[0_12px_40px_rgba(4,30,66,0.12)] border border-border-subtle py-2 opacity-0 invisible scale-[0.98] transition-all duration-150"
+                  role="menu"
+                >
+                  {link.sub.groups.map((group, gi) => (
+                    <div class:list={[gi > 0 ? "mt-1 pt-2 border-t border-border-subtle" : ""]}>
+                      {group.label && (
+                        <p class="px-3 py-1.5 text-slate text-[10px] font-semibold uppercase tracking-[0.08em]">
+                          {group.label}
+                        </p>
+                      )}
+                      <ul>
+                        {group.links.map((sub) => (
+                          <li>
+                            <a
+                              href={sub.href}
+                              role="menuitem"
+                              class="flex items-center justify-between gap-3 px-3 py-1.5 text-[13px] text-ink hover:bg-soft-paper transition-colors"
+                            >
+                              <span>{sub.label}</span>
+                              {sub.hint && (
+                                <span class="text-slate text-[11px] font-medium">{sub.hint}</span>
+                              )}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })
       }
 
       {/* Sign out — hits Cloudflare Access logout. No-op in local dev. */}
@@ -96,7 +275,7 @@ const isActive = (href: string) =>
   </div>
 </nav>
 
-{/* Spacer so content doesn't sit under the fixed nav. Heroes position themselves beneath. */}
+{/* Spacer so content doesn't sit under the fixed nav. */}
 <div aria-hidden="true" class="h-[72px]"></div>
 
 <style>
@@ -138,11 +317,18 @@ const isActive = (href: string) =>
   nav[data-mode="dark"] [data-logo-dark] { display: block; }
   nav[data-mode="light"] [data-logo-dark] { display: none; }
   nav[data-mode="light"] [data-logo-light] { display: block; }
+
+  /* Dropdown reveal — hover OR keyboard focus-within on the wrap. */
+  .nav-item-wrap:hover > .nav-dropdown,
+  .nav-item-wrap:focus-within > .nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
 </style>
 
 <script>
-  // Scroll-reactive mode switch: after we scroll past 80vh, flip to light
-  // if the hero was dark. Cheap, no observer needed — one scroll handler.
+  // Scroll-reactive mode switch: after we scroll past the hero, flip light.
   function setupNav() {
     const nav = document.querySelector("nav[data-nav]") as HTMLElement | null;
     if (!nav) return;
@@ -156,10 +342,8 @@ const isActive = (href: string) =>
       if (rafId) return;
       rafId = requestAnimationFrame(() => {
         if (startMode === "dark") {
-          // Start dark, flip to light once we've scrolled past the hero.
           nav.dataset.mode = window.scrollY > threshold() ? "light" : "dark";
         } else {
-          // Start light and stay light — no dark content above the fold.
           nav.dataset.mode = "light";
         }
         rafId = 0;

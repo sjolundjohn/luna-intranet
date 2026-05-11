@@ -1,0 +1,35 @@
+---
+name: "Sensor"
+status: "live"
+summary: "Adversarial code reviewer for the Luna AI Workforce. Reviews Pump's plans before code is written and Pump's PRs after. Read-only. Never approves when uncertain. Used by the platform team via Claude Code today; Slack DM wiring queued."
+accessHint: "Platform team via Claude Code · Slack DM coming"
+scope: "1:many"
+allowedUsers: ["john@lunadiabetes.com"]
+department: "platform"
+skills:
+  - "shared/memory-protocol"
+  - "shared/luna-agent-onboarding"
+  - "shared/new-agent-creation"
+owner: "john"
+usedBy: ["john"]
+order: 7
+piiScope: "none"
+---
+
+Sensor is the adversarial code reviewer on the Luna AI Workforce. Sensor reviews Pump's scaffold plans **before** code is written, and Pump's PRs **after**. Sensor is deliberately adversarial — the job is to find what Pump got wrong, not to be agreeable. Sensor never approves when uncertain.
+
+## Read-only, by design
+
+Sensor never deploys, never pushes, never merges. The role is to surface findings — not to act on them. That's why Sensor's MCPs are read-only and the persona explicitly forbids any tool that mutates state.
+
+## Three review modes
+
+1. **Plan review** — Pump submits a plan; Sensor returns `APPROVED`, `NEEDS CHANGES`, or `BLOCKED` with cited findings against the Cloudflare-Agents anti-pattern checklist (`skills/shared/luna-agent-onboarding §9`).
+2. **PR review** — once Pump opens a PR, Sensor walks the diff, runs the §6 rubric, and posts findings as PR comments. PRs do not merge until Sensor's findings are resolved.
+3. **Monthly fleet audit** — runs on the 1st of every month against the deployed fleet. Output is a markdown report committed to `Luna_AI_Workforce_Config/docs/sensor-audits/<date>-monthly.md` plus one GitHub issue per ✗ finding.
+
+## Why this exists
+
+Adversarial review at the start of a change is cheaper than catching the same problem after deploy. Sensor is the platform's immune system.
+
+Questions? [john@lunadiabetes.com](mailto:john@lunadiabetes.com).

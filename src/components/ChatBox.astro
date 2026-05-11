@@ -8,7 +8,13 @@
  *   <ChatBox agent="basal" />
  */
 interface Props {
-  agent?: "basal";
+  /**
+   * Agent slug. Today the live agent is "basal"; the type is widened to
+   * accept any catalog slug so ChatLayout can pass the picker's selection.
+   * Server-side `/api/chat` validates the slug, so a non-live value
+   * surfaces as an error in the UI rather than silently routing.
+   */
+  agent?: string;
   placeholder?: string;
   /** Initial system prompt override (optional — defaults set server-side). */
   systemPrompt?: string;
@@ -248,7 +254,16 @@ const {
           bubble.classList.remove("msg-streaming");
           bubble.parentElement?.remove();
           const errText = await res.text().catch(() => "");
-          if (res.status === 503) {
+          if (res.status === 404) {
+            // Most common in `astro dev`: Pages Functions don't run under the
+            // bare Astro dev server. Tell the user concretely instead of "404."
+            appendError(
+              "<strong>/api/chat 404 — Pages Function not running.</strong><br/>" +
+                "<code class='font-mono text-[12px]'>astro dev</code> doesn't serve Cloudflare Pages Functions. " +
+                "Run <code class='font-mono text-[12px]'>pnpm build && wrangler pages dev dist</code> locally, " +
+                "or test on the deployed site at <a class='underline' href='https://nightluna.com/chat'>nightluna.com/chat</a>."
+            );
+          } else if (res.status === 503) {
             appendError(
               "The chat backend isn't wired up yet — this works once the site is deployed to Cloudflare Pages with the PROXY_BEARER secret configured."
             );

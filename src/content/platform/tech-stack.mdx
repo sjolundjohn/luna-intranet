@@ -19,7 +19,7 @@ Every Luna-owned piece of this system runs on [Cloudflare](https://cloudflare.co
 | Primitive | What we use it for |
 |---|---|
 | **Workers** | Every Luna service (`luna-slack-dm`, `luna-router`, `luna-agent-basal`, `luna-ai-proxy`) is a Worker. |
-| **Durable Objects** | One per Lunite — holds your Basal conversation history in SQLite. |
+| **Durable Objects** | One per person — holds your Basal conversation history in SQLite. |
 | **R2** | Stores prompt templates, agent configs, and audit logs. No egress fees. |
 | **AI Gateway** | Sits in front of every model call. Rate limits, cost caps, audit trail, provider-key injection. |
 | **Access** | Zero Trust auth — gates this intranet (and the future admin dashboard) behind Google Workspace SSO for `@lunadiabetes.com`. |

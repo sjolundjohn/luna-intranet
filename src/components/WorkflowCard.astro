@@ -1,0 +1,85 @@
+---
+/**
+ * Catalog tile for one workflow on /workflows. Click goes to detail page.
+ *
+ * Phase 1 reads the workflows MDX collection. Phase 3 reads from D1
+ * (current version + last-run summary).
+ */
+import StatusChip from "~/components/StatusChip.astro";
+
+interface Props {
+  id: string;
+  name: string;
+  summary: string;
+  trigger: "manual" | "scheduled" | "event";
+  schedule?: string;
+  status: "active" | "paused" | "drafting";
+  owner?: string;
+  /** Steps count for the at-a-glance density. */
+  stepCount: number;
+  lastRun?: string;
+  successRatePct?: number;
+}
+
+const {
+  id,
+  name,
+  summary,
+  trigger,
+  schedule,
+  status,
+  owner,
+  stepCount,
+  lastRun,
+  successRatePct,
+} = Astro.props;
+
+const statusChip =
+  status === "active" ? "live" : status === "drafting" ? "coming-soon" : "by-request";
+
+const triggerCopy =
+  trigger === "scheduled"
+    ? `Scheduled · ${schedule ?? "cron"}`
+    : trigger === "manual"
+      ? "Manual trigger"
+      : "Event-driven";
+---
+
+<a
+  href={`/workflows/${id}`}
+  class="group block bg-white border border-border-subtle rounded-[16px] p-6 md:p-7 transition-all hover:border-ink hover:shadow-[0_8px_32px_rgba(4,30,66,0.08)]"
+>
+  <div class="flex items-start justify-between gap-4">
+    <div class="min-w-0">
+      <p class="eyebrow mb-2">{triggerCopy}</p>
+      <h3 class="text-ink font-body text-[20px] font-semibold leading-tight">
+        {name}
+      </h3>
+    </div>
+    <StatusChip
+      status={statusChip as "live" | "coming-soon" | "by-request"}
+      label={status === "active" ? "Active" : status === "drafting" ? "Draft" : "Paused"}
+    />
+  </div>
+
+  <p class="mt-3 text-graphite text-[15px] leading-[1.55] max-w-[60ch]">{summary}</p>
+
+  <div class="mt-5 pt-4 border-t border-border-subtle flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-slate">
+    <span><span class="text-graphite font-medium">{stepCount}</span> steps</span>
+    {owner && (
+      <span>
+        Owner: <span class="text-graphite font-medium">{owner}</span>
+      </span>
+    )}
+    {lastRun && (
+      <span>
+        Last run: <span class="text-graphite font-medium">{lastRun}</span>
+      </span>
+    )}
+    {typeof successRatePct === "number" && (
+      <span>
+        Success rate: <span class="text-graphite font-medium">{successRatePct}%</span>
+      </span>
+    )}
+  </div>
+</a>

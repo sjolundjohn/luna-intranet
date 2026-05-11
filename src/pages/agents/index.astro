@@ -1,76 +1,166 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/Hero.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
-import FAQ from "~/components/FAQ.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
+import StatusChip from "~/components/StatusChip.astro";
+import AgentAvatar from "~/components/AgentAvatar.astro";
 
-const faqs = [
-  {
-    q: "What's an agent?",
-    a: "An agent is a language model (like Claude or GPT) that's been given a job, a personality, and — crucially — tools it can use on your behalf.\n\nIf ChatGPT is a conversation partner and Claude Code is a coding collaborator, an agent is closer to a teammate: it can read documents you give it, call APIs, run queries, remember context between sessions, and take actions — not just reply. It's the same underlying tech, wrapped in the specific context and permissions needed to do real work.",
-  },
-  {
-    q: "What's an agent at Luna?",
-    a: "A Luna agent is an AI teammate built on top of Claude, wired into our systems (Slack, our data warehouse, our documents), and gated so it only sees what it's supposed to. Every agent has:\n\n• A clear job — \"help Lunites with general questions\" (Basal), or \"answer questions about our data\" (the upcoming Data Agent).\n• A dedicated place to use it — Slack DM, inside a tool, or here on the intranet.\n• Zero Data Retention — your conversations aren't used to train any model and aren't logged long-term.\n• Identity awareness — it knows it's talking to you specifically, so memory and permissions are per-person.",
-  },
-  {
-    q: "How is this different from using ChatGPT or Claude directly?",
-    a: "Three differences worth knowing:\n\n1. Context. A Luna agent already knows it's inside Luna — it has the background, docs, and tone pre-loaded, so you don't re-explain \"we're a diabetes company, here's what a CGM is\" every session.\n\n2. Data access. An agent can be given safe, scoped access to real Luna data (our warehouse, our files) — something a generic chatbot can't do without you copy-pasting.\n\n3. Privacy. Everything routes through Luna-owned infrastructure with ZDR and audit logging. Pasting something into chat.openai.com is a different risk profile than asking Basal in Slack.",
-  },
-  {
-    q: "How do I access an agent?",
-    a: "Depends on the agent:\n\n• Basal — DM @Basal in Slack, or try it in the Playground on the home page of this intranet.\n• Data Agent (coming soon) — it'll live inside Luna's data-viz tool; you'll ask questions in the sidebar there.\n• Personal agents — currently by request. Ping John in Slack with what you want it to do.\n\nAll agents are gated to @lunadiabetes.com accounts. No external access, no shared logins.",
-  },
-  {
-    q: "Where should I use an agent vs. just Google or ChatGPT?",
-    a: "Use a Luna agent when:\n\n• The question involves Luna data, Luna people, or Luna documents.\n• You'd otherwise paste sensitive info into a public tool (customer details, internal strategy, unreleased work).\n• You want memory across sessions — Basal remembers your past conversations; ChatGPT's free tier doesn't.\n\nKeep using ChatGPT / Claude / Google for: general learning, public info, creative drafts that aren't Luna-specific, anything you'd happily post on Twitter.",
-  },
-  {
-    q: "How do I \"train\" an agent?",
-    a: "You don't train it in the machine-learning sense — the underlying model (Claude) is already trained. What you do is give it the right context:\n\n• Prompt it well. Say what you want, who the audience is, what format you'd like back. Agents follow direction.\n• Give it documents. Paste in the spec, the meeting notes, the data — it'll use them.\n• Correct it when it's wrong. Basal in particular has per-user memory, so telling it \"actually we call that a cohort, not a segment\" sticks for your future chats.\n\nFor deeper customization (a personal agent with a specific persona, tools, or knowledge base), that's a one-off build — ping John.",
-  },
-  {
-    q: "Is my conversation private?",
-    a: "Yes — by design, not just by policy.\n\n• Each Lunite has their own private conversation history. Nobody else can see your chats with Basal, including admins.\n• Anthropic (the company behind Claude) doesn't log or train on our traffic. Zero Data Retention is contractual, not a setting.\n• Luna keeps hashed usage metrics (message count, cost, latency) but not message contents.\n\nIf you want a deeper explanation, see the Platform page under \"How it works\" and \"Privacy & security.\"",
-  },
-  {
-    q: "What if the agent is wrong?",
-    a: "Assume it can be. Agents are great at synthesis, drafting, and answering well-scoped questions, but they still hallucinate — especially on recent events, numbers, and edge cases.\n\nRule of thumb: if the answer would matter in a regulatory filing, a customer conversation, or a code review, verify it. Agents are a force multiplier on your judgment, not a replacement for it.\n\nIf you spot a consistent failure mode, tell John — that's often the signal to add a tool or document to fix the gap.",
-  },
-  {
-    q: "Can I build my own agent?",
-    a: "Not yet, but that's the direction. Today Luna's agents are built by the engineering team because they need access to infrastructure (Slack, data warehouse, secrets). As the platform matures, the plan is:\n\n• Phase 1 (now) — engineering builds shared + personal agents on request.\n• Phase 2 — templated personal agents you can configure yourself via a form.\n• Phase 3 — an agent-builder tool inside this intranet.\n\nIf you have an agent idea today, describe it in Slack and we'll scope whether it's personal, shared, or a feature request on an existing one.",
-  },
-];
+// Phase 1 dashboard: filter "Yours" by John's email. Block 6 reads the
+// signed-in email from CF Access.
+const SIGNED_IN_EMAIL = "john@lunadiabetes.com";
+
+const all = (await getCollection("agents")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const yours = all.filter((a) => a.data.allowedUsers.includes(SIGNED_IN_EMAIL));
 ---
 
 <BaseLayout
-  title="Agents 101"
-  description="What an agent is, how they work at Luna, and how to use them."
+  title="Agents"
+  description="Every Luna agent — yours plus the rest of the catalog."
   heroIsDark={true}
 >
-  <Hero eyebrow="Luna · Agents 101" size="compact">
-    <Fragment slot="headline">New to agents? Start here.</Fragment>
+  <Hero eyebrow="Luna · Agents" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Your team's agents.
+    </Fragment>
     <Fragment slot="subcopy">
-      If you've used ChatGPT, Claude, or Claude Code, you're already most of the way there.
+      Each agent is a teammate built on Claude, gated to the right people,
+      and wired into Luna's tools. Your agents are at the top; the full
+      catalog is below.
+    </Fragment>
+    <Fragment slot="cta">
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="/agents/me"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-moonlight text-midnight font-body text-[14px] font-semibold hover:opacity-90 transition-opacity"
+        >
+          Configure mine
+        </a>
+        <a
+          href="/agents/new"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors"
+        >
+          Request a new agent
+        </a>
+      </div>
     </Fragment>
   </Hero>
 
+  {/* Yours */}
   <WhiteSection size="compact">
-    <div class="max-w-[720px] mb-10 md:mb-12">
-      <p class="eyebrow mb-4">Frequently asked</p>
+    <div class="mb-6">
+      <p class="eyebrow mb-2">Yours</p>
       <h2
         class="font-display text-ink font-normal"
-        style="font-size: clamp(28px, 3.2vw, 40px); line-height: 1.1; letter-spacing: -0.02em;"
+        style="font-size: clamp(26px, 3.2vw, 36px); line-height: 1.05; letter-spacing: -0.02em;"
       >
-        Everything you'd ask a teammate.
+        {yours.length === 0 ? "No agents available to you yet" : `${yours.length} agents available to you`}
       </h2>
-      <div class="mt-5"><MoonlightRule width={40} color="midnight" /></div>
-      <p class="mt-6 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
-        Looking for a specific agent? See <a href="/org/by-team" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">which agents each team uses</a> on the org chart.
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    {yours.length === 0 ? (
+      <p class="text-graphite text-[15px] max-w-[60ch]">
+        You don't have any agents available yet. <a href="/agents/new" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">Request one</a> or DM <span class="font-mono">@pen</span> in Slack to start.
+      </p>
+    ) : (
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {yours.map((a) => (
+          <article class="bg-white border border-border-subtle rounded-[16px] p-5 transition-shadow hover:shadow-[0_8px_32px_rgba(4,30,66,0.06)]">
+            <div class="flex items-start gap-3">
+              <AgentAvatar slug={a.id} name={a.data.name} size={40} src={a.data.avatar} />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-body text-[16px] font-semibold text-ink leading-tight">{a.data.name}</h3>
+                  <StatusChip status={a.data.status} />
+                </div>
+                <p class="mt-1 text-slate text-[13px] line-clamp-2">{a.data.summary}</p>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+              {a.data.status === "live" && (
+                <a href={`/chat?agent=${a.id}`} class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-midnight text-white text-[12px] font-semibold hover:bg-midnight-deep transition-colors">Chat</a>
+              )}
+              <a href={`/agents/${a.id}`} class="text-graphite text-[12px] hover:text-ink transition-colors">About</a>
+              <a href={`/agents/me#${a.id}`} class="text-graphite text-[12px] hover:text-ink transition-colors ml-auto">Configure</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    )}
+  </WhiteSection>
+
+  {/* All agents — the catalog */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="mb-6">
+      <p class="eyebrow mb-2">All agents</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(26px, 3.2vw, 36px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        The full catalog.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[15px] leading-[1.55] max-w-[60ch]">
+        Every agent on the Luna AI Workforce, including the ones you don't
+        have access to today. Click an agent to see what it does and how
+        it's scoped.
       </p>
     </div>
-    <FAQ items={faqs} openFirst />
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {all.map((a) => {
+        const isYours = a.data.allowedUsers.includes(SIGNED_IN_EMAIL);
+        return (
+          <a
+            href={`/agents/${a.id}`}
+            class="group bg-white border border-border-subtle rounded-[16px] p-5 hover:border-ink transition-all"
+          >
+            <div class="flex items-start gap-3">
+              <AgentAvatar slug={a.id} name={a.data.name} size={40} src={a.data.avatar} />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-body text-[15px] font-semibold text-ink leading-tight">{a.data.name}</h3>
+                  <StatusChip status={a.data.status} />
+                  {a.data.scope === "1:1" && (
+                    <span class="inline-flex items-center h-[18px] px-2 rounded-full bg-periwinkle-mist text-ink font-body text-[10px] font-semibold tracking-[0.04em]">1:1</span>
+                  )}
+                  {a.data.piiScope === "phi" && (
+                    <span class="inline-flex items-center h-[18px] px-2 rounded-full bg-critical-bg text-critical-ink font-body text-[10px] font-semibold tracking-[0.04em]">PHI</span>
+                  )}
+                </div>
+                <p class="mt-1 text-slate text-[13px] line-clamp-2">{a.data.summary}</p>
+                {!isYours && (
+                  <p class="mt-2 text-slate text-[11px]">Not available to you · open to see how it's scoped</p>
+                )}
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </WhiteSection>
+
+  {/* Need a new one? */}
+  <WhiteSection size="compact">
+    <div class="bg-white border border-border-subtle rounded-[20px] p-6 md:p-8 grid md:grid-cols-[1.5fr_1fr] gap-6 items-center">
+      <div>
+        <p class="eyebrow mb-2">Don't see what you need?</p>
+        <h3 class="font-display text-ink font-normal text-[24px] md:text-[28px] leading-tight">
+          Spin up a new agent.
+        </h3>
+        <p class="mt-3 text-graphite text-[15px] leading-[1.55] max-w-[60ch]">
+          The intake takes 5 minutes. Pen runs the interview, John approves, Pump scaffolds the Worker, Sensor reviews. You get a working agent in a few days.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href="/agents/new" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-midnight text-white font-body text-[14px] font-semibold hover:bg-midnight-deep transition-colors">Request a new agent</a>
+        <a href="/foundation/how-to#requesting-new-agents" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">How it works</a>
+      </div>
+    </div>
   </WhiteSection>
 </BaseLayout>

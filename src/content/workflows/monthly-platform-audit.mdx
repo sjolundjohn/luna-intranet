@@ -1,0 +1,35 @@
+---
+name: "Monthly platform audit"
+summary: "Adversarial review of every Worker, agent, and Workflow against the Cloudflare-Agents anti-pattern checklist. Surfaces drift before it becomes incidents."
+owner: "devops"
+trigger: "scheduled"
+schedule: "0 9 1 * *"
+status: "drafting"
+order: 4
+steps:
+  - name: "Snapshot all wrangler.tomls"
+    kind: "fetch"
+    summary: "Pull every Worker config in the apps/ tree."
+  - name: "Pull billing and invocation counts"
+    kind: "fetch"
+    summary: "Prior-month spend and traffic per Worker."
+  - name: "Pull Access policies"
+    kind: "fetch"
+    summary: "CF Access app definitions; flag any drift from declared invariants."
+  - name: "Adversarial review"
+    kind: "agent"
+    summary: "DevOps subagent runs each Worker through the §9 anti-pattern checklist; flags red/yellow/green."
+  - name: "Compose findings report"
+    kind: "agent"
+    agent: "basal"
+    summary: "Markdown report with per-Worker findings + suggested fixes + owner assignments."
+  - name: "File issues"
+    kind: "deliver"
+    summary: "One GitHub issue per ✗ finding, assigned to the Worker's owner."
+---
+
+The monthly platform audit is the system's own immune system. It runs on the 1st of every month and produces a markdown report committed to `docs/audits/`, plus one issue per blocker.
+
+This workflow is itself a Class A (shared) artifact — it touches infrastructure config and runs adversarial review against everything in `apps/`. Edits to its definition require AI-admin review like any other shared workflow.
+
+The success metric isn't the number of findings — it's whether the findings get fixed. The "filed issues" step closes the loop by making each finding actionable, not just visible.

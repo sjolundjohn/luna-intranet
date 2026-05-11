@@ -1,0 +1,87 @@
+---
+/**
+ * Single agent's status tile on /fleet. Aggregates only — never shows
+ * per-employee usage. Driven by KV/D1 reads in Phase 3.
+ */
+import AgentAvatar from "~/components/AgentAvatar.astro";
+
+interface Props {
+  slug: string;
+  name: string;
+  status: "live" | "coming-soon" | "by-request";
+  /** Whether the kill-switch is engaged. */
+  killed?: boolean;
+  invocations7d: number;
+  uniqueUsers7d: number;
+  costUsd7d: number;
+  /** "ok" / "warn" / "crit" — drives the dot color. */
+  health?: "ok" | "warn" | "crit";
+  href?: string;
+}
+
+const {
+  slug,
+  name,
+  status,
+  killed = false,
+  invocations7d,
+  uniqueUsers7d,
+  costUsd7d,
+  health = "ok",
+  href = `/fleet/${slug}`,
+} = Astro.props;
+
+const dotColor = killed
+  ? "bg-critical-ink"
+  : status !== "live"
+    ? "bg-slate"
+    : health === "crit"
+      ? "bg-critical-ink"
+      : health === "warn"
+        ? "bg-warning-ink"
+        : "bg-success-ink";
+
+const fmtCost = (n: number) =>
+  n < 1 ? `$${n.toFixed(2)}` : n < 100 ? `$${n.toFixed(1)}` : `$${Math.round(n)}`;
+---
+
+<a
+  href={href}
+  class="group flex flex-col h-full bg-white border border-border-subtle rounded-[16px] p-6 hover:border-ink hover:shadow-[0_8px_32px_rgba(4,30,66,0.08)] transition-all"
+>
+  <div class="flex items-start gap-3">
+    <AgentAvatar slug={slug} name={name} size={36} />
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <h3 class="text-ink font-body text-[15px] font-semibold leading-tight truncate">{name}</h3>
+        <span class={`block h-[8px] w-[8px] rounded-full ${dotColor}`} aria-hidden="true"></span>
+      </div>
+      <p class="mt-1 text-slate text-[12px]">
+        {killed ? "Killed by admin" : status === "live" ? "Healthy" : status === "coming-soon" ? "Coming soon" : "By request"}
+      </p>
+    </div>
+  </div>
+
+  <dl class="mt-5 grid grid-cols-3 gap-3 text-[12px]">
+    <div>
+      <dt class="text-slate">Invocations</dt>
+      <dd class="text-ink font-mono tabular-nums text-[15px] mt-0.5">
+        {invocations7d.toLocaleString()}
+      </dd>
+    </div>
+    <div>
+      <dt class="text-slate">People</dt>
+      <dd class="text-ink font-mono tabular-nums text-[15px] mt-0.5">
+        {uniqueUsers7d}
+      </dd>
+    </div>
+    <div>
+      <dt class="text-slate">Spend</dt>
+      <dd class="text-ink font-mono tabular-nums text-[15px] mt-0.5">
+        {fmtCost(costUsd7d)}
+      </dd>
+    </div>
+  </dl>
+
+  <p class="mt-3 text-slate text-[11px]">Last 7 days · team-aggregate only</p>
+</a>

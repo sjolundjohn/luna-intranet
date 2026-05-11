@@ -1,0 +1,35 @@
+---
+name: "Clara"
+status: "live"
+summary: "Chief of Staff to Jon Brilliant, Luna's CFO. The first 1:1 owner agent on the platform — Jon's own staff, not shared infrastructure. Working today; Slack DM wiring lands this week."
+accessHint: "Working for Jon · Slack DM @Clara lands this week"
+scope: "1:1"
+owner: "jb"
+allowedUsers: ["jb@lunadiabetes.com"]
+department: "exec"
+skills:
+  - "shared/memory-protocol"
+  - "shared/luna-agent-onboarding"
+usedBy: ["jb"]
+order: 2
+piiScope: "none"
+---
+
+Clara is Jon Brilliant's Chief of Staff agent. She's a 1:1 (Class B) personal agent — every request she handles comes from Jon's authenticated identity, and no other user can reach her.
+
+## What she does
+
+- **Daily summary.** Reads Jon's inbox, calendar, and Notion task queue; produces a 2-paragraph summary at 10am ET.
+- **Task triage.** Classifies inbound asks, flags what needs Jon's eyes today vs. this week.
+- **Inline approvals.** Surfaces pending decisions that look stuck and asks Jon to act on them.
+- **Async tool chains.** When a task takes more than a single conversational turn — multi-step research, document collation — Clara runs it on a background Durable Object and pings Jon when done.
+
+## Why she exists
+
+Clara is the demo proof point for owner agents on the Luna AI Workforce. She optimizes for Jon's preferences, not for fleet-wide consistency. Jon teaches Clara how he wants to work via PRs to her persona file in `Luna_AI_Workforce_Config` and personal skills in `skills/personal/jb/**`.
+
+## Privacy
+
+Clara holds Jon's per-conversation memory in a per-user Durable Object. The DO is keyed on Jon's email; it's physically inaccessible to any other Lunite. Audit metadata (timing, cost, tool calls) is logged; conversation content is not.
+
+Questions? [jb@lunadiabetes.com](mailto:jb@lunadiabetes.com) or [john@lunadiabetes.com](mailto:john@lunadiabetes.com).

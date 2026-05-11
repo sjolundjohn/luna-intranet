@@ -1,0 +1,62 @@
+---
+/**
+ * AI-admin-only control on /fleet/[agent]. Renders disabled in Phase 1
+ * (no backend wiring). Phase 3 makes this real — toggles a KV flag that
+ * the agent-router and per-agent Workers both check on every invocation
+ * (defense in depth).
+ *
+ * Visibly framed as a hard control: plum (critical) palette, not red,
+ * per the v1.0 design system.
+ */
+interface Props {
+  agentSlug: string;
+  agentName: string;
+  killed: boolean;
+  /** Set to true if the current user has the ai-admin role. */
+  canAdmin?: boolean;
+}
+
+const { agentSlug, agentName, killed, canAdmin = false } = Astro.props;
+---
+
+<form
+  data-killswitch
+  data-agent={agentSlug}
+  method="post"
+  action={`/api/killswitch/${agentSlug}`}
+  class="inline-flex"
+>
+  <button
+    type="submit"
+    disabled={!canAdmin}
+    aria-pressed={killed}
+    aria-label={killed ? `Resume ${agentName}` : `Stop ${agentName} immediately`}
+    class:list={[
+      "inline-flex items-center gap-2 px-4 py-2 rounded-full font-body text-[13px] font-semibold transition-colors",
+      killed
+        ? "bg-success-bg text-success-ink hover:bg-success-fill"
+        : "bg-critical-bg text-critical-ink hover:bg-critical-fill",
+      !canAdmin && "opacity-60 cursor-not-allowed",
+    ]}
+    title={
+      canAdmin
+        ? killed
+          ? `Resume ${agentName}`
+          : `Stop ${agentName} immediately for everyone`
+        : "AI-admin role required"
+    }
+  >
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      {killed ? (
+        <>
+          <polygon points="5 3 19 12 5 21 5 3" />
+        </>
+      ) : (
+        <>
+          <rect x="6" y="6" width="12" height="12" />
+        </>
+      )}
+    </svg>
+    {killed ? "Resume agent" : "Kill switch"}
+  </button>
+</form>

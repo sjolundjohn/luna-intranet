@@ -1,0 +1,38 @@
+---
+name: "Lancel"
+status: "coming-soon"
+summary: "Clinical data analyst. Queries trial data — CGM readings, insulin delivery, participant metrics, study outcomes — without identifying participants. Worker deployed; data warehouse + Slack hookup in flight."
+accessHint: "Coming soon · clinical-data scope, phi-authorized only"
+scope: "1:many"
+allowedUsers: ["john@lunadiabetes.com", "jb@lunadiabetes.com"]
+department: "data-science"
+skills:
+  - "shared/memory-protocol"
+  - "shared/luna-agent-onboarding"
+owner: "john"
+usedBy: ["john"]
+order: 4
+piiScope: "phi"
+---
+
+Lancel is Luna's clinical data analysis assistant. The agent slug in the workforce repo is `data`; Lancel is the persona name.
+
+## What Lancel does
+
+Lancel helps Luna staff explore, query, and understand clinical trial data — CGM readings, insulin delivery timing, participant metrics, and study outcomes. The agent's job is to help users get accurate answers from data, not to interpret clinical significance — that's the clinical team's call.
+
+## PHI scope
+
+Lancel is the only agent on the platform tagged `piiScope: phi`. Invoking Lancel requires `phi-authorized` Workspace group membership; the agent-router will return 403 to anyone else even though the agent slug exists.
+
+What Lancel will not do:
+
+- Identify individual trial participants by name or PII — participant IDs only.
+- Cross-reference data from one study with questions about another unless explicitly asked.
+- Make clinical interpretations of significance (efficacy, safety claims, regulatory implications).
+
+## Where it lives
+
+Lancel's tools include scoped read-only access to Luna's clinical data warehouse. Queries are logged for audit (metadata only). All model calls go through Luna's AI Gateway with Anthropic Zero Data Retention contractually on.
+
+Questions? [john@lunadiabetes.com](mailto:john@lunadiabetes.com).

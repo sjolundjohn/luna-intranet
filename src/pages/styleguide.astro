@@ -14,6 +14,19 @@ import Alert from "~/components/Alert.astro";
 import MoonPhases from "~/components/MoonPhases.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
 import Prose from "~/components/Prose.astro";
+import RoleBadge from "~/components/RoleBadge.astro";
+import FearAndAnswer from "~/components/FearAndAnswer.astro";
+import CostMeter from "~/components/CostMeter.astro";
+import AuditRow from "~/components/AuditRow.astro";
+import WorkflowRunRow from "~/components/WorkflowRunRow.astro";
+import WorkflowStepList from "~/components/WorkflowStepList.astro";
+import FleetTile from "~/components/FleetTile.astro";
+import WorkflowCard from "~/components/WorkflowCard.astro";
+import OnboardingPath from "~/components/OnboardingPath.astro";
+import KillSwitchButton from "~/components/KillSwitchButton.astro";
+import BriefingPlayer from "~/components/BriefingPlayer.astro";
+import AgentConfigCard from "~/components/AgentConfigCard.astro";
+import MemoryViewer from "~/components/MemoryViewer.astro";
 
 const primaryColors = [
   { name: "Midnight", hex: "#041E42", var: "--color-midnight" },
@@ -213,6 +226,160 @@ const alerts = [
         <h3>Subheading</h3>
         <blockquote>A block quote with the Moonlight bar on the left.</blockquote>
       </Prose>
+    </div>
+  </WhiteSection>
+
+  {/* AI-platform components — added with the AI workplace expansion. */}
+  <WhiteSection size="tall" class="bg-soft-paper">
+    <p class="eyebrow">AI Platform · v0.3</p>
+    <h2 class="mt-2 font-body text-[28px] font-bold text-ink">Platform components</h2>
+    <MoonlightRule width={40} color="midnight" class="mt-4" />
+
+    {/* Role badges */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Role badges</h3>
+    <div class="mt-3 flex flex-wrap gap-3">
+      <RoleBadge role="employee" />
+      <RoleBadge role="manager" />
+      <RoleBadge role="ai-admin" />
+      <RoleBadge role="phi-authorized" />
+    </div>
+
+    {/* Fear-and-answer */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Fear-and-answer</h3>
+    <div class="mt-3 bg-white rounded-[20px] border border-border-subtle p-6 md:p-8">
+      <FearAndAnswer
+        fear="Will my manager see when I use AI and when I don't?"
+        answer="No. /fleet aggregates by team only. Per-employee usage is never shown to anyone — including managers and including AI admins on this page."
+        enforcedBy="Server-side query layer; no per-employee column is selected."
+      />
+      <FearAndAnswer
+        fear="What if the agent gets it wrong?"
+        answer="The human whose name is on the work takes the call. Agents draft; you sign off. The audit log records when a regulated artifact was reviewed by a person."
+      />
+    </div>
+
+    {/* Cost meter */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Cost meter</h3>
+    <div class="mt-3 grid sm:grid-cols-3 gap-4">
+      <div class="bg-white border border-border-subtle rounded-[16px] p-5"><CostMeter label="Below threshold" spentUsd={12} capUsd={50} /></div>
+      <div class="bg-white border border-border-subtle rounded-[16px] p-5"><CostMeter label="Approaching cap (80%)" spentUsd={42} capUsd={50} /></div>
+      <div class="bg-white border border-border-subtle rounded-[16px] p-5"><CostMeter label="Over cap" spentUsd={56} capUsd={50} /></div>
+    </div>
+
+    {/* Audit row table */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Audit log row</h3>
+    <div class="mt-3 bg-white border border-border-subtle rounded-[16px] overflow-hidden">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-soft-paper text-slate text-[12px] font-semibold uppercase tracking-[0.06em]">
+            <th class="py-3 pl-5 pr-4">When</th>
+            <th class="py-3 pr-4">Agent</th>
+            <th class="py-3 pr-4">Actor</th>
+            <th class="py-3 pr-4">Model</th>
+            <th class="py-3 pr-4 text-right">Tokens</th>
+            <th class="py-3 pr-5 text-right">Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <AuditRow ts="2026-05-10 14:22" agent="Basal" actor="you" model="claude-opus-4-7" tokens={4128} costUsd={0.082} />
+          <AuditRow ts="2026-05-10 09:14" agent="Basal" actor="you" model="claude-opus-4-7" tokens={920} costUsd={0.018} workflow="Morning briefing" />
+        </tbody>
+      </table>
+    </div>
+
+    {/* Workflow run row */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Workflow run row · status variants</h3>
+    <div class="mt-3 bg-white border border-border-subtle rounded-[16px] overflow-hidden">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-soft-paper text-slate text-[12px] font-semibold uppercase tracking-[0.06em]">
+            <th class="py-3 pl-5 pr-4">When</th>
+            <th class="py-3 pr-4">Status</th>
+            <th class="py-3 pr-4">Duration</th>
+            <th class="py-3 pr-4">Triggered by</th>
+            <th class="py-3 pr-4">Version</th>
+            <th class="py-3 pr-5 text-right">Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <WorkflowRunRow ts="2026-05-10 07:00" status="success"   durationMs={14200} triggeredBy="cron" costUsd={0.084} version="v3" />
+          <WorkflowRunRow ts="2026-05-10 07:00" status="running"   durationMs={4200}  triggeredBy="manual" costUsd={0} version="v3" />
+          <WorkflowRunRow ts="2026-05-09 07:00" status="failed"    durationMs={1700}  triggeredBy="cron" costUsd={0.012} version="v3" />
+          <WorkflowRunRow ts="2026-05-08 07:00" status="cancelled" durationMs={9000}  triggeredBy="manual" costUsd={0.05} version="v3" />
+        </tbody>
+      </table>
+    </div>
+
+    {/* Workflow step list */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Workflow step list</h3>
+    <div class="mt-3 bg-white border border-border-subtle rounded-[16px] p-6">
+      <WorkflowStepList
+        steps={[
+          { name: "Pull mail since yesterday", kind: "fetch", summary: "Read Gmail since 6pm prior business day." },
+          { name: "Classify", kind: "decision", summary: "Sort signal vs newsletter." },
+          { name: "Compose briefing", kind: "agent", agent: "basal", summary: "Two paragraphs, three actions." },
+          { name: "Manager approval", kind: "human-approval", summary: "Required for outbound regulated content." },
+          { name: "Render Markdown", kind: "transform", summary: "Format for delivery." },
+          { name: "Deliver to Slack DM", kind: "deliver", summary: "Post at 7am local." },
+        ]}
+      />
+    </div>
+
+    {/* Fleet tile */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Fleet tile · health variants</h3>
+    <div class="mt-3 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <FleetTile slug="basal" name="Basal" status="live" invocations7d={318} uniqueUsers7d={7} costUsd7d={12.4} health="ok" />
+      <FleetTile slug="basal-warn" name="Basal · warn" status="live" invocations7d={28} uniqueUsers7d={2} costUsd7d={1.2} health="warn" />
+      <FleetTile slug="basal-crit" name="Basal · crit" status="live" invocations7d={4} uniqueUsers7d={1} costUsd7d={0.5} health="crit" />
+      <FleetTile slug="basal-killed" name="Basal · killed" status="live" killed={true} invocations7d={0} uniqueUsers7d={0} costUsd7d={0} />
+    </div>
+
+    {/* Workflow card */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Workflow catalog card</h3>
+    <div class="mt-3 grid md:grid-cols-2 gap-4">
+      <WorkflowCard id="example" name="Morning briefing" summary="Per-person summary of inbox, calendar, and pending decisions." trigger="scheduled" schedule="0 7 * * 1-5" status="active" owner="john" stepCount={5} lastRun="today, 7:00" successRatePct={100} />
+      <WorkflowCard id="example2" name="Monthly platform audit" summary="Adversarial review of every Worker, agent, and Workflow." trigger="scheduled" schedule="0 9 1 * *" status="drafting" owner="devops" stepCount={6} />
+    </div>
+
+    {/* Onboarding path */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Onboarding path tile</h3>
+    <div class="mt-3 grid md:grid-cols-2 gap-4">
+      <OnboardingPath role="engineering" title="Engineering at Luna with AI alongside" summary="Where to put agents in your loop, how to give them context safely, and what's still your call." moduleCount={5} href="/onboarding/eng" />
+      <OnboardingPath role="ops" title="Operations at Luna with AI alongside" summary="Support, customer ops, vendor coordination — where agents land first, and what stays human." moduleCount={5} href="/onboarding/ops" />
+    </div>
+
+    {/* Kill switch */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Kill-switch button</h3>
+    <div class="mt-3 flex flex-wrap gap-3">
+      <KillSwitchButton agentSlug="basal" agentName="Basal" killed={false} canAdmin={true} />
+      <KillSwitchButton agentSlug="basal" agentName="Basal" killed={true} canAdmin={true} />
+      <KillSwitchButton agentSlug="basal" agentName="Basal" killed={false} canAdmin={false} />
+    </div>
+
+    {/* Briefing player */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Briefing player</h3>
+    <div class="mt-3 max-w-[640px]">
+      <BriefingPlayer cadence="daily" date="Saturday, May 10, 2026" durationLabel="3 min" />
+    </div>
+
+    {/* Agent config card */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Agent config card</h3>
+    <div class="mt-3 space-y-4">
+      <AgentConfigCard slug="basal" name="Basal" status="live" scope="1:many" summary="General-purpose chat assistant." enabled={true} memoryEnabled={true} customInstructionLength={142} />
+      <AgentConfigCard slug="clara" name="Clara" status="live" scope="1:1" summary="Chief of Staff to Luna's CFO." enabled={true} memoryEnabled={true} customInstructionLength={0} />
+    </div>
+
+    {/* Memory viewer */}
+    <h3 class="mt-12 text-ink font-body text-[16px] font-semibold uppercase tracking-[0.06em]">Memory viewer</h3>
+    <div class="mt-3 max-w-[760px]">
+      <MemoryViewer
+        agent="Basal"
+        memoryEnabled={true}
+        facts={[
+          { ts: "2026-05-08", fact: "Prefers concise responses without bullets unless asked.", source: "basal" },
+          { ts: "2026-05-06", fact: "Working on the AI platform website expansion.", source: "basal" },
+        ]}
+      />
     </div>
   </WhiteSection>
 

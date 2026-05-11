@@ -1,0 +1,149 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+---
+
+<BaseLayout
+  title="Request a new agent"
+  description="The intake flow for spinning up a new Luna AI Workforce agent."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Agents · New request" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Request a new agent.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Five minutes to file. Pen interviews you, John approves, Pump
+      scaffolds the Worker, Sensor reviews. You get a working agent in a
+      few days.
+    </Fragment>
+  </Hero>
+
+  {/* The flow */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">How it works</p>
+      <h2 class="font-display text-ink font-normal text-[28px] md:text-[34px] leading-tight">
+        Six steps from idea to a working agent.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <ol class="relative space-y-6 max-w-[760px]">
+      {[
+        { n: "01", title: "You file a request", body: "DM @pen in Slack with what you want, or fill out the form below. Pen runs a 5-minute interview to nail down scope, allowed users, and PHI status." },
+        { n: "02", title: "Pen drafts the persona", body: "Pen writes facets/<name>.md and prompts/<name>-system.md, then opens a PR against Luna_AI_Workforce_Config. The persona is the contract — what the agent is allowed to do, who can talk to it, what it knows." },
+        { n: "03", title: "John approves", body: "For 1:many shared (Class A) agents, John approves the scope before Pump touches code. For 1:1 owner agents, the owner approves their own. The bar is higher for shared agents." },
+        { n: "04", title: "Sensor reviews the persona", body: "Sensor adversarially reviews the persona PR against the Cloudflare-Agents anti-pattern checklist. Findings are filed as PR comments. The PR doesn't merge until Sensor's findings are resolved." },
+        { n: "05", title: "Pump scaffolds the Worker", body: "Once the persona PR merges, Pump scaffolds apps/agent-<name>/ with the right bindings, opens a code PR. Sensor reviews this too." },
+        { n: "06", title: "John merges; CI deploys", body: "After Sensor approves the code PR, John merges. CI builds and deploys the agent to *.nightluna.com behind CF Access. The new agent shows up on /agents." },
+      ].map((step) => (
+        <li class="flex gap-5">
+          <span class="flex-shrink-0 inline-flex items-center justify-center w-[44px] h-[44px] rounded-full bg-midnight text-moonlight font-mono text-[14px] font-semibold tabular-nums">
+            {step.n}
+          </span>
+          <div>
+            <h3 class="text-ink font-body text-[18px] font-semibold leading-tight">{step.title}</h3>
+            <p class="mt-2 text-graphite text-[15px] leading-[1.55]">{step.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </WhiteSection>
+
+  {/* The form (read-only template for now) */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-6">
+      <p class="eyebrow mb-3">The intake template</p>
+      <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-tight">
+        Copy this into your DM with @pen.
+      </h2>
+      <p class="mt-4 text-graphite text-[15px] leading-[1.6] max-w-[60ch]">
+        Phase 1 of the platform routes new agent requests through a Slack
+        DM with Pen. Phase 2 wires this form to a Notion DB so the request
+        threads itself. The fields below are exactly what Pen needs to run
+        the interview — pre-filling them shortens the back-and-forth.
+      </p>
+    </div>
+
+    <div class="bg-midnight rounded-[20px] p-6 md:p-8 max-w-[760px]">
+      <pre class="text-moonlight font-mono text-[13px] leading-[1.7] whitespace-pre-wrap"><code>{`Hi @pen, I'd like to request a new agent.
+
+Who's it for: [yourself (1:1) | your team / the company (1:many)]
+
+Owner / allowed users:
+  - your-email@lunadiabetes.com
+  - any other emails who should reach this agent
+
+The job in one paragraph:
+  [What does this agent do for you? Be concrete.]
+
+Top three use cases:
+  1. [...]
+  2. [...]
+  3. [...]
+
+What it's allowed to act on:
+  [Read-only? Read/write? Which systems? Slack, Notion, Drive, HubSpot?]
+
+What it must NOT do:
+  [Things that are off-limits — sending external email, pushing code, etc.]
+
+PHI scope:
+  [yes / no — does this agent see patient identifiers, trial data, anything you'd treat as PHI clinically?]
+
+Who decides on prompt changes once it's live:
+  [you alone / a reviewer / John for shared agents — see /governance#change-control]
+`}</code></pre>
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-3 max-w-[760px]">
+      <a
+        href="slack://app?team=&id=&tab=messages"
+        class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-midnight text-white font-body text-[14px] font-semibold hover:bg-midnight-deep transition-colors"
+      >
+        Open Slack to DM @pen
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </a>
+      <a href="/governance#change-control" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Read change-control rules</a>
+      <a href="/foundation/how-to#requesting-new-agents" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">More on how this works</a>
+    </div>
+  </WhiteSection>
+
+  {/* Class A vs Class B explainer */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px] mb-6">
+      <p class="eyebrow mb-3">Class A vs Class B</p>
+      <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-tight">
+        Two different shapes; two different bars.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+      <article class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <p class="eyebrow mb-2">Class A · 1:many</p>
+        <h3 class="text-ink font-body text-[18px] font-semibold">Shared agent</h3>
+        <p class="mt-2 text-graphite text-[14px] leading-[1.6]">
+          One agent, many people. Examples today: Basal, Pen, Pump, Sensor, Lancel.
+          Higher bar — John approves the scope before any code is written.
+          Configure-edits require a reviewer.
+        </p>
+      </article>
+      <article class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <p class="eyebrow mb-2">Class B · 1:1</p>
+        <h3 class="text-ink font-body text-[18px] font-semibold">Owner agent</h3>
+        <p class="mt-2 text-graphite text-[14px] leading-[1.6]">
+          One agent, one person. Examples today: Clara, Jonah (Jon's CFO chief of
+          staff). The owner approves their own. Personal overlays — custom
+          instructions, memory off — are self-serve.
+        </p>
+      </article>
+    </div>
+  </WhiteSection>
+</BaseLayout>

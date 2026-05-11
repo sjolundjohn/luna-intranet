@@ -1,0 +1,32 @@
+---
+name: "Morning briefing"
+summary: "Per-person summary of inbox, calendar, and pending decisions, delivered before standup."
+owner: "john"
+trigger: "scheduled"
+schedule: "0 7 * * 1-5"
+status: "active"
+order: 1
+steps:
+  - name: "Pull mail since yesterday"
+    kind: "fetch"
+    summary: "Read the user's Gmail since 6pm prior business day, filter signal vs newsletter."
+  - name: "Pull today's calendar"
+    kind: "fetch"
+    summary: "Today's meetings + any prep docs linked from invites."
+  - name: "Pull pending decisions"
+    kind: "fetch"
+    summary: "Open PRs, open Notion docs assigned to user, pending HubSpot approvals."
+  - name: "Compose briefing"
+    kind: "agent"
+    agent: "basal"
+    summary: "Two paragraphs + a 3-item action list. Keep under 250 words."
+  - name: "Deliver to Slack DM"
+    kind: "deliver"
+    summary: "Post the briefing as a Slack DM from Basal at 7:00 local time."
+---
+
+The morning briefing is the canonical example of the workflow shape we're optimizing for: a scheduled multi-step task that compresses a long thread of context into a structured starting point for the day.
+
+It's a Class B (personal) workflow — each person gets their own version with their own sources. The schedule is 7am local time on weekdays, delivered to a Slack DM from Basal. The output is intentionally short: two paragraphs and three actions, designed to fit in a glance before standup.
+
+The workflow's success metric is "did the user open Slack and immediately know what they were going to do today?" — which we measure indirectly through whether they trigger any of the actions in the first hour.

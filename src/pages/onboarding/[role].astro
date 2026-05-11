@@ -1,0 +1,110 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+
+export async function getStaticPaths() {
+  const tracks = await getCollection("onboarding");
+  return tracks.map((t) => ({
+    params: { role: t.id },
+    props: { track: t },
+  }));
+}
+
+const { track } = Astro.props;
+const data = track.data;
+
+// First module (always "What we're not asking you to do") gets fear-and-answer styling.
+const firstModule = data.modules[0];
+const restModules = data.modules.slice(1);
+---
+
+<BaseLayout
+  title={`Onboarding · ${data.title}`}
+  description={data.summary}
+  heroIsDark={true}
+>
+  <Hero eyebrow={`Onboarding · For ${data.role}`} size="compact" animateMoons={false}>
+    <Fragment slot="headline">{data.title}</Fragment>
+    <Fragment slot="subcopy">{data.summary}</Fragment>
+  </Hero>
+
+  {/* Module 1 — the boundaries module, with fear-and-answer styling. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[840px]">
+      <p class="eyebrow mb-3">Module 01 · Boundaries</p>
+      <h2 class="font-display text-ink font-normal text-[28px] md:text-[36px] leading-[1.1]">
+        {firstModule.title}
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-7 text-graphite text-[17px] leading-[1.65]">{firstModule.body}</p>
+      {
+        firstModule.task && (
+          <div class="mt-7 bg-soft-paper border border-border-subtle rounded-[16px] p-5 md:p-6">
+            <p class="eyebrow mb-2">Your task</p>
+            <p class="text-ink text-[15px] leading-[1.6]">{firstModule.task}</p>
+          </div>
+        )
+      }
+    </div>
+  </WhiteSection>
+
+  {/* Modules 2..N — same shape, sequential. */}
+  <WhiteSection size="tall" class="bg-soft-paper">
+    <div class="max-w-[840px] space-y-12">
+      {
+        restModules.map((m, i) => {
+          const num = (i + 2).toString().padStart(2, "0");
+          return (
+            <article>
+              <p class="eyebrow mb-3">Module {num}</p>
+              <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-[1.1]">
+                {m.title}
+              </h2>
+              <div class="mt-4"><MoonlightRule width={32} color="midnight" /></div>
+              <p class="mt-6 text-graphite text-[16px] leading-[1.65]">{m.body}</p>
+              {m.task && (
+                <div class="mt-6 bg-white border border-border-subtle rounded-[16px] p-5 md:p-6">
+                  <p class="eyebrow mb-2">Your task</p>
+                  <p class="text-ink text-[15px] leading-[1.6]">{m.task}</p>
+                </div>
+              )}
+            </article>
+          );
+        })
+      }
+    </div>
+  </WhiteSection>
+
+  <WhiteSection size="compact">
+    <div class="max-w-[720px]">
+      <p class="eyebrow mb-3">Done with this track</p>
+      <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-[1.05]">
+        Where to go next.
+      </h2>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        Try the agent for your role, configure it the way you'd like it
+        on <a href="/agents/me" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">My Agents</a>,
+        or read the
+        <a href="/governance" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">governance model</a>
+        if you want to know exactly how this works under the hood.
+      </p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a
+          href="/onboarding"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border-default text-ink font-body text-[13px] font-medium hover:border-ink transition-colors"
+        >
+          ← All tracks
+        </a>
+        <a
+          href="/chat"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-midnight text-white font-body text-[13px] font-medium hover:bg-midnight-deep transition-colors"
+        >
+          Open chat
+        </a>
+      </div>
+    </div>
+  </WhiteSection>
+</BaseLayout>
