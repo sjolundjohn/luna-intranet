@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm typecheck)",
+      "Bash(wrangler whoami)",
+      "Bash(wrangler pages project list)",
+      "Bash(wrangler pages deployment list *)"
+    ]
+  }
+}

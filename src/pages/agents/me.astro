@@ -202,7 +202,7 @@ const recentActivity = [
             <th class="py-3 pr-5 font-semibold text-right">Cost</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody data-activity-tbody>
           {
             recentActivity.map((row) => (
               <AuditRow {...row} />
@@ -211,6 +211,9 @@ const recentActivity = [
         </tbody>
       </table>
     </div>
+    <p class="mt-3 text-slate text-[12px]" data-activity-status>
+      Showing recent mock data. Live audit-log rows will replace this on page load…
+    </p>
 
     <div class="mt-6 grid md:grid-cols-2 gap-5">
       <div class="bg-white border border-border-subtle rounded-[16px] p-5 md:p-6">
@@ -256,3 +259,135 @@ const recentActivity = [
     </div>
   </WhiteSection>
 </BaseLayout>
+
+<script>
+  // Client-side enhancement: replace mock toggles + audit table with
+  // real reads from /api/me/config and /api/me/activity. Mock data
+  // remains the initial render so the page is never empty; this code
+  // overwrites once the fetches return.
+
+  type ConfigRow = {
+    agent_slug: string;
+    enabled: boolean;
+    memory_enabled: boolean;
+    custom_instructions: string;
+  };
+  type ActivityRow = {
+    ts: string;
+    agent_slug: string;
+    model: string;
+    tokens_in: number;
+    tokens_out: number;
+    cost_usd: number;
+  };
+
+  function fmtTs(iso: string): string {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    } catch {
+      return iso;
+    }
+  }
+  function fmtCost(n: number): string {
+    if (n < 0.01) return "<$0.01";
+    return `$${n.toFixed(n < 1 ? 3 : 2)}`;
+  }
+
+  async function refreshActivity() {
+    const tbody = document.querySelector<HTMLElement>("[data-activity-tbody]");
+    const status = document.querySelector<HTMLElement>("[data-activity-status]");
+    if (!tbody || !status) return;
+    try {
+      const res = await fetch("/api/me/activity?limit=30", { credentials: "same-origin" });
+      if (!res.ok) {
+        status.textContent = `Couldn't load live activity (${res.status}). Showing mock data.`;
+        return;
+      }
+      const json = (await res.json()) as { rows?: ActivityRow[] };
+      const rows = json.rows ?? [];
+      if (rows.length === 0) {
+        status.textContent = "No activity yet — your audit rows will show up here as you use the agents.";
+        tbody.innerHTML = "";
+        return;
+      }
+      tbody.innerHTML = rows.map((r) => `
+        <tr class="border-t border-border-subtle text-[14px] text-graphite">
+          <td class="py-3 pr-4 whitespace-nowrap text-slate font-mono text-[12px]">${fmtTs(r.ts)}</td>
+          <td class="py-3 pr-4"><span class="text-ink font-medium">${r.agent_slug}</span></td>
+          <td class="py-3 pr-4 text-slate">you</td>
+          <td class="py-3 pr-4 font-mono text-[12px] text-slate">${r.model}</td>
+          <td class="py-3 pr-4 text-right tabular-nums">${(r.tokens_in + r.tokens_out).toLocaleString()}</td>
+          <td class="py-3 text-right tabular-nums text-ink">${fmtCost(r.cost_usd)}</td>
+        </tr>
+      `).join("");
+      status.textContent = `${rows.length} live row${rows.length === 1 ? "" : "s"} from the audit log.`;
+    } catch (err) {
+      status.textContent = "Couldn't load live activity. Showing mock data.";
+    }
+  }
+
+  async function loadConfig() {
+    try {
+      const res = await fetch("/api/me/config", { credentials: "same-origin" });
+      if (!res.ok) return;
+      const json = (await res.json()) as { agents?: ConfigRow[] };
+      const byId = new Map<string, ConfigRow>();
+      (json.agents ?? []).forEach((a) => byId.set(a.agent_slug, a));
+      document.querySelectorAll<HTMLElement>("[data-agent-config]").forEach((card) => {
+        const slug = card.id;
+        const cfg = byId.get(slug);
+        if (!cfg) return;
+        const enabledInput = card.querySelector<HTMLInputElement>('input[data-config-toggle="enabled"]');
+        const memoryInput = card.querySelector<HTMLInputElement>('input[data-config-toggle="memory"]');
+        if (enabledInput) {
+          enabledInput.checked = cfg.enabled;
+          const label = card.querySelector<HTMLElement>('[data-config-label="enabled"]');
+          if (label) label.textContent = cfg.enabled ? "On" : "Off";
+        }
+        if (memoryInput) {
+          memoryInput.checked = cfg.memory_enabled;
+          const label = card.querySelector<HTMLElement>('[data-config-label="memory"]');
+          if (label) label.textContent = cfg.memory_enabled ? "On" : "Off";
+        }
+      });
+    } catch {
+      /* silent — fall back to initial mock state */
+    }
+  }
+
+  /** Persist a single agent toggle change to /api/me/config. */
+  function bindTogglePersist() {
+    document.querySelectorAll<HTMLInputElement>("[data-agent-config] [data-config-toggle]").forEach((input) => {
+      input.addEventListener("change", async () => {
+        const card = input.closest<HTMLElement>("[data-agent-config]");
+        if (!card) return;
+        const slug = card.id;
+        const kind = input.dataset.configToggle;
+        const value = input.checked;
+        const body: Record<string, unknown> = {};
+        if (kind === "enabled") body.enabled = value;
+        if (kind === "memory") body.memory_enabled = value;
+        try {
+          const res = await fetch(`/api/me/config?slug=${encodeURIComponent(slug)}`, {
+            method: "PUT",
+            credentials: "same-origin",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (!res.ok) console.error(`config write failed: ${res.status}`);
+        } catch (err) {
+          console.error("config write threw", err);
+        }
+      });
+    });
+  }
+
+  function init() {
+    void refreshActivity();
+    void loadConfig();
+    bindTogglePersist();
+  }
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>
