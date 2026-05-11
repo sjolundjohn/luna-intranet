@@ -15,7 +15,7 @@ modules:
     task: "Pick one regulatory or clinical artifact from the last month. Ask Basal (general scope, no PHI) for a structured outline of an analogous one. Compare its structure to yours."
   - title: "Always-human steps"
     body: "Final review of any document going to FDA, an IRB, a site PI, or a patient. Adverse-event causality assessments. Any judgment that would normally carry your signature. These aren't 'AI-assisted.' They're yours, and the audit log records them as such — the agent's contribution stops at the prior step."
-    task: "Add 'human review by &lt;name&gt;' as an explicit row in your project tracker for any agent-assisted regulatory artifact."
+    task: "Add 'human review by [your name]' as an explicit row in your project tracker for any agent-assisted regulatory artifact."
   - title: "Surfacing risks back to the platform"
     body: "If an agent gives you a confidently wrong answer about a clinical or regulatory question, that's the most useful signal we get. Log it (a screenshot is fine), drop it in #ai-platform, and we'll either correct the prompt, narrow the scope, or remove the agent from that path entirely. Hallucinations on regulated work are not 'a known limitation' — they're a fix."
     task: "Find one moment in the last month where an agent (here or elsewhere) was wrong about a clinical-adjacent topic. Write it up; it informs the guardrails we ship next."
