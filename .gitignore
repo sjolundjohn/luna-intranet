@@ -5,6 +5,9 @@ dist/
 # wrangler local state (local D1, etc.)
 .wrangler/
 
+# local agent state (preview config, worktrees)
+.claude/
+
 # deps
 node_modules/
 .pnpm-store/
