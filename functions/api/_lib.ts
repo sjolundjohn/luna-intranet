@@ -59,16 +59,21 @@ export function getCallerEmail(request: Request): string {
     if (email) return email.toLowerCase();
   }
 
-  const jwt = request.headers.get("cf-access-jwt-assertion");
-  if (jwt) {
+  // Decode the email claim from either the CF Access or the Google IAP JWT
+  // assertion. Both are forwarded only after the edge has authenticated the
+  // request, so the assertion is trustworthy here. IAP fronting an external
+  // (Cloudflare) backend typically forwards `x-goog-iap-jwt-assertion`.
+  for (const header of ["cf-access-jwt-assertion", "x-goog-iap-jwt-assertion"]) {
+    const jwt = request.headers.get(header);
+    if (!jwt) continue;
     try {
       const part = jwt.split(".")[1] ?? "";
       let b64 = part.replace(/-/g, "+").replace(/_/g, "/");
       b64 += "=".repeat((4 - (b64.length % 4)) % 4);
       const claims = JSON.parse(atob(b64)) as { email?: string };
-      if (typeof claims.email === "string") return claims.email.toLowerCase();
+      if (typeof claims.email === "string" && claims.email) return claims.email.toLowerCase();
     } catch {
-      /* fall through */
+      /* try the next source */
     }
   }
 
