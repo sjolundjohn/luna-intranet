@@ -1,0 +1,49 @@
+---
+/**
+ * ApolloStep01Screen — Evening setup, Step 01 (Inventory). Bespoke layout: a
+ * still tile + a numbered inventory list (not the centered step copy).
+ * Lifted verbatim from `apollo-training/step-01-inventory.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title">Evening setup</span>
+      <span class="count">Step 1 of 7</span>
+    </div>
+    <div class="prog-dots" role="img" aria-label="Step 1 of 7">
+      <span class="d current"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span>
+    </div>
+  </div>
+
+  <div class="video-tile">
+    <div class="scrim"></div>
+    <button class="play" aria-label="Play step video">
+      <svg width="18" height="18" viewBox="0 0 16 16"><path d="M5 3l9 5-9 5V3z" fill="#041E42"/></svg>
+    </button>
+    <span class="cap">still: Step 01 — poster TBD</span>
+    <span class="loop">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4M21 6H7a4 4 0 0 0-4 4v1M7 22l-4-4 4-4M3 18h14a4 4 0 0 0 4-4v-1"/></svg>
+      Auto-loops
+    </span>
+  </div>
+
+  <div class="pad" style="flex:1; display:flex; flex-direction:column; padding-top:18px;">
+    <div class="step-badge"><span class="dot"></span>Step 01</div>
+    <h1 class="title-2" style="font-weight:700; letter-spacing:-0.02em; margin:0 0 14px;">Gather what you'll need</h1>
+    <div class="inv-list">
+      <div class="inv-item"><span class="n">1</span><span class="lbl">Your rapid-acting insulin pen</span></div>
+      <div class="inv-item"><span class="n">2</span><span class="lbl">Single-Sleep Reservoir</span></div>
+      <div class="inv-item"><span class="n">3</span><span class="lbl">Luna Capsule (charged)</span></div>
+    </div>
+    <div style="flex:1;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Ready — let's go</button>
+  </div>
+</div>

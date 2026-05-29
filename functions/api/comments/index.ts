@@ -37,6 +37,17 @@ export const onRequestGet: PagesFunction<CommentsEnv> = async (ctx) => {
   return json({ comments: (results ?? []).map(toDTO) });
 };
 
+/** Turn a verified email into a human display name: "jane.smith@x.com" → "Jane Smith". */
+function displayNameFromEmail(email: string): string {
+  const local = email.split("@")[0] || email;
+  const name = local
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+    .join(" ");
+  return name || local;
+}
+
 interface CreateBody {
   screenId?: string;
   body?: string;
@@ -63,7 +74,14 @@ export const onRequestPost: PagesFunction<CommentsEnv> = async (ctx) => {
 
   const screenId = (b.screenId ?? "").trim();
   const body = (b.body ?? "").trim();
-  const authorName = (b.authorName ?? "").trim() || email.split("@")[0];
+  // Attribution is driven by the VERIFIED identity, Google-Docs-style: when a
+  // real email is forwarded we derive the display name from it and ignore any
+  // client-supplied name (no spoofing). Only the pre-identity fallback
+  // (`gcp-iap:<uid>` — IAP forwards no email yet) accepts a typed name.
+  const hasRealEmail = email.includes("@") && !email.startsWith("gcp-iap:");
+  const authorName = hasRealEmail
+    ? displayNameFromEmail(email)
+    : (b.authorName ?? "").trim() || "Anonymous";
 
   if (!screenId || screenId.length > LIMITS.screenId) return err("invalid 'screenId'");
   if (!body) return err("comment body is empty");

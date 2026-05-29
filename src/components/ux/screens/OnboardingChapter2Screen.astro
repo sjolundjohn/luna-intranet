@@ -1,0 +1,54 @@
+---
+/**
+ * OnboardingChapter2Screen — Chapter 2 of 5: capture the current basal routine
+ * (TDBD as prescribed). PLAIN DATA CAPTURE — a numeric field, NOT the two-step
+ * dose-confirm gesture. Lifted verbatim from `onboarding/chapter-2-routine.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title">Getting set up</span>
+      <span class="count">Chapter 2 of 5</span>
+    </div>
+    <div class="prog-dots" role="img" aria-label="Chapter 2 of 5">
+      <span class="d done"></span><span class="d current"></span><span class="d"></span><span class="d"></span><span class="d"></span>
+    </div>
+  </div>
+
+  <div class="pad" style="margin-top:14px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+    <div class="eyebrow">Chapter 2 of 5</div>
+    <h1 class="title-1" style="font-weight:700; margin:10px 0 0; letter-spacing:-0.015em;">Tell Luna your routine</h1>
+    <p class="body muted" style="margin:12px 0 0;">
+      Luna needs to know the basal routine you're on today so it can protect it overnight. Enter your total daily basal dose (TDBD) exactly as your clinician prescribed it — this is just what you take now, not a change.
+    </p>
+
+    <div class="field">
+      <span class="flbl">Total daily basal dose (TDBD), as prescribed</span>
+      <div class="fbox">
+        <span class="val">24</span>
+        <span class="unit">units / day</span>
+        <span class="caret" aria-hidden="true"></span>
+      </div>
+      <p class="hint">Your long-acting (basal) insulin total per day. Mealtime/bolus insulin isn't entered here — Luna doesn't touch it.</p>
+    </div>
+
+    <div class="keypad" aria-hidden="true">
+      <button>1</button><button>2</button><button>3</button>
+      <button>4</button><button>5</button><button>6</button>
+      <button>7</button><button>8</button><button>9</button>
+      <button class="blank"></button><button>0</button>
+      <button><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ACC1DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg></button>
+    </div>
+
+    <div style="flex:1; min-height:14px;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Continue</button>
+  </div>
+</div>

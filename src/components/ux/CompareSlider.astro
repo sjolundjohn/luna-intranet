@@ -1,9 +1,9 @@
 ---
 /**
- * CompareSlider — old-vs-new overlay for `status === "Changed"` screens.
- * Two layers stacked; the "after" (current) layer is clipped at a draggable
- * divider, revealing the "before" (legacy) layer behind it. Provide both via
- * the `legacy` and `current` named slots (identically sized Phone frames).
+ * CompareSlider — New-vs-Old overlay for any screen that has a prior design
+ * (`legacy !== null`). Two layers stacked; the "New" (current) layer is clipped
+ * at a draggable divider, revealing the "Old" (legacy) layer behind it. Provide
+ * both via the `legacy` and `current` named slots (identically sized Phone frames).
  */
 ---
 <div class="cmp" data-compare style="--x:50%;">

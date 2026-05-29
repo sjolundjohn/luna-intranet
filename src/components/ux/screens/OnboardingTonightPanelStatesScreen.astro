@@ -1,0 +1,58 @@
+---
+/**
+ * OnboardingTonightPanelStatesScreen — review aid: the recurring "Tonight" panel
+ * filling across the arc (States 0–3). Order is locked: pair Luna Capsule → pair
+ * CGM → enter TDBD. Scrolls inside the fixed-height frame. No tab bar.
+ * Lifted verbatim from `onboarding/tonight-panel-states.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+const moon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
+const check = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const states = [
+  { label: "State 0 · Nothing paired", frac: "0 of 3 ready", luna: false, cgm: false, tdbd: false, next: "luna" },
+  { label: "State 1 · Luna Capsule paired", frac: "1 of 3 ready", luna: true, cgm: false, tdbd: false, next: "cgm" },
+  { label: "State 2 · CGM paired", frac: "2 of 3 ready", luna: true, cgm: true, tdbd: false, next: "tdbd" },
+  { label: "State 3 · TDBD entered · complete", frac: "3 of 3 ready", luna: true, cgm: true, tdbd: true, next: "" },
+];
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <span class="back" aria-hidden="true" style="opacity:0;">‹</span>
+      <span class="title">Tonight panel · states</span>
+      <span class="count">&nbsp;</span>
+    </div>
+  </div>
+
+  <div class="pad tp-scroll" style="flex:1; display:flex; flex-direction:column;">
+    <p class="footnote muted" style="margin:6px 0 0;">Review aid — the recurring panel filling across the arc. Order is locked: pair Luna Capsule → pair CGM → enter TDBD.</p>
+
+    {states.map((s, i) => (
+      <Fragment>
+        <div class:list={["tp-label", i === 0 && "first"]}>{s.label}</div>
+        <div class="card-dark tonight-panel decompressed" style="margin-top:8px;">
+          <div class="ph"><span set:html={moon} /><span class="ttl">Your first night</span><span class="frac">{s.frac}</span></div>
+          <div class:list={["setup-step", !s.luna && "is-pending"]}>
+            <span class:list={["mark", s.luna ? "done" : "pending"]} set:html={s.luna ? check : ""} />
+            <span class="txt">Pair your Luna Capsule</span>
+            {s.next === "luna" && <span class="now">Next</span>}
+          </div>
+          <div class:list={["setup-step", !s.cgm && "is-pending"]}>
+            <span class:list={["mark", s.cgm ? "done" : "pending"]} set:html={s.cgm ? check : ""} />
+            <span class="txt">Pair your CGM sensor</span>
+            {s.next === "cgm" && <span class="now">Next</span>}
+          </div>
+          <div class:list={["setup-step", !s.tdbd && "is-pending"]}>
+            <span class:list={["mark", s.tdbd ? "done" : "pending"]} set:html={s.tdbd ? check : ""} />
+            <span class="txt">Enter your TDBD</span>
+            {s.next === "tdbd" && <span class="now">Next</span>}
+          </div>
+        </div>
+      </Fragment>
+    ))}
+
+    <div style="min-height:16px;"></div>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+---
+/**
+ * MidSessionAnnouncementScreen — Hypo Shield Mid-Session Dose Announcement
+ * (clock 2:14). A calm bedside hand-off over the dimmed live dashboard:
+ * announcement only, NOT an accept control. "Review recommendation" opens the
+ * shared two-step confirm sheet; "Not now" defers. Current basal stays in place.
+ * Rendered by ScreenRenderer with `sheet`. Lifted verbatim from
+ * `hypo-shield/mid-session-announcement.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+{/* dimmed LIVE-SESSION backdrop (the dashboard, mid-session) */}
+<div class="content backdrop" aria-hidden="true">
+  <div class="pad gluc-hero" style="padding-top:6px;">
+    <div class="glucose"><span class="num">118</span></div>
+    <div class="footnote muted">mg/dL · watching overnight</div>
+  </div>
+  <div class="pad cgm-hero">
+    <svg viewBox="0 0 340 188" width="100%" height="150" aria-label="Overnight glucose">
+      <g>
+        <line class="grid" x1="0" y1="10" x2="312" y2="10"/>
+        <line class="grid" x1="0" y1="48.75" x2="312" y2="48.75"/>
+        <line class="grid" x1="0" y1="87.5" x2="312" y2="87.5"/>
+        <line class="grid" x1="0" y1="126.25" x2="312" y2="126.25"/>
+        <line class="grid" x1="0" y1="165" x2="312" y2="165"/>
+      </g>
+      <rect x="0" y="95.3" width="312" height="59.1" fill="#68D2DF" opacity="0.08"/>
+      <line x1="0" y1="95.3" x2="312" y2="95.3" stroke="#F9CD86" stroke-width="1" stroke-dasharray="3 4" opacity="0.55"/>
+      <line x1="0" y1="154.4" x2="312" y2="154.4" stroke="#8E3655" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.9"/>
+      <path d="M0,120 C40,112 67,104 99,100 S161,92 185,90 224,86 258,84 292,83 312,82"
+            fill="none" stroke="#68D2DF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</div>
+
+{/* dim scrim */}
+<div class="scrim"></div>
+
+{/* MID-SESSION ANNOUNCEMENT — announcement only; opens the two-step sheet. */}
+<div class="announce-host">
+  <div class="announce" role="dialog" aria-label="Hypo Shield recommendation">
+    <div class="grabber"></div>
+    <div class="moonwrap">
+      <span class="moon" aria-hidden="true"></span>
+      <span class="eyebrow">Hypo Shield · Mid-session</span>
+    </div>
+    <div class="title">Luna has a basal suggestion for tonight</div>
+    <div class="body">While watching your glucose, Luna noticed your overnight numbers drifting up. When you're ready, review the suggested change — nothing happens until you confirm.</div>
+    <div class="note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+      You can review now or in the morning — your current basal stays in place until then.
+    </div>
+    <button class="btn primary" type="button">Review recommendation</button>
+    <div class="skip"><button type="button">Not now</button></div>
+  </div>
+</div>

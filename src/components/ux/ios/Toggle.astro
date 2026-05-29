@@ -1,0 +1,28 @@
+---
+/**
+ * Toggle — the iOS switch (.toggle from spine 05). Track off → Moonlight on.
+ * IOB Display defaults OFF (SPINE-NOTES locked). Styling is in ios-spine.css.
+ * Click-to-flip is document-delegated so it works for any number of instances.
+ */
+interface Props {
+  checked?: boolean;
+  label: string;
+}
+const { checked = false, label } = Astro.props;
+---
+<button class="toggle" role="switch" aria-checked={checked ? "true" : "false"} aria-label={label} data-ux-toggle></button>
+
+<script>
+  function wireToggles() {
+    if ((window as any).__uxToggleWired) return;
+    (window as any).__uxToggleWired = true;
+    document.addEventListener("click", (e) => {
+      const t = (e.target as HTMLElement).closest("[data-ux-toggle]");
+      if (!t) return;
+      const on = t.getAttribute("aria-checked") === "true";
+      t.setAttribute("aria-checked", on ? "false" : "true");
+    });
+  }
+  wireToggles();
+  document.addEventListener("astro:page-load", wireToggles);
+</script>

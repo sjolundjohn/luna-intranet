@@ -11,20 +11,25 @@
  * so multiple sheets can coexist (e.g. the old-vs-new compare).
  */
 interface Props {
-  variant?: "increase" | "decrease" | "nochange" | "reset" | "disabled" | "skip";
+  variant?: "increase" | "decrease" | "nochange" | "reset" | "disabled" | "skip" | "optin";
   value?: number;
   prev?: number;
   unit?: string;
 }
 const { variant = "increase", value = 14, prev = 12, unit = "U" } = Astro.props;
 
+// The slide gesture is shared by the dose-confirmation (increase/decrease) and
+// the IOB opt-in acknowledgement. The labels differ; the mechanics are identical.
+const slideLabel = variant === "optin" ? "Slide to turn on" : "Slide to confirm both";
+const doneLabel = variant === "optin" ? "Turned on" : "Confirmed";
+
 const isRec = variant === "increase" || variant === "decrease";
 const dir = variant === "increase" ? "up" : "down";
 const word = dir === "up" ? "Increase" : "Decrease";
 const rationale =
   variant === "increase"
-    ? "Over the past several nights your glucose drifted up without Luna insulin. You appear to need a little more basal."
-    : "Over the past several nights your glucose ran low overnight. You appear to need a little less basal.";
+    ? "Over the past several nights, Luna Eclipse has been monitoring your glucose. We've noticed it's drifted up — you may need a bit more of your basal insulin."
+    : "Over the past several nights, Luna Eclipse has been monitoring your glucose. We've noticed it's run low — you may need a bit less of your basal insulin.";
 
 const ICONS: Record<string, string> = {
   up: "M12 19V5M5 12l7-7 7 7",
@@ -39,12 +44,40 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[name]}"/></svg>`;
 }
 ---
-<div class="dose-sheet" data-dose-root data-variant={variant}>
+<div class="dose-sheet" data-dose-root data-variant={variant} data-slide-label={slideLabel} data-done-label={doneLabel}>
   <div class="dose-grabber"></div>
   <div class="dose-hdr">
     <div class="dose-moon" aria-hidden="true"></div>
-    <span class="dose-eyebrow">Basal Guidance</span>
+    <span class="dose-eyebrow">{variant === "optin" ? "IOB Display · Insight" : "Hypo Shield"}</span>
   </div>
+
+  {variant === "optin" && (
+    <Fragment>
+      <h2 class="dose-h2">Turn on insulin on board?</h2>
+      <p class="dose-rationale">Luna can show your <strong>insulin on board (IOB)</strong> — how much of your Luna-delivered insulin is still active — during a session and as a residual amount after. It's decision support to help you avoid stacking. Luna won't recommend, change, or deliver a dose based on it.</p>
+      <div class="dose-ackbox">
+        <div class="dose-ackbox-h">Before you turn it on, confirm you understand</div>
+        <button class="dose-ack" data-ack="1" role="checkbox" aria-checked="false">
+          <span class="dose-box"></span>
+          <span><span class="dose-lbl">This number counts Luna-delivered insulin only</span><br /><span class="dose-sub">Not insulin you deliver outside Luna</span></span>
+        </button>
+        <div class="dose-ackdiv"></div>
+        <button class="dose-ack" data-ack="2" role="checkbox" aria-checked="false">
+          <span class="dose-box"></span>
+          <span><span class="dose-lbl">It's information, not an instruction</span><br /><span class="dose-sub">Luna won't change or deliver a dose based on it</span></span>
+        </button>
+      </div>
+      <div class="dose-slide">
+        <div class="dose-track" data-track role="slider" tabindex="-1" aria-label="Slide to turn on IOB Display" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-disabled="true">
+          <div class="dose-trail" data-trail></div>
+          <div class="dose-tlabel" data-tlabel>Slide to turn on</div>
+          <div class="dose-thumb" data-thumb set:html={icon("arrowRight", 22, "var(--color-disabled)", 2.2)} />
+        </div>
+        <div class="dose-hint" data-hint set:html={`${icon("info", 14, "var(--color-slate)")} Acknowledge both points above to continue`} />
+      </div>
+      <div class="dose-skip"><button type="button">Not now</button></div>
+    </Fragment>
+  )}
 
   {isRec && (
     <Fragment>
@@ -54,18 +87,18 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
         <span class="dose-unit">{unit}</span>
         <span class="dose-chip" set:html={`${icon(dir, 15, "var(--color-moonlight-deep)", 2.2)} ${word}`} />
       </div>
-      <div class="dose-prev">Current TDBD <s>{prev} {unit}</s></div>
+      <div class="dose-prev">Current dose <s>{prev} {unit}</s></div>
       <p class="dose-rationale">{rationale}</p>
       <div class="dose-ackbox">
         <div class="dose-ackbox-h">To act on this, do both</div>
         <button class="dose-ack" data-ack="1" role="checkbox" aria-checked="false">
           <span class="dose-box"></span>
-          <span><span class="dose-lbl">Set your Luna TDBD to {value} {unit}</span><br /><span class="dose-sub">Updates the value Luna programs for you</span></span>
+          <span><span class="dose-lbl">Set your long-acting insulin dose to {value} units in Luna's settings</span><br /><span class="dose-sub">Updates the value Luna programs for you</span></span>
         </button>
         <div class="dose-ackdiv"></div>
         <button class="dose-ack" data-ack="2" role="checkbox" aria-checked="false">
           <span class="dose-box"></span>
-          <span><span class="dose-lbl">Take your {value} {unit} basal dose</span><br /><span class="dose-sub">Your actual injection tonight</span></span>
+          <span><span class="dose-lbl">Take your {value}-unit long-acting dose</span><br /><span class="dose-sub">Your actual injection tonight</span></span>
         </button>
       </div>
       <div class="dose-slide">
@@ -84,8 +117,8 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
     <Fragment>
       <div class="dose-check-circle" set:html={icon("check", 26, "var(--color-success-ink)", 2.2)} />
       <h2 class="dose-h2">No change needed tonight</h2>
-      <p class="dose-rationale">Your current TDBD seems appropriate for your body's needs. Luna will continue to observe and inform you if this changes.</p>
-      <div class="dose-prev">Current TDBD holding at <strong style="color:var(--color-ink)">{value} {unit}</strong></div>
+      <p class="dose-rationale">Your current dose seems appropriate for your body's needs. Luna will continue to observe and inform you if this changes.</p>
+      <div class="dose-prev">Current dose holding at <strong style="color:var(--color-ink)">{value} {unit}</strong></div>
       <button class="dose-btn primary">Got it</button>
     </Fragment>
   )}
@@ -94,7 +127,7 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
     <Fragment>
       <div class="dose-banner info" set:html={`${icon("pause", 15, "currentColor", 2)} Recommendations paused`} />
       <h2 class="dose-h2">Luna is re-learning your nights</h2>
-      <p class="dose-rationale">Your basal setting changed, so Luna reset its learning. Basal Guidance is paused until Luna has observed enough of your nights again.</p>
+      <p class="dose-rationale">Your basal setting changed, so Luna reset its learning. Hypo Shield is paused until Luna has observed enough of your nights again.</p>
       <div class="dose-metricbox">
         <div class="dose-metric"><span class="dose-metric-l">Luna sessions observed</span><span class="dose-metric-v">2 of 5</span></div>
         <div class="dose-metricdiv"></div>
@@ -106,8 +139,8 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
 
   {variant === "disabled" && (
     <Fragment>
-      <div class="dose-banner neutral" set:html={`${icon("minus", 15, "currentColor", 2)} Basal Guidance off`} />
-      <h2 class="dose-h2">Basal Guidance isn't on for you</h2>
+      <div class="dose-banner neutral" set:html={`${icon("minus", 15, "currentColor", 2)} Hypo Shield off`} />
+      <h2 class="dose-h2">Hypo Shield isn't on for you</h2>
       <p class="dose-rationale">Your care setup doesn't include Luna basal dose recommendations. Luna keeps monitoring overnight, but won't suggest dose changes. Talk to your care team if you think this should change.</p>
       <button class="dose-btn secondary">Close</button>
     </Fragment>
@@ -195,8 +228,10 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
   function wireDose(root: HTMLElement) {
     if (root.dataset.doseWired) return;
     const variant = root.dataset.variant;
-    if (variant !== "increase" && variant !== "decrease") return;
+    if (variant !== "increase" && variant !== "decrease" && variant !== "optin") return;
     root.dataset.doseWired = "true";
+    const slideLabel = root.dataset.slideLabel || "Slide to confirm both";
+    const doneLabel = root.dataset.doneLabel || "Confirmed";
 
     const ack1 = root.querySelector<HTMLElement>('[data-ack="1"]')!;
     const ack2 = root.querySelector<HTMLElement>('[data-ack="2"]')!;
@@ -224,10 +259,10 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
       track.setAttribute("aria-valuenow", String(Math.round(p * 100)));
       tlabel.style.opacity = done ? "1" : String(Math.max(0, 1 - p * 2.2));
       if (done) {
-        tlabel.innerHTML = svg("check", 18, "var(--color-success-ink)", 2.4) + " Confirmed";
+        tlabel.innerHTML = svg("check", 18, "var(--color-success-ink)", 2.4) + " " + doneLabel;
         thumb.innerHTML = svg("check", 22, "var(--color-white)", 2.2);
       } else {
-        tlabel.textContent = "Slide to confirm both";
+        tlabel.textContent = slideLabel;
         thumb.innerHTML = svg("arrowRight", 22, both ? "var(--color-moonlight)" : "var(--color-disabled)", 2.2);
       }
       hint.style.display = both || done ? "none" : "flex";

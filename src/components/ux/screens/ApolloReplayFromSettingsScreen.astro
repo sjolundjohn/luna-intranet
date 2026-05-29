@@ -1,0 +1,67 @@
+---
+/**
+ * ApolloReplayFromSettingsScreen — Settings › Help › Training Guide (BR-B6
+ * replay availability). Replay any step or whole module any time after setup;
+ * nothing here changes the device. Tab-root: Settings.
+ * Lifted verbatim from `apollo-training/replay-from-settings.html`.
+ */
+import TabBar from "../ios/TabBar.astro";
+
+interface Props {
+  variant?: "current" | "legacy";
+}
+const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+const play = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>';
+const rows = [
+  { sec: "Evening setup", items: [
+    { t: "Replay evening setup", s: "All 7 evening steps" },
+    { t: "Step 01 · Inventory", s: "Gather what you'll need" },
+    { t: "Step 03 · Fill reservoir", s: "Dial and fill the reservoir" },
+    { t: "Step 07 · Apply to body", s: "Place the device on your arm" },
+  ]},
+  { sec: "Morning removal", items: [
+    { t: "Replay morning removal", s: "All 3 morning steps" },
+    { t: "Step 08 · Remove device", s: "Take it off before your meal" },
+    { t: "Step 10 · Charge controller", s: "Set it on the charger for tonight" },
+  ]},
+];
+---
+<div class="content">
+  <div class="navbar">
+    <button class="back" aria-label="Help">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Help
+    </button>
+  </div>
+  <div class="pad" style="padding-bottom:10px;"><h1 style="margin:0; font-size:28px; font-weight:700; letter-spacing:-0.015em;">Training Guide</h1></div>
+
+  <div class="pad" style="overflow-y:auto;">
+    <div class="card-dark guide-intro">
+      <span class="ic" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 1 0 2-9.3L1 10"/></svg>
+      </span>
+      <span class="ln">Replay any training step or module any time after setup. Nothing here changes your device — it's just the walkthrough.</span>
+    </div>
+
+    {rows.map((group) => (
+      <Fragment>
+        <div class="sec-label">{group.sec}</div>
+        <div class="list">
+          {group.items.map((it) => (
+            <div class="row">
+              <span class="sub-label"><span class="t">{it.t}</span><span class="s">{it.s}</span></span>
+              <span class="replay" set:html={`${play}Replay`} />
+              <span class="chev" set:html={chev} />
+            </div>
+          ))}
+        </div>
+      </Fragment>
+    ))}
+
+    <div style="height:12px;"></div>
+  </div>
+
+  <div style="flex:1;"></div>
+</div>
+
+<TabBar active="settings" />

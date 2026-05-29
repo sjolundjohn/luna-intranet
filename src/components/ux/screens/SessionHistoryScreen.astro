@@ -1,39 +1,111 @@
 ---
 /**
- * SessionHistoryScreen — week strip + per-night session rows.
+ * SessionHistoryScreen — Session History (spine 07). Mirrors the 2021 6.x:
+ * date-range selector, in-range ring + Total insulin delivered / Highest /
+ * Lowest, per-night CGM graph (Plum critical-low line + delivery ticks),
+ * residual IOB at wake (0.1 U), and a month-grouped session list. Scrolls
+ * INSIDE the fixed-height frame (hidden scrollbar); tab bar stays pinned.
+ * Copy + markup lifted verbatim from `_spine/07-session-history.html`.
  */
-import StatusBar from "../ios/StatusBar.astro";
-import CalendarStrip from "../ios/CalendarStrip.astro";
-import ListRows from "../ios/ListRows.astro";
 import TabBar from "../ios/TabBar.astro";
 
 interface Props {
   variant?: "current" | "legacy";
 }
-const { variant = "current" } = Astro.props;
-const legacy = variant === "legacy";
-
-const sessions = [
-  { label: "Thu · 5 U delivered", value: "80% in range" },
-  { label: "Wed · 5 U delivered", value: "88% in range" },
-  { label: "Tue · 4 U delivered", value: "74% in range" },
-  { label: "Mon · 5 U delivered", value: "91% in range" },
-];
+const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+const cal = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>';
 ---
-<div class="scr">
-  <StatusBar tone="dark" />
-  <div class="scr-body">
-    <header class="scr-head">
-      <h1 class="scr-title">Session History</h1>
-    </header>
-    {!legacy && <CalendarStrip selected={22} />}
-    <ListRows rows={sessions} />
+<div class="content" style="overflow-y:auto;">
+  <div class="pad" style="padding-top:8px; display:flex; align-items:center;">
+    <div class="large-title" style="font-weight:700; flex:1;">Session History</div>
+    <button aria-label="Filter sessions" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); width:36px; height:36px; border-radius:50%; color:var(--color-moonlight); cursor:pointer; display:flex; align-items:center; justify-content:center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+    </button>
   </div>
-  <TabBar active="history" />
+
+  {/* DATE-RANGE SELECTOR (mirrors original 6.2 Filter Start/End dates) */}
+  <div class="pad" style="margin-top:14px;">
+    <div class="card-dark daterange" style="padding:0;">
+      <button style="all:unset; cursor:pointer; flex:1;" class="daterange" aria-label="Start date">
+        <span class="cal" set:html={cal} />
+        <span class="seg"><span class="k">Start</span><span class="v">19 Feb 2021</span></span>
+      </button>
+      <span class="arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      <button style="all:unset; cursor:pointer; flex:1;" class="daterange" aria-label="End date">
+        <span class="seg" style="text-align:right;"><span class="k">End</span><span class="v">21 Feb 2021</span></span>
+        <span class="cal" set:html={cal} />
+      </button>
+    </div>
+  </div>
+
+  {/* SELECTED SESSION SUMMARY — in-range ring + Total insulin delivered + hi/lo */}
+  <div class="pad" style="margin-top:16px;">
+    <div class="card-dark">
+      <div class="footnote muted" style="text-transform:uppercase; letter-spacing:0.1em; font-weight:700; margin-bottom:16px;">Thursday, May 22 · overnight</div>
+      <div class="sumrow">
+        <svg class="ring" width="92" height="92" viewBox="0 0 92 92" aria-label="80% in range">
+          <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="8"/>
+          <circle cx="46" cy="46" r="38" fill="none" stroke="#68D2DF" stroke-width="8" stroke-linecap="round"
+                  stroke-dasharray="238.76" stroke-dashoffset="47.75" transform="rotate(-90 46 46)"/>
+          <text x="46" y="44" text-anchor="middle" font-size="20" font-weight="700" fill="#FFFFFF">80%</text>
+          <text x="46" y="59" text-anchor="middle" font-size="9" fill="#ACC1DF">in range</text>
+        </svg>
+        <div class="metrics">
+          <div class="m"><div class="k">Total insulin delivered</div><div class="v">5.0 <span style="font-size:13px; font-weight:400; color:var(--color-on-dark-sub);">U</span></div></div>
+          <div class="m"><div class="k">Highest glucose</div><div class="v">178 <span style="font-size:13px; font-weight:400; color:var(--color-on-dark-sub);">mg/dL</span></div></div>
+          <div class="m"><div class="k">Lowest glucose</div><div class="v">94 <span style="font-size:13px; font-weight:400; color:var(--color-on-dark-sub);">mg/dL</span></div></div>
+        </div>
+      </div>
+
+      {/* CGM chart for the night */}
+      <svg viewBox="0 0 320 96" width="100%" height="96" style="margin-top:18px;" aria-label="Overnight glucose for May 22">
+        <defs>
+          <linearGradient id="nightFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#68D2DF" stop-opacity="0.26"/>
+            <stop offset="1" stop-color="#68D2DF" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="28" x2="320" y2="28" stroke="#F9CD86" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+        <line x1="0" y1="70" x2="320" y2="70" stroke="#8E3655" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.85"/>
+        <path d="M0,58 C30,54 55,44 88,48 S150,60 184,52 224,38 256,46 300,50 320,48" fill="none" stroke="#68D2DF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M0,58 C30,54 55,44 88,48 S150,60 184,52 224,38 256,46 300,50 320,48 L320,96 L0,96 Z" fill="url(#nightFill)"/>
+        <g stroke="#68D2DF" stroke-width="2" stroke-linecap="round" opacity="0.95">
+          <line x1="150" y1="86" x2="150" y2="94"/>
+          <line x1="196" y1="86" x2="196" y2="94"/><line x1="202" y1="86" x2="202" y2="94"/>
+        </g>
+      </svg>
+      <div style="display:flex; justify-content:space-between;" class="caption-2 muted">
+        <span>10 PM</span><span>1 AM</span><span>4 AM</span><span>7 AM</span>
+      </div>
+
+      {/* residual IOB line — 0.1 precision, capital U */}
+      <div class="iobline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S5 9.5 5 14.5a7 7 0 0 0 14 0C19 9.5 12 2.7 12 2.7z"/></svg>
+        <span class="v">0.1 U</span>
+        <span class="t">on board at wake</span>
+      </div>
+    </div>
+  </div>
+
+  {/* SESSION LIST (mirrors original 6.1) */}
+  <div class="pad">
+    <div class="month-label">May 2021</div>
+    <div class="sess-list">
+      <div class="sess-row">
+        <div class="body-col"><div class="rng">5/26 – 5/27</div><div class="sub">5.0 U delivered · 80% in range</div></div>
+        <span class="chev" set:html={chev} />
+      </div>
+      <div class="sess-row">
+        <div class="body-col"><div class="rng">5/25 – 5/26</div><div class="sub">5.0 U delivered · 80% in range</div></div>
+        <span class="chev" set:html={chev} />
+      </div>
+      <div class="sess-row">
+        <div class="body-col"><div class="rng">5/24 – 5/25</div><div class="sub">3.0 U delivered · 80% in range</div></div>
+        <span class="chev" set:html={chev} />
+      </div>
+    </div>
+    <div style="height:12px;"></div>
+  </div>
 </div>
-<style>
-  .scr { display: flex; flex-direction: column; min-height: 844px; background: var(--color-cloud-lilac); }
-  .scr-body { flex: 1; padding: 4px 16px 20px; display: flex; flex-direction: column; gap: 16px; }
-  .scr-head { padding: 8px 2px 4px; }
-  .scr-title { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
-</style>
+
+<TabBar active="session-history" />

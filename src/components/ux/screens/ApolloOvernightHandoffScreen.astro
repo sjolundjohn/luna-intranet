@@ -1,0 +1,28 @@
+---
+/**
+ * ApolloOvernightHandoffScreen — overnight pause checkpoint: Luna is active and
+ * watching; the session visibly pauses for the night. Nothing appears pending.
+ * Clock 11:23. Lifted verbatim from `apollo-training/overnight-handoff.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="center-screen">
+    <div class="orbit lg" role="img" aria-label="Luna is active overnight" style="margin:0 auto 22px;">
+      <div class="ring"></div>
+      <div class="ring r2"></div>
+      <div class="center"></div>
+      <div class="arm"><div class="moon"></div></div>
+    </div>
+    <div class="eyebrow">Active session</div>
+    <h1 class="title-1" style="font-weight:700; letter-spacing:-0.02em; margin:0;">Luna is watching over you.</h1>
+    <div class="timehero">11:23 PM</div>
+    <div class="footnote muted" style="margin-bottom:16px;">Session started</div>
+    <p class="body muted" style="margin:0; line-height:1.55;">Rest easy. Luna will manage your insulin overnight. A summary will be waiting in the morning.</p>
+  </div>
+  <div class="pad" style="padding-bottom:8px;">
+    <p class="footnote muted" style="text-align:center; margin:0 0 4px; line-height:1.5;">Put the phone down. The session continues without you.<br/>A notification will arrive in the morning.</p>
+  </div>
+</div>

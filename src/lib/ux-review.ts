@@ -8,19 +8,18 @@
  */
 import rawManifest from "../../projects/UX Review/app-map.json";
 
-export type ScreenStatus = "New" | "Changed" | "Unchanged";
+export type ScreenStatus = "Work in Progress" | "Approved";
 
 export interface Screen {
   id: string;
   title: string;
+  /** Review workflow status. */
   status: ScreenStatus;
   feature: string;
-  brdTier: string;
   /** Path to the wireframe artifact, or `component:<id>` for a native render. */
   wireframe: string;
-  /** Legacy (Figma screenshot) for old-vs-new compare; null when New. */
+  /** Legacy (Figma screenshot) for the old-vs-new compare; null when none. */
   legacy: string | null;
-  brdLink?: string;
   summary?: string;
 }
 
@@ -30,7 +29,7 @@ export const SCREENS: Screen[] = rawManifest as Screen[];
 export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026"] as const;
 export const CURRENT_DESIGN_VERSION = "v0.2 — May 2026";
 
-export const STATUS_ORDER: ScreenStatus[] = ["New", "Changed", "Unchanged"];
+export const STATUS_ORDER: ScreenStatus[] = ["Work in Progress", "Approved"];
 
 export function getScreen(id: string): Screen | undefined {
   return SCREENS.find((s) => s.id === id);
@@ -39,11 +38,6 @@ export function getScreen(id: string): Screen | undefined {
 /** Distinct features, in first-seen order. */
 export function features(): string[] {
   return [...new Set(SCREENS.map((s) => s.feature))];
-}
-
-/** Distinct BRD tiers, sorted. */
-export function tiers(): string[] {
-  return [...new Set(SCREENS.map((s) => s.brdTier))].sort();
 }
 
 /** Screens grouped by feature, preserving feature first-seen order. */
@@ -61,29 +55,74 @@ export function componentId(wireframe: string | null): string | null {
 }
 
 /**
+ * Prototype walkthrough wiring. The tab bar maps to the three tab-root screens;
+ * FLOW_NEXT advances a screen's primary CTA to the next step in its flow. Used by
+ * the detail page's "prototype mode" so you can click through the app like the
+ * real thing — without changing any screen. (Screens not listed simply don't
+ * advance on the primary button.)
+ */
+export const TAB_TARGET: Record<string, string> = {
+  dashboard: "home-dashboard",
+  "session-history": "session-history",
+  settings: "settings-list",
+};
+
+export const FLOW_NEXT: Record<string, string> = {
+  // Onboarding chapters → hand off to Apollo Training
+  "onboarding-chapter-1": "onboarding-chapter-2",
+  "onboarding-chapter-2": "onboarding-chapter-3",
+  "onboarding-chapter-3": "onboarding-chapter-4",
+  "onboarding-chapter-4": "onboarding-chapter-5",
+  "onboarding-chapter-5": "apollo-intro",
+  // Apollo — evening setup → overnight → morning removal → complete
+  "apollo-intro": "apollo-step-01-inventory",
+  "apollo-step-01-inventory": "apollo-step-02-open-tray",
+  "apollo-step-02-open-tray": "apollo-step-03-fill",
+  "apollo-step-03-fill": "apollo-step-04-remove-label",
+  "apollo-step-04-remove-label": "apollo-step-05-attach-capsule",
+  "apollo-step-05-attach-capsule": "apollo-step-06-remove-base",
+  "apollo-step-06-remove-base": "apollo-step-07-apply-body",
+  "apollo-step-07-apply-body": "apollo-hardware-checkpoint",
+  "apollo-hardware-checkpoint": "apollo-evening-outro",
+  "apollo-evening-outro": "apollo-overnight-handoff",
+  "apollo-overnight-handoff": "apollo-morning-start",
+  "apollo-morning-start": "apollo-step-08-remove-device",
+  "apollo-step-08-remove-device": "apollo-step-09-detach-reservoir",
+  "apollo-step-09-detach-reservoir": "apollo-step-10-charge",
+  "apollo-step-10-charge": "apollo-morning-outro",
+  "apollo-morning-outro": "apollo-complete",
+  "apollo-complete": "home-dashboard",
+  // Hypo Shield — surface a recommendation → the two-step confirm
+  "hypo-home-tip-post": "hypo-confirm-increase",
+  "hypo-mid-session-announcement": "hypo-confirm-increase",
+  // IOB — pre-session opt-in → opted-in home
+  "iob-pre-session-announcement": "iob-home-on",
+};
+
+/**
  * BRD links — one per feature, pointing at the regulated Business Requirements
  * doc on Google Drive (NOT Notion). Keyed by the screen's `feature`. Adding a
  * feature = add one entry here, so every screen in that feature shares the
  * correct link and there's a single place to maintain it.
  */
 export const FEATURE_BRDS: Record<string, { title: string; url: string }> = {
-  "HypoShield": {
-    title: "HypoShield & In-App Comms — Business Requirements (BRD)",
+  "Hypo Shield & In-App Comms": {
+    title: "Hypo Shield & In-App Comms — Business Requirements (BRD)",
     url: "https://docs.google.com/document/d/1XPDw5hbqG6boaocceBvnhxZZOJv9Ac28HPZJh6HnYoQ/edit",
   },
   "IOB Display": {
     title: "IOB Display — Business Requirements (BRD)",
     url: "https://docs.google.com/document/d/1EhOOcDZvF0knvRYnP44P7YtdtErg1j_l_eD0krhvhdU/edit",
   },
-  "Onboarding": {
+  "Onboarding Update": {
     title: "Onboarding Update — Business Requirements (BRD)",
     url: "https://docs.google.com/document/d/1m3lmOTehTHCxQugJqYkoXb1cZw5b42lEd3Vzhs0782o/edit",
   },
-  "Apollo Training": {
+  "Training Update Apollo": {
     title: "Apollo Training — Business Requirements (BRD)",
     url: "https://docs.google.com/document/d/1h1ViWd7Uv0ue0qhOrecxdNZN10tF2zsMJGjC9l5wnlM/edit",
   },
-  "Dark UI": {
+  "Dark UI re-skin": {
     title: "Dark UI — Business Requirements (BRD)",
     url: "https://docs.google.com/document/d/12868Hp1iLILPfLYEUtxI1TeI-Se5HhIqvpS_sJD7_R8/edit",
   },
@@ -104,7 +143,7 @@ export const SUPPORTING_DOCS: { title: string; url: string; desc: string }[] = [
   {
     title: "Two-Step Dose-Confirmation — Component Spec",
     url: "https://docs.google.com/document/d/19MZ24k-MfCuDemTLeCRKKP9pJb9K0LWHUWvxDogHHBo/edit",
-    desc: "Shared dose-confirmation component (HypoShield / IOB / Onboarding depend on it).",
+    desc: "Shared dose-confirmation component (Hypo Shield / IOB / Onboarding depend on it).",
   },
 ];
 

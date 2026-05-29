@@ -1,0 +1,56 @@
+---
+/**
+ * OnboardingSessionHistoryIntroScreen — Session History Intro (first-run, 1 of
+ * 4), shown before any session is logged. A spotlighted preview of a future
+ * session summary (mirrors 6.4). Module-scoped dots. NO skip valve.
+ * Lifted verbatim from `onboarding/session-history-intro.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title">Session History</span>
+      <span class="count">1 of 4</span>
+    </div>
+    <div class="prog-dots" role="img" aria-label="Step 1 of 4">
+      <span class="d current"></span><span class="d"></span><span class="d"></span><span class="d"></span>
+    </div>
+  </div>
+
+  <div class="pad" style="margin-top:14px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+    <div class="eyebrow">Session History · 1 of 4</div>
+    <h1 class="title-1" style="font-weight:700; margin:10px 0 0; letter-spacing:-0.015em;">Every night, summed up</h1>
+    <p class="body muted" style="margin:10px 0 0;">
+      After your first night, this is where each session lands — time in range, total insulin Luna delivered, and your highs and lows. Nothing's here yet; tonight fills it in.
+    </p>
+
+    <div class="wt-preview">
+      <div class="mini">
+        <div class="mini-sum spotlight">
+          <span class="ring" aria-hidden="true"><i>80%</i></span>
+          <span class="col">
+            <span class="m"><span class="k">In range</span><span class="v">80%</span></span>
+            <span class="m"><span class="k">Insulin delivered</span><span class="v">5.0 U</span></span>
+            <span class="m"><span class="k">Lowest</span><span class="v">78</span></span>
+          </span>
+        </div>
+        <p class="footnote muted" style="text-align:center; margin:14px 0 0;">Example · your first session will look like this</p>
+      </div>
+    </div>
+
+    <div class="wt-callout">
+      <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span>
+      <span class="ln">Open any night to see its glucose graph and the moments Luna delivered insulin while you slept.</span>
+    </div>
+
+    <div style="flex:1; min-height:14px;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Next</button>
+  </div>
+</div>

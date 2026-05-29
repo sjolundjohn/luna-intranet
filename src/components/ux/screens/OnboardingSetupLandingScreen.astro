@@ -1,0 +1,104 @@
+---
+/**
+ * OnboardingSetupLandingScreen — the setup landing/state screen. Renders the
+ * three BRD states (None / Luna complete / All); a state selector flips the
+ * Tonight panel + primary CTA. "Luna needs all three before your first night."
+ * Lifted verbatim from `onboarding/setup-landing.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+const check = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const moon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
+---
+<div class="content" data-setup-landing>
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title">Setup</span>
+      <span class="count">&nbsp;</span>
+    </div>
+  </div>
+
+  <div class="pad" style="margin-top:6px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+    <div class="eyebrow">Setup</div>
+    <h1 class="title-1" style="font-weight:700; margin:10px 0 0; letter-spacing:-0.015em;">Finish your setup</h1>
+    <p class="body muted" style="margin:10px 0 0;">
+      Pick up where you left off. Luna needs all three before your first night.
+    </p>
+
+    <div class="state-tabs" role="group" aria-label="Setup landing states">
+      <button data-state="none" aria-pressed="true">None</button>
+      <button data-state="luna" aria-pressed="false">Luna done</button>
+      <button data-state="all" aria-pressed="false">All</button>
+    </div>
+    <p class="state-note" data-state-note>No devices paired yet — start by pairing your Luna Capsule.</p>
+
+    <div class="state-body is-active" data-body="none">
+      <div class="card-dark tonight-panel decompressed" style="margin-top:8px;">
+        <div class="ph"><span set:html={moon} /><span class="ttl">Your first night</span><span class="frac">0 of 3 ready</span></div>
+        <div class="setup-step is-pending"><span class="mark pending"></span><span class="txt">Pair your Luna Capsule</span><span class="now">Next</span></div>
+        <div class="setup-step is-pending"><span class="mark pending"></span><span class="txt">Pair your CGM sensor</span></div>
+        <div class="setup-step is-pending"><span class="mark pending"></span><span class="txt">Enter your TDBD</span></div>
+      </div>
+    </div>
+
+    <div class="state-body" data-body="luna">
+      <div class="card-dark tonight-panel decompressed" style="margin-top:8px;">
+        <div class="ph"><span set:html={moon} /><span class="ttl">Your first night</span><span class="frac">1 of 3 ready</span></div>
+        <div class="setup-step"><span class="mark done" set:html={check} /><span class="txt">Pair your Luna Capsule</span></div>
+        <div class="setup-step is-pending"><span class="mark pending"></span><span class="txt">Pair your CGM sensor</span><span class="now">Next</span></div>
+        <div class="setup-step is-pending"><span class="mark pending"></span><span class="txt">Enter your TDBD</span></div>
+      </div>
+    </div>
+
+    <div class="state-body" data-body="all">
+      <div class="card-dark tonight-panel decompressed" style="margin-top:8px;">
+        <div class="ph"><span set:html={moon} /><span class="ttl">Your first night</span><span class="frac">3 of 3 ready</span></div>
+        <div class="setup-step"><span class="mark done" set:html={check} /><span class="txt">Pair your Luna Capsule</span></div>
+        <div class="setup-step"><span class="mark done" set:html={check} /><span class="txt">Pair your CGM sensor</span></div>
+        <div class="setup-step"><span class="mark done" set:html={check} /><span class="txt">Enter your TDBD</span></div>
+      </div>
+    </div>
+
+    <div style="flex:1; min-height:14px;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary" data-state-primary>Pair Luna Capsule</button>
+  </div>
+</div>
+
+<script>
+  function wireSetupLanding() {
+    document.querySelectorAll<HTMLElement>("[data-setup-landing]").forEach((root) => {
+      if (root.dataset.slWired) return;
+      root.dataset.slWired = "true";
+      const notes: Record<string, string> = {
+        none: "No devices paired yet — start by pairing your Luna Capsule.",
+        luna: "Luna Capsule paired. Pair your CGM next.",
+        all: "Everything's ready. You're set for your first night.",
+      };
+      const primary: Record<string, string> = {
+        none: "Pair Luna Capsule",
+        luna: "Pair CGM",
+        all: "Start Luna Training",
+      };
+      const tabs = root.querySelectorAll<HTMLElement>(".state-tabs button");
+      const bodies = root.querySelectorAll<HTMLElement>(".state-body");
+      const note = root.querySelector<HTMLElement>("[data-state-note]");
+      const btn = root.querySelector<HTMLElement>("[data-state-primary]");
+      tabs.forEach((t) => {
+        t.addEventListener("click", () => {
+          const s = t.getAttribute("data-state") || "none";
+          tabs.forEach((x) => x.setAttribute("aria-pressed", x === t ? "true" : "false"));
+          bodies.forEach((b) => b.classList.toggle("is-active", b.getAttribute("data-body") === s));
+          if (note) note.textContent = notes[s];
+          if (btn) btn.textContent = primary[s];
+        });
+      });
+    });
+  }
+  wireSetupLanding();
+  document.addEventListener("astro:page-load", wireSetupLanding);
+</script>

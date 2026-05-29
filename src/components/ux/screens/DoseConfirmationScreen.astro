@@ -1,33 +1,42 @@
 ---
 /**
- * DoseConfirmationScreen — the two-step dose-confirmation bottom sheet over
- * a Midnight bedside backdrop. The canonical safety-critical confirmation.
+ * DoseConfirmationScreen — the two-step dose-confirmation sheet over a dimmed
+ * Midnight bedside backdrop (spine 03). The canonical safety-critical
+ * confirmation: acknowledge BOTH (update setting AND take dose), then slide.
+ * Feature is "Hypo Shield"; dose steps use generic long-acting insulin.
+ *
+ * Rendered by ScreenRenderer inside Phone with `sheet` (raises brandbar +
+ * home indicator above the scrim/sheet) and clock 10:18. Backdrop copy +
+ * markup lifted from `_spine/03-dose-confirmation.html`; the sheet is DoseSheet.
  */
-import StatusBar from "../ios/StatusBar.astro";
 import DoseSheet from "../ios/DoseSheet.astro";
 
 interface Props {
   variant?: "current" | "legacy";
 }
-// New screen — no legacy variant; prop kept for the uniform registry interface.
 ---
-<div class="dscr">
-  <div class="dscr-statusbar"><StatusBar tone="light" /></div>
-  <div class="dscr-scrim"></div>
-  <div class="dscr-sheet-host">
-    <DoseSheet variant="increase" />
+{/* dimmed Home backdrop */}
+<div class="content backdrop" aria-hidden="true">
+  <div class="pad" style="padding-top:8px;">
+    <div class="title-2" style="font-weight:700;">Good night, moonbeam</div>
+    <div class="footnote muted" style="margin-top:2px;">Luna's on watch · session started 10:42 PM</div>
+  </div>
+  <div class="pad" style="margin-top:18px;">
+    <div class="card-dark statuscard">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12.5l2 2 4.5-5"/></svg>
+      <div class="headline" style="font-weight:700;">Luna</div>
+      <div class="subhead muted">Active · watching overnight</div>
+    </div>
+  </div>
+  <div class="pad" style="margin-top:16px; text-align:center;">
+    <div class="glucose"><span class="num">112</span></div>
   </div>
 </div>
-<style>
-  .dscr {
-    position: relative;
-    min-height: 844px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    background: linear-gradient(to bottom, var(--color-midnight-deep), var(--color-midnight) 60%, var(--color-midnight-floor));
-  }
-  .dscr-statusbar { position: absolute; top: 0; left: 0; right: 0; z-index: 4; }
-  .dscr-scrim { position: absolute; inset: 0; background: rgba(4, 30, 66, 0.35); }
-  .dscr-sheet-host { position: relative; z-index: 2; }
-</style>
+
+{/* dim scrim */}
+<div class="scrim"></div>
+
+{/* DOSE CONFIRMATION SHEET (increase state) */}
+<div class="sheet-host">
+  <DoseSheet variant="increase" value={14} prev={12} />
+</div>

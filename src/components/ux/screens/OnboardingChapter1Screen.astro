@@ -1,0 +1,67 @@
+---
+/**
+ * OnboardingChapter1Screen — Chapter 1 of 5: what Luna is (and isn't), before
+ * any data collection. Required completion, NO skip valve (single Continue).
+ * Lifted verbatim from `onboarding/chapter-1-frame.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <span class="back" aria-hidden="true" style="opacity:0;">‹</span>
+      <span class="title">Getting set up</span>
+      <span class="count">Chapter 1 of 5</span>
+    </div>
+    <div class="prog-dots" role="img" aria-label="Chapter 1 of 5">
+      <span class="d current"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span>
+    </div>
+  </div>
+
+  <div class="pad" style="margin-top:10px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+    <div class="moon-hero">
+      <span class="halo" style="width:96px; height:96px;">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+      </span>
+    </div>
+
+    <div class="eyebrow" style="margin-top:6px;">Chapter 1 of 5</div>
+    <h1 class="title-1 chapter-tagline" style="font-weight:700; margin:10px 0 0; letter-spacing:-0.015em;">Luna takes the night watch</h1>
+    <p class="body muted" style="margin:12px 0 0;">
+      Before we set anything up, here's what Luna is — and what it isn't. Luna watches your glucose overnight and makes small, careful adjustments to your basal insulin so you can sleep without standing guard.
+    </p>
+
+    <div class="card-dark" style="margin-top:22px;">
+      <div class="does-list">
+        <div class="does-row">
+          <span class="ic yes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="ln">Luna <strong>watches your CGM</strong> through the night and acts while you sleep.</span>
+        </div>
+        <div class="does-row">
+          <span class="ic yes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="ln">It makes <strong>small adjustments</strong> to your basal — gently, and starting conservatively.</span>
+        </div>
+        <div class="does-row">
+          <span class="ic no"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+          <span class="ln muted">It does <strong>not</strong> dose your mealtime insulin, and it does <strong>not</strong> run during the day.</span>
+        </div>
+        <div class="does-row">
+          <span class="ic no"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+          <span class="ln muted">You stay in control. Luna only keeps watch — you can always see what it did.</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="footnote muted" style="margin:18px 0 0;">
+      We'll set this up together, in order — pair your Luna Capsule, pair your CGM, and tell Luna your current routine. It only takes a few minutes.
+    </p>
+
+    <div style="flex:1; min-height:14px;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Continue</button>
+  </div>
+</div>

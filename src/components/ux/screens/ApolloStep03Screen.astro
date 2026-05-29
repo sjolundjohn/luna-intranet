@@ -1,0 +1,12 @@
+---
+import ApolloStep from "../ios/ApolloStep.astro";
+interface Props { variant?: "current" | "legacy"; }
+// OPEN FLAG: dose value [X] is undecided (Eng/Clinical) — rendered as a real
+// .token-flag inline + a .flag chip; never fabricated.
+---
+<ApolloStep moduleLabel="Evening setup" count="Step 3 of 7" total={7} current={3} badge="Step 03"
+  headline="Fill the reservoir"
+  instrHtml={'Dial <span class="token-flag">[X]</span> units, then press the plunger until it stops.'}
+  caption="asset: Cam+A-7" poster="/ux-review/apollo-posters/cam-a-7.jpg" posterAlt="Filling the reservoir with insulin">
+  <div style="margin-top:18px;"><span class="flag"><span class="k">Flag</span>dose value [X] — pending Eng/Clinical</span></div>
+</ApolloStep>

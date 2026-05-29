@@ -33,6 +33,15 @@
   --ios-font-brand: "D-DIN", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Roboto", system-ui, sans-serif;
   --ios-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
+  /* Aliases so the lifted spine `<style>` block (which references the
+     wireframe-side names) works verbatim inside `.ux-ios`. The wireframes
+     use --font-brand/--font-display/--font-mono; the intranet scope renames
+     them to --ios-font-* to avoid leaking into the Tailwind theme. */
+  --font-brand: var(--ios-font-brand);
+  --font-display: var(--ios-font-brand);
+  --font-body: var(--ios-font-brand);
+  --font-mono: var(--ios-font-mono);
+
   /* ============ PRIMARY PALETTE ========================= */
   --color-midnight: #041E42;
   --color-moonlight: #68D2DF;

@@ -1,0 +1,71 @@
+---
+/**
+ * OnboardingChapter3Screen — Chapter 3 of 5: pair the Luna Capsule over BLE
+ * (calm moon-in-orbit detect). Tonight panel: Luna step done (1 of 3). The
+ * checkpoint is informative — Continue is never gated on BLE status; NO skip.
+ * Lifted verbatim from `onboarding/chapter-3-pair-luna.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title">Getting set up</span>
+      <span class="count">Chapter 3 of 5</span>
+    </div>
+    <div class="prog-dots" role="img" aria-label="Chapter 3 of 5">
+      <span class="d done"></span><span class="d done"></span><span class="d current"></span><span class="d"></span><span class="d"></span>
+    </div>
+  </div>
+
+  <div class="pad" style="margin-top:12px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+    <div class="eyebrow">Chapter 3 of 5</div>
+    <h1 class="title-1" style="font-weight:700; margin:10px 0 0; letter-spacing:-0.015em;">Pair your Luna Capsule</h1>
+    <p class="body muted" style="margin:12px 0 0;">
+      Hold your Luna Capsule near your phone. Luna pairs over Bluetooth — keep them close while it connects.
+    </p>
+
+    <div class="detect-cap">
+      <div class="orbit lg" role="img" aria-label="Luna pairing with your capsule over Bluetooth">
+        <span class="ring"></span><span class="ring r2"></span>
+        <span class="center"></span>
+        <span class="arm"><span class="moon"></span></span>
+      </div>
+      <div class="ble-chip">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>
+        Bluetooth · Searching
+      </div>
+      <p class="footnote muted" style="margin:14px 0 0;">Looking for your Luna Capsule…</p>
+    </div>
+
+    <div class="card-dark tonight-panel decompressed">
+      <div class="ph">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <span class="ttl">Your first night</span>
+        <span class="frac">1 of 3 ready</span>
+      </div>
+      <div class="setup-step">
+        <span class="mark done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="txt">Pair your Luna Capsule</span>
+      </div>
+      <div class="setup-step is-pending">
+        <span class="mark pending"></span>
+        <span class="txt">Pair your CGM sensor</span>
+        <span class="now">Next</span>
+      </div>
+      <div class="setup-step is-pending">
+        <span class="mark pending"></span>
+        <span class="txt">Enter your TDBD</span>
+      </div>
+    </div>
+
+    <div style="flex:1; min-height:14px;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Continue</button>
+  </div>
+</div>
