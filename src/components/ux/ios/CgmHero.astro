@@ -8,12 +8,17 @@
  * up overnight — used by the Hypo Shield recommendation home). The gradient id
  * is per-instance so multiple graphs on one page (the gallery) don't collide.
  * Styling is the `.cgm-hero` kit in ios-spine.css.
+ *
+ * `fill` makes the graph grow to fill the available column space (the Home
+ * layout pushes the insight bar to the bottom and lets the graph take the rest);
+ * it stretches vertically via preserveAspectRatio="none".
  */
 interface Props {
   trace?: "inrange" | "up";
   height?: number;
+  fill?: boolean;
 }
-const { trace = "inrange", height = 180 } = Astro.props;
+const { trace = "inrange", height = 180, fill: grow = false } = Astro.props;
 const gid = "cgmFill-" + Math.random().toString(36).slice(2, 9);
 const path =
   trace === "up"
@@ -21,8 +26,8 @@ const path =
     : "M0,126 C40,121 67,108 99,112 S161,123 185,114 224,98 258,107 292,111 312,110";
 const fill = `${path} L312,165 L0,165 Z`;
 ---
-<div class="pad cgm-hero">
-  <svg viewBox="0 0 340 188" width="100%" height={height} aria-label="Overnight glucose with insulin deliveries">
+<div class:list={["pad", "cgm-hero", grow && "cgm-hero--fill"]}>
+  <svg viewBox="0 0 340 188" width="100%" height={grow ? undefined : height} preserveAspectRatio={grow ? "none" : undefined} aria-label="Overnight glucose with insulin deliveries">
     <defs>
       <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="#68D2DF" stop-opacity="0.26" />

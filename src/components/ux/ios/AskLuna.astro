@@ -16,10 +16,21 @@
 interface Props {
   /** Distance from the bezel bottom; 104px clears the tab bar (home screens). */
   bottom?: number;
+  /**
+   * "screen" (default) → floats bottom-right of the content area.
+   * "card"            → hovers on the TOP-RIGHT corner of its positioned parent
+   *                     (the insight bar), overlapping its top edge.
+   */
+  anchor?: "screen" | "card";
 }
-const { bottom = 104 } = Astro.props;
+const { bottom = 104, anchor = "screen" } = Astro.props;
 ---
-<div class="ask-host" data-ask-host data-open="false" style={`bottom:${bottom}px;`}>
+<div
+  class:list={["ask-host", anchor === "card" && "ask-host--card"]}
+  data-ask-host
+  data-open="false"
+  style={anchor === "screen" ? `bottom:${bottom}px;` : undefined}
+>
   <div class="ask-panel" role="dialog" aria-label="Ask Luna">
     <div class="head">
       <span class="lbl">Ask Luna</span>
