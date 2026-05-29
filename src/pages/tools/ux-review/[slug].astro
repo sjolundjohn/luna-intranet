@@ -13,9 +13,9 @@ export function getStaticPaths() {
 }
 
 const { screen } = Astro.props;
-// Compare when there's a prior design to wipe against — a native legacy
-// variant (`component:`) or a 2021 Figma screenshot (`.jpg`).
-const showCompare = screen.status === "Changed" && screen.legacy !== null;
+// Show the New vs Old wipe whenever there's a prior design to compare against —
+// a native legacy variant (`component:`) or a 2021 Figma screenshot (`.jpg`).
+const showCompare = screen.legacy !== null;
 const COMPARE_SCALE = 0.62;
 const brd = brdFor(screen.feature);
 ---
@@ -34,7 +34,7 @@ const brd = brdFor(screen.feature);
         </h1>
         <StatusBadge status={screen.status} />
       </div>
-      <p class="mt-2 text-graphite text-[15px]">{screen.feature} · BRD {screen.brdTier}</p>
+      <p class="mt-2 text-graphite text-[15px]">{screen.feature}</p>
       {screen.summary && <p class="mt-3 text-graphite text-[15px] leading-[1.55] max-w-[60ch]">{screen.summary}</p>}
     </header>
 
@@ -42,9 +42,9 @@ const brd = brdFor(screen.feature);
       {/* LEFT — the device frame + pins / compare */}
       <div class="ux-detail-stage">
         {showCompare && (
-          <div class="mb-4 inline-flex rounded-full border border-border-default p-0.5" role="tablist" aria-label="Frame mode">
-            <button data-mode-btn="single" class="ux-mode-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="true">Single</button>
-            <button data-mode-btn="compare" class="ux-mode-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="false">Compare</button>
+          <div class="mb-4 inline-flex rounded-full border border-border-default p-0.5" role="tablist" aria-label="New or Old design">
+            <button data-mode-btn="single" class="ux-mode-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="true">New</button>
+            <button data-mode-btn="compare" class="ux-mode-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="false">Old</button>
           </div>
         )}
 
@@ -76,7 +76,7 @@ const brd = brdFor(screen.feature);
                 <ScreenRenderer id={screen.id} variant="current" mode="thumb" scale={COMPARE_SCALE} />
               </div>
             </CompareSlider>
-            <p class="mt-3 text-slate text-[12px]">Drag the handle to wipe between the previous Figma design (Before) and this wireframe (After).</p>
+            <p class="mt-3 text-slate text-[12px]">Drag the handle to wipe between the Old design (the 2021 Figma) and the New wireframe.</p>
           </div>
         )}
       </div>
@@ -88,7 +88,6 @@ const brd = brdFor(screen.feature);
           <p class="eyebrow mb-3">Context</p>
           <dl class="ux-context-list">
             <div><dt>Feature</dt><dd>{screen.feature}</dd></div>
-            <div><dt>BRD tier</dt><dd>{screen.brdTier}</dd></div>
             <div><dt>Status</dt><dd>{screen.status}</dd></div>
           </dl>
           {brd && (

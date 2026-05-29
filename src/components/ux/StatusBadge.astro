@@ -1,6 +1,6 @@
 ---
 /**
- * StatusBadge — New / Changed / Unchanged pill for a screen.
+ * StatusBadge — review-status pill for a screen (Work in Progress / Approved).
  * Uses the intranet @theme tokens (this renders in the intranet chrome,
  * not inside the .ux-ios scope).
  */
@@ -13,9 +13,8 @@ interface Props {
 const { status, class: className = "" } = Astro.props;
 
 const styles: Record<ScreenStatus, string> = {
-  New: "bg-success-bg text-success-ink",
-  Changed: "bg-warning-bg text-warning-ink",
-  Unchanged: "bg-periwinkle-mist text-graphite",
+  "Work in Progress": "bg-warning-bg text-warning-ink",
+  Approved: "bg-success-bg text-success-ink",
 };
 ---
 <span

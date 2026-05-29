@@ -6,19 +6,19 @@ import WhiteSection from "~/components/WhiteSection.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
-import { SCREENS, byFeature, features, tiers, STATUS_ORDER, FEATURE_BRDS, SUPPORTING_DOCS } from "~/lib/ux-review";
+import { SCREENS, byFeature, features, STATUS_ORDER, FEATURE_BRDS, SUPPORTING_DOCS } from "~/lib/ux-review";
 
 const featureGroups = byFeature();
 const THUMB_SCALE = 0.46;
 ---
 
 <BaseLayout
-  title="UX Review"
+  title="Internal UX/UI Review"
   description="Review the Luna iOS app wireframes and leave comments before Figma export."
   heroIsDark={true}
 >
-  <Hero eyebrow="Luna · UX Review" size="compact" animateMoons={false}>
-    <Fragment slot="headline">The Luna iOS app, screen by screen.</Fragment>
+  <Hero eyebrow="Luna · iOS app" size="compact" animateMoons={false}>
+    <Fragment slot="headline">Internal UX/UI Review</Fragment>
     <Fragment slot="subcopy">
       Review every wireframe holistically and leave Google-Docs-style comments —
       pinned to the spot you mean — across each design cycle, before we export to Figma.
@@ -65,18 +65,13 @@ const THUMB_SCALE = 0.46;
         <select id="f-status" data-filter="status" class="ux-select">
           <option value="">All statuses</option>
           {STATUS_ORDER.map((s) => <option value={s}>{s}</option>)}
+          <option value="__has_comments">Has comments</option>
         </select>
 
         <label class="sr-only" for="f-feature">Feature</label>
         <select id="f-feature" data-filter="feature" class="ux-select">
           <option value="">All features</option>
           {features().map((f) => <option value={f}>{f}</option>)}
-        </select>
-
-        <label class="sr-only" for="f-tier">BRD tier</label>
-        <select id="f-tier" data-filter="tier" class="ux-select">
-          <option value="">All tiers</option>
-          {tiers().map((t) => <option value={t}>{t}</option>)}
         </select>
       </div>
     </div>
@@ -90,7 +85,6 @@ const THUMB_SCALE = 0.46;
           data-screen-card
           data-status={s.status}
           data-feature={s.feature}
-          data-tier={s.brdTier}
         >
           <div class="ux-card-thumb ux-ios">
             <ScreenRenderer id={s.id} mode="thumb" scale={THUMB_SCALE} />
@@ -101,7 +95,7 @@ const THUMB_SCALE = 0.46;
               <StatusBadge status={s.status} />
               <span data-count-for={s.id} class="ux-count" hidden></span>
             </div>
-            <p class="mt-1 text-slate text-[12px]">{s.feature} · {s.brdTier}</p>
+            <p class="mt-1 text-slate text-[12px]">{s.feature}</p>
           </div>
         </a>
       ))}
@@ -124,7 +118,6 @@ const THUMB_SCALE = 0.46;
                 data-screen-card
                 data-status={s.status}
                 data-feature={s.feature}
-                data-tier={s.brdTier}
               >
                 <div class="ux-card-thumb ux-ios">
                   <ScreenRenderer id={s.id} mode="thumb" scale={THUMB_SCALE} />
@@ -135,7 +128,7 @@ const THUMB_SCALE = 0.46;
                     <StatusBadge status={s.status} />
                     <span data-count-for={s.id} class="ux-count" hidden></span>
                   </div>
-                  <p class="mt-1 text-slate text-[12px]">{s.feature} · {s.brdTier}</p>
+                  <p class="mt-1 text-slate text-[12px]">{s.feature}</p>
                 </div>
               </a>
             ))}
@@ -267,14 +260,15 @@ const THUMB_SCALE = 0.46;
       const f = {
         status: val('[data-filter="status"]'),
         feature: val('[data-filter="feature"]'),
-        tier: val('[data-filter="tier"]'),
       };
       let visible = 0;
       cards.forEach((c) => {
-        const ok =
-          (!f.status || c.dataset.status === f.status) &&
-          (!f.feature || c.dataset.feature === f.feature) &&
-          (!f.tier || c.dataset.tier === f.tier);
+        const statusOk =
+          !f.status ||
+          (f.status === "__has_comments"
+            ? c.dataset.hasComments === "true"
+            : c.dataset.status === f.status);
+        const ok = statusOk && (!f.feature || c.dataset.feature === f.feature);
         c.style.display = ok ? "" : "none";
         if (ok) visible++;
       });
@@ -308,11 +302,15 @@ const THUMB_SCALE = 0.46;
         let total = 0;
         document.querySelectorAll<HTMLElement>("[data-count-for]").forEach((el) => {
           const n = counts[el.dataset.countFor || ""] || 0;
+          const card = el.closest<HTMLElement>("[data-screen-card]");
           if (n > 0) {
             el.textContent = `${n} open`;
             el.hidden = false;
+            if (card) card.dataset.hasComments = "true";
           }
         });
+        // Re-apply so the "Has comments" filter reflects freshly-loaded counts.
+        applyFilters();
         total = Object.values(counts).reduce((a, b) => a + b, 0);
         const totalEl = document.querySelector<HTMLElement>("[data-total-open]");
         if (totalEl && total > 0) {

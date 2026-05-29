@@ -2,60 +2,53 @@
   {
     "id": "home-dashboard",
     "title": "Home Dashboard",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Home",
-    "brdTier": "P0",
-    "summary": "Spine core archetype: current glucose, system/reservoir/battery status, the hero overnight CGM graph with Luna delivery ticks, and the nightly insight card.",
+    "summary": "Where you start your day. See your glucose and trend right now, confirm at a glance that Luna watched overnight (system, reservoir, battery), read the full overnight graph, and get a plain-language recap of how the night went.",
     "wireframe": "component:home-dashboard",
     "legacy": "wireframes/legacy/home-dashboard.jpg"
   },
   {
     "id": "settings-list",
     "title": "Settings",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Settings",
-    "brdTier": "None",
-    "summary": "Spine core archetype: account and care configuration list; Hypo Shield + IOB Display (default OFF), Devices, Support.",
+    "summary": "Manage how Luna works for you. See that Hypo Shield is active, turn IOB Display on or off, check your CGM and Luna Controller, and find help.",
     "wireframe": "component:settings-list",
     "legacy": "wireframes/legacy/settings-list.jpg"
   },
   {
     "id": "session-history",
     "title": "Session History",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "History",
-    "brdTier": "Lean",
-    "summary": "Spine core archetype: date-range selector, in-range ring + total insulin delivered, per-night CGM graph, residual IOB at wake, and a session list.",
+    "summary": "Look back at your nights. Pick a date range, see time-in-range and how much insulin Luna delivered for a night, and open the overnight graph to see what happened while you slept.",
     "wireframe": "component:session-history",
     "legacy": "wireframes/legacy/session-history.jpg"
   },
   {
     "id": "hardware-checkpoint-spine",
     "title": "Hardware Checkpoint",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
-    "summary": "Spine core archetype: informative hardware checkpoint with a moon-in-orbit detect; the CTA is never gated on connection state.",
+    "summary": "Reassures you that Luna can see your controller and sensor before the night starts. It's informational — it confirms you're ready but never blocks you from continuing.",
     "wireframe": "component:hardware-checkpoint-spine",
     "legacy": "wireframes/legacy/hardware-checkpoint.jpg"
   },
   {
     "id": "dose-confirmation-spine",
     "title": "Dose Confirmation",
-    "status": "New",
-    "feature": "Basal Guidance",
-    "brdTier": "Full",
-    "summary": "Spine core archetype: two-step safety-critical confirmation — acknowledge update-setting AND take-dose, then slide to confirm both.",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
+    "summary": "Safely act on a dose recommendation: acknowledge that you've updated the setting AND taken the dose, then slide to confirm both — the safeguard behind every Hypo Shield dose change.",
     "wireframe": "component:dose-confirmation-spine",
     "legacy": null
   },
-
   {
     "id": "hypo-home-tip-default",
     "title": "Home — Default Tip",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "Resting Hypo Shield tip: nightly basal looks well-matched. States the standing dose (chip opens TDBD detail); a reassurance line, not an accept control.",
     "wireframe": "component:hypo-home-tip-default",
     "legacy": "wireframes/legacy/home-dashboard.jpg"
@@ -63,9 +56,8 @@
   {
     "id": "hypo-home-tip-post",
     "title": "Home — Tip Post (recommendation)",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "A basal recommendation is available — decision-support framing (14 U Increase). A suggestion only; the only action opens the two-step confirm. The read never accepts.",
     "wireframe": "component:hypo-home-tip-post",
     "legacy": "wireframes/legacy/home-dashboard.jpg"
@@ -73,9 +65,8 @@
   {
     "id": "hypo-learning-state",
     "title": "Learning State & Dosing Mode",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "Pre-recommendation: Luna learns before suggesting — both 5 Luna sessions AND 7 days of wear. Dual progress + current Dosing Mode (Establishing baseline).",
     "wireframe": "component:hypo-learning-state",
     "legacy": null
@@ -83,9 +74,8 @@
   {
     "id": "hypo-mid-session-announcement",
     "title": "Mid-Session Dose Announcement",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "Calm bedside hand-off over the dimmed live dashboard. Announcement only — review now or in the morning; current basal stays in place until confirmed.",
     "wireframe": "component:hypo-mid-session-announcement",
     "legacy": null
@@ -93,9 +83,8 @@
   {
     "id": "hypo-confirm-increase",
     "title": "Confirm Amount — Increase (two-part)",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "Two-part action: acknowledge update-setting AND take-dose, then slide to confirm both. Slider disabled until both acknowledged. Dose value [X]/14 U is a placeholder.",
     "wireframe": "component:hypo-confirm-increase",
     "legacy": null
@@ -103,9 +92,8 @@
   {
     "id": "hypo-confirm-reset-required",
     "title": "Confirm Amount — Reset Required",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "A manual basal change reset learning — no dose value and no slide. Re-learning progress (5 sessions AND 7 days); single action acknowledges the new baseline.",
     "wireframe": "component:hypo-confirm-reset-required",
     "legacy": null
@@ -113,9 +101,8 @@
   {
     "id": "hypo-confirm-skip",
     "title": "Confirm Skip (decline / defer)",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "Decline/defer: nothing changes, current basal stands. Consequence shown in Plum (never red); the recommendation isn't lost — retrievable under Settings · Hypo Shield.",
     "wireframe": "component:hypo-confirm-skip",
     "legacy": null
@@ -123,9 +110,8 @@
   {
     "id": "hypo-settings",
     "title": "Settings — Hypo Shield",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "Settings › Hypo Shield: always-on for the T1D pivotal (no participant toggle; T2D disable is a footnote). State, last recommendation + disposition, TDBD + learning.",
     "wireframe": "component:hypo-settings",
     "legacy": "wireframes/legacy/settings-root.jpg"
@@ -133,9 +119,8 @@
   {
     "id": "hypo-tdbd-detail",
     "title": "TDBD Detail (current value, learning, history)",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "Current programmed total daily basal (you set this — Luna never changes it), learning progress (5 AND 7, learned), and a plain change/recommendation history.",
     "wireframe": "component:hypo-tdbd-detail",
     "legacy": null
@@ -143,20 +128,17 @@
   {
     "id": "hypo-push-notification",
     "title": "Push notification — prompt-to-open only",
-    "status": "Changed",
-    "feature": "HypoShield & In-App Comms",
-    "brdTier": "Full",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
     "summary": "Lock-screen push: prompt-to-open only — no dose value, no confirmable action on the lock screen. Tapping opens the in-app review + two-step confirm.",
     "wireframe": "component:hypo-push-notification",
     "legacy": null
   },
-
   {
     "id": "iob-home-on",
     "title": "Home dashboard — IOB Display enabled",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "IOB Display",
-    "brdTier": "must",
     "summary": "Opted-in Home: the active-insulin (IOB) row appears (OFF by default). Decision-support only — 0.1 U, capital U, Luna-delivered insulin only; never instructs a dose.",
     "wireframe": "component:iob-home-on",
     "legacy": "wireframes/legacy/home-dashboard.jpg"
@@ -164,9 +146,8 @@
   {
     "id": "iob-pre-session-announcement",
     "title": "Pre-session IOB announcement",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "IOB Display",
-    "brdTier": "must",
     "summary": "Insight card announcing IOB Display + the shared two-step component reused as an opt-in acknowledgement (NOT a dose action). Slide turns the display on.",
     "wireframe": "component:iob-pre-session-announcement",
     "legacy": null
@@ -174,9 +155,8 @@
   {
     "id": "iob-settings",
     "title": "Settings — IOB Display toggle (default OFF)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "IOB Display",
-    "brdTier": "must",
     "summary": "Opt-in toggle, default OFF, with a plain-language explanation: Luna-delivered insulin only, avoid stacking, information not instruction.",
     "wireframe": "component:iob-settings",
     "legacy": "wireframes/legacy/settings-root.jpg"
@@ -184,20 +164,17 @@
   {
     "id": "iob-session-detail",
     "title": "Session History detail — residual Luna IOB",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "IOB Display",
-    "brdTier": "should",
     "summary": "Drilled-in session detail surfacing the residual Luna IOB after a session ends (0.1 U, capital U), shown so you can avoid stacking a manual dose.",
     "wireframe": "component:iob-session-detail",
     "legacy": "wireframes/legacy/session-history-swipe.jpg"
   },
-
   {
     "id": "onboarding-chapter-1",
     "title": "Chapter 1 — What Luna is",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Frame-before-data: what Luna is and isn't, before any data collection. Required completion, no skip valve.",
     "wireframe": "component:onboarding-chapter-1",
     "legacy": null
@@ -205,9 +182,8 @@
   {
     "id": "onboarding-chapter-2",
     "title": "Chapter 2 — Tell Luna your routine (TDBD capture)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Capture current TDBD as prescribed — plain data capture, NOT the two-step dose gesture. Mealtime/bolus isn't entered.",
     "wireframe": "component:onboarding-chapter-2",
     "legacy": null
@@ -215,9 +191,8 @@
   {
     "id": "onboarding-chapter-3",
     "title": "Chapter 3 — Pair Luna Capsule (BLE)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Pair the Luna Capsule over Bluetooth (calm moon-in-orbit detect). Tonight panel 1 of 3. Continue never gated on BLE status.",
     "wireframe": "component:onboarding-chapter-3",
     "legacy": "wireframes/legacy/pair-luna-failures.jpg"
@@ -225,9 +200,8 @@
   {
     "id": "onboarding-chapter-4",
     "title": "Chapter 4 — Pair CGM (Dexcom G7)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Pair the CGM (Dexcom G7). CGM status reads 'Recent reading OK'. Tonight panel 2 of 3.",
     "wireframe": "component:onboarding-chapter-4",
     "legacy": null
@@ -235,9 +209,8 @@
   {
     "id": "onboarding-chapter-5",
     "title": "Chapter 5 — Handoff to Apollo Training",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Clean handoff into Apollo Training (coordinator closeout). Tonight panel complete (3 of 3) → Start Luna Training.",
     "wireframe": "component:onboarding-chapter-5",
     "legacy": null
@@ -245,9 +218,8 @@
   {
     "id": "onboarding-setup-landing",
     "title": "Setup Landing (none / Luna complete / all)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Setup landing across the three states; a selector flips the Tonight panel + primary CTA. Luna needs all three before the first night.",
     "wireframe": "component:onboarding-setup-landing",
     "legacy": null
@@ -255,9 +227,8 @@
   {
     "id": "onboarding-ui-walkthrough",
     "title": "UI Walkthrough (1 of 5)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "should",
     "summary": "Brief UI walkthrough that reads as one onboarding with Apollo (BR-B5); module-scoped dots; spotlighted night-view preview.",
     "wireframe": "component:onboarding-ui-walkthrough",
     "legacy": null
@@ -265,9 +236,8 @@
   {
     "id": "onboarding-tonight-panel-states",
     "title": "Tonight Panel — fill states across the arc",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "reference",
     "summary": "Review aid: the recurring Tonight panel filling across States 0–3. Order locked: pair Luna → pair CGM → enter TDBD.",
     "wireframe": "component:onboarding-tonight-panel-states",
     "legacy": null
@@ -275,9 +245,8 @@
   {
     "id": "onboarding-setup-app-walkthrough",
     "title": "Setup App Walkthrough (1–5 + Done)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Guided UI tour (5 stops + Done) reading as one continuous onboarding; module-scoped dots; spotlights the status strip first.",
     "wireframe": "component:onboarding-setup-app-walkthrough",
     "legacy": null
@@ -285,9 +254,8 @@
   {
     "id": "onboarding-session-history-intro",
     "title": "Session History Intro (first-run, 1–4)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "First-run education before any session is logged; spotlighted preview of a future session summary.",
     "wireframe": "component:onboarding-session-history-intro",
     "legacy": null
@@ -295,9 +263,8 @@
   {
     "id": "onboarding-long-acting-insulin",
     "title": "Long-acting insulin (plain capture)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Plain capture of the current long-acting (basal) insulin dose — NOT the two-step gesture. Generic 'long-acting insulin' only.",
     "wireframe": "component:onboarding-long-acting-insulin",
     "legacy": null
@@ -305,20 +272,17 @@
   {
     "id": "onboarding-settings-luna-controller",
     "title": "Settings — Luna Controller (device management)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Onboarding Update",
-    "brdTier": "must",
     "summary": "Device management: state hero, device details, paired CGM ('Recent reading OK'), rename / forget controller.",
     "wireframe": "component:onboarding-settings-luna-controller",
     "legacy": null
   },
-
   {
     "id": "apollo-intro",
     "title": "Intro — first session setup",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Calm centered intro into Apollo Training (continuation of onboarding). 'Let's get you ready for tonight.'",
     "wireframe": "component:apollo-intro",
     "legacy": null
@@ -326,9 +290,8 @@
   {
     "id": "apollo-step-01-inventory",
     "title": "Step 01 — Inventory",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Evening setup 1 of 7. Gather the rapid-acting pen, Single-Sleep Reservoir, and a charged Luna Capsule.",
     "wireframe": "component:apollo-step-01-inventory",
     "legacy": null
@@ -336,9 +299,8 @@
   {
     "id": "apollo-step-02-open-tray",
     "title": "Step 02 — Open tray",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Evening setup 2 of 7. Lift the lid until it clicks. Auto-looping video; no 'Watch again'.",
     "wireframe": "component:apollo-step-02-open-tray",
     "legacy": null
@@ -346,9 +308,8 @@
   {
     "id": "apollo-step-03-fill",
     "title": "Step 03 — Fill reservoir",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Evening setup 3 of 7. Dial [X] units — dose value [X] is an OPEN flag (Eng/Clinical), rendered as a real token, never fabricated.",
     "wireframe": "component:apollo-step-03-fill",
     "legacy": null
@@ -356,9 +317,8 @@
   {
     "id": "apollo-step-04-remove-label",
     "title": "Step 04 — Remove label",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Evening setup 4 of 7. Peel the label fully away so the reservoir seats cleanly.",
     "wireframe": "component:apollo-step-04-remove-label",
     "legacy": null
@@ -366,9 +326,8 @@
   {
     "id": "apollo-step-05-attach-capsule",
     "title": "Step 05 — Attach capsule",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Evening setup 5 of 7. Snap the controller on; lift straight up to remove the adhesive liner.",
     "wireframe": "component:apollo-step-05-attach-capsule",
     "legacy": null
@@ -376,9 +335,8 @@
   {
     "id": "apollo-step-06-remove-base",
     "title": "Step 06 — Remove from base",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Evening setup 6 of 7. Lift the assembled device off its base; it's ready to apply.",
     "wireframe": "component:apollo-step-06-remove-base",
     "legacy": null
@@ -386,9 +344,8 @@
   {
     "id": "apollo-step-07-apply-body",
     "title": "Step 07 — Apply to body",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Evening setup 7 of 7. Apply it to your upper arm — press firmly for a few seconds.",
     "wireframe": "component:apollo-step-07-apply-body",
     "legacy": null
@@ -396,9 +353,8 @@
   {
     "id": "apollo-hardware-checkpoint",
     "title": "Hardware checkpoint",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Informative checkpoint (moon-in-orbit detect). CGM = 'Recent reading OK'. CTA never gated. Carries the verify-before-body + error-states open flags.",
     "wireframe": "component:apollo-hardware-checkpoint",
     "legacy": "wireframes/legacy/hardware-checkpoint.jpg"
@@ -406,9 +362,8 @@
   {
     "id": "apollo-evening-outro",
     "title": "Evening outro — personal video",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Personal 'Tonight' video. Auto-loops; no 'Watch again'. 'You're all set for tonight.'",
     "wireframe": "component:apollo-evening-outro",
     "legacy": null
@@ -416,9 +371,8 @@
   {
     "id": "apollo-overnight-handoff",
     "title": "Overnight handoff — Luna active",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Overnight pause checkpoint: Luna is active and watching; the session visibly pauses for the night. Nothing appears pending.",
     "wireframe": "component:apollo-overnight-handoff",
     "legacy": null
@@ -426,9 +380,8 @@
   {
     "id": "apollo-morning-start",
     "title": "Morning start",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Next-morning re-entry into Morning training — a single clear way back in. (BR-B4 trigger mechanism BRD-undecided; this is the destination.)",
     "wireframe": "component:apollo-morning-start",
     "legacy": null
@@ -436,9 +389,8 @@
   {
     "id": "apollo-step-08-remove-device",
     "title": "Step 08 — Remove device",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Morning removal 1 of 3. Good morning — before your next meal, gently remove Luna from your body.",
     "wireframe": "component:apollo-step-08-remove-device",
     "legacy": null
@@ -446,9 +398,8 @@
   {
     "id": "apollo-step-09-detach-reservoir",
     "title": "Step 09 — Detach reservoir",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Morning removal 2 of 3. Peel the tab, then press the release button. Informative checkpoint never gates Next.",
     "wireframe": "component:apollo-step-09-detach-reservoir",
     "legacy": null
@@ -456,9 +407,8 @@
   {
     "id": "apollo-step-10-charge",
     "title": "Step 10 — Charge controller",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Morning removal 3 of 3. Set the controller on its charger, ready for tonight. Done.",
     "wireframe": "component:apollo-step-10-charge",
     "legacy": null
@@ -466,9 +416,8 @@
   {
     "id": "apollo-morning-outro",
     "title": "Morning outro — personal video",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Personal 'week ahead' video. Auto-loops; no 'Watch again'. 'Nice work — your morning's complete.'",
     "wireframe": "component:apollo-morning-outro",
     "legacy": null
@@ -476,9 +425,8 @@
   {
     "id": "apollo-complete",
     "title": "Complete",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Training complete — 'You're all set.' 10 steps done · 1 night logged.",
     "wireframe": "component:apollo-complete",
     "legacy": null
@@ -486,9 +434,8 @@
   {
     "id": "apollo-mid-session-resume",
     "title": "Mid-session resume — clean step boundary",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Re-entry that lands at a clean step boundary (start of the morning module), never partway through a step (closes BR-B2).",
     "wireframe": "component:apollo-mid-session-resume",
     "legacy": null
@@ -496,20 +443,17 @@
   {
     "id": "apollo-replay-from-settings",
     "title": "Replay from Settings — Training Guide (BR-B6)",
-    "status": "Changed",
+    "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "brdTier": "Full",
     "summary": "Settings › Help › Training Guide. Replay any step or whole module after setup; nothing here changes the device.",
     "wireframe": "component:apollo-replay-from-settings",
     "legacy": null
   },
-
   {
     "id": "unchanged-post-session-load",
     "title": "Post-session Load states 1-4",
-    "status": "Unchanged",
+    "status": "Work in Progress",
     "feature": "Dark UI re-skin",
-    "brdTier": "None",
     "summary": "Deferred to the single Dark-UI re-skin sweep; legacy 2021 stand-in for now.",
     "wireframe": "wireframes/legacy/post-session-load.jpg",
     "legacy": "wireframes/legacy/post-session-load.jpg"
@@ -517,9 +461,8 @@
   {
     "id": "unchanged-default-return",
     "title": "Default-from-notification / Default-return",
-    "status": "Unchanged",
+    "status": "Work in Progress",
     "feature": "Dark UI re-skin",
-    "brdTier": "None",
     "summary": "Deferred to the single Dark-UI re-skin sweep; legacy 2021 stand-in for now.",
     "wireframe": "wireframes/legacy/default-return.jpg",
     "legacy": "wireframes/legacy/default-return.jpg"
@@ -527,9 +470,8 @@
   {
     "id": "unchanged-get-to-know-legend",
     "title": "Get to Know / Legend Slide-Up",
-    "status": "Unchanged",
+    "status": "Work in Progress",
     "feature": "Dark UI re-skin",
-    "brdTier": "None",
     "summary": "Deferred to the single Dark-UI re-skin sweep; legacy 2021 stand-in for now.",
     "wireframe": "wireframes/legacy/get-to-know-legend.jpg",
     "legacy": "wireframes/legacy/get-to-know-legend.jpg"
@@ -537,9 +479,8 @@
   {
     "id": "unchanged-pair-luna-failures",
     "title": "Pair Luna failures (failed / again / expired / multiple)",
-    "status": "Unchanged",
+    "status": "Work in Progress",
     "feature": "Dark UI re-skin",
-    "brdTier": "None",
     "summary": "Deferred to the single Dark-UI re-skin sweep; legacy 2021 stand-in for now.",
     "wireframe": "wireframes/legacy/pair-luna-failures.jpg",
     "legacy": "wireframes/legacy/pair-luna-failures.jpg"
@@ -547,9 +488,8 @@
   {
     "id": "unchanged-session-history-swipe",
     "title": "Session History - Swipe / Swipe 2-3",
-    "status": "Unchanged",
+    "status": "Work in Progress",
     "feature": "Dark UI re-skin",
-    "brdTier": "None",
     "summary": "Deferred to the single Dark-UI re-skin sweep; legacy 2021 stand-in for now.",
     "wireframe": "wireframes/legacy/session-history-swipe.jpg",
     "legacy": "wireframes/legacy/session-history-swipe.jpg"
@@ -557,9 +497,8 @@
   {
     "id": "unchanged-session-history-nodata",
     "title": "Session History - No Data / No Session on Day",
-    "status": "Unchanged",
+    "status": "Work in Progress",
     "feature": "Dark UI re-skin",
-    "brdTier": "None",
     "summary": "Deferred to the single Dark-UI re-skin sweep; legacy 2021 stand-in for now.",
     "wireframe": "wireframes/legacy/session-history-nodata.jpg",
     "legacy": "wireframes/legacy/session-history-nodata.jpg"
@@ -567,9 +506,8 @@
   {
     "id": "unchanged-settings-app-about-help",
     "title": "Settings - App / About / Help",
-    "status": "Unchanged",
+    "status": "Work in Progress",
     "feature": "Dark UI re-skin",
-    "brdTier": "None",
     "summary": "Deferred to the single Dark-UI re-skin sweep; legacy 2021 stand-in for now.",
     "wireframe": "wireframes/legacy/settings-app-about-help.jpg",
     "legacy": "wireframes/legacy/settings-app-about-help.jpg"
@@ -577,9 +515,8 @@
   {
     "id": "unchanged-searching-app-error",
     "title": "Searching / App Error / Sign-out Error",
-    "status": "Unchanged",
+    "status": "Work in Progress",
     "feature": "Dark UI re-skin",
-    "brdTier": "None",
     "summary": "Deferred to the single Dark-UI re-skin sweep; legacy 2021 stand-in for now.",
     "wireframe": "wireframes/legacy/searching-app-error.jpg",
     "legacy": "wireframes/legacy/searching-app-error.jpg"

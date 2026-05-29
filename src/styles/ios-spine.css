@@ -148,8 +148,8 @@
 .ux-ios .pad { padding: 0 var(--space-sm); }
 .ux-ios .stack { display: flex; flex-direction: column; }
 /* Luna wordmark — small, top-left, on EVERY screen (brand: never stretch/recolor). */
-.ux-ios .brandbar { flex: none; display: flex; align-items: center; padding: 0 0 4px 22px; }
-.ux-ios .brandbar .luna-mark { height: 15px; width: auto; display: block; opacity: 0.95; }
+.ux-ios .brandbar { flex: none; display: flex; align-items: center; padding: 0 0 6px 22px; }
+.ux-ios .brandbar .luna-mark { height: 20px; width: auto; display: block; opacity: 0.95; }
 .ux-ios hr.divider { border: none; border-top: 1px solid rgba(255,255,255,0.10); margin: 0; }
 
 /* ============================================================
