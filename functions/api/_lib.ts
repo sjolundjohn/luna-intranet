@@ -40,11 +40,30 @@ export interface ProxyOptions {
   isAdmin?: boolean;
 }
 
-/** Read the signed-in user's email from CF Access. */
+/** Read the signed-in user's email from CF Access.
+ *
+ * Primary source is the `Cf-Access-Authenticated-User-Email` header. As a
+ * fallback we decode the `email` claim from the `Cf-Access-Jwt-Assertion`
+ * header that Access forwards on every authenticated request — the request
+ * has already passed Access at the edge, so the assertion is trustworthy
+ * here. This keeps identity working even when the email header is absent. */
 export function getCallerEmail(request: Request): string {
-  return (
-    request.headers.get("cf-access-authenticated-user-email") ?? ""
-  ).toLowerCase();
+  const header = (request.headers.get("cf-access-authenticated-user-email") ?? "").toLowerCase();
+  if (header) return header;
+
+  const jwt = request.headers.get("cf-access-jwt-assertion");
+  if (jwt) {
+    try {
+      const part = jwt.split(".")[1] ?? "";
+      let b64 = part.replace(/-/g, "+").replace(/_/g, "/");
+      b64 += "=".repeat((4 - (b64.length % 4)) % 4);
+      const claims = JSON.parse(atob(b64)) as { email?: string };
+      if (typeof claims.email === "string") return claims.email.toLowerCase();
+    } catch {
+      /* fall through to empty */
+    }
+  }
+  return "";
 }
 
 /**

@@ -22,7 +22,11 @@ export const onRequestPost: PagesFunction<KegEnv> = async (ctx) => {
   if (db instanceof Response) return db;
 
   const email = getCallerEmail(ctx.request);
-  if (!email) return err("unauthenticated", 401);
+  if (!email) {
+    // TEMP diagnostic: which CF headers actually reach the function (names only).
+    const cf = [...ctx.request.headers.keys()].filter((k) => k.startsWith("cf-"));
+    return json({ error: "unauthenticated", _cf: cf }, 401);
+  }
 
   let b: VoteBody;
   try {
