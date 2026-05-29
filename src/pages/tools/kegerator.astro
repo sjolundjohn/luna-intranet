@@ -282,7 +282,9 @@ const catalogForClient = KEG_CATALOG.map((i) => ({ id: i.id, name: i.name, categ
       .then((d: any) => { if (d?.isAdmin && makeOrderBtn) makeOrderBtn.hidden = false; })
       .catch(() => {});
 
-    function buildMailto(): string {
+    // Build a Gmail web compose URL (new tab) — independent of the OS default
+    // mail client. Uses whichever Google account is currently active.
+    function buildComposeUrl(): string {
       const cb = topOf("coldbrew");
       const kb = topOf("kombucha");
       const lines = ["Hi Kegjoy team,", "", "We'd like to reorder for the Luna office:", ""];
@@ -290,18 +292,26 @@ const catalogForClient = KEG_CATALOG.map((i) => ({ id: i.id, name: i.name, categ
       lines.push(`Kombucha: ${kb ? nameOf(kb.id) : "(no votes yet — please leave as-is)"}`);
       lines.push("", "Thanks,", "Luna");
       const subject = "Luna office keg reorder";
-      return `mailto:${orderEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
+      const q = new URLSearchParams({
+        view: "cm",
+        fs: "1",
+        to: orderEmail,
+        su: subject,
+        body: lines.join("\n"),
+      });
+      return `https://mail.google.com/mail/?${q.toString()}`;
     }
 
     makeOrderBtn?.addEventListener("click", async () => {
-      // Open the prefilled email draft (editable before sending).
-      window.location.href = buildMailto();
-      // Clear the queue for the next round.
+      // Open the prefilled Gmail draft in a new tab (editable before sending).
+      // Done synchronously in the click handler so the pop-up isn't blocked.
+      window.open(buildComposeUrl(), "_blank", "noopener");
+      // Clear the queue for the next round (kegerator tab stays put).
       try {
         await fetch("/api/keg/order", { method: "POST" });
         await load();
       } catch {
-        /* email already opened; clearing is best-effort */
+        /* draft already opened; clearing is best-effort */
       }
     });
 
