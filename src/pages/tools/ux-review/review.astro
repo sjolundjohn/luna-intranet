@@ -79,6 +79,10 @@ const screenMeta = Object.fromEntries(SCREENS.map((s) => [s.id, { title: s.title
   function setup() {
     const listEl = document.querySelector<HTMLElement>("[data-review-list]");
     if (!listEl) return;
+    // Idempotency: ClientRouter fires the inline call + astro:page-load on load;
+    // without this the dashboard list would be fetched + appended twice.
+    if (listEl.dataset.uxWired) return;
+    listEl.dataset.uxWired = "1";
     const titleEl = document.querySelector<HTMLElement>("[data-open-title]")!;
     const emptyEl = document.querySelector<HTMLElement>("[data-review-empty]")!;
     const errorEl = document.querySelector<HTMLElement>("[data-review-error]")!;

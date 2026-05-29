@@ -319,6 +319,12 @@ const flowNext = FLOW_NEXT[screen.id] ?? "";
   function setup() {
     const root = document.querySelector<HTMLElement>(".ux-detail");
     if (!root) return;
+    // Idempotency guard: with view transitions (ClientRouter), the inline call
+    // AND astro:page-load both fire on initial load. Without this, the submit
+    // handler binds twice → every comment is POSTed twice. The flag lives on the
+    // (per-page, freshly-swapped) root, so soft navigations still bind once.
+    if (root.dataset.uxWired) return;
+    root.dataset.uxWired = "1";
     const screenId = root.dataset.screenId!;
 
     const stage = root.querySelector<HTMLElement>("[data-stage]");
