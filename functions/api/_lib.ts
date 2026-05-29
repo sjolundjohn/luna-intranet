@@ -68,18 +68,40 @@ export function getCallerEmail(request: Request): string {
       const claims = JSON.parse(atob(b64)) as { email?: string };
       if (typeof claims.email === "string") return claims.email.toLowerCase();
     } catch {
-      /* fall through to empty */
+      /* fall through */
     }
+  }
+
+  // Reality on nightluna.com: Google IAP gates the site but forwards NO identity
+  // header to the Cloudflare Pages origin — the only per-user signal that reaches
+  // the function is the GCP_IAP_UID cookie (a stable Google user id). Use it as
+  // the identity key, namespaced so it can never collide with a real email.
+  const uid = readCookie(request, "GCP_IAP_UID");
+  if (uid) return `gcp-iap:${uid}`;
+
+  return "";
+}
+
+/** Read a single cookie value from the request's Cookie header. */
+function readCookie(request: Request, name: string): string {
+  const raw = request.headers.get("cookie");
+  if (!raw) return "";
+  for (const part of raw.split(/;\s*/)) {
+    const eq = part.indexOf("=");
+    if (eq > 0 && part.slice(0, eq) === name) return part.slice(eq + 1).trim();
   }
   return "";
 }
 
 /**
- * Workspace groups that should get the X-Admin header. Today only John
- * is the AI admin. Eventually replaced by reading the `cf-access-groups`
- * claim from the JWT.
+ * Admins. Today only John. We match either a real email (once IAP is fixed to
+ * forward one) or his IAP identity key `gcp-iap:<GCP_IAP_UID>` — which is what
+ * getCallerEmail returns today. (Update the UID if his Google account changes.)
  */
-const ADMIN_EMAILS = new Set(["john@lunadiabetes.com"]);
+const ADMIN_EMAILS = new Set([
+  "john@lunadiabetes.com",
+  "gcp-iap:112029539987518991636",
+]);
 export function isCallerAdmin(email: string): boolean {
   return ADMIN_EMAILS.has(email);
 }
