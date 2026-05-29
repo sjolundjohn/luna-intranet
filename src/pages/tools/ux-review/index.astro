@@ -25,13 +25,21 @@ const THUMB_SCALE = 0.46;
       pinned to the spot you mean — across each design cycle, before we export to Figma.
     </Fragment>
     <Fragment slot="cta">
-      <a
-        href="/tools/ux-review/review"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-moonlight text-midnight font-body text-[14px] font-semibold hover:opacity-90 transition-opacity"
-      >
-        Open the review dashboard
-        <span data-total-open class="inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full bg-midnight text-white text-[11px] font-bold" hidden></span>
-      </a>
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="/tools/ux-review/review"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-moonlight text-midnight font-body text-[14px] font-semibold hover:opacity-90 transition-opacity"
+        >
+          Open the review dashboard
+          <span data-total-open class="inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full bg-midnight text-white text-[11px] font-bold" hidden></span>
+        </a>
+        <a
+          href="/tools/ux-review/design-system"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors"
+        >
+          Design system
+        </a>
+      </div>
     </Fragment>
   </Hero>
 

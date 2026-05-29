@@ -1,0 +1,82 @@
+[
+  {
+    "id": "home-tip-default",
+    "title": "Home — Default Tip",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "home-tip-default.html"
+  },
+  {
+    "id": "home-tip-post",
+    "title": "Home — Tip Post (recommendation)",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "home-tip-post.html"
+  },
+  {
+    "id": "learning-state",
+    "title": "Learning State & Dosing Mode",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "learning-state.html"
+  },
+  {
+    "id": "mid-session-announcement",
+    "title": "Mid-Session Dose Announcement",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "mid-session-announcement.html"
+  },
+  {
+    "id": "confirm-increase",
+    "title": "Confirm Amount — Increase (two-part)",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "confirm-increase.html"
+  },
+  {
+    "id": "confirm-reset-required",
+    "title": "Confirm Amount — Reset Required",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "confirm-reset-required.html"
+  },
+  {
+    "id": "confirm-skip",
+    "title": "Confirm Skip (decline / defer)",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "confirm-skip.html"
+  },
+  {
+    "id": "settings-hypo-shield",
+    "title": "Settings — Hypo Shield",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "settings-hypo-shield.html"
+  },
+  {
+    "id": "tdbd-detail",
+    "title": "TDBD Detail (current value, learning, history)",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "tdbd-detail.html"
+  },
+  {
+    "id": "push-notification",
+    "title": "Push notification — prompt-to-open only",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "push-notification.html"
+  }
+]

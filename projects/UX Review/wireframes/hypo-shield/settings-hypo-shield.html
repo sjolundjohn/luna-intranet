@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luna iOS · Settings · Hypo Shield</title>
+<link rel="stylesheet" href="../../css/tokens.css" />
+<style>
+/* ============================================================
+   LUNA SPINE — shared frame + dark-surface system
+   This block is IDENTICAL across all 7 spine screens. It is the
+   locked frame + component kit. Do not fork per-screen.
+   ============================================================ */
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-brand);
+  background:var(--color-cloud-lilac);
+  color:var(--color-ink);
+  -webkit-font-smoothing:antialiased;
+  display:flex; justify-content:center; align-items:flex-start;
+  min-height:100vh; padding:40px 16px;
+}
+/* ---- iPhone frame: realistic BLACK BEZEL (Dynamic Island cue) ---- */
+.phone{
+  width:414px; max-width:100%; margin:0 auto;
+  background:linear-gradient(155deg,#2b2b30,#0b0b0d 42%,#000 100%);
+  border-radius:56px; padding:12px;
+  box-shadow:0 0 0 2px #3a3a40, var(--shadow-modal);
+}
+.screen{
+  position:relative; width:100%; height:780px;
+  border-radius:34px; overflow:hidden;
+  display:flex; flex-direction:column;
+  background:linear-gradient(to bottom,
+    var(--color-midnight-deep), var(--color-midnight) 60%, var(--color-midnight-floor));
+  color:var(--color-on-dark);
+}
+/* Dynamic Island cue floating over the status bar */
+.screen::before{
+  content:""; position:absolute; top:11px; left:50%; transform:translateX(-50%);
+  width:104px; height:28px; border-radius:999px; background:#000; z-index:40;
+  pointer-events:none;
+}
+.statusbar{
+  height:54px; flex:none; display:flex; align-items:flex-end;
+  justify-content:space-between; padding:0 26px 8px;
+  font-size:14px; font-weight:600; color:var(--color-on-dark);
+}
+.statusbar .clock{font-variant-numeric:tabular-nums;}
+.statusbar .right{display:flex; align-items:center; gap:6px;}
+.statusbar svg{display:block;}
+.homebar{height:34px; flex:none; display:flex; align-items:center; justify-content:center;}
+.homebar::after{content:""; width:134px; height:5px; border-radius:999px; background:rgba(255,255,255,0.30);}
+.content{flex:1; min-height:0; overflow:hidden; display:flex; flex-direction:column;}
+/* hidden/subtle scrollbar when a screen scrolls inside the clipped frame (e.g. 07) */
+.content{scrollbar-width:none;}
+.content::-webkit-scrollbar{width:0; height:0; display:none;}
+.screen .large-title,.screen .title-1,.screen .title-2,.screen .title-3,
+.screen .headline,.screen .body,.screen .callout,.screen .subhead,
+.screen .footnote,.screen .caption-1,.screen .caption-2{color:var(--color-on-dark);}
+.muted{color:var(--color-on-dark-sub)!important;}
+.accent{color:var(--color-moonlight)!important;}
+.card-dark{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:var(--radius-card);
+  padding:var(--space-md);
+}
+.card-light{
+  background:var(--color-white);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  color:var(--color-ink);
+}
+.btn{
+  width:100%; height:52px; border:none; border-radius:var(--radius-pill);
+  font-family:var(--font-brand); font-size:16px; font-weight:700;
+  letter-spacing:-0.005em; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  transition:transform 140ms ease, box-shadow 140ms ease;
+}
+.btn.primary{background:var(--color-moonlight); color:var(--color-midnight); box-shadow:0 3px 14px rgba(104,210,223,0.40);}
+.btn.secondary{background:transparent; color:var(--color-on-dark); border:1.5px solid rgba(255,255,255,0.30);}
+.btn.ghost{background:transparent; color:var(--color-moonlight); font-weight:700; height:auto; padding:8px;}
+.btn:active{transform:translateY(1px) scale(0.995);}
+.tabbar{
+  flex:none; display:flex; padding:10px 8px 4px;
+  background:rgba(3,22,50,0.55);
+  border-top:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:saturate(160%) blur(12px);
+}
+.tab{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+  background:none; border:none; cursor:pointer; padding:4px 0;
+  color:var(--color-on-dark-sub); font-family:var(--font-brand);}
+.tab span{font-size:11px; font-weight:600;}
+.tab.active{color:var(--color-moonlight);}
+.tab svg{display:block;}
+.statuscard{position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px;}
+.statuscard .info{position:absolute; top:0; right:0; color:var(--color-on-dark-sub);}
+.statuscard .sep{display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.12); width:100%;}
+.glucose{display:flex; align-items:center; justify-content:center; gap:10px;}
+.glucose .num{font-size:84px; font-weight:700; line-height:1; letter-spacing:-0.03em; color:var(--color-on-dark); font-variant-numeric:tabular-nums;}
+.insight{display:flex; gap:14px; align-items:flex-start;}
+.insight .ic{flex:none; margin-top:2px; color:var(--color-moonlight);}
+.flag{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(249,205,134,0.10);
+  border:1px dashed var(--color-warning);
+  border-radius:var(--radius-chip); padding:5px 9px;
+  font-size:10px; font-weight:600; color:var(--color-warning);
+  letter-spacing:0.02em; font-family:var(--font-brand);
+}
+.flag .k{font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.85;}
+.token-flag{
+  display:inline-flex; align-items:baseline; padding:1px 8px; border-radius:5px;
+  background:rgba(249,205,134,0.18); border:1px dashed var(--color-warning);
+  color:var(--color-warning); font-weight:700; font-variant-numeric:tabular-nums;
+  letter-spacing:0.02em;
+}
+.step-badge{display:inline-flex; align-items:center; gap:6px;
+  font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--color-moonlight); margin:0 0 6px;}
+.step-badge .dot{width:4px; height:4px; border-radius:999px; background:var(--color-moonlight);}
+.prog-head{flex:none; padding-top:4px;}
+.prog-row{height:44px; display:flex; align-items:center; padding:0 16px; gap:8px;}
+.prog-row .back{background:none; border:none; padding:0; cursor:pointer; width:24px; height:24px;
+  color:var(--color-moonlight); font-size:26px; line-height:1; display:flex; align-items:center; justify-content:center;}
+.prog-row .title{flex:1; font-size:13px; font-weight:500; color:var(--color-on-dark-sub);}
+.prog-row .count{font-size:12px; font-weight:500; color:var(--color-on-dark-sub); font-variant-numeric:tabular-nums;}
+.prog-bar{margin:0 20px; height:3px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden;}
+.prog-bar > i{display:block; height:100%; background:var(--color-moonlight); border-radius:2px;}
+.conn-row{display:flex; align-items:center; justify-content:space-between;
+  background:rgba(104,210,223,0.08); border:1px solid rgba(104,210,223,0.25);
+  border-radius:12px; padding:13px 14px;}
+.conn-row .lbl{font-size:14px; font-weight:600; color:var(--color-on-dark);}
+.conn-row .stat{display:flex; align-items:center; gap:7px; font-size:12px; font-weight:600;}
+.conn-row .stat .ok{width:8px; height:8px; border-radius:50%; background:var(--color-success-light);
+  box-shadow:0 0 8px rgba(176,249,179,0.6);}
+.conn-row .stat .ok-txt{color:var(--color-success-light);}
+.pad{padding:0 var(--space-sm);}
+.stack{display:flex; flex-direction:column;}
+/* Luna wordmark — small, top-left, on EVERY screen (brand: never stretch/recolor).
+   Dedicated flex-none brand row directly under the status bar, so it never
+   collides with the clock (left of status bar) or the Dynamic-Island cue (center). */
+.brandbar{flex:none; display:flex; align-items:center; padding:0 0 4px 22px;}
+.brandbar .luna-mark{height:15px; width:auto; display:block; opacity:0.95;}
+hr.divider{border:none; border-top:1px solid rgba(255,255,255,0.10); margin:0;}
+
+/* ---- screen-05 settings chrome (reused verbatim from spine 05) ---- */
+.navbar{flex:none; display:flex; align-items:center; gap:6px; padding:6px 12px 14px;}
+.navbar .back{display:flex; align-items:center; gap:2px; background:none; border:none; cursor:pointer;
+  color:var(--color-moonlight); font-family:var(--font-brand); font-size:17px; padding:0;}
+.navbar h1{margin:0 0 0 6px; font-size:28px; font-weight:700; letter-spacing:-0.015em; color:var(--color-on-dark);}
+.sec-label{font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--color-on-dark-sub); padding:0 4px 8px; margin-top:8px;}
+.list{background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.10);
+  border-radius:var(--radius-card); overflow:hidden;}
+.row{display:flex; align-items:center; gap:12px; padding:15px 16px; min-height:54px;}
+.row + .row{border-top:1px solid rgba(255,255,255,0.08);}
+.row .label{flex:1; font-size:17px; color:var(--color-on-dark);}
+.row .value{font-size:16px; color:var(--color-on-dark-sub); margin-right:2px;}
+.row .chev{color:var(--color-moonlight); display:flex;}
+.row .ok-txt{color:var(--color-success-light); font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:6px;}
+.row .ok-txt .dot{width:8px; height:8px; border-radius:50%; background:var(--color-success-light); box-shadow:0 0 8px rgba(176,249,179,0.6);}
+
+/* ============================================================
+   SCREEN: settings-hypo-shield — Settings › Hypo Shield surface.
+   The standing settings surface where the feature and its state
+   live. Hypo Shield is ALWAYS-ON for the T1D pivotal — there is
+   NO participant toggle. A product-level disable exists ONLY for
+   T2D basal-only, surfaced here as an explanatory footnote, not a
+   user control. Shows feature state, the last recommendation and
+   its disposition, and a path into TDBD detail.
+   Name is "Hypo Shield" everywhere — never "Basal Guidance".
+   (BRD §5 Settings; §10 resolved: always-on for T1D pivotal with
+   product-level disablement for T2D basal-only.)
+   ============================================================ */
+/* feature-state hero card */
+.feat-card{display:flex; flex-direction:column; gap:0; padding:18px;}
+.feat-card .head{display:flex; align-items:center; gap:11px; margin-bottom:12px;}
+.feat-card .moon{flex:none; width:30px; height:30px; border-radius:50%; background:var(--color-midnight); position:relative; overflow:hidden; border:1px solid rgba(104,210,223,0.45);}
+.feat-card .moon::before{content:""; position:absolute; right:-5px; top:4px; width:18px; height:18px; border-radius:50%; background:var(--color-moonlight);}
+.feat-card .moon::after{content:""; position:absolute; right:-1px; top:6px; width:14px; height:14px; border-radius:50%; background:var(--color-midnight);}
+.feat-card .nm{font-size:18px; font-weight:700; color:var(--color-on-dark); letter-spacing:-0.01em;}
+.feat-card .state{display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:700; color:var(--color-success-light); margin-top:2px;}
+.feat-card .state .dot{width:8px; height:8px; border-radius:50%; background:var(--color-success-light); box-shadow:0 0 8px rgba(176,249,179,0.6);}
+.feat-card .desc{font-size:13px; line-height:1.5; color:var(--color-on-dark-sub);}
+/* always-on note (no participant toggle); T2D product-level disable footnote */
+.alwayson{display:flex; align-items:center; gap:8px; margin-top:14px; padding-top:14px;
+  border-top:1px solid rgba(255,255,255,0.12); font-size:12px; font-weight:600; color:var(--color-on-dark);}
+.alwayson svg{flex:none; color:var(--color-moonlight);}
+.t2d-note{font-size:11px; line-height:1.45; color:var(--color-on-dark-sub); margin-top:9px;}
+/* last-recommendation row inside the list — label + disposition chip */
+.disp{display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:var(--radius-chip);
+  font-size:12px; font-weight:700; margin-right:2px;}
+.disp.skipped{background:rgba(142,54,85,0.16); color:#E79BB4;}
+.disp.applied{background:rgba(176,249,179,0.14); color:var(--color-success-light);}
+.row .sub-label{display:flex; flex-direction:column; gap:2px; flex:1;}
+.row .sub-label .t{font-size:17px; color:var(--color-on-dark);}
+.row .sub-label .s{font-size:12px; color:var(--color-on-dark-sub);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="statusbar">
+      <span class="clock">9:41</span>
+      <span class="right">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#fff"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#fff"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#fff"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#fff" opacity="0.4"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2.5" stroke="#fff" opacity="0.5"/><rect x="2" y="2.5" width="16" height="7" rx="1.2" fill="#fff"/><rect x="21.5" y="4" width="1.5" height="4" rx="0.75" fill="#fff" opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <!-- Luna wordmark — top-left brand chrome, present on every screen -->
+    <div class="brandbar"><img class="luna-mark" src="../../assets/luna-on-dark.svg" alt="Luna" /></div>
+
+    <div class="content">
+      <!-- nav header: Moonlight back + "Hypo Shield", NO divider (whitespace only) -->
+      <div class="navbar">
+        <button class="back" aria-label="Settings">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          Settings
+        </button>
+      </div>
+      <div class="pad" style="padding-bottom:10px;"><h1 style="margin:0; font-size:28px; font-weight:700; letter-spacing:-0.015em;">Hypo Shield</h1></div>
+
+      <div class="pad" style="overflow-y:auto;">
+        <!-- FEATURE-STATE hero: always-on, no participant toggle -->
+        <div class="card-dark feat-card">
+          <div class="head">
+            <span class="moon" aria-hidden="true"></span>
+            <div>
+              <div class="nm">Hypo Shield</div>
+              <div class="state"><span class="dot"></span>Active</div>
+            </div>
+          </div>
+          <div class="desc">Hypo Shield learns your overnight basal needs and suggests a corrected dose when your standing basal looks mis-set. It never changes your dose for you.</div>
+          <!-- ALWAYS-ON for the T1D pivotal — no participant toggle -->
+          <div class="alwayson">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Always on for your study
+          </div>
+          <!-- T2D product-level disable exists, but is NOT a participant control here -->
+          <div class="t2d-note">A product-level disable exists for T2D basal-only users; it isn't a setting you control in the pivotal.</div>
+        </div>
+
+        <!-- LAST RECOMMENDATION + disposition -->
+        <div class="sec-label">Last recommendation</div>
+        <div class="list">
+          <div class="row">
+            <span class="sub-label">
+              <span class="t">New basal · 14 U</span>
+              <span class="s">May 26 · 10:18 PM</span>
+            </span>
+            <span class="disp skipped">Skipped</span>
+            <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+          <div class="row">
+            <span class="sub-label">
+              <span class="t">New basal · 14 U</span>
+              <span class="s">May 24 · 9:32 AM</span>
+            </span>
+            <span class="disp applied">Applied</span>
+            <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+
+        <!-- TDBD + detail -->
+        <div class="sec-label">Dosing</div>
+        <div class="list">
+          <div class="row">
+            <span class="label">Total daily basal (TDBD)</span>
+            <span class="value">12 U</span>
+            <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+          <div class="row">
+            <span class="label">Learning &amp; history</span>
+            <span class="value">5 sessions · 7 days</span>
+            <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+
+        <!-- Help -->
+        <div class="sec-label">Support</div>
+        <div class="list">
+          <div class="row">
+            <span class="label">How Hypo Shield works</span>
+            <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+      </div>
+
+      <div style="flex:1;"></div>
+    </div>
+
+    <!-- Tab bar (Settings active) -->
+    <nav class="tabbar" aria-label="Primary">
+      <button class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2M21 12a9 9 0 1 1-9-9"/></svg>
+        <span>Session History</span>
+      </button>
+      <button class="tab active" aria-current="page">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1l-.4-2.5H10l-.4 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.4 2.5h3.8l.4-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="homebar"></div>
+  </div>
+</div>
+</body>
+</html>

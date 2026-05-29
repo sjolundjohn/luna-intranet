@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luna iOS · Hypo Shield · Home — Tip Post</title>
+<link rel="stylesheet" href="../../css/tokens.css" />
+<style>
+/* ============================================================
+   LUNA SPINE — shared frame + dark-surface system
+   This block is IDENTICAL across all 7 spine screens. It is the
+   locked frame + component kit. Do not fork per-screen.
+   ============================================================ */
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-brand);
+  background:var(--color-cloud-lilac);
+  color:var(--color-ink);
+  -webkit-font-smoothing:antialiased;
+  display:flex; justify-content:center; align-items:flex-start;
+  min-height:100vh; padding:40px 16px;
+}
+/* ---- iPhone frame: realistic BLACK BEZEL (Dynamic Island cue) ---- */
+.phone{
+  width:414px; max-width:100%; margin:0 auto;
+  background:linear-gradient(155deg,#2b2b30,#0b0b0d 42%,#000 100%);
+  border-radius:56px; padding:12px;
+  box-shadow:0 0 0 2px #3a3a40, var(--shadow-modal);
+}
+.screen{
+  position:relative; width:100%; height:780px;
+  border-radius:34px; overflow:hidden;
+  display:flex; flex-direction:column;
+  background:linear-gradient(to bottom,
+    var(--color-midnight-deep), var(--color-midnight) 60%, var(--color-midnight-floor));
+  color:var(--color-on-dark);
+}
+/* Dynamic Island cue floating over the status bar */
+.screen::before{
+  content:""; position:absolute; top:11px; left:50%; transform:translateX(-50%);
+  width:104px; height:28px; border-radius:999px; background:#000; z-index:40;
+  pointer-events:none;
+}
+.statusbar{
+  height:54px; flex:none; display:flex; align-items:flex-end;
+  justify-content:space-between; padding:0 26px 8px;
+  font-size:14px; font-weight:600; color:var(--color-on-dark);
+}
+.statusbar .clock{font-variant-numeric:tabular-nums;}
+.statusbar .right{display:flex; align-items:center; gap:6px;}
+.statusbar svg{display:block;}
+.homebar{height:34px; flex:none; display:flex; align-items:center; justify-content:center;}
+.homebar::after{content:""; width:134px; height:5px; border-radius:999px; background:rgba(255,255,255,0.30);}
+.content{flex:1; min-height:0; overflow:hidden; display:flex; flex-direction:column;}
+/* hidden/subtle scrollbar when a screen scrolls inside the clipped frame (e.g. 07) */
+.content{scrollbar-width:none;}
+.content::-webkit-scrollbar{width:0; height:0; display:none;}
+.screen .large-title,.screen .title-1,.screen .title-2,.screen .title-3,
+.screen .headline,.screen .body,.screen .callout,.screen .subhead,
+.screen .footnote,.screen .caption-1,.screen .caption-2{color:var(--color-on-dark);}
+.muted{color:var(--color-on-dark-sub)!important;}
+.accent{color:var(--color-moonlight)!important;}
+.card-dark{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:var(--radius-card);
+  padding:var(--space-md);
+}
+.card-light{
+  background:var(--color-white);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  color:var(--color-ink);
+}
+.btn{
+  width:100%; height:52px; border:none; border-radius:var(--radius-pill);
+  font-family:var(--font-brand); font-size:16px; font-weight:700;
+  letter-spacing:-0.005em; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  transition:transform 140ms ease, box-shadow 140ms ease;
+}
+.btn.primary{background:var(--color-moonlight); color:var(--color-midnight); box-shadow:0 3px 14px rgba(104,210,223,0.40);}
+.btn.secondary{background:transparent; color:var(--color-on-dark); border:1.5px solid rgba(255,255,255,0.30);}
+.btn.ghost{background:transparent; color:var(--color-moonlight); font-weight:700; height:auto; padding:8px;}
+.btn:active{transform:translateY(1px) scale(0.995);}
+.tabbar{
+  flex:none; display:flex; padding:10px 8px 4px;
+  background:rgba(3,22,50,0.55);
+  border-top:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:saturate(160%) blur(12px);
+}
+.tab{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+  background:none; border:none; cursor:pointer; padding:4px 0;
+  color:var(--color-on-dark-sub); font-family:var(--font-brand);}
+.tab span{font-size:11px; font-weight:600;}
+.tab.active{color:var(--color-moonlight);}
+.tab svg{display:block;}
+.statuscard{position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px;}
+.statuscard .info{position:absolute; top:0; right:0; color:var(--color-on-dark-sub);}
+.statuscard .sep{display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.12); width:100%;}
+.glucose{display:flex; align-items:center; justify-content:center; gap:10px;}
+.glucose .num{font-size:84px; font-weight:700; line-height:1; letter-spacing:-0.03em; color:var(--color-on-dark); font-variant-numeric:tabular-nums;}
+.insight{display:flex; gap:14px; align-items:flex-start;}
+.insight .ic{flex:none; margin-top:2px; color:var(--color-moonlight);}
+.flag{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(249,205,134,0.10);
+  border:1px dashed var(--color-warning);
+  border-radius:var(--radius-chip); padding:5px 9px;
+  font-size:10px; font-weight:600; color:var(--color-warning);
+  letter-spacing:0.02em; font-family:var(--font-brand);
+}
+.flag .k{font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.85;}
+.token-flag{
+  display:inline-flex; align-items:baseline; padding:1px 8px; border-radius:5px;
+  background:rgba(249,205,134,0.18); border:1px dashed var(--color-warning);
+  color:var(--color-warning); font-weight:700; font-variant-numeric:tabular-nums;
+  letter-spacing:0.02em;
+}
+.step-badge{display:inline-flex; align-items:center; gap:6px;
+  font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--color-moonlight); margin:0 0 6px;}
+.step-badge .dot{width:4px; height:4px; border-radius:999px; background:var(--color-moonlight);}
+.prog-head{flex:none; padding-top:4px;}
+.prog-row{height:44px; display:flex; align-items:center; padding:0 16px; gap:8px;}
+.prog-row .back{background:none; border:none; padding:0; cursor:pointer; width:24px; height:24px;
+  color:var(--color-moonlight); font-size:26px; line-height:1; display:flex; align-items:center; justify-content:center;}
+.prog-row .title{flex:1; font-size:13px; font-weight:500; color:var(--color-on-dark-sub);}
+.prog-row .count{font-size:12px; font-weight:500; color:var(--color-on-dark-sub); font-variant-numeric:tabular-nums;}
+.prog-bar{margin:0 20px; height:3px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden;}
+.prog-bar > i{display:block; height:100%; background:var(--color-moonlight); border-radius:2px;}
+.conn-row{display:flex; align-items:center; justify-content:space-between;
+  background:rgba(104,210,223,0.08); border:1px solid rgba(104,210,223,0.25);
+  border-radius:12px; padding:13px 14px;}
+.conn-row .lbl{font-size:14px; font-weight:600; color:var(--color-on-dark);}
+.conn-row .stat{display:flex; align-items:center; gap:7px; font-size:12px; font-weight:600;}
+.conn-row .stat .ok{width:8px; height:8px; border-radius:50%; background:var(--color-success-light);
+  box-shadow:0 0 8px rgba(176,249,179,0.6);}
+.conn-row .stat .ok-txt{color:var(--color-success-light);}
+.pad{padding:0 var(--space-sm);}
+.stack{display:flex; flex-direction:column;}
+/* Luna wordmark — small, top-left, on EVERY screen (brand: never stretch/recolor).
+   Dedicated flex-none brand row directly under the status bar, so it never
+   collides with the clock (left of status bar) or the Dynamic-Island cue (center). */
+.brandbar{flex:none; display:flex; align-items:center; padding:0 0 4px 22px;}
+.brandbar .luna-mark{height:15px; width:auto; display:block; opacity:0.95;}
+hr.divider{border:none; border-top:1px solid rgba(255,255,255,0.10); margin:0;}
+
+/* ============================================================
+   HYPO-SHIELD home shared (derived from spine 01-home-dashboard).
+   ============================================================ */
+.statusstrip{display:flex; align-items:center; gap:0; padding:10px 14px;}
+.statusstrip .item{flex:1; display:flex; align-items:center; justify-content:center; gap:7px;}
+.statusstrip .item + .item{border-left:1px solid rgba(255,255,255,0.10);}
+.statusstrip .lbl{display:flex; flex-direction:column; line-height:1.15;}
+.statusstrip .lbl .k{font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--color-on-dark-sub);}
+.statusstrip .lbl .v{font-size:13px; font-weight:700; color:var(--color-on-dark);}
+.statusstrip .lbl .v.ok{color:var(--color-success-light);}
+.gluc-hero{display:flex; flex-direction:column; align-items:center; gap:0;}
+.gluc-hero .glucose .num{font-size:64px;}
+.cgm-hero{position:relative; margin:6px 0 0;}
+.cgm-hero .ylab{font-size:10px; fill:var(--color-on-dark-sub); font-family:var(--font-brand);}
+.cgm-hero .grid{stroke:rgba(255,255,255,0.08); stroke-width:1;}
+.cgm-axis{display:flex; justify-content:space-between; padding:6px 4px 0; }
+.cgm-axis span{font-size:10px; color:var(--color-on-dark-sub); background:none;}
+.cgm-legend{display:inline-flex; align-items:center; gap:6px; font-size:10px;
+  color:var(--color-on-dark-sub); margin-top:8px;}
+.cgm-legend .tick{width:2px; height:11px; border-radius:1px; background:var(--color-moonlight); display:inline-block;}
+
+/* ============================================================
+   SCREEN: home-tip-post — Hypo Shield "TIP POST" (recommendation
+   available). Unmistakably a basal RECOMMENDATION, not an accept
+   control: it announces "a new nightly basal dose is ready",
+   shows the recommended value + direction as decision-support
+   framing (NOT a confirmable control), and the only action is
+   "Review recommendation" which OPENS the two-step confirm sheet.
+   No accept/slider lives here — the read never accepts.
+   (BR: Tip Post recommendation state; §6; §7 reading-never-accepts.)
+   ============================================================ */
+.tip-post{display:flex; flex-direction:column; gap:14px; padding:18px 18px;
+  border:1px solid rgba(104,210,223,0.45); background:rgba(104,210,223,0.07);}
+.tip-post .head{display:flex; align-items:center; gap:10px;}
+.tip-post .moon{flex:none; width:28px; height:28px; border-radius:50%; background:var(--color-midnight); position:relative; overflow:hidden; border:1px solid rgba(104,210,223,0.45);}
+.tip-post .moon::before{content:""; position:absolute; right:-5px; top:4px; width:17px; height:17px; border-radius:50%; background:var(--color-moonlight);}
+.tip-post .moon::after{content:""; position:absolute; right:-1px; top:6px; width:13px; height:13px; border-radius:50%; background:var(--color-midnight);}
+.tip-post .eyebrow{font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--color-moonlight);}
+.tip-post .title{font-size:18px; font-weight:700; line-height:1.3; color:var(--color-on-dark); letter-spacing:-0.01em;}
+.tip-post .recrow{display:flex; align-items:baseline; gap:10px;}
+.tip-post .recrow .num{font-size:40px; font-weight:700; line-height:1; letter-spacing:-0.03em; color:var(--color-on-dark); font-variant-numeric:tabular-nums;}
+.tip-post .recrow .u{font-size:18px; font-weight:700; color:var(--color-on-dark);}
+.tip-post .recrow .dir{display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:var(--radius-chip);
+  background:rgba(104,210,223,0.16); color:var(--color-moonlight); font-size:12px; font-weight:700;}
+.tip-post .prev{font-size:12px; color:var(--color-on-dark-sub);}
+.tip-post .prev s{text-decoration:line-through;}
+.tip-post .rationale{font-size:14px; line-height:1.5; color:var(--color-on-dark-sub);}
+.tip-post .note{display:flex; align-items:center; gap:7px; font-size:11px; color:var(--color-on-dark-sub);}
+.tip-post .note svg{flex:none; color:var(--color-on-dark-sub);}
+.tip-post .btn{margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <!-- status bar -->
+    <div class="statusbar">
+      <span class="clock">9:41</span>
+      <span class="right">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#fff"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#fff"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#fff"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#fff" opacity="0.4"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2.5" stroke="#fff" opacity="0.5"/><rect x="2" y="2.5" width="16" height="7" rx="1.2" fill="#fff"/><rect x="21.5" y="4" width="1.5" height="4" rx="0.75" fill="#fff" opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <!-- Luna wordmark — top-left brand chrome, present on every screen -->
+    <div class="brandbar"><img class="luna-mark" src="../../assets/luna-on-dark.svg" alt="Luna" /></div>
+
+    <!-- content -->
+    <div class="content">
+      <!-- System-status strip leads (matches spine 01) -->
+      <div class="pad" style="padding-top:4px;">
+        <div class="card-dark" style="padding:0;">
+          <div class="statusstrip">
+            <div class="item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B0F9B3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12.5l2 2 4.5-5"/></svg>
+              <span class="lbl"><span class="k">System</span><span class="v ok">Automating</span></span>
+            </div>
+            <div class="item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M9 7h6M9 10h6M9 13h6"/></svg>
+              <span class="lbl"><span class="k">Reservoir</span><span class="v">Full</span></span>
+            </div>
+            <div class="item">
+              <svg width="22" height="14" viewBox="0 0 24 14" fill="none"><rect x="0.5" y="1" width="20" height="12" rx="3" stroke="#68D2DF"/><rect x="2.5" y="3" width="15" height="8" rx="1.5" fill="#68D2DF"/><rect x="21.5" y="5" width="1.8" height="4" rx="0.9" fill="#68D2DF"/></svg>
+              <span class="lbl"><span class="k">Battery</span><span class="v">86%</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Glucose + trend hero header -->
+      <div class="pad gluc-hero" style="margin-top:14px;">
+        <div class="glucose">
+          <span class="num">118</span>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(45deg);" aria-label="Drifting up"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </div>
+        <div class="footnote muted">mg/dL · drifting up overnight</div>
+      </div>
+
+      <!-- Hero CGM graph — same hero, trace drifts up over recent nights -->
+      <div class="pad cgm-hero">
+        <svg viewBox="0 0 340 188" width="100%" height="158" aria-label="Overnight glucose with insulin deliveries">
+          <defs>
+            <linearGradient id="cgmFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#68D2DF" stop-opacity="0.26"/>
+              <stop offset="1" stop-color="#68D2DF" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <line class="grid" x1="0" y1="10"     x2="312" y2="10"/>
+            <line class="grid" x1="0" y1="48.75"  x2="312" y2="48.75"/>
+            <line class="grid" x1="0" y1="87.5"   x2="312" y2="87.5"/>
+            <line class="grid" x1="0" y1="126.25" x2="312" y2="126.25"/>
+            <line class="grid" x1="0" y1="165"    x2="312" y2="165"/>
+            <text class="ylab" x="340" y="13"  text-anchor="end">400</text>
+            <text class="ylab" x="340" y="52"  text-anchor="end">300</text>
+            <text class="ylab" x="340" y="91"  text-anchor="end">200</text>
+            <text class="ylab" x="340" y="129" text-anchor="end">100</text>
+            <text class="ylab" x="340" y="168" text-anchor="end">0</text>
+          </g>
+          <rect x="0" y="95.3" width="312" height="59.1" fill="#68D2DF" opacity="0.08"/>
+          <line x1="0" y1="95.3" x2="312" y2="95.3" stroke="#F9CD86" stroke-width="1" stroke-dasharray="3 4" opacity="0.55"/>
+          <line x1="0" y1="154.4" x2="312" y2="154.4" stroke="#8E3655" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.9"/>
+          <text x="4" y="151.5" text-anchor="start" font-family="var(--font-brand)" font-size="8.5" fill="#8E3655" opacity="0.9">70 low</text>
+          <!-- trace runs ABOVE the upper line at the tail = drifting up -->
+          <path d="M0,120 C40,112 67,104 99,100 S161,92 185,88 224,82 258,80 292,78 312,77"
+                fill="none" stroke="#68D2DF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M0,120 C40,112 67,104 99,100 S161,92 185,88 224,82 258,80 292,78 312,77 L312,165 L0,165 Z" fill="url(#cgmFill)"/>
+          <g stroke="#68D2DF" stroke-width="2" stroke-linecap="round" opacity="0.95">
+            <line x1="129" y1="154" x2="129" y2="164"/>
+            <line x1="175" y1="154" x2="175" y2="164"/><line x1="181" y1="154" x2="181" y2="164"/>
+            <line x1="221" y1="154" x2="221" y2="164"/><line x1="227" y1="154" x2="227" y2="164"/><line x1="233" y1="154" x2="233" y2="164"/><line x1="239" y1="154" x2="239" y2="164"/>
+          </g>
+        </svg>
+        <div class="cgm-axis">
+          <span>10 PM</span><span>11 PM</span><span>12 AM</span><span>1 AM</span><span>2 AM</span><span>3 AM</span><span>4 AM</span>
+        </div>
+        <span class="cgm-legend"><span class="tick"></span>= Luna delivered insulin</span>
+      </div>
+
+      <!-- HYPO SHIELD "TIP POST" — a recommendation is AVAILABLE.
+           This is decision-support framing: it states the recommended
+           value + direction and a one-line rationale, but it is NOT an
+           accept control. The ONLY action is "Review recommendation",
+           which opens the two-step confirm sheet. Reading never accepts. -->
+      <div class="pad" style="margin-top:14px;">
+        <div class="card-dark tip-post">
+          <div class="head">
+            <span class="moon" aria-hidden="true"></span>
+            <span class="eyebrow">Hypo Shield · Recommendation</span>
+          </div>
+          <div class="title">A new nightly basal dose is ready for you to review</div>
+          <div class="recrow">
+            <span class="num">14</span><span class="u">U</span>
+            <span class="dir">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              Increase
+            </span>
+          </div>
+          <div class="prev">Current dose <s>12 U</s></div>
+          <div class="rationale">Your overnight glucose has been drifting up — Luna suggests a bit more of your long-acting basal.</div>
+          <div class="note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+            This is a suggestion only — nothing changes until you review and confirm.
+          </div>
+          <button class="btn primary" type="button">Review recommendation</button>
+        </div>
+      </div>
+
+      <div style="flex:1;"></div>
+    </div>
+
+    <!-- Tab bar (Dashboard active) -->
+    <nav class="tabbar" aria-label="Primary">
+      <button class="tab active" aria-current="page">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2M21 12a9 9 0 1 1-9-9"/></svg>
+        <span>Session History</span>
+      </button>
+      <button class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1l-.4-2.5H10l-.4 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.4 2.5h3.8l.4-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="homebar"></div>
+  </div>
+</div>
+</body>
+</html>

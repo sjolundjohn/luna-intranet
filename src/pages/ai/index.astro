@@ -4,64 +4,173 @@ import Hero from "~/components/Hero.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
 import SectionCard from "~/components/SectionCard.astro";
+import AgentAvatar from "~/components/AgentAvatar.astro";
+import StatusChip from "~/components/StatusChip.astro";
 import { liveAgents } from "~/lib/content";
 
-const agentCount = (await liveAgents()).length;
+// Phase 1: filter "yours" by John's email; Block 6 reads the CF Access email.
+const SIGNED_IN_EMAIL = "john@lunadiabetes.com";
+const all = await liveAgents();
+const myAgents = all.filter(
+  (a) =>
+    a.data.allowedUsers.includes(SIGNED_IN_EMAIL) ||
+    a.data.owner === "john" ||
+    (a.data.usedBy ?? []).includes("john"),
+);
+
+// Phase 1 mock — Block 4 reads from fleet-api.
+const fleetGlance = {
+  agentsHealthy: all.length,
+  agentsTotal: all.length,
+  monthSpendPctOfCap: 32,
+  anomalies24h: 1,
+};
+
+const recentActivity = [
+  { ts: "today, 14:22", text: "Basal · drafted board update reply", href: "/tools/chat" },
+  { ts: "today, 09:14", text: "Workflow morning-briefing ran (success, 13.4s)", href: "/workflows/morning-briefing" },
+  { ts: "yesterday", text: "Pen drafted persona for a new agent", href: "/ai/agents/pen" },
+  { ts: "yesterday", text: "Daily fleet briefing published", href: "/ai/fleet/briefing" },
+];
+
+const briefingPreview = {
+  cadence: "Daily" as const,
+  date: new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }),
+  oneLine:
+    "The fleet shipped 318 invocations across 7 Luna staff this week. Software heaviest user; one workflow retry, no caps tripped.",
+};
 ---
 
 <BaseLayout
   title="AI System"
-  description="The Luna AI workforce — the agents, the fleet that runs them, the platform underneath, and how it's governed."
+  description="The Luna AI workforce — your agents, the fleet that runs them, the platform underneath, and how it's governed."
   heroIsDark={true}
 >
   <Hero eyebrow="Luna · AI System" size="compact" animateMoons={false}>
-    <Fragment slot="headline">
-      The AI workforce.
-    </Fragment>
+    <Fragment slot="headline">The AI workforce.</Fragment>
     <Fragment slot="subcopy">
-      Luna's agents and the system that runs them — who they are, what they're
-      doing right now, the platform underneath, and the rules that keep them
-      scoped and stoppable.
+      Luna's agents and the system that runs them — your agents up top, then
+      the catalog, the fleet, the platform underneath, and the rules that
+      keep it scoped and stoppable.
     </Fragment>
   </Hero>
 
-  <WhiteSection size="tall">
-    <div class="max-w-[760px] mb-10">
-      <p class="eyebrow mb-3">{agentCount} agents live</p>
-      <h2
-        class="font-display text-ink font-normal"
-        style="font-size: clamp(28px, 3.6vw, 38px); line-height: 1.05; letter-spacing: -0.02em;"
-      >
-        Four ways in.
+  {/* Your agents */}
+  <WhiteSection size="compact">
+    <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
+      <div>
+        <p class="eyebrow mb-2">Your agents</p>
+        <h2 class="font-body text-ink font-bold text-[24px] leading-tight">
+          {myAgents.length} agents available to you
+        </h2>
+      </div>
+      <div class="flex gap-3">
+        <a href="/ai/agents/me" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border-default text-ink font-body text-[13px] font-medium hover:border-ink transition-colors">Configure</a>
+        <a href="/ai/agents/new" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-midnight text-white font-body text-[13px] font-medium hover:bg-midnight-deep transition-colors">Request new</a>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {
+        myAgents.map((a) => (
+          <article class="bg-white border border-border-subtle rounded-[16px] p-5 transition-shadow hover:shadow-[0_8px_32px_rgba(4,30,66,0.06)]">
+            <div class="flex items-start gap-3">
+              <AgentAvatar slug={a.id} name={a.data.name} size={40} src={a.data.avatar} />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-body text-[16px] font-semibold text-ink leading-tight">{a.data.name}</h3>
+                  <StatusChip status={a.data.status} />
+                </div>
+                <p class="mt-1 text-slate text-[13px] line-clamp-2">{a.data.summary}</p>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+              <a href={`/tools/chat?agent=${a.id}`} class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-midnight text-white text-[12px] font-semibold hover:bg-midnight-deep transition-colors">Chat</a>
+              <a href={`/ai/agents/${a.id}`} class="text-graphite text-[12px] hover:text-ink transition-colors">About</a>
+              <a href={`/ai/agents/me#${a.id}`} class="text-graphite text-[12px] hover:text-ink transition-colors ml-auto">Configure</a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </WhiteSection>
+
+  {/* Today's briefing + fleet at a glance */}
+  <WhiteSection size="compact">
+    <div class="grid md:grid-cols-[1.5fr_1fr] gap-6 md:gap-8 items-stretch">
+      <a href="/ai/fleet/briefing" class="group bg-midnight text-white rounded-[20px] p-6 md:p-8 flex flex-col justify-between transition-shadow hover:shadow-[0_12px_40px_rgba(4,30,66,0.18)]">
+        <div>
+          <p class="eyebrow eyebrow-on-dark mb-3">{briefingPreview.cadence} fleet briefing</p>
+          <p class="font-display text-white font-normal text-[28px] md:text-[32px] leading-[1.1]">{briefingPreview.date}</p>
+          <p class="mt-4 text-white/72 text-[15px] leading-[1.55] max-w-[44ch]">{briefingPreview.oneLine}</p>
+        </div>
+        <div class="mt-6 inline-flex items-center gap-3 text-moonlight font-body text-[14px] font-medium">
+          <span>Read</span><span class="text-white/30">·</span><span>Listen</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ml-1 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+        </div>
+      </a>
+
+      <a href="/ai/fleet" class="group bg-white border border-border-subtle rounded-[20px] p-6 md:p-8 flex flex-col justify-between transition-all hover:border-ink hover:shadow-[0_8px_32px_rgba(4,30,66,0.08)]">
+        <div>
+          <p class="eyebrow mb-3">Fleet at a glance</p>
+          <dl class="grid grid-cols-3 gap-3">
+            <div>
+              <dt class="text-slate text-[11px] uppercase tracking-[0.06em]">Healthy</dt>
+              <dd class="text-ink font-mono tabular-nums text-[24px] mt-1">{fleetGlance.agentsHealthy}<span class="text-slate text-[16px]">/{fleetGlance.agentsTotal}</span></dd>
+            </div>
+            <div>
+              <dt class="text-slate text-[11px] uppercase tracking-[0.06em]">Spend</dt>
+              <dd class="text-ink font-mono tabular-nums text-[24px] mt-1">{fleetGlance.monthSpendPctOfCap}<span class="text-slate text-[14px]">%</span></dd>
+            </div>
+            <div>
+              <dt class="text-slate text-[11px] uppercase tracking-[0.06em]">Anomalies</dt>
+              <dd class="text-ink font-mono tabular-nums text-[24px] mt-1">{fleetGlance.anomalies24h}</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="mt-6 inline-flex items-center gap-2 text-ink font-body text-[14px] font-medium">
+          <span>See the fleet</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-0.5 transition-transform" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+        </div>
+      </a>
+    </div>
+  </WhiteSection>
+
+  {/* Recent activity */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="mb-5">
+      <p class="eyebrow mb-2">Recent activity</p>
+      <h2 class="font-body text-ink font-bold text-[20px]">Across your agents and workflows</h2>
+    </div>
+    <ul class="bg-white border border-border-subtle rounded-[16px] divide-y divide-border-subtle overflow-hidden">
+      {
+        recentActivity.map((row) => (
+          <li>
+            <a href={row.href} class="flex items-center gap-4 px-5 py-3 hover:bg-soft-paper transition-colors">
+              <span class="text-slate font-mono text-[12px] tabular-nums whitespace-nowrap min-w-[110px]">{row.ts}</span>
+              <span class="text-ink text-[14px] flex-1">{row.text}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="text-slate flex-shrink-0" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </WhiteSection>
+
+  {/* Explore the AI system */}
+  <WhiteSection size="tall" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Explore</p>
+      <h2 class="font-display text-ink font-normal" style="font-size: clamp(24px, 3vw, 32px); line-height: 1.05; letter-spacing: -0.02em;">
+        Go deeper.
       </h2>
       <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
     </div>
-
     <div class="grid gap-6 md:gap-7 md:grid-cols-2 auto-rows-fr">
-      <SectionCard
-        href="/ai/agents"
-        eyebrow="01 · Agents"
-        title="The catalog."
-        description="Every live agent on the workforce — who it's for, what it does, and how it's scoped. Configure yours, or request a new one."
-      />
-      <SectionCard
-        href="/ai/fleet"
-        eyebrow="02 · Fleet"
-        title="What's running."
-        description="Live status across the fleet: invocations, unique users, cost, and health — by team, by owner, or flat. Plus today's briefing."
-      />
-      <SectionCard
-        href="/ai/platform"
-        eyebrow="03 · Platform"
-        title="Under the hood."
-        description="The Cloudflare-native plumbing — tech stack, request flow, and architecture — that makes the agents and tools possible."
-      />
-      <SectionCard
-        href="/ai/governance"
-        eyebrow="04 · Governance"
-        title="Scoped and stopped."
-        description="Roles, permissions, kill-switches, audit log, cost caps, PHI scope, and change control — written down because trust compounds."
-      />
+      <SectionCard href="/ai/agents" eyebrow="Agents" title="The catalog." description="Every live agent — who it's for, what it does, how it's scoped. Configure yours, or request a new one." />
+      <SectionCard href="/ai/fleet" eyebrow="Fleet" title="What's running." description="Live status across the fleet: invocations, unique users, cost, and health — by team, by owner, or flat. Plus today's briefing." />
+      <SectionCard href="/ai/platform" eyebrow="Platform" title="Under the hood." description="The Cloudflare-native plumbing — tech stack, request flow, and architecture — that makes the agents and tools possible." />
+      <SectionCard href="/ai/governance" eyebrow="Governance" title="Scoped and stopped." description="Roles, permissions, kill-switches, audit log, cost caps, PHI scope, and change control — written down because trust compounds." />
     </div>
   </WhiteSection>
 </BaseLayout>

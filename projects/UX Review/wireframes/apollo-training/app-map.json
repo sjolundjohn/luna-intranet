@@ -1,0 +1,154 @@
+[
+  {
+    "id": "intro",
+    "title": "Intro \u2014 first session setup",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "intro.html"
+  },
+  {
+    "id": "step-01-inventory",
+    "title": "Step 01 \u2014 Inventory",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-01-inventory.html"
+  },
+  {
+    "id": "step-02-open-tray",
+    "title": "Step 02 \u2014 Open tray",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-02-open-tray.html"
+  },
+  {
+    "id": "step-03-fill",
+    "title": "Step 03 \u2014 Fill reservoir",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-03-fill.html"
+  },
+  {
+    "id": "step-04-remove-label",
+    "title": "Step 04 \u2014 Remove label",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-04-remove-label.html"
+  },
+  {
+    "id": "step-05-attach-capsule",
+    "title": "Step 05 \u2014 Attach capsule",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-05-attach-capsule.html"
+  },
+  {
+    "id": "step-06-remove-base",
+    "title": "Step 06 \u2014 Remove from base",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-06-remove-base.html"
+  },
+  {
+    "id": "step-07-apply-body",
+    "title": "Step 07 \u2014 Apply to body",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-07-apply-body.html"
+  },
+  {
+    "id": "hardware-checkpoint",
+    "title": "Hardware checkpoint",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "hardware-checkpoint.html"
+  },
+  {
+    "id": "evening-outro",
+    "title": "Evening outro \u2014 personal video",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "evening-outro.html"
+  },
+  {
+    "id": "overnight-handoff",
+    "title": "Overnight handoff \u2014 Luna active",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "overnight-handoff.html"
+  },
+  {
+    "id": "morning-start",
+    "title": "Morning start",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "morning-start.html"
+  },
+  {
+    "id": "step-08-remove-device",
+    "title": "Step 08 \u2014 Remove device",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-08-remove-device.html"
+  },
+  {
+    "id": "step-09-detach-reservoir",
+    "title": "Step 09 \u2014 Detach reservoir",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-09-detach-reservoir.html"
+  },
+  {
+    "id": "step-10-charge",
+    "title": "Step 10 \u2014 Charge controller",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "step-10-charge.html"
+  },
+  {
+    "id": "morning-outro",
+    "title": "Morning outro \u2014 personal video",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "morning-outro.html"
+  },
+  {
+    "id": "complete",
+    "title": "Complete",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "complete.html"
+  },
+  {
+    "id": "mid-session-resume",
+    "title": "Mid-session resume \u2014 clean step boundary",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "mid-session-resume.html"
+  },
+  {
+    "id": "replay-from-settings",
+    "title": "Replay from Settings \u2014 Training Guide (BR-B6)",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "replay-from-settings.html"
+  }
+]

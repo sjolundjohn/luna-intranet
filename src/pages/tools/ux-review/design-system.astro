@@ -1,0 +1,269 @@
+---
+import "~/styles/ios-tokens.css";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import CTAButton from "~/components/CTAButton.astro";
+import StatusCard from "~/components/ux/ios/StatusCard.astro";
+import GlucoseDisplay from "~/components/ux/ios/GlucoseDisplay.astro";
+import InsightCard from "~/components/ux/ios/InsightCard.astro";
+import ListRows from "~/components/ux/ios/ListRows.astro";
+import CalendarStrip from "~/components/ux/ios/CalendarStrip.astro";
+import TabBar from "~/components/ux/ios/TabBar.astro";
+import Toast from "~/components/ux/ios/Toast.astro";
+import IosButton from "~/components/ux/ios/IosButton.astro";
+import DoseSheet from "~/components/ux/ios/DoseSheet.astro";
+
+// ── Foundations data (canonical values mirror src/styles/ios-tokens.css) ──
+const colorGroups = [
+  {
+    label: "Primary",
+    swatches: [
+      { name: "Midnight", hex: "#041E42", v: "--color-midnight" },
+      { name: "Moonlight", hex: "#68D2DF", v: "--color-moonlight" },
+      { name: "White", hex: "#FFFFFF", v: "--color-white" },
+    ],
+  },
+  {
+    label: "Moonlight tints",
+    swatches: [
+      { name: "Moonlight Deep", hex: "#0A9AAE", v: "--color-moonlight-deep" },
+      { name: "Moonlight Ice", hex: "#C9F8FE", v: "--color-moonlight-ice" },
+      { name: "Moonlight Tint", hex: "#E8FCFF", v: "--color-moonlight-tint" },
+    ],
+  },
+  {
+    label: "Neutrals",
+    swatches: [
+      { name: "Soft Paper", hex: "#FBFDFE", v: "--color-soft-paper" },
+      { name: "Cloud Lilac", hex: "#F2F3FA", v: "--color-cloud-lilac" },
+      { name: "Periwinkle Mist", hex: "#E7EBF8", v: "--color-periwinkle-mist" },
+      { name: "Pebble Blue", hex: "#BAC6D9", v: "--color-pebble-blue" },
+      { name: "Lunar Lavender", hex: "#D6D3E9", v: "--color-lunar-lavender" },
+    ],
+  },
+  {
+    label: "Text & ink",
+    swatches: [
+      { name: "Ink", hex: "#041E42", v: "--color-ink" },
+      { name: "Graphite", hex: "#535D65", v: "--color-text-2" },
+      { name: "Slate", hex: "#7A8892", v: "--color-text-3" },
+      { name: "On-Dark Sub", hex: "#ACC1DF", v: "--color-on-dark-sub" },
+    ],
+  },
+  {
+    label: "Status (pair with an icon — never colour alone)",
+    swatches: [
+      { name: "Success", hex: "#2E7D32", v: "--color-success" },
+      { name: "Info", hex: "#68D2DF", v: "--color-info" },
+      { name: "Warning", hex: "#F9CD86", v: "--color-warning" },
+      { name: "Critical (Plum)", hex: "#8E3655", v: "--color-critical" },
+    ],
+  },
+];
+
+const typeScale = [
+  { cls: "large-title", name: "Large Title", spec: "34 · 400 · 1.12" },
+  { cls: "title-1", name: "Title 1", spec: "28 · 400 · 1.18" },
+  { cls: "title-2", name: "Title 2", spec: "22 · 400 · 1.25" },
+  { cls: "title-3", name: "Title 3", spec: "20 · 400 · 1.3" },
+  { cls: "headline", name: "Headline", spec: "17 · 600 · 1.4" },
+  { cls: "body", name: "Body", spec: "17 · 400 · 1.5" },
+  { cls: "callout", name: "Callout", spec: "16 · 400 · 1.45" },
+  { cls: "subhead", name: "Subhead", spec: "15 · 400 · 1.45" },
+  { cls: "footnote", name: "Footnote", spec: "13 · 400 · 1.4" },
+  { cls: "caption-1", name: "Caption 1", spec: "12 · 400 · 1.35" },
+  { cls: "caption-2", name: "Caption 2", spec: "11 · 400 · 1.3" },
+];
+
+const spacing = [
+  { name: "xxs", px: 4 }, { name: "xs", px: 8 }, { name: "sm", px: 16 },
+  { name: "md", px: 24 }, { name: "lg", px: 32 }, { name: "xl", px: 48 }, { name: "xxl", px: 56 },
+];
+
+const radii = [
+  { name: "chip", px: 8 }, { name: "input", px: 12 }, { name: "card", px: 20 },
+  { name: "modal", px: 28 }, { name: "pill", px: 40, note: "999" },
+];
+
+const shadows = [
+  { name: "raised", css: "0 2px 8px rgba(4,30,66,0.05)" },
+  { name: "card", css: "0 4px 16px rgba(4,30,66,0.06)" },
+  { name: "modal", css: "0 -8px 40px rgba(4,30,66,0.16)" },
+  { name: "toast", css: "0 8px 24px rgba(4,30,66,0.24)" },
+];
+---
+
+<BaseLayout
+  title="Design System · UX Review"
+  description="The Luna iOS app design system — tokens and components, in one place for engineering."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · UX Review" size="compact" animateMoons={false}>
+    <Fragment slot="headline">The Luna iOS design system.</Fragment>
+    <Fragment slot="subcopy">
+      Foundations and components for the Luna iOS app, in one place — the same
+      tokens and parts the wireframes are built from. Built for engineering to
+      reference and reuse.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="compact">
+    <div class="mb-8 flex items-center justify-between gap-4 flex-wrap">
+      <CTAButton href="/tools/ux-review" variant="ghost">← UX Review</CTAButton>
+      <p class="text-slate text-[12px] max-w-[52ch] text-right">
+        Tokens: <span class="font-mono">src/styles/ios-tokens.css</span> (scoped to <span class="font-mono">.ux-ios</span>) ·
+        components: <span class="font-mono">src/components/ux/ios/</span>
+      </p>
+    </div>
+
+    {/* ── Color ── */}
+    <section class="ds-section">
+      <p class="eyebrow mb-2">Foundations</p>
+      <h2 class="ds-h2">Color</h2>
+      <div class="mt-4 mb-7"><MoonlightRule width={40} color="midnight" /></div>
+      <div class="flex flex-col gap-7">
+        {colorGroups.map((g) => (
+          <div>
+            <p class="ds-grouplabel">{g.label}</p>
+            <div class="grid gap-3 mt-3" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+              {g.swatches.map((s) => (
+                <div class="ds-swatch">
+                  <span class="ds-chip" style={`background:${s.hex}`}></span>
+                  <div class="min-w-0">
+                    <p class="text-ink text-[13px] font-semibold leading-tight">{s.name}</p>
+                    <p class="text-slate text-[11px] font-mono">{s.hex}</p>
+                    <p class="text-slate text-[10px] font-mono truncate">{s.v}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* ── Type ── */}
+    <section class="ds-section ux-ios">
+      <p class="eyebrow mb-2">Foundations</p>
+      <h2 class="ds-h2">Type — D-DIN, iOS HIG scale</h2>
+      <div class="mt-4 mb-7"><MoonlightRule width={40} color="midnight" /></div>
+      <div class="flex flex-col divide-y divide-border-subtle">
+        {typeScale.map((t) => (
+          <div class="flex items-baseline justify-between gap-6 py-3">
+            <span class={t.cls} style="color: var(--color-ink);">The quick brown fox</span>
+            <span class="flex-shrink-0 text-right">
+              <span class="block text-ink text-[12px] font-semibold" style="font-family: var(--font-body, system-ui);">{t.name}</span>
+              <span class="block text-slate text-[11px] font-mono">{t.spec}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+      <p class="text-slate text-[11px] mt-3 font-mono">size · weight · line-height — use the class names directly, e.g. <span class="text-ink">.title-1</span></p>
+    </section>
+
+    {/* ── Spacing / Radii / Elevation ── */}
+    <section class="ds-section">
+      <p class="eyebrow mb-2">Foundations</p>
+      <h2 class="ds-h2">Spacing, radii &amp; elevation</h2>
+      <div class="mt-4 mb-7"><MoonlightRule width={40} color="midnight" /></div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <div>
+          <p class="ds-grouplabel mb-3">Spacing · 8pt base</p>
+          <div class="flex flex-col gap-2">
+            {spacing.map((s) => (
+              <div class="flex items-center gap-3">
+                <span class="h-[14px] rounded-[2px]" style={`width:${s.px}px; background: var(--color-moonlight, #68D2DF);`}></span>
+                <span class="text-ink text-[12px] font-mono">{s.name} · {s.px}px</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="ds-grouplabel mb-3">Radii</p>
+          <div class="flex flex-wrap gap-4">
+            {radii.map((r) => (
+              <div class="text-center">
+                <div class="w-[64px] h-[64px] bg-white border border-border-strong" style={`border-radius:${r.px}px`}></div>
+                <p class="text-ink text-[11px] font-mono mt-2">{r.name}</p>
+                <p class="text-slate text-[10px] font-mono">{r.note ?? r.px}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="ds-grouplabel mb-3">Elevation</p>
+          <div class="flex flex-wrap gap-5">
+            {shadows.map((sh) => (
+              <div class="text-center">
+                <div class="w-[72px] h-[56px] bg-white rounded-[12px]" style={`box-shadow:${sh.css}`}></div>
+                <p class="text-ink text-[11px] font-mono mt-3">{sh.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Components ── */}
+    <section class="ds-section">
+      <p class="eyebrow mb-2">Components</p>
+      <h2 class="ds-h2">The component kit</h2>
+      <div class="mt-4 mb-7"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="text-graphite text-[15px] leading-[1.55] max-w-[60ch] mb-7">
+        Live components — each name matches its <span class="font-mono text-[13px]">.astro</span>
+        component and its Figma layer. One source of truth from review to build.
+      </p>
+
+      <div class="ux-ios grid gap-5" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
+        <div class="ds-comp"><p class="ds-comp-name">Status Card</p><StatusCard /></div>
+        <div class="ds-comp"><p class="ds-comp-name">Glucose Display</p><GlucoseDisplay /></div>
+        <div class="ds-comp"><p class="ds-comp-name">Insight / Action Card</p><InsightCard /></div>
+        <div class="ds-comp"><p class="ds-comp-name">List Rows</p><ListRows /></div>
+        <div class="ds-comp"><p class="ds-comp-name">Calendar Strip</p><CalendarStrip /></div>
+        <div class="ds-comp"><p class="ds-comp-name">Tab Bar</p><TabBar active="dashboard" /></div>
+        <div class="ds-comp"><p class="ds-comp-name">Toast</p><div style="padding: 24px 0;"><Toast /></div></div>
+        <div class="ds-comp"><p class="ds-comp-name">Buttons</p>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <IosButton variant="primary" label="Start session" />
+            <IosButton variant="secondary" label="Not now" />
+            <IosButton variant="link" label="Skip and set up later" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Dose component (featured) ── */}
+    <section class="ds-section">
+      <p class="eyebrow mb-2">Safety-critical · featured</p>
+      <h2 class="ds-h2">Two-Step Dose-Confirmation</h2>
+      <div class="mt-4 mb-7"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="text-graphite text-[15px] leading-[1.55] max-w-[64ch] mb-7">
+        The canonical confirmation for any dose recommendation: acknowledge
+        <strong> both</strong> required actions (update the Luna setting <em>and</em>
+        take the dose), then slide to confirm. Try it — the slider unlocks only
+        once both are checked.
+      </p>
+      <div class="ux-ios" style="max-width: 440px;">
+        <div style="background: var(--color-cloud-lilac); border-radius: 28px; padding-top: 24px;">
+          <DoseSheet variant="increase" />
+        </div>
+      </div>
+    </section>
+  </WhiteSection>
+</BaseLayout>
+
+<style>
+  .ds-section { padding: 8px 0 44px; border-bottom: 1px solid var(--color-border-subtle); margin-bottom: 44px; }
+  .ds-section:last-of-type { border-bottom: none; margin-bottom: 0; }
+  .ds-h2 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; color: var(--color-ink); font-size: clamp(24px, 3vw, 32px); line-height: 1.05; }
+  .ds-grouplabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-slate); }
+  .ds-swatch { display: flex; align-items: center; gap: 12px; }
+  .ds-chip { flex: none; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--color-border-subtle); box-shadow: inset 0 0 0 1px rgba(4,30,66,0.04); }
+  .ds-comp { background: var(--color-cloud-lilac, #F2F3FA); border: 1px solid var(--color-border-subtle); border-radius: 16px; padding: 18px; }
+  .ds-comp-name { font-family: var(--font-body); font-size: 12px; font-weight: 700; color: var(--color-slate); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+</style>

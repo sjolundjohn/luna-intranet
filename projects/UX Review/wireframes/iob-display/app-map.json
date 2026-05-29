@@ -1,0 +1,34 @@
+[
+  {
+    "id": "iob-home-on",
+    "title": "Home dashboard — IOB Display enabled (active-insulin row visible)",
+    "status": "Changed",
+    "feature": "IOB Display",
+    "brdTier": "must",
+    "wireframe": "home-iob-on.html"
+  },
+  {
+    "id": "iob-pre-session-announcement",
+    "title": "Pre-session IOB announcement — Insight Card + opt-in acknowledgement",
+    "status": "Changed",
+    "feature": "IOB Display",
+    "brdTier": "must",
+    "wireframe": "pre-session-iob-announcement.html"
+  },
+  {
+    "id": "iob-settings",
+    "title": "Settings — IOB Display toggle (default OFF) + plain-language explanation",
+    "status": "Changed",
+    "feature": "IOB Display",
+    "brdTier": "must",
+    "wireframe": "settings-iob.html"
+  },
+  {
+    "id": "iob-session-detail",
+    "title": "Session History detail — residual Luna IOB after a session (0.1 U)",
+    "status": "Changed",
+    "feature": "IOB Display",
+    "brdTier": "should",
+    "wireframe": "session-detail-iob.html"
+  }
+]

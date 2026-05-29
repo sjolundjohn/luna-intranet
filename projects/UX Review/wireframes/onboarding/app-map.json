@@ -1,0 +1,98 @@
+[
+  {
+    "id": "onb-ch1-frame",
+    "title": "Chapter 1 — What Luna is",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "chapter-1-frame.html"
+  },
+  {
+    "id": "onb-ch2-routine",
+    "title": "Chapter 2 — Tell Luna your routine (TDBD capture)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "chapter-2-routine.html"
+  },
+  {
+    "id": "onb-ch3-pair-luna",
+    "title": "Chapter 3 — Pair Luna Capsule (BLE)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "chapter-3-pair-luna.html"
+  },
+  {
+    "id": "onb-ch4-pair-cgm",
+    "title": "Chapter 4 — Pair CGM (Dexcom G7)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "chapter-4-pair-cgm.html"
+  },
+  {
+    "id": "onb-ch5-handoff",
+    "title": "Chapter 5 — Handoff to Apollo Training (coordinator closeout)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "chapter-5-handoff.html"
+  },
+  {
+    "id": "onb-setup-landing",
+    "title": "Setup Landing (none / Luna complete / all)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "setup-landing.html"
+  },
+  {
+    "id": "onb-ui-walkthrough",
+    "title": "UI Walkthrough (1 of 5; reads as one onboarding with Apollo)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "should",
+    "wireframe": "ui-walkthrough.html"
+  },
+  {
+    "id": "onb-tonight-panel-states",
+    "title": "Tonight Panel — fill states across the arc (review aid)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "reference",
+    "wireframe": "tonight-panel-states.html"
+  },
+  {
+    "id": "onb-setup-app-walkthrough",
+    "title": "Setup App Walkthrough (1–5 + Done)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "setup-app-walkthrough.html"
+  },
+  {
+    "id": "onb-session-history-intro",
+    "title": "Session History Intro (first-run, 1–4)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "session-history-intro.html"
+  },
+  {
+    "id": "onb-long-acting-insulin",
+    "title": "Long-acting insulin (plain capture)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "long-acting-insulin.html"
+  },
+  {
+    "id": "onb-settings-luna-controller",
+    "title": "Settings — Luna Controller (device management)",
+    "status": "wireframe",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "settings-luna-controller.html"
+  }
+]

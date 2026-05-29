@@ -1,0 +1,501 @@
+[
+  {
+    "id": "home-dashboard",
+    "title": "Home Dashboard",
+    "status": "Changed",
+    "feature": "Home",
+    "brdTier": "P0",
+    "wireframe": "wireframes/_spine/01-home-dashboard.html",
+    "legacy": "wireframes/legacy/home-dashboard.jpg",
+    "summary": "Spine core archetype: current glucose, system/reservoir/battery status, and the nightly insight card."
+  },
+  {
+    "id": "settings-list",
+    "title": "Settings",
+    "status": "Changed",
+    "feature": "Settings",
+    "brdTier": "None",
+    "wireframe": "wireframes/_spine/05-settings-list.html",
+    "legacy": "wireframes/legacy/settings-list.jpg",
+    "summary": "Spine core archetype: account and care configuration list; menu re-skin with new sub-screens."
+  },
+  {
+    "id": "session-history",
+    "title": "Session History",
+    "status": "Changed",
+    "feature": "History",
+    "brdTier": "Lean",
+    "wireframe": "wireframes/_spine/07-session-history.html",
+    "legacy": "wireframes/legacy/session-history.jpg",
+    "summary": "Spine core archetype: week strip plus per-night session rows with time-in-range."
+  },
+  {
+    "id": "hardware-checkpoint-spine",
+    "title": "Hardware Checkpoint",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/_spine/04-hardware-checkpoint.html",
+    "legacy": "wireframes/legacy/hardware-checkpoint.jpg",
+    "summary": "Spine core archetype: hardware-state gate before proceeding in a training step."
+  },
+  {
+    "id": "dose-confirmation-spine",
+    "title": "Dose Confirmation",
+    "status": "New",
+    "feature": "Basal Guidance",
+    "brdTier": "Full",
+    "wireframe": "wireframes/_spine/03-dose-confirmation.html",
+    "legacy": null,
+    "summary": "Spine core archetype: two-step safety-critical confirmation, acknowledge then slide to confirm."
+  },
+
+  {
+    "id": "apollo-intro",
+    "title": "Intro — first session setup",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/intro.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-01-inventory",
+    "title": "Step 01 — Inventory",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-01-inventory.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-02-open-tray",
+    "title": "Step 02 — Open tray",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-02-open-tray.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-03-fill",
+    "title": "Step 03 — Fill reservoir",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-03-fill.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-04-remove-label",
+    "title": "Step 04 — Remove label",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-04-remove-label.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-05-attach-capsule",
+    "title": "Step 05 — Attach capsule",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-05-attach-capsule.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-06-remove-base",
+    "title": "Step 06 — Remove from base",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-06-remove-base.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-07-apply-body",
+    "title": "Step 07 — Apply to body",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-07-apply-body.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-hardware-checkpoint",
+    "title": "Hardware checkpoint",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/hardware-checkpoint.html",
+    "legacy": "wireframes/legacy/hardware-checkpoint.jpg"
+  },
+  {
+    "id": "apollo-evening-outro",
+    "title": "Evening outro — personal video",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/evening-outro.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-overnight-handoff",
+    "title": "Overnight handoff — Luna active",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/overnight-handoff.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-morning-start",
+    "title": "Morning start",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/morning-start.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-08-remove-device",
+    "title": "Step 08 — Remove device",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-08-remove-device.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-09-detach-reservoir",
+    "title": "Step 09 — Detach reservoir",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-09-detach-reservoir.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-10-charge",
+    "title": "Step 10 — Charge controller",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/step-10-charge.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-morning-outro",
+    "title": "Morning outro — personal video",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/morning-outro.html",
+    "legacy": null
+  },
+  {
+    "id": "apollo-complete",
+    "title": "Complete",
+    "status": "Changed",
+    "feature": "Training Update Apollo",
+    "brdTier": "Full",
+    "wireframe": "wireframes/apollo-training/complete.html",
+    "legacy": null
+  },
+
+  {
+    "id": "home-tip-default",
+    "title": "Home — Default Tip",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/home-tip-default.html",
+    "legacy": "wireframes/legacy/home-dashboard.jpg"
+  },
+  {
+    "id": "home-tip-post",
+    "title": "Home — Tip Post (recommendation)",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/home-tip-post.html",
+    "legacy": "wireframes/legacy/home-dashboard.jpg"
+  },
+  {
+    "id": "learning-state",
+    "title": "Learning State & Dosing Mode",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/learning-state.html",
+    "legacy": null
+  },
+  {
+    "id": "mid-session-announcement",
+    "title": "Mid-Session Dose Announcement",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/mid-session-announcement.html",
+    "legacy": null
+  },
+  {
+    "id": "confirm-increase",
+    "title": "Confirm Amount — Increase (two-part)",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/confirm-increase.html",
+    "legacy": null
+  },
+  {
+    "id": "confirm-reset-required",
+    "title": "Confirm Amount — Reset Required",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/confirm-reset-required.html",
+    "legacy": null
+  },
+  {
+    "id": "confirm-skip",
+    "title": "Confirm Skip (decline / defer)",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/confirm-skip.html",
+    "legacy": null
+  },
+  {
+    "id": "settings-hypo-shield",
+    "title": "Settings — Hypo Shield",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/settings-hypo-shield.html",
+    "legacy": "wireframes/legacy/settings-root.jpg"
+  },
+  {
+    "id": "tdbd-detail",
+    "title": "TDBD Detail (current value, learning, history)",
+    "status": "Changed",
+    "feature": "HypoShield & In-App Comms",
+    "brdTier": "Full",
+    "wireframe": "wireframes/hypo-shield/tdbd-detail.html",
+    "legacy": null
+  },
+
+  {
+    "id": "onb-ch1-frame",
+    "title": "Chapter 1 — What Luna is",
+    "status": "Changed",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "wireframes/onboarding/chapter-1-frame.html",
+    "legacy": null
+  },
+  {
+    "id": "onb-ch2-routine",
+    "title": "Chapter 2 — Tell Luna your routine (TDBD capture)",
+    "status": "Changed",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "wireframes/onboarding/chapter-2-routine.html",
+    "legacy": null
+  },
+  {
+    "id": "onb-ch3-pair-luna",
+    "title": "Chapter 3 — Pair Luna Capsule (BLE)",
+    "status": "Changed",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "wireframes/onboarding/chapter-3-pair-luna.html",
+    "legacy": "wireframes/legacy/pair-luna-failures.jpg"
+  },
+  {
+    "id": "onb-ch4-pair-cgm",
+    "title": "Chapter 4 — Pair CGM (Dexcom G7)",
+    "status": "Changed",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "wireframes/onboarding/chapter-4-pair-cgm.html",
+    "legacy": null
+  },
+  {
+    "id": "onb-ch5-handoff",
+    "title": "Chapter 5 — Handoff to Apollo Training (coordinator closeout)",
+    "status": "Changed",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "wireframes/onboarding/chapter-5-handoff.html",
+    "legacy": null
+  },
+  {
+    "id": "onb-setup-landing",
+    "title": "Setup Landing (none / Luna complete / all)",
+    "status": "Changed",
+    "feature": "Onboarding Update",
+    "brdTier": "must",
+    "wireframe": "wireframes/onboarding/setup-landing.html",
+    "legacy": null
+  },
+  {
+    "id": "onb-ui-walkthrough",
+    "title": "UI Walkthrough (1 of 5; reads as one onboarding with Apollo)",
+    "status": "Changed",
+    "feature": "Onboarding Update",
+    "brdTier": "should",
+    "wireframe": "wireframes/onboarding/ui-walkthrough.html",
+    "legacy": null
+  },
+  {
+    "id": "onb-tonight-panel-states",
+    "title": "Tonight Panel — fill states across the arc (review aid)",
+    "status": "Changed",
+    "feature": "Onboarding Update",
+    "brdTier": "reference",
+    "wireframe": "wireframes/onboarding/tonight-panel-states.html",
+    "legacy": null
+  },
+
+  {
+    "id": "iob-home-on",
+    "title": "Home dashboard — IOB Display enabled (active-insulin row visible)",
+    "status": "Changed",
+    "feature": "IOB Display",
+    "brdTier": "must",
+    "wireframe": "wireframes/iob-display/home-iob-on.html",
+    "legacy": "wireframes/legacy/home-dashboard.jpg"
+  },
+  {
+    "id": "iob-pre-session-announcement",
+    "title": "Pre-session IOB announcement — Insight Card + opt-in acknowledgement",
+    "status": "Changed",
+    "feature": "IOB Display",
+    "brdTier": "must",
+    "wireframe": "wireframes/iob-display/pre-session-iob-announcement.html",
+    "legacy": null
+  },
+  {
+    "id": "iob-settings",
+    "title": "Settings — IOB Display toggle (default OFF) + plain-language explanation",
+    "status": "Changed",
+    "feature": "IOB Display",
+    "brdTier": "must",
+    "wireframe": "wireframes/iob-display/settings-iob.html",
+    "legacy": "wireframes/legacy/settings-root.jpg"
+  },
+  {
+    "id": "iob-session-detail",
+    "title": "Session History detail — residual Luna IOB after a session (0.1 U)",
+    "status": "Changed",
+    "feature": "IOB Display",
+    "brdTier": "should",
+    "wireframe": "wireframes/iob-display/session-detail-iob.html",
+    "legacy": "wireframes/legacy/session-history-swipe.jpg"
+  },
+
+  {
+    "id": "unchanged-post-session-load",
+    "title": "Post-session Load states 1-4",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": "wireframes/legacy/post-session-load.jpg",
+    "legacy": "wireframes/legacy/post-session-load.jpg"
+  },
+  {
+    "id": "unchanged-default-return",
+    "title": "Default-from-notification / Default-return",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": "wireframes/legacy/default-return.jpg",
+    "legacy": "wireframes/legacy/default-return.jpg"
+  },
+  {
+    "id": "unchanged-get-to-know-legend",
+    "title": "Get to Know / Legend Slide-Up",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": "wireframes/legacy/get-to-know-legend.jpg",
+    "legacy": "wireframes/legacy/get-to-know-legend.jpg"
+  },
+  {
+    "id": "unchanged-pair-luna-failures",
+    "title": "Pair Luna failures (failed / again / expired / multiple controllers)",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": "wireframes/legacy/pair-luna-failures.jpg",
+    "legacy": "wireframes/legacy/pair-luna-failures.jpg"
+  },
+  {
+    "id": "unchanged-compatibility-modal",
+    "title": "Compatibility - Full-Screen Modal / Push Notification",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": null,
+    "legacy": null,
+    "summary": "UNMATCHED: no canonical 2021 original — compatibility-check modal is a post-2021 concept."
+  },
+  {
+    "id": "unchanged-session-history-swipe",
+    "title": "Session History - Swipe / Swipe 2-3",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": "wireframes/legacy/session-history-swipe.jpg",
+    "legacy": "wireframes/legacy/session-history-swipe.jpg"
+  },
+  {
+    "id": "unchanged-session-history-nodata",
+    "title": "Session History - No Data / No Session on Day",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": "wireframes/legacy/session-history-nodata.jpg",
+    "legacy": "wireframes/legacy/session-history-nodata.jpg"
+  },
+  {
+    "id": "unchanged-toast-confirmations",
+    "title": "Toast - Dose recorded / Response recorded / Settings updated",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": null,
+    "legacy": null,
+    "summary": "UNMATCHED: no toast/snackbar screenshots in the 2021 Approved Design set."
+  },
+  {
+    "id": "unchanged-settings-app-about-help",
+    "title": "Settings - App / About / Help",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": "wireframes/legacy/settings-app-about-help.jpg",
+    "legacy": "wireframes/legacy/settings-app-about-help.jpg"
+  },
+  {
+    "id": "unchanged-firmware-ota-error",
+    "title": "Firmware OTA - Error / Server Issue",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": null,
+    "legacy": null,
+    "summary": "UNMATCHED: no firmware OTA flow existed in the 2021 design."
+  },
+  {
+    "id": "unchanged-searching-app-error",
+    "title": "Searching / App Error / Sign-out Error",
+    "status": "Unchanged",
+    "feature": "Dark UI re-skin",
+    "brdTier": "None",
+    "wireframe": "wireframes/legacy/searching-app-error.jpg",
+    "legacy": "wireframes/legacy/searching-app-error.jpg"
+  }
+]
