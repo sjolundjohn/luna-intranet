@@ -51,6 +51,14 @@ export function getCallerEmail(request: Request): string {
   const header = (request.headers.get("cf-access-authenticated-user-email") ?? "").toLowerCase();
   if (header) return header;
 
+  // Google Cloud IAP — the gateway in front of nightluna.com. The header value
+  // is "<issuer>:<email>", e.g. "accounts.google.com:jane@lunadiabetes.com".
+  const iap = request.headers.get("x-goog-authenticated-user-email");
+  if (iap) {
+    const email = iap.includes(":") ? iap.slice(iap.indexOf(":") + 1) : iap;
+    if (email) return email.toLowerCase();
+  }
+
   const jwt = request.headers.get("cf-access-jwt-assertion");
   if (jwt) {
     try {

@@ -23,9 +23,9 @@ export const onRequestPost: PagesFunction<KegEnv> = async (ctx) => {
 
   const email = getCallerEmail(ctx.request);
   if (!email) {
-    // TEMP diagnostic: which CF headers actually reach the function (names only).
-    const cf = [...ctx.request.headers.keys()].filter((k) => k.startsWith("cf-"));
-    return json({ error: "unauthenticated", _cf: cf }, 401);
+    // TEMP diagnostic: header names the function actually receives (names only).
+    const hdrs = [...ctx.request.headers.keys()];
+    return json({ error: "unauthenticated", _hdrs: hdrs }, 401);
   }
 
   let b: VoteBody;

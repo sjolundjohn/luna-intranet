@@ -23,6 +23,11 @@ on:
 permissions:
   contents: read
 
+# Opt JS actions onto Node 24 ahead of GitHub's June 2026 forced cutover —
+# clears the actions/* Node 20 deprecation warning.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
