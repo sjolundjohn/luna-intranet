@@ -1,0 +1,104 @@
+---
+/**
+ * Phone — a 390pt iPhone device frame for rendering an iOS wireframe screen.
+ *
+ * One screen = one 390pt artboard → one Figma frame. The inner screen is
+ * always laid out at the logical 390pt width; `scale` shrinks the whole
+ * frame (used for the All-Screens grid thumbnails). Because the scale is a
+ * CSS transform, pointer coordinates resolved via getBoundingClientRect()
+ * stay correct — so anchored comment pins survive frame scaling.
+ *
+ * mode="full"  → screen height grows with content (detail view).
+ * mode="thumb" → screen clipped to a fixed height (grid thumbnails).
+ */
+interface Props {
+  scale?: number;
+  mode?: "full" | "thumb";
+  /** Logical screen height in pt for thumb mode. */
+  thumbHeight?: number;
+  class?: string;
+}
+
+const { scale = 1, mode = "full", thumbHeight = 844, class: className = "" } = Astro.props;
+
+// Bezel padding around the 390pt screen.
+const PAD = 12;
+const SCREEN_W = 390;
+const frameW = SCREEN_W + PAD * 2; // 414
+---
+
+<div
+  class:list={["ux-phone", `ux-phone--${mode}`, className]}
+  style={`--ux-scale:${scale}; --ux-frame-w:${frameW}px; --ux-screen-w:${SCREEN_W}px; --ux-thumb-h:${thumbHeight}px;`}
+  data-ux-phone
+>
+  <div class="ux-phone-frame">
+    <div class="ux-phone-bezel">
+      <div class="ux-phone-notch" aria-hidden="true"></div>
+      <div class="ux-phone-screen" data-ux-screen>
+        <slot />
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Outer box reserves the *scaled* footprint so surrounding layout flows. */
+  .ux-phone {
+    display: inline-block;
+  }
+  .ux-phone--full .ux-phone {
+    width: calc(var(--ux-frame-w) * var(--ux-scale));
+  }
+  .ux-phone-frame {
+    width: var(--ux-frame-w);
+    transform: scale(var(--ux-scale));
+    transform-origin: top left;
+  }
+  /* In full mode the outer box must take the scaled width + height. */
+  .ux-phone--full {
+    width: calc(var(--ux-frame-w) * var(--ux-scale));
+  }
+  /* In thumb mode the outer box is the scaled frame width × clipped height. */
+  .ux-phone--thumb {
+    width: calc(var(--ux-frame-w) * var(--ux-scale));
+    height: calc((var(--ux-thumb-h) + 24px) * var(--ux-scale));
+    overflow: hidden;
+  }
+
+  .ux-phone-bezel {
+    position: relative;
+    width: var(--ux-frame-w);
+    padding: 12px;
+    background: #0b1220;
+    border-radius: 52px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.12) inset,
+      0 24px 60px rgba(4, 30, 66, 0.22);
+  }
+  .ux-phone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 26px;
+    background: #0b1220;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    z-index: 3;
+  }
+  .ux-phone-screen {
+    position: relative;
+    width: var(--ux-screen-w);
+    background: var(--color-cloud-lilac, #f2f3fa);
+    border-radius: 40px;
+    overflow: hidden;
+  }
+  .ux-phone--full .ux-phone-screen {
+    min-height: 844px;
+  }
+  .ux-phone--thumb .ux-phone-screen {
+    height: var(--ux-thumb-h);
+  }
+</style>

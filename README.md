@@ -113,17 +113,30 @@ Agent and person avatars are optional PNGs or SVGs placed under `public/`. Refer
 
 ## Deploying
 
-This repo is wired to Cloudflare Pages. Pushes to `main` deploy to production (`nightluna.com`). Pull requests get a preview URL at `<commit>.<project>.pages.dev`.
+The `luna-intranet` Cloudflare Pages project is a **Direct-Upload** project (no
+Cloudflare Git integration). Deploys run through GitHub Actions
+([.github/workflows/deploy.yml](.github/workflows/deploy.yml)):
 
-**Deploy checklist (first time):**
+- **Every push & PR** → install + `pnpm typecheck` + `pnpm build` (the gate).
+- **Push to `main`** → also `wrangler d1 migrations apply --remote` + `wrangler pages deploy --branch=main` → production (`nightluna.com`).
 
-1. Create a GitHub repo `sjolundjohn/luna-intranet` and push this code.
-2. CF Dashboard → Workers & Pages → Create → Pages → Connect to Git → pick the repo. Build command `pnpm build`, output `dist`, root `/`, Node 22. Env var `PNPM_VERSION=9.15.0`.
-3. In the Pages project, add the `PROXY_BEARER` secret.
-4. CF Dashboard → Zero Trust → Access → Applications → `Luna Agent Platform` — add `nightluna.com` to protected hostnames.
-5. Custom domains → add `nightluna.com` (and `www.nightluna.com` redirect).
+Bindings (the `DB` D1 database) come from `wrangler.toml` and attach on deploy.
 
-Preview URLs live outside Access by default. If you want them gated too, add `*.luna-intranet.pages.dev` to the Access app's hostname list.
+**Required GitHub Actions secrets** (repo → Settings → Secrets and variables → Actions):
+
+- `CLOUDFLARE_ACCOUNT_ID` = `a4142411ce45e09b846536e0a1aba208`
+- `CLOUDFLARE_API_TOKEN` = token on the John Sjolund account with **Cloudflare Pages: Edit**, **D1: Edit**, **Account Settings: Read**
+
+**Project-level secrets** (set once on the Pages project, persist across deploys):
+
+- `PROXY_BEARER` — shared bearer for `luna-ai-proxy` (powers the chat box).
+- `CF_ACCESS_CLIENT_ID` / `CF_ACCESS_CLIENT_SECRET` — service token to reach Access-gated upstreams.
+
+Access: CF Dashboard → Zero Trust → Access → Applications → add `nightluna.com`
+to protected hostnames. Preview URLs live outside Access by default; add
+`*.luna-intranet.pages.dev` to the Access app's hostname list to gate them too.
+
+See [docs/ux-review-setup.md](docs/ux-review-setup.md) for the D1 / UX Review specifics.
 
 ## Brand
 

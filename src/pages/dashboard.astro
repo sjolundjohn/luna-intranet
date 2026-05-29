@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { liveAgents, liveTools } from "~/lib/content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
 import MidnightBand from "~/components/MidnightBand.astro";
@@ -12,7 +12,8 @@ import AgentAvatar from "~/components/AgentAvatar.astro";
 // `config-api/me` for the personalized view.
 const SIGNED_IN_EMAIL = "john@lunadiabetes.com";
 
-const allAgents = await getCollection("agents");
+const allAgents = await liveAgents();
+const tools = await liveTools();
 const myAgents = allAgents
   .filter(
     (a) =>
@@ -20,7 +21,6 @@ const myAgents = allAgents
       a.data.owner === "john" ||
       (a.data.usedBy ?? []).includes("john"),
   )
-  .filter((a) => a.data.status === "live")
   .sort((a, b) => a.data.order - b.data.order);
 
 // Greeting + date.
@@ -45,11 +45,11 @@ const fleetGlance = {
 };
 
 const recentActivity = [
-  { ts: "today, 14:22", text: "Basal · drafted board update reply", href: "/chat" },
+  { ts: "today, 14:22", text: "Basal · drafted board update reply", href: "/tools/chat" },
   { ts: "today, 09:14", text: "Workflow morning-briefing ran (success, 13.4s)", href: "/workflows/morning-briefing" },
   { ts: "today, 08:42", text: "Sensor reviewed luna-killswitch plan (NEEDS CHANGES)", href: "/workflows" },
-  { ts: "yesterday", text: "Pen drafted persona for new clinical-ops agent", href: "/agents/pen" },
-  { ts: "yesterday", text: "Daily fleet briefing published", href: "/fleet/briefing" },
+  { ts: "yesterday", text: "Pen drafted persona for new clinical-ops agent", href: "/ai/agents/pen" },
+  { ts: "yesterday", text: "Daily fleet briefing published", href: "/ai/fleet/briefing" },
 ];
 
 const briefingPreview = {
@@ -82,6 +82,44 @@ const briefingPreview = {
     </div>
   </section>
 
+  {/* Jump in — OS launcher: the four domains + every live tool, one click away. */}
+  <WhiteSection size="compact">
+    <p class="eyebrow mb-3">Jump in</p>
+    <div class="flex flex-wrap gap-2.5">
+      {[
+        { href: "/ai", label: "AI System" },
+        { href: "/tools", label: "Tools" },
+        { href: "/workflows", label: "Workflows" },
+        { href: "/company", label: "Company" },
+      ].map((d) => (
+        <a
+          href={d.href}
+          class="inline-flex items-center px-4 py-2 rounded-full bg-midnight text-white font-body text-[13px] font-semibold hover:bg-midnight-deep transition-colors"
+        >
+          {d.label}
+        </a>
+      ))}
+    </div>
+    {tools.length > 0 && (
+      <Fragment>
+        <p class="eyebrow mt-6 mb-3">Open a tool</p>
+        <div class="flex flex-wrap gap-2.5">
+          {tools.map((t) => (
+            <a
+              href={t.data.href}
+              target={t.data.external ? "_blank" : undefined}
+              rel={t.data.external ? "noopener noreferrer" : undefined}
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border-default text-ink font-body text-[13px] font-medium hover:border-ink transition-colors"
+            >
+              {t.data.name}
+              {t.data.external && <span class="text-slate text-[11px]" aria-hidden="true">↗</span>}
+            </a>
+          ))}
+        </div>
+      </Fragment>
+    )}
+  </WhiteSection>
+
   {/* Your agents — grid with quick chat actions. */}
   <WhiteSection size="compact" class="bg-soft-paper">
     <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
@@ -93,13 +131,13 @@ const briefingPreview = {
       </div>
       <div class="flex gap-3">
         <a
-          href="/agents/me"
+          href="/ai/agents/me"
           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border-default text-ink font-body text-[13px] font-medium hover:border-ink transition-colors"
         >
           Configure
         </a>
         <a
-          href="/agents/new"
+          href="/ai/agents/new"
           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-midnight text-white font-body text-[13px] font-medium hover:bg-midnight-deep transition-colors"
         >
           Request new
@@ -123,7 +161,7 @@ const briefingPreview = {
             </div>
             <div class="mt-4 flex items-center gap-2">
               <a
-                href={`/chat?agent=${a.id}`}
+                href={`/tools/chat?agent=${a.id}`}
                 class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-midnight text-white text-[12px] font-semibold hover:bg-midnight-deep transition-colors"
               >
                 Chat
@@ -133,13 +171,13 @@ const briefingPreview = {
                 </svg>
               </a>
               <a
-                href={`/agents/${a.id}`}
+                href={`/ai/agents/${a.id}`}
                 class="text-graphite text-[12px] hover:text-ink transition-colors"
               >
                 About
               </a>
               <a
-                href={`/agents/me#${a.id}`}
+                href={`/ai/agents/me#${a.id}`}
                 class="text-graphite text-[12px] hover:text-ink transition-colors ml-auto"
               >
                 Configure
@@ -155,7 +193,7 @@ const briefingPreview = {
   <WhiteSection size="compact">
     <div class="grid md:grid-cols-[1.5fr_1fr] gap-6 md:gap-8 items-stretch">
       <a
-        href="/fleet/briefing"
+        href="/ai/fleet/briefing"
         class="group bg-midnight text-white rounded-[20px] p-6 md:p-8 flex flex-col justify-between transition-shadow hover:shadow-[0_12px_40px_rgba(4,30,66,0.18)]"
       >
         <div>
@@ -178,7 +216,7 @@ const briefingPreview = {
 
       {/* Fleet at a glance */}
       <a
-        href="/fleet"
+        href="/ai/fleet"
         class="group bg-white border border-border-subtle rounded-[20px] p-6 md:p-8 flex flex-col justify-between transition-all hover:border-ink hover:shadow-[0_8px_32px_rgba(4,30,66,0.08)]"
       >
         <div>
@@ -246,11 +284,11 @@ const briefingPreview = {
   <WhiteSection size="compact">
     <p class="eyebrow mb-4">Quick actions</p>
     <div class="flex flex-wrap gap-3">
-      <a href="/chat" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-midnight text-white font-body text-[14px] font-semibold hover:bg-midnight-deep transition-colors">Open chat</a>
-      <a href="/agents/me" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Configure my agents</a>
-      <a href="/agents/new" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Request a new agent</a>
+      <a href="/tools/chat" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-midnight text-white font-body text-[14px] font-semibold hover:bg-midnight-deep transition-colors">Open chat</a>
+      <a href="/ai/agents/me" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Configure my agents</a>
+      <a href="/ai/agents/new" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Request a new agent</a>
       <a href="/workflows" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">See workflows</a>
-      <a href="/fleet/briefing" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Read briefing</a>
+      <a href="/ai/fleet/briefing" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors">Read briefing</a>
     </div>
   </WhiteSection>
 
@@ -264,9 +302,9 @@ const briefingPreview = {
         </h3>
       </div>
       <div class="flex flex-wrap gap-3 md:justify-end">
-        <a href="/vision" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Vision</a>
-        <a href="/onboarding" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Onboarding</a>
-        <a href="/foundation" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-moonlight text-midnight font-body text-[14px] font-semibold hover:opacity-90 transition-opacity">Foundation</a>
+        <a href="/company/vision" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Vision</a>
+        <a href="/company/onboarding" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Onboarding</a>
+        <a href="/company" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-moonlight text-midnight font-body text-[14px] font-semibold hover:opacity-90 transition-opacity">Foundation</a>
       </div>
     </div>
   </MidnightBand>

@@ -1,0 +1,71 @@
+name: CI / Deploy
+
+# Best-practice flow:
+#   • Every push & PR  → install, typecheck, build (the gate).
+#   • Push to `main`   → also apply D1 migrations + deploy to Cloudflare Pages.
+#
+# Required GitHub repo secrets (Settings → Secrets and variables → Actions):
+#   • CLOUDFLARE_API_TOKEN  — token scoped to the "John Sjolund" account with
+#       Account · Cloudflare Pages: Edit  and  Account · D1: Edit
+#       (Account · Account Settings: Read is also needed).
+#   • CLOUDFLARE_ACCOUNT_ID — a4142411ce45e09b846536e0a1aba208
+#
+# The D1 binding (`DB`) and project name come from wrangler.toml, so the
+# deploy automatically attaches the luna-ux-review database. Runtime secrets
+# (PROXY_BEARER, CF_ACCESS_CLIENT_ID/SECRET) live on the Pages project and
+# persist across deploys.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Typecheck & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      # ---- production only: apply migrations, then deploy ----
+      - name: Apply D1 migrations (production)
+        if: github.ref == 'refs/heads/main'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.87.0"
+          command: d1 migrations apply luna-ux-review --remote
+
+      - name: Deploy to Cloudflare Pages (production)
+        if: github.ref == 'refs/heads/main'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.87.0"
+          command: pages deploy --branch=main

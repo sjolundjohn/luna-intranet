@@ -1,6 +1,6 @@
 ---
 /**
- * Full-page chat surface used by /chat. Wraps the existing ChatBox
+ * Full-page chat surface used by /tools/chat. Wraps the existing ChatBox
  * so the streaming/SSE plumbing stays in one place; this component
  * adds the agent picker, history sidebar, and full-bleed layout.
  *
@@ -46,7 +46,7 @@ const active = agents.find((a) => a.slug === defaultAgent) ?? agents[0];
           agents.map((a) => (
             <li>
               <a
-                href={`/chat?agent=${a.slug}`}
+                href={`/tools/chat?agent=${a.slug}`}
                 class:list={[
                   "flex items-center gap-2 px-3 py-2 rounded-[10px] text-[14px] transition-colors",
                   a.slug === active?.slug
@@ -79,7 +79,7 @@ const active = agents.find((a) => a.slug === defaultAgent) ?? agents[0];
             {recentThreads.map((t) => (
               <li>
                 <a
-                  href={`/chat?thread=${t.id}`}
+                  href={`/tools/chat?thread=${t.id}`}
                   class="block px-3 py-2 rounded-[10px] text-[13px] text-graphite hover:text-ink hover:bg-soft-paper transition-colors"
                 >
                   <span class="block truncate font-medium">{t.title}</span>
@@ -98,7 +98,7 @@ const active = agents.find((a) => a.slug === defaultAgent) ?? agents[0];
       <p>
         Threads are private to you. Anthropic ZDR is on. Audit metadata
         only — never message content.
-        <a href="/governance" class="text-graphite underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">Learn how</a>.
+        <a href="/ai/governance" class="text-graphite underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">Learn how</a>.
       </p>
     </div>
   </aside>
@@ -113,7 +113,7 @@ const active = agents.find((a) => a.slug === defaultAgent) ?? agents[0];
         </h1>
       </div>
       <a
-        href={`/agents/${active?.slug ?? "basal"}`}
+        href={`/ai/agents/${active?.slug ?? "basal"}`}
         class="text-graphite hover:text-ink text-[13px] font-medium transition-colors"
       >
         About this agent →

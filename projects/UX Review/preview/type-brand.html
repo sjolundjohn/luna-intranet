@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Brand font — D-DIN</title>
+<style>
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:400;src:url("../fonts/d-din-regular.woff2") format("woff2");}
+@font-face{font-family:"D-DIN";font-style:italic;font-weight:400;src:url("../fonts/D-DIN-Italic.otf") format("opentype");}
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:600;src:url("../fonts/d-din-bold.woff2") format("woff2");}
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:700;src:url("../fonts/d-din-bold.woff2") format("woff2");}
+:root{
+--font:"D-DIN",-apple-system,system-ui,sans-serif;
+--mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+--midnight:#041E42;--moonlight:#68D2DF;--white:#FFFFFF;
+--soft-paper:#FBFDFE;--cloud-lilac:#F2F3FA;--periwinkle:#E7EBF8;--pebble:#BAC6D9;
+--graphite:#535D65;--slate:#7A8892;--lavender:#D6D3E9;--step:#F5F6F8;
+--deep:#133465;--floor:#031632;--on-dark-sub:#ACC1DF;
+--success:#2E7D32;--success-light:#B0F9B3;--success-bg:#E7F8E8;
+--info:#68D2DF;--info-bg:#E8FCFF;--warning:#F9CD86;--warning-ink:#6B4B10;--warning-bg:#FFF4DD;
+--critical:#8E3655;--critical-bg:#F7E4EA;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:var(--font);background:var(--white);color:var(--midnight);padding:20px 24px;-webkit-font-smoothing:antialiased;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin:0 0 16px;}
+.mono{font-family:var(--mono);}
+</style></head><body>
+<p class="lbl">Brand font · D-DIN (all weights)</p>
+<div style="font-size:56px;font-weight:700;letter-spacing:-0.02em;line-height:1;">D-DIN</div>
+<div style="font-size:17px;color:var(--graphite);margin-top:8px;">Clean, modern, approachable — a breath of the tech industry.</div>
+<div style="display:flex;gap:28px;margin-top:20px;align-items:baseline;flex-wrap:wrap;">
+  <div><div style="font-size:30px;font-weight:400;">Aa Bb Cc</div><div class="mono" style="font-size:10px;color:var(--slate);margin-top:4px;">Regular · 400</div></div>
+  <div><div style="font-size:30px;font-weight:400;font-style:italic;">Aa Bb Cc</div><div class="mono" style="font-size:10px;color:var(--slate);margin-top:4px;">Italic · 400</div></div>
+  <div><div style="font-size:30px;font-weight:700;">Aa Bb Cc</div><div class="mono" style="font-size:10px;color:var(--slate);margin-top:4px;">Bold · 700</div></div>
+  <div><div style="font-size:30px;font-weight:400;font-feature-settings:'tnum';">0123456789</div><div class="mono" style="font-size:10px;color:var(--slate);margin-top:4px;">Numerals</div></div>
+</div>
+<div class="mono" style="font-size:10px;color:var(--slate);margin-top:18px;">Fallback: SF Pro (iOS) · Roboto (Android)</div></body></html>

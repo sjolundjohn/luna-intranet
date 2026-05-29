@@ -1,0 +1,31 @@
+---
+/**
+ * IosButton — full-width pill. variant: primary | secondary | link.
+ */
+interface Props {
+  variant?: "primary" | "secondary" | "link";
+  label: string;
+}
+const { variant = "primary", label } = Astro.props;
+---
+{variant === "link" ? (
+  <div class="ios-btn-link">{label}</div>
+) : (
+  <button type="button" class:list={["ios-btn", `ios-btn--${variant}`]}>{label}</button>
+)}
+<style>
+  .ios-btn {
+    all: unset;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 17px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+  }
+  .ios-btn--primary { background: var(--color-moonlight); color: #fff; padding: 15px; }
+  .ios-btn--secondary { background: #fff; color: var(--color-midnight); padding: 14px; border: 1.5px solid var(--color-midnight); }
+  .ios-btn-link { text-align: center; color: var(--color-moonlight); font-weight: 700; font-size: 15px; padding: 6px; }
+</style>

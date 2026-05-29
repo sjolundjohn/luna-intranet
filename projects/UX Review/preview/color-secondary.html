@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Secondary palette</title>
+<style>
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:400;src:url("../fonts/d-din-regular.woff2") format("woff2");}
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:700;src:url("../fonts/d-din-bold.woff2") format("woff2");}
+:root{
+--font:"D-DIN",-apple-system,system-ui,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+--midnight:#041E42;--moonlight:#68D2DF;--white:#FFFFFF;
+--soft-paper:#FBFDFE;--cloud-lilac:#F2F3FA;--periwinkle:#E7EBF8;--pebble:#BAC6D9;
+--graphite:#535D65;--slate:#7A8892;--lavender:#D6D3E9;--step:#F5F6F8;
+--deep:#133465;--floor:#031632;--on-dark-sub:#ACC1DF;
+--success:#2E7D32;--success-light:#B0F9B3;--info:#68D2DF;--warning:#F9CD86;--critical:#8E3655;
+}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--font);background:var(--white);color:var(--midnight);padding:20px 24px;-webkit-font-smoothing:antialiased;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin:0 0 16px;}
+.mono{font-family:var(--mono);}
+.sw{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0;}
+.chip{height:60px;border-radius:12px;border:1px solid rgba(4,30,66,0.08);}
+.nm{font-size:12px;font-weight:700;}
+.hx{font-family:var(--mono);font-size:10px;color:var(--slate);}
+</style></head><body>
+<p class="lbl">Secondary palette · surfaces</p>
+<div style="display:flex;gap:10px;">
+<div class="sw"><div class="chip" style="background:#FBFDFE;"></div><div class="nm">Soft Paper</div><div class="hx">#FBFDFE</div></div>
+<div class="sw"><div class="chip" style="background:#F2F3FA;"></div><div class="nm">Cloud Lilac</div><div class="hx">#F2F3FA</div></div>
+<div class="sw"><div class="chip" style="background:#E7EBF8;"></div><div class="nm">Periwinkle</div><div class="hx">#E7EBF8</div></div>
+<div class="sw"><div class="chip" style="background:#BAC6D9;"></div><div class="nm">Pebble Blue</div><div class="hx">#BAC6D9</div></div>
+<div class="sw"><div class="chip" style="background:#D6D3E9;"></div><div class="nm">Lavender</div><div class="hx">#D6D3E9 · ≤5%</div></div>
+</div></body></html>

@@ -1,14 +1,12 @@
 ---
-import { getCollection } from "astro:content";
+import { activeWorkflows } from "~/lib/content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/Hero.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
 import WorkflowCard from "~/components/WorkflowCard.astro";
 
-const workflows = (await getCollection("workflows")).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const workflows = await activeWorkflows();
 
 // Mock last-run summaries for Phase 1.
 const mockRuns: Record<string, { lastRun?: string; successRatePct?: number }> = {

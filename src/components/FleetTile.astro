@@ -1,6 +1,6 @@
 ---
 /**
- * Single agent's status tile on /fleet. Aggregates only — never shows
+ * Single agent's status tile on /ai/fleet. Aggregates only — never shows
  * per-employee usage. Driven by KV/D1 reads in Phase 3.
  */
 import AgentAvatar from "~/components/AgentAvatar.astro";
@@ -28,7 +28,7 @@ const {
   uniqueUsers7d,
   costUsd7d,
   health = "ok",
-  href = `/fleet/${slug}`,
+  href = `/ai/fleet/${slug}`,
 } = Astro.props;
 
 const dotColor = killed

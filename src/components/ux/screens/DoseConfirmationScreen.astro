@@ -1,0 +1,33 @@
+---
+/**
+ * DoseConfirmationScreen — the two-step dose-confirmation bottom sheet over
+ * a Midnight bedside backdrop. The canonical safety-critical confirmation.
+ */
+import StatusBar from "../ios/StatusBar.astro";
+import DoseSheet from "../ios/DoseSheet.astro";
+
+interface Props {
+  variant?: "current" | "legacy";
+}
+// New screen — no legacy variant; prop kept for the uniform registry interface.
+---
+<div class="dscr">
+  <div class="dscr-statusbar"><StatusBar tone="light" /></div>
+  <div class="dscr-scrim"></div>
+  <div class="dscr-sheet-host">
+    <DoseSheet variant="increase" />
+  </div>
+</div>
+<style>
+  .dscr {
+    position: relative;
+    min-height: 844px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(to bottom, var(--color-midnight-deep), var(--color-midnight) 60%, var(--color-midnight-floor));
+  }
+  .dscr-statusbar { position: absolute; top: 0; left: 0; right: 0; z-index: 4; }
+  .dscr-scrim { position: absolute; inset: 0; background: rgba(4, 30, 66, 0.35); }
+  .dscr-sheet-host { position: relative; z-index: 2; }
+</style>

@@ -1,0 +1,39 @@
+---
+/**
+ * SessionHistoryScreen — week strip + per-night session rows.
+ */
+import StatusBar from "../ios/StatusBar.astro";
+import CalendarStrip from "../ios/CalendarStrip.astro";
+import ListRows from "../ios/ListRows.astro";
+import TabBar from "../ios/TabBar.astro";
+
+interface Props {
+  variant?: "current" | "legacy";
+}
+const { variant = "current" } = Astro.props;
+const legacy = variant === "legacy";
+
+const sessions = [
+  { label: "Thu · 5 U delivered", value: "80% in range" },
+  { label: "Wed · 5 U delivered", value: "88% in range" },
+  { label: "Tue · 4 U delivered", value: "74% in range" },
+  { label: "Mon · 5 U delivered", value: "91% in range" },
+];
+---
+<div class="scr">
+  <StatusBar tone="dark" />
+  <div class="scr-body">
+    <header class="scr-head">
+      <h1 class="scr-title">Session History</h1>
+    </header>
+    {!legacy && <CalendarStrip selected={22} />}
+    <ListRows rows={sessions} />
+  </div>
+  <TabBar active="history" />
+</div>
+<style>
+  .scr { display: flex; flex-direction: column; min-height: 844px; background: var(--color-cloud-lilac); }
+  .scr-body { flex: 1; padding: 4px 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .scr-head { padding: 8px 2px 4px; }
+  .scr-title { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
+</style>

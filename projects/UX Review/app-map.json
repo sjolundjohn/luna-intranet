@@ -1,0 +1,46 @@
+[
+  {
+    "id": "dashboard",
+    "title": "Dashboard",
+    "status": "Changed",
+    "feature": "Home",
+    "brdTier": "P0",
+    "brdLink": "https://www.notion.so/luna/BRD-Home",
+    "summary": "Luna home: current glucose, overnight status, and the nightly insight card.",
+    "wireframe": "component:dashboard",
+    "legacy": "component:dashboard"
+  },
+  {
+    "id": "dose-confirmation",
+    "title": "Two-Step Dose-Confirmation",
+    "status": "New",
+    "feature": "Basal Guidance",
+    "brdTier": "P0",
+    "brdLink": "https://www.notion.so/luna/BRD-Basal-Guidance",
+    "summary": "Safety-critical confirmation: acknowledge both required actions, then slide to confirm.",
+    "wireframe": "component:dose-confirmation",
+    "legacy": null
+  },
+  {
+    "id": "session-history",
+    "title": "Session History",
+    "status": "Changed",
+    "feature": "History",
+    "brdTier": "P1",
+    "brdLink": "https://www.notion.so/luna/BRD-History",
+    "summary": "Week strip plus per-night session rows with time-in-range.",
+    "wireframe": "component:session-history",
+    "legacy": "component:session-history"
+  },
+  {
+    "id": "settings",
+    "title": "Settings",
+    "status": "Unchanged",
+    "feature": "Settings",
+    "brdTier": "P2",
+    "brdLink": "https://www.notion.so/luna/BRD-Settings",
+    "summary": "Account and care configuration list.",
+    "wireframe": "component:settings",
+    "legacy": null
+  }
+]

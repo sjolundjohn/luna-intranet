@@ -1,0 +1,67 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import SectionCard from "~/components/SectionCard.astro";
+import { liveAgents } from "~/lib/content";
+
+const agentCount = (await liveAgents()).length;
+---
+
+<BaseLayout
+  title="AI System"
+  description="The Luna AI workforce — the agents, the fleet that runs them, the platform underneath, and how it's governed."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · AI System" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      The AI workforce.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Luna's agents and the system that runs them — who they are, what they're
+      doing right now, the platform underneath, and the rules that keep them
+      scoped and stoppable.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="max-w-[760px] mb-10">
+      <p class="eyebrow mb-3">{agentCount} agents live</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 38px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Four ways in.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="grid gap-6 md:gap-7 md:grid-cols-2 auto-rows-fr">
+      <SectionCard
+        href="/ai/agents"
+        eyebrow="01 · Agents"
+        title="The catalog."
+        description="Every live agent on the workforce — who it's for, what it does, and how it's scoped. Configure yours, or request a new one."
+      />
+      <SectionCard
+        href="/ai/fleet"
+        eyebrow="02 · Fleet"
+        title="What's running."
+        description="Live status across the fleet: invocations, unique users, cost, and health — by team, by owner, or flat. Plus today's briefing."
+      />
+      <SectionCard
+        href="/ai/platform"
+        eyebrow="03 · Platform"
+        title="Under the hood."
+        description="The Cloudflare-native plumbing — tech stack, request flow, and architecture — that makes the agents and tools possible."
+      />
+      <SectionCard
+        href="/ai/governance"
+        eyebrow="04 · Governance"
+        title="Scoped and stopped."
+        description="Roles, permissions, kill-switches, audit log, cost caps, PHI scope, and change control — written down because trust compounds."
+      />
+    </div>
+  </WhiteSection>
+</BaseLayout>

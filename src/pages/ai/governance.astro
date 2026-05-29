@@ -1,0 +1,341 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MidnightBand from "~/components/MidnightBand.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import RoleBadge from "~/components/RoleBadge.astro";
+import StatusChip from "~/components/StatusChip.astro";
+import FearAndAnswer from "~/components/FearAndAnswer.astro";
+---
+
+<BaseLayout
+  title="Governance"
+  description="How Luna agents are scoped, audited, and stopped — written down."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Governance" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Designed first.<br />Documented next.
+    </Fragment>
+    <Fragment slot="subcopy">
+      How Luna agents are scoped, audited, paused, and turned off entirely.
+      The framework is in code; this page is the human-readable version.
+    </Fragment>
+  </Hero>
+
+  {/* TL;DR card. */}
+  <WhiteSection size="compact">
+    <div class="bg-soft-paper border border-border-subtle rounded-[20px] p-6 md:p-10">
+      <p class="eyebrow mb-4">In one screen</p>
+      <ul class="grid md:grid-cols-2 gap-x-10 gap-y-4 text-[16px] leading-[1.55] text-graphite">
+        <li><span class="text-ink font-semibold">Identity.</span> Cloudflare Access + Google Workspace SSO. No anonymous use.</li>
+        <li><span class="text-ink font-semibold">Roles.</span> Three of them: <RoleBadge role="employee" />, <RoleBadge role="manager" />, <RoleBadge role="ai-admin" /> — plus <RoleBadge role="phi-authorized" /> for PHI scope.</li>
+        <li><span class="text-ink font-semibold">Default-deny.</span> Every agent declares who can invoke, configure, and view its logs. Nothing is implicit.</li>
+        <li><span class="text-ink font-semibold">Kill-switch.</span> Per-agent. AI admins can stop an agent for everyone in seconds.</li>
+        <li><span class="text-ink font-semibold">Audit.</span> Every invocation logged — metadata only, never message content. You can see your own.</li>
+        <li><span class="text-ink font-semibold">Cost caps.</span> Per-agent and per-user budgets enforced at the AI Gateway.</li>
+        <li><span class="text-ink font-semibold">PHI separation.</span> PHI-scoped agents live behind a separate access group with a documented BAA chain.</li>
+        <li><span class="text-ink font-semibold">Change control.</span> Shared (Class A) agent edits require an AI-admin reviewer; personal (Class B) agents are self-serve.</li>
+      </ul>
+    </div>
+  </WhiteSection>
+
+  {/* Roles. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Roles</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Three roles. One PHI gate.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        Roles come from your Google Workspace group membership and ride
+        along on every request as a Cloudflare Access JWT claim. The
+        backend reads the claim once, at the edge, and uses it to gate
+        what you see and what you can do.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <article class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <RoleBadge role="employee" />
+        <h3 class="mt-3 text-ink font-body text-[17px] font-semibold">Employee</h3>
+        <p class="mt-2 text-graphite text-[14px] leading-[1.6]">
+          Default for everyone on the team. Can chat with shared agents, configure
+          personal ones, view own audit log. Cannot view anyone else's data.
+        </p>
+      </article>
+      <article class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <RoleBadge role="manager" />
+        <h3 class="mt-3 text-ink font-body text-[17px] font-semibold">Manager</h3>
+        <p class="mt-2 text-graphite text-[14px] leading-[1.6]">
+          Sees team-level Fleet aggregates only — no individual usage,
+          no leaderboards. Granted by Google Workspace group, not a manual flag.
+        </p>
+      </article>
+      <article class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <RoleBadge role="ai-admin" />
+        <h3 class="mt-3 text-ink font-body text-[17px] font-semibold">AI admin</h3>
+        <p class="mt-2 text-graphite text-[14px] leading-[1.6]">
+          Configures shared agents, reviews edits, holds the kill-switch,
+          views the full audit log. Today: John. Will expand as the team grows.
+        </p>
+      </article>
+      <article class="bg-white border border-border-subtle rounded-[16px] p-6">
+        <RoleBadge role="phi-authorized" />
+        <h3 class="mt-3 text-ink font-body text-[17px] font-semibold">PHI authorized</h3>
+        <p class="mt-2 text-graphite text-[14px] leading-[1.6]">
+          Required to invoke any agent tagged <span class="font-mono text-[12px]">piiScope: phi</span>.
+          Granted alongside Luna's clinical/regulatory access controls,
+          not as a separate process.
+        </p>
+      </article>
+    </div>
+  </WhiteSection>
+
+  {/* The agent declaration — make the matrix visible. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">How permissions are declared</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Every agent's permissions live next to its description.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        Each agent has an MDX file with frontmatter that the schema validates
+        at build time. There's no hidden config. If an agent isn't listed
+        as invokable by your role, no one wired it that way silently —
+        the file says so, and it's reviewable in the repo.
+      </p>
+    </div>
+
+    <pre
+      class="bg-midnight text-moonlight rounded-[16px] p-6 md:p-8 overflow-auto text-[13px] leading-[1.7] font-mono shadow-[0_5px_50px_rgba(0,0,0,0.10)]"
+    ><code>{`---
+name: "Basal"
+status: "live"
+scope: "1:many"          # 1:many = shared (Class A); 1:1 = owner (Class B)
+piiScope: "none"          # touches no PHI
+
+allowedUsers:             # default-deny — only these emails reach this agent
+  - john@lunadiabetes.com
+  - jb@lunadiabetes.com
+
+department: "platform"
+owner: "john"
+
+skills:                   # knowledge files loaded into the prompt at runtime
+  - shared/memory-protocol
+  - shared/luna-agent-onboarding
+---`}</code></pre>
+
+    <p class="mt-5 text-slate text-[13px] leading-[1.6] max-w-[60ch]">
+      This is the actual schema enforced by <span class="font-mono">src/content.config.ts</span>,
+      mirrored from the Workforce config repo (<span class="font-mono">facets/&lt;slug&gt;.md</span>).
+      Default-deny: anything not in <span class="font-mono">allowedUsers</span> is blocked at the
+      agent-router. PHI agents additionally require the <span class="font-mono">phi-authorized</span>
+      Workspace group.
+    </p>
+  </WhiteSection>
+
+  {/* Kill switch + audit + caps. */}
+  <WhiteSection size="tall">
+    <div class="grid md:grid-cols-3 gap-8">
+      <article>
+        <p class="eyebrow mb-3">Kill switch</p>
+        <h3 class="text-ink font-body text-[20px] font-semibold leading-tight">
+          Stops an agent for everyone, in seconds.
+        </h3>
+        <p class="mt-3 text-graphite text-[15px] leading-[1.6]">
+          Per-agent flag held in the agent's Durable Object and mirrored to KV
+          for fast reads. Checked at both the router and the agent Worker —
+          defense in depth, so a bug at one layer doesn't bypass the other.
+          AI admins flip it from <span class="font-mono text-[13px]">/fleet/&lt;agent&gt;</span>.
+        </p>
+      </article>
+
+      <article>
+        <p class="eyebrow mb-3">Audit log</p>
+        <h3 class="text-ink font-body text-[20px] font-semibold leading-tight">
+          Metadata, never message content.
+        </h3>
+        <p class="mt-3 text-graphite text-[15px] leading-[1.6]">
+          Every invocation writes a row to D1 with user email, agent slug,
+          model, token counts, cost, and timestamp. Prompt and response
+          contents are <em>not</em> stored — only hashes, and only when
+          retention is explicitly enabled (off by default).
+        </p>
+      </article>
+
+      <article>
+        <p class="eyebrow mb-3">Cost caps</p>
+        <h3 class="text-ink font-body text-[20px] font-semibold leading-tight">
+          Per-agent. Per-user. Tripped at the gateway.
+        </h3>
+        <p class="mt-3 text-graphite text-[15px] leading-[1.6]">
+          Daily and monthly budgets enforced by the AI Gateway in front of
+          Anthropic. A runaway loop trips the cap and surfaces on Fleet
+          before it hits the bottom line. Caps are reviewable on
+          <a href="/ai/fleet" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">/fleet</a>.
+        </p>
+      </article>
+    </div>
+  </WhiteSection>
+
+  {/* Class A vs Class B change control. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">Change control</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Class A and Class B — the only distinction that matters.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <article class="bg-white border border-border-subtle rounded-[16px] p-7">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="inline-flex items-center h-[22px] px-3 rounded-full bg-info-bg text-info-ink font-body text-[12px] font-semibold">Class A</span>
+          <StatusChip status="live" label="1:many" />
+        </div>
+        <h3 class="text-ink font-body text-[18px] font-semibold">Shared agents</h3>
+        <p class="mt-2 text-graphite text-[15px] leading-[1.6]">
+          One agent, many people. Basal, the Data Agent, the briefing generator.
+        </p>
+        <ul class="mt-4 space-y-2 text-graphite text-[14px] leading-[1.55]">
+          <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-info-ink flex-shrink-0"></span>Edits to definition, prompt, or permissions require an AI-admin reviewer.</li>
+          <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-info-ink flex-shrink-0"></span>Every team member can still set personal overlays — custom instructions, memory off — without review.</li>
+          <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-info-ink flex-shrink-0"></span>Versioned: prior definitions stay queryable so we can attribute past behavior.</li>
+        </ul>
+      </article>
+
+      <article class="bg-white border border-border-subtle rounded-[16px] p-7">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="inline-flex items-center h-[22px] px-3 rounded-full bg-success-bg text-success-ink font-body text-[12px] font-semibold">Class B</span>
+          <StatusChip status="live" label="1:1" />
+        </div>
+        <h3 class="text-ink font-body text-[18px] font-semibold">Personal agents</h3>
+        <p class="mt-2 text-graphite text-[15px] leading-[1.6]">
+          One agent, one person. Tuned to your work, your inbox, your patterns.
+        </p>
+        <ul class="mt-4 space-y-2 text-graphite text-[14px] leading-[1.55]">
+          <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-success-ink flex-shrink-0"></span>Self-serve: you own it, you configure it, no review queue.</li>
+          <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-success-ink flex-shrink-0"></span>Can't act outside your authority — same auth and PHI scope as you.</li>
+          <li class="flex gap-2"><span class="mt-1.5 block h-[5px] w-[5px] rounded-full bg-success-ink flex-shrink-0"></span>Audit log is yours — only you and AI admins see it.</li>
+        </ul>
+      </article>
+    </div>
+  </WhiteSection>
+
+  {/* PHI / HIPAA. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px]">
+      <p class="eyebrow mb-3">PHI scope · HIPAA</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        PHI agents are a separate path with a separate gate.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <div class="mt-7 space-y-4 text-graphite text-[16px] leading-[1.65]">
+        <p>
+          Most Luna agents do not touch protected health information. Those
+          that do are tagged <span class="font-mono text-[14px]">piiScope: phi</span>
+          in their MDX frontmatter and are gated to the
+          <RoleBadge role="phi-authorized" /> Workspace group, not the default
+          employee group.
+        </p>
+        <p>
+          The BAA chain (Anthropic, Cloudflare) is documented per-vendor and
+          surfaced here. Model output is contractually excluded from training
+          on Luna's Anthropic workspace — Zero Data Retention is a contract
+          clause, not a setting we toggle.
+        </p>
+        <p>
+          If you're not sure whether something you're about to paste is PHI,
+          ask <a href="mailto:john@lunadiabetes.com" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">john@lunadiabetes.com</a>
+          — or default to "no, route it through the PHI-scoped agent."
+        </p>
+      </div>
+    </div>
+  </WhiteSection>
+
+  {/* Honest limits. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-8">
+      <p class="eyebrow mb-3">What we haven't built yet</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Honest gaps.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        Trust compounds. The fastest way to lose it is to claim a control we
+        haven't built. Here's what's flagged on the
+        <a href="/company/roadmap" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">roadmap</a>:
+      </p>
+    </div>
+
+    <div class="bg-white border border-border-subtle rounded-[20px] p-6 md:p-10">
+      <FearAndAnswer
+        fear="California-specific employment guardrails (CCPA-employee, AB 2930) aren't fully wired."
+        answer="The hooks are in place — the audit log, the role-based access, the per-employee data view — but the formal CCPA employee data export, the AB 2930 automated-decision flag for any HR-adjacent agent, and the surveillance policy text need a counsel pass before they're claimed as 'shipped.' Tracked on the roadmap."
+        enforcedBy="Roadmap status; HR-adjacent agents not deployed until reviewed."
+      />
+      <FearAndAnswer
+        fear="The audit log surfaces metadata, but you can't yet pull a clean export of 'everything an agent has touched in my work.'"
+        answer="My Agents shows a 30-day window today. A full export endpoint is in Phase 2 of the platform plan. Until then, an AI admin can run the query for you on request."
+        enforcedBy="Phase 2 of the platform delivery plan; ad-hoc support in the meantime."
+      />
+      <FearAndAnswer
+        fear="External-vendor BAAs are documented but not all linkable from this page."
+        answer="Anthropic and Cloudflare BAAs are on file. The tool-vendor BAAs (anyone an agent calls out to via MCP) are inventoried but not yet rendered here. Phase 3 surfaces the chain per-agent."
+      />
+    </div>
+  </WhiteSection>
+
+  <MidnightBand size="compact">
+    <div class="max-w-[720px]">
+      <p class="eyebrow eyebrow-on-dark mb-3">Going deeper</p>
+      <h2
+        class="font-display text-white font-normal"
+        style="font-size: clamp(28px, 4vw, 44px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Architecture, privacy, and the request flow are documented in detail.
+      </h2>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href="/ai/platform"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors"
+        >
+          Platform &rarr;
+        </a>
+        <a
+          href="/ai/platform/privacy"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors"
+        >
+          Privacy &amp; security &rarr;
+        </a>
+        <a
+          href="/ai/agents/me"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors"
+        >
+          See your own data &rarr;
+        </a>
+      </div>
+    </div>
+  </MidnightBand>
+</BaseLayout>

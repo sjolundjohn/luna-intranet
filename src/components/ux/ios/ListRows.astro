@@ -1,0 +1,51 @@
+---
+/**
+ * ListRows — Settings / Session History rows. Pebble-blue dividers,
+ * Moonlight chevron. Pass `rows` as [{ label, value }].
+ */
+interface Row {
+  label: string;
+  value?: string;
+}
+interface Props {
+  rows?: Row[];
+}
+const {
+  rows = [
+    { label: "Target range", value: "70–140" },
+    { label: "Notifications", value: "On" },
+    { label: "Connected sensor", value: "Auto" },
+    { label: "Account", value: "—" },
+  ],
+} = Astro.props;
+---
+<div class="ios-listrows">
+  {rows.map((r, i) => (
+    <div class="ios-listrow" data-last={i === rows.length - 1 ? "true" : undefined}>
+      <span class="ios-listrow-label">{r.label}</span>
+      {r.value && <span class="ios-listrow-value">{r.value}</span>}
+      <span class="ios-listrow-chevron" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </span>
+    </div>
+  ))}
+</div>
+<style>
+  .ios-listrows {
+    background: var(--color-white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 0 20px;
+    overflow: hidden;
+  }
+  .ios-listrow {
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-pebble-blue);
+  }
+  .ios-listrow[data-last] { border-bottom: none; }
+  .ios-listrow-label { font-size: 17px; flex: 1; }
+  .ios-listrow-value { font-size: 16px; color: var(--color-graphite); margin-right: 6px; }
+  .ios-listrow-chevron { color: var(--color-moonlight); display: flex; }
+</style>

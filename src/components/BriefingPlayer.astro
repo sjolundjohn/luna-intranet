@@ -1,6 +1,6 @@
 ---
 /**
- * Daily/weekly fleet briefing surface. Top of /fleet/briefing.
+ * Daily/weekly fleet briefing surface. Top of /ai/fleet/briefing.
  *
  * The principle is dual-form: read it or listen to it. The audio source
  * is an R2-hosted MP3 in production; Phase 1 wires the markup but the
@@ -21,7 +21,7 @@ const {
   date,
   durationLabel,
   audioSrc = "",
-  feedUrl = "/fleet/briefing/feed.xml",
+  feedUrl = "/ai/fleet/briefing/feed.xml",
 } = Astro.props;
 
 const cadenceLabel = cadence === "daily" ? "Daily briefing" : "Weekly briefing";

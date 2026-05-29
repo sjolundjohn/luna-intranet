@@ -1,0 +1,56 @@
+---
+/**
+ * ScreenRenderer — resolves a manifest screen id to its rendered iOS
+ * artboard. Today every screen is a native .astro composition (the
+ * component kit ported from Project B). When Project B later delivers
+ * rasterized wireframes at `wireframes/<id>.*`, add an image branch here;
+ * the registry key stays the screen id either way.
+ *
+ * `variant` selects "current" vs "legacy" for the old-vs-new compare.
+ */
+import DashboardScreen from "./screens/DashboardScreen.astro";
+import SessionHistoryScreen from "./screens/SessionHistoryScreen.astro";
+import SettingsScreen from "./screens/SettingsScreen.astro";
+import DoseConfirmationScreen from "./screens/DoseConfirmationScreen.astro";
+
+interface Props {
+  id: string;
+  variant?: "current" | "legacy";
+}
+const { id, variant = "current" } = Astro.props;
+
+const REGISTRY: Record<string, any> = {
+  dashboard: DashboardScreen,
+  "session-history": SessionHistoryScreen,
+  settings: SettingsScreen,
+  "dose-confirmation": DoseConfirmationScreen,
+};
+
+const Screen = REGISTRY[id];
+---
+{Screen ? (
+  <Screen variant={variant} />
+) : (
+  <div class="scr-missing">
+    <p>No wireframe yet</p>
+    <code>{id}</code>
+    <span>Pending Deliverable 3</span>
+  </div>
+)}
+<style>
+  .scr-missing {
+    min-height: 844px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--color-soft-paper);
+    color: var(--color-slate);
+    text-align: center;
+    padding: 24px;
+  }
+  .scr-missing p { font-size: 17px; font-weight: 700; color: var(--color-graphite); margin: 0; }
+  .scr-missing code { font-family: var(--ios-font-mono); font-size: 13px; color: var(--color-ink); }
+  .scr-missing span { font-size: 12px; }
+</style>

@@ -1,0 +1,236 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MidnightBand from "~/components/MidnightBand.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import OnboardingPath from "~/components/OnboardingPath.astro";
+
+const tracks = (await getCollection("onboarding")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+// The five-step first-run experience for a new Luna team member. Each step is
+// concrete — by the end of step 5 they've talked to Basal, looked at
+// the catalog, picked a role-specific deep-dive, and know how to
+// request a personal agent if useful.
+const steps = [
+  {
+    n: "01",
+    title: "Welcome",
+    body:
+      "You've been added to Luna's AI workplace. This is where every Luna employee works alongside the AI fleet — chat with shared agents, watch what they're doing, ask for one of your own. About 20 minutes total. You can stop and come back any time.",
+    actionLabel: "I'm ready",
+    actionHref: "#step-2",
+    actionStyle: "primary" as const,
+  },
+  {
+    n: "02",
+    title: "Meet Basal — your first agent",
+    body:
+      "Basal is the shared assistant every Luna employee can use. Day-to-day questions about the company, drafting, summarizing, brainstorming, code snippets. Open a chat, ask it something real, and notice the response. Conversations are private to you; nothing is used to train any model.",
+    actionLabel: "Chat with Basal",
+    actionHref: "/tools/chat?agent=basal",
+    actionStyle: "primary" as const,
+    secondaryLabel: "About Basal",
+    secondaryHref: "/ai/agents/basal",
+  },
+  {
+    n: "03",
+    title: "See what else exists",
+    body:
+      "There are five agents live on the Luna AI Workforce today. Some are for everyone (Basal, Pen). Some are owner agents — built for one person (Clara). Some are platform-internal (Pump, Sensor — used by the team building this). Browse the catalog and notice which ones are available to you.",
+    actionLabel: "See all agents",
+    actionHref: "/ai/agents",
+    actionStyle: "primary" as const,
+  },
+  {
+    n: "04",
+    title: "Pick your role-specific deep-dive",
+    body:
+      "Five role tracks below, ~20 minutes each. They cover what we're asking of you, what we're not, where AI fits in your loop, and what stays human. The first module on every track is the same: what we're not asking you to do — that's the boundary, written down. Pick the one that matches your work.",
+    actionLabel: null,
+    actionHref: null,
+    secondaryLabel: null,
+    secondaryHref: null,
+  },
+  {
+    n: "05",
+    title: "Get an agent of your own (optional)",
+    body:
+      "If you find yourself doing the same multi-step thing twice a week — triage, drafts, lookups — that's a workflow worth giving to an agent. Pen runs the intake. Five minutes to file, a few days from request to working agent. There's no quota; everyone at Luna can ask for one.",
+    actionLabel: "Request a new agent",
+    actionHref: "/ai/agents/new",
+    actionStyle: "primary" as const,
+    secondaryLabel: "How requests work",
+    secondaryHref: "/company/help#requesting-new-agents",
+  },
+];
+---
+
+<BaseLayout
+  title="Onboarding"
+  description="The five-step first-run experience for new Luna employees joining the AI workplace."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Onboarding" size="compact" animateMoons={true}>
+    <Fragment slot="headline">
+      Welcome to the AI workplace.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Five steps, about 20 minutes. By the end you'll have talked to your
+      first agent, seen what else exists, and picked a deeper path for
+      your role. The first module on every role-track is the same: what
+      we're <em>not</em> asking you to do.
+    </Fragment>
+    <Fragment slot="cta">
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="#step-1"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-moonlight text-midnight font-body text-[15px] font-semibold shadow-[0_3px_10px_rgba(104,210,223,0.4)] hover:shadow-[0_6px_20px_rgba(104,210,223,0.5)] transition-shadow"
+        >
+          Start onboarding
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </a>
+        <a
+          href="#tracks"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 text-white font-body text-[15px] font-medium hover:bg-white/10 transition-colors"
+        >
+          Skip to role tracks
+        </a>
+      </div>
+    </Fragment>
+  </Hero>
+
+  {/* Five-step first-run flow. */}
+  <WhiteSection size="tall">
+    <div class="max-w-[760px] mb-10">
+      <p class="eyebrow mb-3">The five-step flow</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 38px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        The first-run experience.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-6 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        Linear, on purpose. Each step ends in a real action you take —
+        a chat, a click, a decision. Click through; it should feel like
+        getting set up, not reading a wiki.
+      </p>
+    </div>
+
+    <ol class="space-y-6 max-w-[840px]">
+      {
+        steps.map((step, i) => (
+          <li id={`step-${i + 1}`} class="bg-white border border-border-subtle rounded-[20px] p-6 md:p-8">
+            <div class="flex items-start gap-5">
+              <span class="flex-shrink-0 inline-flex items-center justify-center w-[48px] h-[48px] rounded-full bg-midnight text-moonlight font-mono text-[14px] font-semibold tabular-nums">
+                {step.n}
+              </span>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-body text-ink text-[20px] font-semibold leading-tight">{step.title}</h3>
+                <p class="mt-3 text-graphite text-[16px] leading-[1.65] max-w-[60ch]">{step.body}</p>
+                {(step.actionLabel || step.secondaryLabel) && (
+                  <div class="mt-5 flex flex-wrap gap-3">
+                    {step.actionLabel && step.actionHref && (
+                      <a
+                        href={step.actionHref}
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-midnight text-white font-body text-[14px] font-semibold hover:bg-midnight-deep transition-colors"
+                      >
+                        {step.actionLabel}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                          <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                      </a>
+                    )}
+                    {step.secondaryLabel && step.secondaryHref && (
+                      <a
+                        href={step.secondaryHref}
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-default text-ink font-body text-[14px] font-medium hover:border-ink transition-colors"
+                      >
+                        {step.secondaryLabel}
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </WhiteSection>
+
+  {/* Role tracks — Step 4 destination. */}
+  <WhiteSection id="tracks" size="tall" class="bg-soft-paper">
+    <div class="max-w-[760px] mb-10">
+      <p class="eyebrow mb-3">Step 4 · Role tracks</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 38px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Pick the track for your work.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-6 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        Five role-specific tracks. ~20 minutes each. The engineering and
+        clinical tracks share material; the ops and leadership tracks
+        address how to use AI without setting wrong incentives for the
+        people around you. If your work crosses two, do both — they're short.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+      {
+        tracks.map((track) => (
+          <OnboardingPath
+            role={track.data.role}
+            title={track.data.title}
+            summary={track.data.summary}
+            moduleCount={track.data.modules.length}
+            href={`/company/onboarding/${track.id}`}
+          />
+        ))
+      }
+    </div>
+  </WhiteSection>
+
+  {/* Why-we-have-this band — kept from original because it lands. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[720px]">
+      <p class="eyebrow mb-3">Why we have onboarding at all</p>
+      <h2 class="font-display text-ink font-normal text-[26px] md:text-[32px] leading-[1.1]">
+        Because the platform is half technical, half cultural.
+      </h2>
+      <p class="mt-5 text-graphite text-[16px] leading-[1.65] max-w-[60ch]">
+        The hardest work in shipping an AI workplace isn't the Cloudflare
+        plumbing. It's making sure the team trusts what we built — that
+        the boundaries are real, that the metrics aren't being misread,
+        that "AI assisted" doesn't mean "the human is off the hook." The
+        first module on every track exists for that reason.
+      </p>
+    </div>
+  </WhiteSection>
+
+  {/* Quiet close — links to ongoing reading. */}
+  <MidnightBand size="compact">
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <p class="eyebrow eyebrow-on-dark mb-3">Done with onboarding?</p>
+        <h3 class="font-display text-white font-normal text-[24px] md:text-[28px] leading-tight">
+          Welcome aboard. The dashboard is your home from here.
+        </h3>
+      </div>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href="/dashboard" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-moonlight text-midnight font-body text-[14px] font-semibold hover:opacity-90 transition-opacity">Go to dashboard</a>
+        <a href="/company" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Reference docs</a>
+      </div>
+    </div>
+  </MidnightBand>
+</BaseLayout>

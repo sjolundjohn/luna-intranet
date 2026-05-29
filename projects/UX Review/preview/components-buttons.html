@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Buttons</title>
+<style>
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:400;src:url("../fonts/d-din-regular.woff2") format("woff2");}
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:700;src:url("../fonts/d-din-bold.woff2") format("woff2");}
+:root{
+--font:"D-DIN",-apple-system,system-ui,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+--midnight:#041E42;--moonlight:#68D2DF;--white:#FFFFFF;
+--soft-paper:#FBFDFE;--cloud-lilac:#F2F3FA;--periwinkle:#E7EBF8;--pebble:#BAC6D9;
+--graphite:#535D65;--slate:#7A8892;--lavender:#D6D3E9;--step:#F5F6F8;
+--success:#2E7D32;--warning:#F9CD86;--critical:#8E3655;
+}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--font);background:var(--cloud-lilac);color:var(--midnight);padding:20px 24px;-webkit-font-smoothing:antialiased;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin:0 0 16px;}
+.mono{font-family:var(--mono);}
+.card{background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(4,30,66,0.06);}
+</style></head><body>
+<p class="lbl">Buttons · full-width pill</p>
+<div style="max-width:360px;display:flex;flex-direction:column;gap:12px;">
+  <button style="all:unset;text-align:center;background:var(--moonlight);color:#fff;font-weight:700;font-size:17px;padding:15px;border-radius:999px;cursor:pointer;">Start session</button>
+  <button style="all:unset;text-align:center;background:#fff;color:var(--midnight);font-weight:700;font-size:17px;padding:14px;border-radius:999px;border:1.5px solid var(--midnight);cursor:pointer;">Not now</button>
+  <div style="text-align:center;color:var(--moonlight);font-weight:700;font-size:15px;padding:6px;">Skip and set up later</div>
+</div></body></html>

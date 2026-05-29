@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Insight card</title>
+<style>
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:400;src:url("../fonts/d-din-regular.woff2") format("woff2");}
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:700;src:url("../fonts/d-din-bold.woff2") format("woff2");}
+:root{--font:"D-DIN",-apple-system,system-ui,sans-serif;--mono:ui-monospace,Menlo,monospace;
+--midnight:#041E42;--moonlight:#68D2DF;--graphite:#535D65;--slate:#7A8892;--on-dark-sub:#ACC1DF;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--font);background:#F2F3FA;color:var(--midnight);-webkit-font-smoothing:antialiased;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin:0 0 14px;}
+.mono{font-family:var(--mono);}
+.card{background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(4,30,66,0.06);}
+</style></head><body>
+<div style="padding:20px 24px;">
+<p class="lbl">Insight / action card</p>
+<div class="card" style="max-width:380px;padding:24px;">
+  <div style="display:flex;gap:14px;align-items:flex-start;">
+    <span style="flex:none;margin-top:2px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg></span>
+    <div style="flex:1;min-width:0;">
+      <div style="font-weight:700;font-size:17px;margin-bottom:4px;">A calmer night</div>
+      <div style="font-size:15px;color:var(--graphite);line-height:1.45;">You spent 92% of last night in range. Luna made 3 quiet adjustments while you slept.</div>
+      <button style="all:unset;display:block;text-align:center;background:var(--moonlight);color:#fff;font-weight:700;font-size:16px;padding:13px;border-radius:999px;margin-top:18px;cursor:pointer;">See the night</button>
+    </div>
+  </div>
+</div>
+</div></body></html>

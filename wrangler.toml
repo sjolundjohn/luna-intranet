@@ -1,0 +1,25 @@
+# Wrangler config for the luna-intranet Cloudflare Pages project.
+#
+# This file is used by:
+#   - `wrangler pages dev` for LOCAL development of the Pages Functions in
+#     functions/ (the D1 binding below makes /api/comments work locally).
+#   - `wrangler d1 migrations apply` to run the comments schema.
+#
+# Production deploy is push-to-main → CF Pages (John's hand on the keyboard).
+# The D1 binding for production is configured in the Pages project settings
+# (Settings → Functions → D1 database bindings), using the SAME binding name
+# `DB` and pointing at the same database. Secrets (PROXY_BEARER, CF Access
+# service token, etc.) likewise live in the Pages project settings.
+
+name = "luna-intranet"
+pages_build_output_dir = "dist"
+compatibility_date = "2024-11-01"
+
+# D1 — UX Review comments store.
+# Created via `wrangler d1 create luna-ux-review` (account: John Sjolund).
+# The binding name MUST stay `DB` — that's what functions/api/comments/* read.
+[[d1_databases]]
+binding = "DB"
+database_name = "luna-ux-review"
+database_id = "10be50ac-770f-4cbe-86c7-f5dc89176555"
+migrations_dir = "migrations"

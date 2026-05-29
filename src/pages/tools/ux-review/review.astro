@@ -1,0 +1,146 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import { SCREENS } from "~/lib/ux-review";
+
+const screenMeta = Object.fromEntries(SCREENS.map((s) => [s.id, { title: s.title, feature: s.feature }]));
+---
+
+<BaseLayout
+  title="Review dashboard · UX Review"
+  description="Every open comment across the Luna iOS wireframes."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · UX Review" size="compact" animateMoons={false}>
+    <Fragment slot="headline">Open threads, all in one place.</Fragment>
+    <Fragment slot="subcopy">
+      Every unresolved comment across every screen. Click through to the pin in context, or resolve it from the screen.
+    </Fragment>
+    <Fragment slot="cta">
+      <a href="/tools/ux-review" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">
+        ← Back to all screens
+      </a>
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="compact">
+    <div class="mb-6">
+      <p class="eyebrow mb-2">Unresolved</p>
+      <h2 class="font-display text-ink font-normal" style="font-size: clamp(24px,3vw,32px); line-height:1.05; letter-spacing:-0.02em;" data-open-title>
+        Loading…
+      </h2>
+      <div class="mt-3"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div data-review-list class="flex flex-col gap-7"></div>
+    <p data-review-empty class="text-graphite text-[15px] py-10 text-center" hidden>
+      🎉 No open comments. Everything's been addressed.
+    </p>
+    <p data-review-error class="text-slate text-[14px] py-10 text-center" hidden>
+      The comments store isn’t configured yet — see <code>docs/ux-review-setup.md</code>.
+    </p>
+  </WhiteSection>
+
+  <script is:inline type="application/json" data-screen-meta set:html={JSON.stringify(screenMeta)}></script>
+</BaseLayout>
+
+<style is:global>
+  /* Global: review threads are created at runtime via createElement. */
+  .rv-group-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .rv-group-title { font-size: 16px; font-weight: 700; color: var(--color-ink); }
+  .rv-group-feat { font-size: 12px; color: var(--color-slate); }
+  .rv-thread {
+    display: block;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-decoration: none;
+    background: var(--color-white);
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .rv-thread:hover { border-color: var(--color-ink); box-shadow: 0 6px 24px rgba(4,30,66,0.06); }
+  .rv-thread + .rv-thread { margin-top: 8px; }
+  .rv-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .rv-author { font-size: 13px; font-weight: 700; color: var(--color-ink); }
+  .rv-meta { font-size: 11px; color: var(--color-slate); }
+  .rv-pin { font-size: 11px; font-weight: 700; color: var(--color-moonlight-deep); }
+  .rv-body { font-size: 14px; color: var(--color-graphite); line-height: 1.45; }
+  .rv-replies { font-size: 11px; color: var(--color-slate); margin-top: 4px; }
+</style>
+
+<script>
+  type Thread = {
+    id: string; screenId: string; authorName: string; body: string;
+    anchorX: number | null; createdAt: number; designVersion: string | null; replyCount: number;
+  };
+
+  function setup() {
+    const listEl = document.querySelector<HTMLElement>("[data-review-list]");
+    if (!listEl) return;
+    const titleEl = document.querySelector<HTMLElement>("[data-open-title]")!;
+    const emptyEl = document.querySelector<HTMLElement>("[data-review-empty]")!;
+    const errorEl = document.querySelector<HTMLElement>("[data-review-error]")!;
+    const metaEl = document.querySelector<HTMLElement>("[data-screen-meta]");
+    const meta: Record<string, { title: string; feature: string }> = metaEl ? JSON.parse(metaEl.textContent || "{}") : {};
+
+    function esc(s: string): string {
+      return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
+    }
+    function fmtTime(ts: number): string {
+      return new Date(ts).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+
+    fetch("/api/comments/unresolved")
+      .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then((data: any) => {
+        const threads: Thread[] = data.threads || [];
+        if (!threads.length) {
+          titleEl.textContent = "Nothing open";
+          emptyEl.hidden = false;
+          return;
+        }
+        titleEl.textContent = `${threads.length} open thread${threads.length === 1 ? "" : "s"}`;
+
+        // group by screen, preserving manifest order where possible
+        const byScreen = new Map<string, Thread[]>();
+        threads.forEach((t) => {
+          if (!byScreen.has(t.screenId)) byScreen.set(t.screenId, []);
+          byScreen.get(t.screenId)!.push(t);
+        });
+
+        byScreen.forEach((items, screenId) => {
+          const m = meta[screenId] || { title: screenId, feature: "" };
+          const group = document.createElement("section");
+          const head = document.createElement("div");
+          head.className = "rv-group-head";
+          head.innerHTML = `<a href="/tools/ux-review/${encodeURIComponent(screenId)}" class="rv-group-title" style="text-decoration:none">${esc(m.title)}</a><span class="rv-group-feat">${esc(m.feature)} · ${items.length} open</span>`;
+          group.appendChild(head);
+
+          items.forEach((t) => {
+            const a = document.createElement("a");
+            a.className = "rv-thread";
+            a.href = `/tools/ux-review/${encodeURIComponent(screenId)}#c=${t.id}`;
+            a.innerHTML = `
+              <div class="rv-head">
+                ${t.anchorX != null ? '<span class="rv-pin">📌 pinned</span>' : ""}
+                <span class="rv-author">${esc(t.authorName)}</span>
+                <span class="rv-meta">${fmtTime(t.createdAt)}${t.designVersion ? " · " + esc(t.designVersion) : ""}</span>
+              </div>
+              <div class="rv-body">${esc(t.body)}</div>
+              ${t.replyCount ? `<div class="rv-replies">${t.replyCount} repl${t.replyCount === 1 ? "y" : "ies"}</div>` : ""}`;
+            group.appendChild(a);
+          });
+          listEl.appendChild(group);
+        });
+      })
+      .catch(() => {
+        titleEl.textContent = "Unavailable";
+        errorEl.hidden = false;
+      });
+  }
+
+  setup();
+  document.addEventListener("astro:page-load", setup);
+</script>

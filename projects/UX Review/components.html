@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luna iOS — Component Board</title>
+<link rel="icon" href="assets/favicon.svg" />
+<link rel="stylesheet" href="css/tokens.css" />
+<style>
+  body { background: var(--color-cloud-lilac); margin: 0; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: var(--space-lg) var(--space-sm) var(--space-xxl); }
+  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-default); }
+  .top a { font-size: var(--type-subhead); font-weight: 600; color: var(--color-moonlight-deep); text-decoration: none; }
+  h1 { font-size: var(--type-large-title); font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  .lead { font-size: var(--type-callout); color: var(--color-graphite); line-height: 1.5; max-width: 64ch; margin: 8px 0 var(--space-lg); }
+  .feature { background: var(--color-midnight); border-radius: var(--radius-card); padding: var(--space-md); margin-bottom: var(--space-lg);
+             display: flex; gap: var(--space-md); align-items: center; flex-wrap: wrap; }
+  .feature .txt { flex: 1 1 320px; color: var(--color-white); }
+  .feature .k { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-moonlight); }
+  .feature h2 { font-size: var(--type-title-2); margin: 6px 0 8px; }
+  .feature p { font-size: var(--type-subhead); color: var(--color-on-dark-sub); line-height: 1.5; margin: 0 0 14px; }
+  .btn { display: inline-block; background: var(--color-moonlight); color: var(--color-midnight); font-weight: 700; font-size: var(--type-subhead);
+         text-decoration: none; padding: 12px 22px; border-radius: var(--radius-pill); }
+  .grid { display: grid; gap: var(--space-card-gap); grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+  .card { background: var(--color-white); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden; display: flex; flex-direction: column; }
+  .card iframe { width: 100%; border: 0; display: block; background: var(--color-cloud-lilac); }
+  .meta { padding: 14px var(--space-default) var(--space-default); border-top: 1px solid var(--color-border-subtle); }
+  .meta .name { font-size: var(--type-headline); font-weight: 700; margin: 0; }
+  .meta .ann { font-size: var(--type-footnote); color: var(--color-slate); margin: 4px 0 8px; line-height: 1.4; }
+  .meta a { font-size: var(--type-footnote); font-weight: 600; color: var(--color-moonlight-deep); text-decoration: none; }
+  h3.sec { font-size: var(--type-title-3); margin: var(--space-lg) 0 var(--space-default); }
+  .pending { background: var(--color-soft-paper); border: 1px dashed var(--color-border-strong); border-radius: var(--radius-card); padding: var(--space-md); }
+  .pending h2 { font-size: var(--type-headline); margin: 0 0 6px; }
+  .pending li { font-size: var(--type-subhead); color: var(--color-graphite); line-height: 1.6; }
+  .pending code { font-family: var(--font-mono); font-size: 12px; color: var(--color-ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1>iOS Component Board</h1><a href="index.html">← UX Review Kit</a></div>
+  <p class="lead">Live, on-brand iOS components. Each card's <strong>name = its future Figma layer name</strong>; "Open standalone" is the copyable source in <code>preview/</code>.</p>
+
+  <div class="feature">
+    <div class="txt">
+      <div class="k">Safety-critical · featured</div>
+      <h2>Two-Step Dose-Confirmation</h2>
+      <p>The canonical confirmation for any dose recommendation: acknowledge BOTH required actions (update the Luna setting AND take the dose), then slide to confirm. Six states, fully interactive.</p>
+      <a class="btn" href="dose-confirmation/index.html">Open the component →</a>
+    </div>
+  </div>
+
+  <h3 class="sec">Core components</h3>
+  <div class="grid">
+    <div class="card"><iframe src="preview/components-status-card.html" style="height:260px" title="Status Card"></iframe>
+      <div class="meta"><p class="name">Status Card</p><p class="ann">Top of Dashboard · radius-card · shadow-card · 9 status states</p><a href="preview/components-status-card.html" target="_blank">Open standalone ↗</a></div></div>
+    <div class="card"><iframe src="preview/components-glucose.html" style="height:260px" title="Glucose Display"></iframe>
+      <div class="meta"><p class="name">Glucose Display</p><p class="ann">Large value (D-DIN) + Moonlight directional arrow · mg/dl in Graphite</p><a href="preview/components-glucose.html" target="_blank">Open standalone ↗</a></div></div>
+    <div class="card"><iframe src="preview/components-buttons.html" style="height:320px" title="Buttons"></iframe>
+      <div class="meta"><p class="name">Primary / Secondary Button</p><p class="ann">Pill (radius-pill) · Moonlight fill / Midnight outline</p><a href="preview/components-buttons.html" target="_blank">Open standalone ↗</a></div></div>
+    <div class="card"><iframe src="preview/components-list-rows.html" style="height:340px" title="List Rows"></iframe>
+      <div class="meta"><p class="name">List Rows</p><p class="ann">Settings / Session History · Pebble Blue dividers · Moonlight chevron</p><a href="preview/components-list-rows.html" target="_blank">Open standalone ↗</a></div></div>
+    <div class="card"><iframe src="preview/components-tab-bar.html" style="height:220px" title="Tab Bar"></iframe>
+      <div class="meta"><p class="name">Tab Bar</p><p class="ann">Dashboard · Session History · Settings · active = Moonlight</p><a href="preview/components-tab-bar.html" target="_blank">Open standalone ↗</a></div></div>
+    <div class="card"><iframe src="preview/components-toast.html" style="height:220px" title="Toast"></iframe>
+      <div class="meta"><p class="name">Toast</p><p class="ann">Midnight pill · Moonlight check · bottom of screen</p><a href="preview/components-toast.html" target="_blank">Open standalone ↗</a></div></div>
+    <div class="card"><iframe src="preview/components-insight-card.html" style="height:300px" title="Insight / Action Card"></iframe>
+      <div class="meta"><p class="name">Insight / Action Card</p><p class="ann">White card · Moonlight icon · inline primary action</p><a href="preview/components-insight-card.html" target="_blank">Open standalone ↗</a></div></div>
+    <div class="card"><iframe src="preview/components-calendar-strip.html" style="height:240px" title="Calendar Strip"></iframe>
+      <div class="meta"><p class="name">Calendar Strip</p><p class="ann">Session History week strip · selected = Moonlight fill</p><a href="preview/components-calendar-strip.html" target="_blank">Open standalone ↗</a></div></div>
+  </div>
+
+  <h3 class="sec">Pending — produced with the wireframe set (Deliverable 3)</h3>
+  <div class="pending">
+    <p style="font-size:var(--type-subhead);color:var(--color-graphite);margin:0 0 8px;">These derive directly from the tokens above and will be carded as their first real screen is wireframed:</p>
+    <ul>
+      <li><strong>CGM Chart</strong> — Moonlight dotted data line, light-blue fill; thresholds use icon+label, never color alone; prediction = grey dotted.</li>
+      <li><strong>Bottom-Sheet Modal</strong> — <code>radius-modal</code> top corners, grabber, <code>shadow-modal</code>; the dose-confirmation component is the canonical instance.</li>
+      <li><strong>Nav Header</strong> — Moonlight back arrow + Midnight title, no divider (whitespace-led).</li>
+      <li><strong>Session History Row</strong> — date + "5 units delivered" (Graphite) left, "80% in range" (Midnight) right, Moonlight chevron.</li>
+      <li><strong>Setup Step Cards</strong> — step-surface bg, "STEP N" eyebrow, Moonlight "Start", "Skip and set up later" link.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
