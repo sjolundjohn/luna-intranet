@@ -9,13 +9,24 @@ pnpm build    # static output → dist/ + functions → dist-functions/
 pnpm preview  # serve the built site locally
 ```
 
+## Structure
+
+The site is organized as a small **operating system** — a Dashboard launcher plus four top-level domains, each a URL prefix with a hub landing page:
+
+- **AI System** (`/ai/*`) — the agents and the system that runs them: catalog, fleet, platform docs, governance.
+- **Tools** (`/tools/*`) — apps built on the platform: Chat, UX Review, Telescope (external), Kegerator. Driven by the `tools` content collection.
+- **Workflows** (`/workflows/*`) — automated, recurring AI tasks.
+- **Company** (`/company/*`) — onboarding, org, vision, roadmap, help.
+
+**Hide until live:** nothing unbuilt is exposed. `src/lib/content.ts` (`liveAgents` / `activeWorkflows` / `liveTools`) gates every lister and dynamic route, so non-live agents and drafting workflows never build.
+
 ## Stack
 
 - **Astro 5** — static-site generator. Pages are pre-rendered HTML; no server required for content.
-- **Tailwind CSS v4** — CSS-first. All design tokens live in `src/styles/global.css` as `@theme` custom properties.
+- **Tailwind CSS v4** — CSS-first. The intranet's design tokens live in `src/styles/global.css` as `@theme` custom properties; the **iOS** app design system (for UX Review wireframes) is a separate, scoped token set in `src/styles/ios-tokens.css` (under a `.ux-ios` wrapper).
 - **MDX** — content lives as `.mdx` files under `src/content/` with typed frontmatter.
 - **Cloudflare Pages** — hosting for the static site.
-- **Cloudflare Pages Functions** — backs the `/api/chat` endpoint that powers the in-browser chat box. Lives in `functions/`.
+- **Cloudflare Pages Functions + D1** — back the dynamic APIs in `functions/api/`: the chat proxy (`/api/chat`), UX Review comments + notifications, `whoami`, and the Kegerator vote store. The D1 database is bound as `DB` (see `docs/ux-review-setup.md`).
 - **Cloudflare Access** — auth at the network edge, federated to Google Workspace. No in-app auth code.
 
 ## Auth model
@@ -34,7 +45,7 @@ Visual QA page: `/styleguide` — every component in every variant. Diff that pa
 
 ## Chat backend — how it works
 
-The chat box on the landing page and on `/agents/basal` posts to `/api/chat`, which is a Cloudflare Pages Function at `functions/api/chat.ts`. It:
+The chat box on the landing page and on `/ai/agents/basal` posts to `/api/chat`, which is a Cloudflare Pages Function at `functions/api/chat.ts`. It:
 
 1. Reads the authenticated user's email from the `Cf-Access-Jwt-Assertion` header.
 2. Adds `Authorization: Bearer $PROXY_BEARER` (held as a Pages secret).
@@ -61,20 +72,23 @@ Create `src/content/agents/<slug>.mdx`:
 ```mdx
 ---
 name: "Name"
-status: "live" | "coming-soon" | "by-request"
+status: "live" | "coming-soon" | "by-request"   # only `live` ever renders
 summary: "One line that appears on the agent card."
 accessHint: "Slack DM · @Name"
 avatar: "/agents/avatars/name.png"   # optional; falls back to moon-phase glyph
 owner: "john"                         # optional; person-id of maintainer
-teams: ["all"]                        # or specific team slugs, see below
+scope: "1:many" | "1:1"               # shared vs owner agent
+department: "software"                # single team slug, see below
+allowedUsers: ["john@lunadiabetes.com"]
 usedBy: ["john"]                      # person-ids who actively use it
+piiScope: "none" | "employee" | "phi"
 order: 4
 ---
 
 Markdown / MDX body.
 ```
 
-Appears automatically on `/agents`, `/agents/<slug>`, `/org/by-team`, and `/org/by-person`.
+A `live` agent appears automatically on `/ai/agents`, `/ai/agents/<slug>`, `/company/org/by-team`, and `/company/org/by-person`. Non-live agents are hidden everywhere (see Structure → "hide until live").
 
 ### New person
 
@@ -97,15 +111,34 @@ Valid team slugs: `exec`, `software`, `data-science`, `hardware`, `regulatory`, 
 
 ### New platform topic
 
-Create `src/content/platform/<slug>.mdx` with `title`, `summary`, `order`. Appears on `/platform` and `/platform/<slug>`.
+Create `src/content/platform/<slug>.mdx` with `title`, `summary`, `order`. Appears on `/ai/platform` and `/ai/platform/<slug>`.
+
+### New tool
+
+Drop `src/content/tools/<slug>.mdx`:
+
+```mdx
+---
+name: "My Tool"
+status: "live" | "building" | "planned"   # only `live` renders
+summary: "One line for the Tools hub card."
+href: "/tools/my-tool"        # internal page, OR a full https:// URL
+external: false               # true → opens in a new tab with an ↗
+screenshot: "/tools/my-tool.png"   # optional preview thumbnail in /public
+eyebrow: "Tool · Category"
+order: 5
+---
+```
+
+A `live` tool appears automatically in the **Tools hub** (`/tools`), the nav **Tools** dropdown, and the dashboard launcher. Build the actual page under `src/pages/tools/<slug>.astro` (or point `href` at an external app). It stays hidden until `status: live`.
 
 ### New top-level section
 
 Content collections for `handbook`, `engineering`, `news` are pre-wired with empty schemas in `src/content.config.ts`. To turn one on:
 
 1. Add your first MDX file under `src/content/<section>/`.
-2. Create `src/pages/<section>/index.astro` (list) and `[slug].astro` (detail) using `/agents/index.astro` + `/agents/[slug].astro` as templates.
-3. Add the nav link in `src/components/Nav.astro`.
+2. Create the pages under the right domain, e.g. `src/pages/company/<section>/index.astro` (list) and `[slug].astro` (detail), using `src/pages/ai/agents/index.astro` + `[slug].astro` as templates.
+3. Add the link to the domain's dropdown (or a new top-level entry) in `src/components/Nav.astro`.
 
 ## Avatars
 

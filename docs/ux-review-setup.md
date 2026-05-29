@@ -1,12 +1,14 @@
 # UX Review — setup & operations
 
-The **UX Review** section (`/ux-review`) lets colleagues review the Luna iOS
+The **UX Review** tool (`/tools/ux-review`) lets colleagues review the Luna iOS
 app wireframes and leave Google-Docs-style comments before Figma export. This
-doc covers the one piece that needs wiring beyond the static build: the **D1
-database** behind the comments API.
+doc covers the platform wiring beyond the static build: the **D1 database**
+behind the dynamic tools (UX Review comments + the Kegerator), and the
+**deploy / CI** setup.
 
-> Built per `projects/UX Review/INFRASTRUCTURE-BRIEF.md`. Deploy is
-> push-to-main → CF Pages; **John's hand on the keyboard** (don't deploy from here).
+> Deploy is **GitHub Actions** (`.github/workflows/deploy.yml`): typecheck +
+> build on every PR; on `main`, apply D1 migrations then `wrangler pages deploy`.
+> A merge to `main` deploys to production — **John's call.**
 
 ---
 
@@ -14,14 +16,16 @@ database** behind the comments API.
 
 | Piece | Path |
 | --- | --- |
-| Section pages | `src/pages/ux-review/{index,[slug],review}.astro` |
+| UX Review pages | `src/pages/tools/ux-review/{index,[slug],review}.astro` |
 | iOS tokens (scoped to `.ux-ios`) | `src/styles/ios-tokens.css` |
 | iOS component kit + screens | `src/components/ux/` |
 | Manifest (data source) | `projects/UX Review/app-map.json` |
 | Manifest loader + types | `src/lib/ux-review.ts` |
-| Comments API (D1) | `functions/api/comments/`, `functions/api/notifications.ts` |
-| Schema migration | `migrations/0001_comments.sql` |
-| D1 binding | `wrangler.toml` |
+| Tools registry | `tools` collection (`src/content/tools/*.mdx`, schema in `content.config.ts`) |
+| Kegerator tool | `src/pages/tools/kegerator.astro`, catalog `src/lib/kegjoy.ts` |
+| Dynamic APIs (D1) | `functions/api/{comments,keg,notifications,whoami}` |
+| Schema migrations | `migrations/0001_comments.sql`, `migrations/0002_kegerator.sql` |
+| D1 binding | `wrangler.toml` (binding `DB`) |
 | Notifications bell | `src/components/ux/NotificationsBell.astro` (in `Nav.astro`) |
 
 The site renders fully **without** D1 — comment surfaces just show a graceful
@@ -39,7 +43,7 @@ The database exists and the schema is applied (done 2026-05-29, account
 | Database | `luna-ux-review` |
 | `database_id` | `10be50ac-770f-4cbe-86c7-f5dc89176555` (in `wrangler.toml`) |
 | Region | WNAM |
-| Schema | `0001_comments.sql` applied to `--remote` |
+| Schema | `0001_comments.sql` + `0002_kegerator.sql` applied to `--remote` |
 | Binding name | **`DB`** (don't rename — Functions read `env.DB`) |
 
 The `[[d1_databases]]` binding in `wrangler.toml` is attached to the Pages
@@ -76,8 +80,36 @@ Secrets and variables → Actions → New repository secret):
 | `CLOUDFLARE_API_TOKEN` | a token on the **John Sjolund** account with **Account · Cloudflare Pages: Edit** + **Account · D1: Edit** + **Account · Account Settings: Read** (create at dash.cloudflare.com → My Profile → API Tokens) |
 
 Create the token, add both secrets, then push to `main` — CI builds, applies
-migrations, and deploys. Comments go live the moment that deploy lands (the
-binding does the rest; no runtime secret needed for comments).
+migrations, and deploys.
+
+### Two secret stores — don't confuse them
+
+There are **two** separate places secrets live; they are not interchangeable:
+
+| Store | Where | What lives here |
+| --- | --- | --- |
+| **Cloudflare Pages project** | CF dashboard → Pages → luna-intranet → Settings | **Runtime** secrets the deployed Functions read: `PROXY_BEARER`, `CF_ACCESS_CLIENT_ID/SECRET`, `CONFIG_API_BEARER`, `FLEET_API_BEARER`. |
+| **GitHub Actions** | repo → Settings → Secrets and variables → Actions | **Deploy-time** creds the CI uses: `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`. |
+
+Setting the runtime (Pages) secrets does **not** satisfy the deploy job, and
+vice-versa. As of 2026-05-29: `CLOUDFLARE_ACCOUNT_ID` is set; the
+`CLOUDFLARE_API_TOKEN` in GitHub Actions is **invalid** — the deploy step fails
+with `Invalid access token [code: 9109]`. Verify a token before setting it:
+
+```bash
+curl -s https://api.cloudflare.com/client/v4/user/tokens/verify \
+  -H "Authorization: Bearer <TOKEN>" | python3 -m json.tool   # want "status": "active"
+printf %s "<TOKEN>" | gh secret set CLOUDFLARE_API_TOKEN --repo sjolundjohn/luna-intranet
+```
+
+**Until the CI token is valid, deploy manually** (uses your local `wrangler`
+OAuth login, no token needed):
+
+```bash
+export CLOUDFLARE_ACCOUNT_ID=a4142411ce45e09b846536e0a1aba208
+npx wrangler d1 migrations apply luna-ux-review --remote   # only if migrations are pending
+npx wrangler pages deploy dist --project-name luna-intranet --branch=main
+```
 
 ---
 
@@ -90,7 +122,7 @@ exercise comments locally, build and run under Wrangler:
 pnpm build
 npx wrangler d1 migrations apply luna-ux-review --local
 npx wrangler pages dev dist --port 8788
-# → http://localhost:8788/ux-review
+# → http://localhost:8788/tools/ux-review  ·  /tools/kegerator
 ```
 
 Note: Cloudflare reserves `cf-*` request headers, so the
@@ -126,7 +158,10 @@ In production, Cloudflare Access injects the email header, so identity works.
 | `PATCH /api/comments/:id` | resolve / reopen (`{ resolved: boolean }`) |
 | `GET /api/comments/unresolved` | dashboard feed + per-screen open counts |
 | `GET /api/notifications` | recent events for the nav bell |
-| `GET /api/whoami` | caller's verified email (excludes self from notifications) |
+| `GET /api/whoami` | caller's verified email + `isAdmin` (powers Kegerator's Make Order) |
+| `GET /api/keg/votes` | Kegerator standings + the caller's own votes |
+| `POST /api/keg/vote` | cast / change / clear a keg vote (`{ itemId, value: 1\|-1\|0 }`) |
+| `POST /api/keg/order` | **admin** — clears the keg queue after an order is placed |
 
 Comments are **never deleted** — resolving collapses a thread into the
 "Resolved" group. Replies are one level deep. Anchored pins store fractional

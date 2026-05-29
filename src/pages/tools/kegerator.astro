@@ -178,7 +178,6 @@ const catalogForClient = KEG_CATALOG.map((i) => ({ id: i.id, name: i.name, categ
   type CatalogItem = { id: string; name: string; category: "coldbrew" | "kombucha" };
 
   function setupKeg() {
-    const root = document.querySelector<HTMLElement>("[data-make-order]")?.closest("section");
     if (!document.querySelector("[data-item]")) return;
 
     const catalogEl = document.querySelector<HTMLElement>("[data-keg-catalog]");

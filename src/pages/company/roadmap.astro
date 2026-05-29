@@ -12,6 +12,19 @@ interface Item {
 
 const phases: { name: string; status: "shipped" | "now" | "next" | "later" | "deferred"; goal: string; items: Item[] }[] = [
   {
+    name: "Operating system · domains, Tools, and two new tools",
+    status: "shipped",
+    goal: "Reorganized the intranet from an AI-tools test bed into a company operating system — a small set of top-level domains, an extensible Tools section, and strict 'don't show it until it works' gating.",
+    items: [
+      { title: "Four domains + Dashboard", detail: "AI System (/ai), Tools (/tools), Workflows (/workflows), Company (/company), each with a hub landing page; Dashboard is the launcher. Pre-launch, so URLs were re-pathed fresh." },
+      { title: "Tools registry", detail: "A `tools` content collection — add a tool by dropping one MDX file. The hub renders live tools only. Chat, UX Review, Telescope (external subdomain) and Kegerator are live today." },
+      { title: "UX Review tool", detail: "Review the Luna iOS wireframes screen-by-screen with anchored, threaded, resolvable comments + a notifications bell. Cloudflare Pages Functions + D1." },
+      { title: "Kegerator", detail: "Office keg reorder — vote the next cold brew + kombucha up/down; a one-click admin 'Make Order' opens the Kegjoy email and clears the queue. D1-backed." },
+      { title: "Strict hide-until-live", detail: "One helper (src/lib/content.ts) gates every surface; non-live agents and drafting workflows never build." },
+      { title: "Deploy CI", detail: "GitHub Actions — typecheck + build on every PR; on main, apply D1 migrations then wrangler pages deploy." },
+    ],
+  },
+  {
     name: "Phase 1 · IA, copy, and the front door",
     status: "shipped",
     goal: "Every page exists with reviewed copy. Welcome / onboarding is the front door; daily dashboard is one click. The site reads as the operating system for AI at Luna, not as marketing.",
@@ -19,9 +32,9 @@ const phases: { name: string; status: "shipped" | "now" | "next" | "later" | "de
       { title: "/ Welcome + 5-step onboarding flow", detail: "First-run experience plus a returning-user bypass to the dashboard. Linked to the role tracks below." },
       { title: "/dashboard with your-agents grid", detail: "Today's briefing card, fleet-at-a-glance, recent activity, quick actions." },
       { title: "/company/vision · /ai/governance · /company/roadmap · /company/help", detail: "Fear-and-answer pattern; roles + permissions + kill-switch + audit + PHI scope documented; user-guide written." },
-      { title: "/ai/agents with Yours + full catalog + scope/PHI badges", detail: "Six real Workforce agents; 1:1 owner agents called out; /ai/agents/new flow with intake template." },
+      { title: "/ai/agents with Yours + full catalog + scope/PHI badges", detail: "Five live Workforce agents (non-live agents stay hidden); 1:1 owner agents called out; /ai/agents/new flow with intake template." },
       { title: "/ai/fleet with By-team / By-owner / Flat groupings", detail: "Scales to 50+ agents without layout reflow. Empty departments render a 'request one' CTA." },
-      { title: "Nav with hover dropdowns + active-bar fix", detail: "Six top-level items, every sub-page reachable in two clicks." },
+      { title: "Nav with hover dropdowns + active-bar fix", detail: "Domain-grouped nav; every sub-page reachable in two clicks." },
     ],
   },
   {
@@ -44,6 +57,16 @@ const phases: { name: string; status: "shipped" | "now" | "next" | "later" | "de
       { title: "luna-config-api at config-api.nightluna.com", detail: "GET /me, PUT /me/agents/:slug (enabled, memory, custom instructions, notifications), DELETE memory wipe queue. One DO per user_email." },
       { title: "Intranet Pages Functions proxy with CF Access service tokens", detail: "/api/me/activity, /api/me/config, /api/me/memory, /api/fleet/*, /api/admin/kill. Same pattern /api/chat uses for ai-proxy." },
       { title: "/ai/agents/me client-side enhancement", detail: "Mock renders first (never empty); /api/me/activity replaces with real audit rows; toggles persist via PUT on change." },
+    ],
+  },
+  {
+    name: "Up next · tools polish + deploy",
+    status: "next",
+    goal: "Small, known follow-ups on the new tools and the deploy pipeline — none blocking, all worth closing.",
+    items: [
+      { title: "Fix the CI deploy token", detail: "Set a valid CLOUDFLARE_API_TOKEN GitHub Actions secret (Pages: Edit, D1: Edit, Account: Read) so pushes to main self-deploy. Until then, deploys are run manually." },
+      { title: "Telescope preview thumbnail", detail: "Drop public/tools/telescope.png and add `screenshot:` to the tool entry so the Tools hub shows a live preview card." },
+      { title: "Kegerator flavor granularity", detail: "If we want per-flavor voting, scrape each Kegjoy brand's lineup and split catalog rows (e.g. 'GT's · Gingerade'). Brand-level voting works today." },
     ],
   },
   {
