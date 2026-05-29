@@ -287,11 +287,11 @@ const catalogForClient = KEG_CATALOG.map((i) => ({ id: i.id, name: i.name, categ
     function buildComposeUrl(): string {
       const cb = topOf("coldbrew");
       const kb = topOf("kombucha");
-      const lines = ["Hi Kegjoy team,", "", "We'd like to reorder for the Luna office:", ""];
-      lines.push(`Cold brew: ${cb ? nameOf(cb.id) : "(no votes yet — please leave as-is)"}`);
-      lines.push(`Kombucha: ${kb ? nameOf(kb.id) : "(no votes yet — please leave as-is)"}`);
-      lines.push("", "Thanks,", "Luna");
-      const subject = "Luna office keg reorder";
+      const lines = ["Hi Kegjoy team,", "", "Hope you're all having a great day! We'd love to place a reorder for the Luna office whenever you get the chance:", ""];
+      lines.push(`Cold brew: ${cb ? nameOf(cb.id) : "(team's still deciding — your pick!)"}`);
+      lines.push(`Kombucha: ${kb ? nameOf(kb.id) : "(team's still deciding — your pick!)"}`);
+      lines.push("", "Thank you so much for keeping us caffeinated and fizzy — we really appreciate it. Cheers!", "", "Warmly,", "The Luna team");
+      const subject = "Keg reorder for the Luna office 🍻";
       const q = new URLSearchParams({
         view: "cm",
         fs: "1",
