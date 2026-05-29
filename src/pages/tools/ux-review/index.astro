@@ -7,7 +7,7 @@ import MoonlightRule from "~/components/MoonlightRule.astro";
 import Phone from "~/components/ux/Phone.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
-import { SCREENS, byFeature, features, tiers, STATUS_ORDER } from "~/lib/ux-review";
+import { SCREENS, byFeature, features, tiers, STATUS_ORDER, FEATURE_BRDS, SUPPORTING_DOCS } from "~/lib/ux-review";
 
 const featureGroups = byFeature();
 const THUMB_SCALE = 0.46;
@@ -151,6 +151,30 @@ const THUMB_SCALE = 0.46;
 
     <p data-empty class="text-slate text-[14px] py-10 text-center" hidden>No screens match these filters.</p>
   </WhiteSection>
+
+  {/* Program reference — the BRDs and source docs, one place for engineering. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="mb-6">
+      <p class="eyebrow mb-2">Reference</p>
+      <h2 class="font-body text-ink font-bold text-[20px]">BRDs &amp; program docs</h2>
+      <p class="mt-2 text-slate text-[13px] max-w-[60ch]">Each screen's detail page links its feature BRD. The full set lives on Google Drive:</p>
+    </div>
+    <div class="grid gap-3 md:grid-cols-2">
+      {Object.entries(FEATURE_BRDS).map(([feature, b]) => (
+        <a href={b.url} target="_blank" rel="noopener" class="ux-ref">
+          <span class="ux-ref-eyebrow">BRD · {feature}</span>
+          <span class="ux-ref-title">{b.title}</span>
+        </a>
+      ))}
+      {SUPPORTING_DOCS.map((d) => (
+        <a href={d.url} target="_blank" rel="noopener" class="ux-ref">
+          <span class="ux-ref-eyebrow">Reference</span>
+          <span class="ux-ref-title">{d.title}</span>
+          <span class="ux-ref-desc">{d.desc}</span>
+        </a>
+      ))}
+    </div>
+  </WhiteSection>
 </BaseLayout>
 
 <style>
@@ -165,6 +189,22 @@ const THUMB_SCALE = 0.46;
   }
   .ux-view-btn { color: var(--color-graphite); }
   .ux-view-btn[aria-selected="true"] { background: var(--color-midnight); color: #fff; }
+
+  .ux-ref {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 14px 16px;
+    background: var(--color-white);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .ux-ref:hover { border-color: var(--color-ink); box-shadow: 0 6px 24px rgba(4, 30, 66, 0.06); }
+  .ux-ref-eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-moonlight-deep); }
+  .ux-ref-title { font-size: 14px; font-weight: 600; color: var(--color-ink); line-height: 1.35; }
+  .ux-ref-desc { font-size: 12px; color: var(--color-slate); line-height: 1.45; }
 
   .ux-grid {
     display: grid;

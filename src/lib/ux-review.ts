@@ -59,3 +59,62 @@ export function componentId(wireframe: string | null): string | null {
   if (!wireframe) return null;
   return wireframe.startsWith("component:") ? wireframe.slice("component:".length) : null;
 }
+
+/**
+ * BRD links — one per feature, pointing at the regulated Business Requirements
+ * doc on Google Drive (NOT Notion). Keyed by the screen's `feature`. Adding a
+ * feature = add one entry here, so every screen in that feature shares the
+ * correct link and there's a single place to maintain it.
+ */
+export const FEATURE_BRDS: Record<string, { title: string; url: string }> = {
+  "HypoShield": {
+    title: "HypoShield & In-App Comms — Business Requirements (BRD)",
+    url: "https://docs.google.com/document/d/1XPDw5hbqG6boaocceBvnhxZZOJv9Ac28HPZJh6HnYoQ/edit",
+  },
+  "IOB Display": {
+    title: "IOB Display — Business Requirements (BRD)",
+    url: "https://docs.google.com/document/d/1EhOOcDZvF0knvRYnP44P7YtdtErg1j_l_eD0krhvhdU/edit",
+  },
+  "Onboarding": {
+    title: "Onboarding Update — Business Requirements (BRD)",
+    url: "https://docs.google.com/document/d/1m3lmOTehTHCxQugJqYkoXb1cZw5b42lEd3Vzhs0782o/edit",
+  },
+  "Apollo Training": {
+    title: "Apollo Training — Business Requirements (BRD)",
+    url: "https://docs.google.com/document/d/1h1ViWd7Uv0ue0qhOrecxdNZN10tF2zsMJGjC9l5wnlM/edit",
+  },
+  "Dark UI": {
+    title: "Dark UI — Business Requirements (BRD)",
+    url: "https://docs.google.com/document/d/12868Hp1iLILPfLYEUtxI1TeI-Se5HhIqvpS_sJD7_R8/edit",
+  },
+};
+
+/** Program-level reference docs (Google Drive), surfaced for engineering. */
+export const SUPPORTING_DOCS: { title: string; url: string; desc: string }[] = [
+  {
+    title: "Luna App Map — Screen Inventory (T1 Pivotal)",
+    url: "https://docs.google.com/spreadsheets/d/1M3UuD1aWg8UJT-jOIEmONmOnzoK0aTLsPhapF6M-jOc/edit",
+    desc: "Every screen × Status (New/Changed/Unchanged) × Feature × BRD tier.",
+  },
+  {
+    title: "T1 BRD Program — Consolidated Decisions",
+    url: "https://docs.google.com/document/d/1m1SzJV5rbr2Ymv6zQVJQg5l4EFD_x3Qoco5wW4ASCkE/edit",
+    desc: "The locked product decisions across the slate.",
+  },
+  {
+    title: "Two-Step Dose-Confirmation — Component Spec",
+    url: "https://docs.google.com/document/d/19MZ24k-MfCuDemTLeCRKKP9pJb9K0LWHUWvxDogHHBo/edit",
+    desc: "Shared dose-confirmation component (HypoShield / IOB / Onboarding depend on it).",
+  },
+];
+
+/** Only ever return a Google Docs/Drive URL — guards against a stray Notion link. */
+export function isGoogleDocUrl(url: string): boolean {
+  return /^https:\/\/(docs|drive)\.google\.com\//.test(url);
+}
+
+/** The BRD for a screen's feature, if one exists and is a real Google Doc. */
+export function brdFor(feature: string): { title: string; url: string } | undefined {
+  const b = FEATURE_BRDS[feature];
+  return b && isGoogleDocUrl(b.url) ? b : undefined;
+}

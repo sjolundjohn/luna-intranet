@@ -7,7 +7,7 @@ import Phone from "~/components/ux/Phone.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
 import CompareSlider from "~/components/ux/CompareSlider.astro";
-import { SCREENS, componentId, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
+import { SCREENS, componentId, brdFor, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
 
 export function getStaticPaths() {
   return SCREENS.map((s) => ({ params: { slug: s.id }, props: { screen: s } }));
@@ -16,6 +16,7 @@ export function getStaticPaths() {
 const { screen } = Astro.props;
 const showCompare = screen.status === "Changed" && componentId(screen.legacy) !== null;
 const COMPARE_SCALE = 0.62;
+const brd = brdFor(screen.feature);
 ---
 
 <BaseLayout title={`${screen.title} · UX Review`} description={screen.summary} heroIsDark={false}>
@@ -95,8 +96,8 @@ const COMPARE_SCALE = 0.62;
             <div><dt>BRD tier</dt><dd>{screen.brdTier}</dd></div>
             <div><dt>Status</dt><dd>{screen.status}</dd></div>
           </dl>
-          {screen.brdLink && (
-            <a href={screen.brdLink} target="_blank" rel="noopener" class="ux-brd-link">
+          {brd && (
+            <a href={brd.url} target="_blank" rel="noopener" class="ux-brd-link" title={brd.title}>
               Open the BRD ↗
             </a>
           )}
