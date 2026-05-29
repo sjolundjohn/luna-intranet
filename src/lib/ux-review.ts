@@ -55,6 +55,51 @@ export function componentId(wireframe: string | null): string | null {
 }
 
 /**
+ * Prototype walkthrough wiring. The tab bar maps to the three tab-root screens;
+ * FLOW_NEXT advances a screen's primary CTA to the next step in its flow. Used by
+ * the detail page's "prototype mode" so you can click through the app like the
+ * real thing — without changing any screen. (Screens not listed simply don't
+ * advance on the primary button.)
+ */
+export const TAB_TARGET: Record<string, string> = {
+  dashboard: "home-dashboard",
+  "session-history": "session-history",
+  settings: "settings-list",
+};
+
+export const FLOW_NEXT: Record<string, string> = {
+  // Onboarding chapters → hand off to Apollo Training
+  "onboarding-chapter-1": "onboarding-chapter-2",
+  "onboarding-chapter-2": "onboarding-chapter-3",
+  "onboarding-chapter-3": "onboarding-chapter-4",
+  "onboarding-chapter-4": "onboarding-chapter-5",
+  "onboarding-chapter-5": "apollo-intro",
+  // Apollo — evening setup → overnight → morning removal → complete
+  "apollo-intro": "apollo-step-01-inventory",
+  "apollo-step-01-inventory": "apollo-step-02-open-tray",
+  "apollo-step-02-open-tray": "apollo-step-03-fill",
+  "apollo-step-03-fill": "apollo-step-04-remove-label",
+  "apollo-step-04-remove-label": "apollo-step-05-attach-capsule",
+  "apollo-step-05-attach-capsule": "apollo-step-06-remove-base",
+  "apollo-step-06-remove-base": "apollo-step-07-apply-body",
+  "apollo-step-07-apply-body": "apollo-hardware-checkpoint",
+  "apollo-hardware-checkpoint": "apollo-evening-outro",
+  "apollo-evening-outro": "apollo-overnight-handoff",
+  "apollo-overnight-handoff": "apollo-morning-start",
+  "apollo-morning-start": "apollo-step-08-remove-device",
+  "apollo-step-08-remove-device": "apollo-step-09-detach-reservoir",
+  "apollo-step-09-detach-reservoir": "apollo-step-10-charge",
+  "apollo-step-10-charge": "apollo-morning-outro",
+  "apollo-morning-outro": "apollo-complete",
+  "apollo-complete": "home-dashboard",
+  // Hypo Shield — surface a recommendation → the two-step confirm
+  "hypo-home-tip-post": "hypo-confirm-increase",
+  "hypo-mid-session-announcement": "hypo-confirm-increase",
+  // IOB — pre-session opt-in → opted-in home
+  "iob-pre-session-announcement": "iob-home-on",
+};
+
+/**
  * BRD links — one per feature, pointing at the regulated Business Requirements
  * doc on Google Drive (NOT Notion). Keyed by the screen's `feature`. Adding a
  * feature = add one entry here, so every screen in that feature shares the

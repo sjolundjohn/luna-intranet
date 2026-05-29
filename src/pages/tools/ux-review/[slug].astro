@@ -6,7 +6,7 @@ import CTAButton from "~/components/CTAButton.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
 import CompareSlider from "~/components/ux/CompareSlider.astro";
-import { SCREENS, brdFor, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
+import { SCREENS, brdFor, FLOW_NEXT, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
 
 export function getStaticPaths() {
   return SCREENS.map((s) => ({ params: { slug: s.id }, props: { screen: s } }));
@@ -18,6 +18,8 @@ const { screen } = Astro.props;
 const showCompare = screen.legacy !== null;
 const COMPARE_SCALE = 0.62;
 const brd = brdFor(screen.feature);
+// Prototype walkthrough: the next screen this screen's primary CTA advances to.
+const flowNext = FLOW_NEXT[screen.id] ?? "";
 ---
 
 <BaseLayout title={`${screen.title} · UX Review`} description={screen.summary} heroIsDark={false}>
@@ -38,7 +40,7 @@ const brd = brdFor(screen.feature);
       {screen.summary && <p class="mt-3 text-graphite text-[15px] leading-[1.55] max-w-[60ch]">{screen.summary}</p>}
     </header>
 
-    <div class="ux-detail" data-screen-id={screen.id} data-current-version={CURRENT_DESIGN_VERSION}>
+    <div class="ux-detail" data-screen-id={screen.id} data-current-version={CURRENT_DESIGN_VERSION} data-flow-next={flowNext}>
       {/* LEFT — the device frame + pins / compare */}
       <div class="ux-detail-stage">
         {showCompare && (
@@ -57,6 +59,7 @@ const brd = brdFor(screen.feature);
             </button>
             <span data-pin-hint class="text-slate text-[12px]" hidden>Click anywhere on the screen to drop the pin</span>
           </div>
+          <p data-proto-hint class="text-[12px] font-medium mb-2" style="color: var(--color-moonlight-deep)" hidden>▶ Prototype mode — tap the tab bar or the primary button to walk through the app.</p>
           <div class="ux-stage" data-stage>
             <div class="ux-ios">
               <ScreenRenderer id={screen.id} variant="current" mode="full" scale={1} />
@@ -339,8 +342,20 @@ const brd = brdFor(screen.feature);
     let arming = false;
     let activeThreadId: string | null = null;
 
-    // --- identity (free): display name in localStorage, email from CF Access.
+    // --- identity. Google-Docs-style: when the signed-in identity carries a real
+    // email (via Google IAP / CF Access), comments attribute to that person
+    // automatically — no name prompt. Pre-identity (IAP forwards only a uid),
+    // we fall back to a one-time typed name so review can still happen.
+    let signedInName: string | null = null;
+    function prettify(local: string): string {
+      return local
+        .split(/[._-]+/)
+        .filter(Boolean)
+        .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+        .join(" ") || local;
+    }
     function getName(): string {
+      if (signedInName) return signedInName;
       let n = localStorage.getItem("ux-review:name");
       if (!n) {
         n = (prompt("Your name (shown next to your comments):", "") || "").trim();
@@ -349,9 +364,24 @@ const brd = brdFor(screen.feature);
       return n || "Anonymous";
     }
     function refreshAs() {
+      if (signedInName) {
+        composerAs.textContent = `Commenting as ${signedInName}`;
+        return;
+      }
       const n = localStorage.getItem("ux-review:name");
       composerAs.textContent = n ? `Commenting as ${n}` : "You'll be asked for a name";
     }
+    // Resolve the verified identity from CF Access / Google IAP.
+    fetch("/api/whoami")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((who: any) => {
+        const email: string = who?.email || "";
+        if (email && email.includes("@") && !email.startsWith("gcp-iap:")) {
+          signedInName = prettify(who.nameGuess || email.split("@")[0]);
+        }
+        refreshAs();
+      })
+      .catch(() => {});
     refreshAs();
 
     // --- helpers
@@ -599,6 +629,35 @@ const brd = brdFor(screen.feature);
         if (mode === "single") requestAnimationFrame(alignPinLayer);
       });
     });
+
+    // --- prototype mode: the tab bar + primary CTA navigate through the app,
+    // exactly like the real thing — without changing any screen. Clicks pass
+    // through the (pointer-events:none) pin layer, so this only fires when not
+    // dropping a pin.
+    const TAB_TARGET: Record<string, string> = {
+      dashboard: "home-dashboard",
+      "session-history": "session-history",
+      settings: "settings-list",
+    };
+    const flowNext = root.dataset.flowNext || "";
+    const protoHint = root.querySelector<HTMLElement>("[data-proto-hint]");
+    stage?.addEventListener("click", (e) => {
+      if (arming) return; // dropping a comment pin
+      const target = e.target as HTMLElement;
+      const tab = target.closest<HTMLElement>("[data-tab]");
+      if (tab) {
+        const to = TAB_TARGET[tab.dataset.tab || ""];
+        if (to && to !== screenId) { e.preventDefault(); location.assign(`/tools/ux-review/${to}`); }
+        return;
+      }
+      if (flowNext && target.closest(".btn.primary")) {
+        e.preventDefault();
+        location.assign(`/tools/ux-review/${flowNext}`);
+      }
+    });
+    if (protoHint && stage && (stage.querySelector("[data-tab]") || (flowNext && stage.querySelector(".btn.primary")))) {
+      protoHint.hidden = false;
+    }
 
     // --- deep link /tools/ux-review/<id>#c=<comment_id>
     function handleDeepLink() {
