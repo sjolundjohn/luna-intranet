@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Calendar strip</title>
+<style>
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:400;src:url("../fonts/d-din-regular.woff2") format("woff2");}
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:700;src:url("../fonts/d-din-bold.woff2") format("woff2");}
+:root{
+--font:"D-DIN",-apple-system,system-ui,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+--midnight:#041E42;--moonlight:#68D2DF;--white:#FFFFFF;
+--soft-paper:#FBFDFE;--cloud-lilac:#F2F3FA;--periwinkle:#E7EBF8;--pebble:#BAC6D9;
+--graphite:#535D65;--slate:#7A8892;--lavender:#D6D3E9;--step:#F5F6F8;
+--success:#2E7D32;--warning:#F9CD86;--critical:#8E3655;
+}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--font);background:var(--cloud-lilac);color:var(--midnight);padding:20px 24px;-webkit-font-smoothing:antialiased;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin:0 0 16px;}
+.mono{font-family:var(--mono);}
+.card{background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(4,30,66,0.06);}
+</style></head><body>
+<p class="lbl">Calendar strip · Session History</p>
+<div class="card" style="max-width:380px;padding:16px 12px;display:flex;justify-content:space-between;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--slate);">Su</span><span style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--midnight);">18</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--slate);">Mo</span><span style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--midnight);">19</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--slate);">Tu</span><span style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--midnight);">20</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--slate);">We</span><span style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--midnight);">21</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--slate);">Th</span><span style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:var(--moonlight);color:#fff;">22</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--slate);">Fr</span><span style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--midnight);">23</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="font-size:12px;color:var(--slate);">Sa</span><span style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--midnight);">24</span></div>
+</div></body></html>

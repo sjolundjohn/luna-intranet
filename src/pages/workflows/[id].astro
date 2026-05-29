@@ -1,5 +1,6 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
+import { activeWorkflows } from "~/lib/content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/Hero.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
@@ -10,7 +11,7 @@ import WorkflowRunRow from "~/components/WorkflowRunRow.astro";
 import Prose from "~/components/Prose.astro";
 
 export async function getStaticPaths() {
-  const workflows = await getCollection("workflows");
+  const workflows = await activeWorkflows();
   return workflows.map((wf) => ({
     params: { id: wf.id },
     props: { workflow: wf },
@@ -128,7 +129,7 @@ const triggerCopy =
         Durations, outcomes, and costs below are <strong class="text-ink">mock data</strong> —
         every number on this table is fabricated for the demo. The real run history
         will come from the workforce audit log + fleet-api Worker once Blocks 3 and 4
-        land (see <a href="/roadmap" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/roadmap</a>).
+        land (see <a href="/company/roadmap" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4">/roadmap</a>).
         The table renders the same; the source of truth changes.
       </p>
     </div>
@@ -166,7 +167,7 @@ const triggerCopy =
         Wired with Phase 4. Today's edits go through a platform-team PR.
       </p>
       <p class="mt-4 text-slate text-[13px] italic">
-        See <a href="/roadmap" class="text-graphite underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">/roadmap</a> for sequencing.
+        See <a href="/company/roadmap" class="text-graphite underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">/roadmap</a> for sequencing.
       </p>
     </div>
   </WhiteSection>

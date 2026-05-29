@@ -1,0 +1,285 @@
+---
+/**
+ * DoseSheet — the canonical two-step Dose-Confirmation bottom sheet.
+ * Ported from projects/UX Review/dose-confirmation/index.html (vanilla).
+ *
+ * Acting on a basal recommendation requires BOTH: update the programmed
+ * TDBD setting AND take the physical dose. Both acknowledgements gate the
+ * slide-to-confirm gesture. `variant` selects one of the six states.
+ *
+ * The slider + ack toggles are wired per-instance (scoped to [data-dose-root])
+ * so multiple sheets can coexist (e.g. the old-vs-new compare).
+ */
+interface Props {
+  variant?: "increase" | "decrease" | "nochange" | "reset" | "disabled" | "skip";
+  value?: number;
+  prev?: number;
+  unit?: string;
+}
+const { variant = "increase", value = 14, prev = 12, unit = "U" } = Astro.props;
+
+const isRec = variant === "increase" || variant === "decrease";
+const dir = variant === "increase" ? "up" : "down";
+const word = dir === "up" ? "Increase" : "Decrease";
+const rationale =
+  variant === "increase"
+    ? "Over the past several nights your glucose drifted up without Luna insulin. You appear to need a little more basal."
+    : "Over the past several nights your glucose ran low overnight. You appear to need a little less basal.";
+
+const ICONS: Record<string, string> = {
+  up: "M12 19V5M5 12l7-7 7 7",
+  down: "M12 5v14M19 12l-7 7-7-7",
+  arrowRight: "M5 12h14M13 5l7 7-7 7",
+  pause: "M10 4H6v16h4zM18 4h-4v16h4z",
+  minus: "M5 12h14",
+  info: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01",
+  check: "M20 6L9 17l-5-5",
+};
+function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[name]}"/></svg>`;
+}
+---
+<div class="dose-sheet" data-dose-root data-variant={variant}>
+  <div class="dose-grabber"></div>
+  <div class="dose-hdr">
+    <div class="dose-moon" aria-hidden="true"></div>
+    <span class="dose-eyebrow">Basal Guidance</span>
+  </div>
+
+  {isRec && (
+    <Fragment>
+      <h2 class="dose-h2">A new nightly basal dose</h2>
+      <div class="dose-valrow">
+        <span class="dose-val">{value}</span>
+        <span class="dose-unit">{unit}</span>
+        <span class="dose-chip" set:html={`${icon(dir, 15, "var(--color-moonlight-deep)", 2.2)} ${word}`} />
+      </div>
+      <div class="dose-prev">Current TDBD <s>{prev} {unit}</s></div>
+      <p class="dose-rationale">{rationale}</p>
+      <div class="dose-ackbox">
+        <div class="dose-ackbox-h">To act on this, do both</div>
+        <button class="dose-ack" data-ack="1" role="checkbox" aria-checked="false">
+          <span class="dose-box"></span>
+          <span><span class="dose-lbl">Set your Luna TDBD to {value} {unit}</span><br /><span class="dose-sub">Updates the value Luna programs for you</span></span>
+        </button>
+        <div class="dose-ackdiv"></div>
+        <button class="dose-ack" data-ack="2" role="checkbox" aria-checked="false">
+          <span class="dose-box"></span>
+          <span><span class="dose-lbl">Take your {value} {unit} basal dose</span><br /><span class="dose-sub">Your actual injection tonight</span></span>
+        </button>
+      </div>
+      <div class="dose-slide">
+        <div class="dose-track" data-track role="slider" tabindex="-1" aria-label="Slide to confirm both" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-disabled="true">
+          <div class="dose-trail" data-trail></div>
+          <div class="dose-tlabel" data-tlabel>Slide to confirm both</div>
+          <div class="dose-thumb" data-thumb set:html={icon("arrowRight", 22, "var(--color-disabled)", 2.2)} />
+        </div>
+        <div class="dose-hint" data-hint set:html={`${icon("info", 14, "var(--color-slate)")} Acknowledge both actions above to continue`} />
+      </div>
+      <div class="dose-skip"><button type="button">Skip this recommendation</button></div>
+    </Fragment>
+  )}
+
+  {variant === "nochange" && (
+    <Fragment>
+      <div class="dose-check-circle" set:html={icon("check", 26, "var(--color-success-ink)", 2.2)} />
+      <h2 class="dose-h2">No change needed tonight</h2>
+      <p class="dose-rationale">Your current TDBD seems appropriate for your body's needs. Luna will continue to observe and inform you if this changes.</p>
+      <div class="dose-prev">Current TDBD holding at <strong style="color:var(--color-ink)">{value} {unit}</strong></div>
+      <button class="dose-btn primary">Got it</button>
+    </Fragment>
+  )}
+
+  {variant === "reset" && (
+    <Fragment>
+      <div class="dose-banner info" set:html={`${icon("pause", 15, "currentColor", 2)} Recommendations paused`} />
+      <h2 class="dose-h2">Luna is re-learning your nights</h2>
+      <p class="dose-rationale">Your basal setting changed, so Luna reset its learning. Basal Guidance is paused until Luna has observed enough of your nights again.</p>
+      <div class="dose-metricbox">
+        <div class="dose-metric"><span class="dose-metric-l">Luna sessions observed</span><span class="dose-metric-v">2 of 5</span></div>
+        <div class="dose-metricdiv"></div>
+        <div class="dose-metric"><span class="dose-metric-l">Days of wear</span><span class="dose-metric-v">3 of 7</span></div>
+      </div>
+      <button class="dose-btn primary">Got it</button>
+    </Fragment>
+  )}
+
+  {variant === "disabled" && (
+    <Fragment>
+      <div class="dose-banner neutral" set:html={`${icon("minus", 15, "currentColor", 2)} Basal Guidance off`} />
+      <h2 class="dose-h2">Basal Guidance isn't on for you</h2>
+      <p class="dose-rationale">Your care setup doesn't include Luna basal dose recommendations. Luna keeps monitoring overnight, but won't suggest dose changes. Talk to your care team if you think this should change.</p>
+      <button class="dose-btn secondary">Close</button>
+    </Fragment>
+  )}
+
+  {variant === "skip" && (
+    <Fragment>
+      <div class="dose-banner critical" set:html={`${icon("info", 15, "currentColor", 2)} Confirm you're skipping`} />
+      <h2 class="dose-h2">Skip the increase to {value} {unit}?</h2>
+      <p class="dose-rationale">Your TDBD stays where it is and you take your usual dose tonight. Luna will keep this recommendation in mind and may suggest it again.</p>
+      <div class="dose-stack">
+        <button class="dose-btn primary">Skip this recommendation</button>
+        <button class="dose-btn ghost">Back</button>
+      </div>
+    </Fragment>
+  )}
+</div>
+
+<style>
+  .dose-sheet { background: var(--color-white); border-top-left-radius: 28px; border-top-right-radius: 28px; padding: 14px 26px 30px; box-shadow: 0 -8px 40px rgba(4,30,66,0.18); font-family: var(--ios-font-brand); }
+  .dose-grabber { width: 40px; height: 5px; border-radius: 999px; background: var(--color-lunar-lavender); margin: 0 auto 18px; }
+  .dose-hdr { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; }
+  .dose-moon { width: 24px; height: 24px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; flex: none; }
+  .dose-moon::before { content:""; position:absolute; right:-5px; top:2px; width:15px; height:15px; border-radius:50%; background: var(--color-moonlight); }
+  .dose-moon::after { content:""; position:absolute; right:-1px; top:4px; width:11px; height:11px; border-radius:50%; background: var(--color-midnight); }
+  .dose-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-slate); }
+  .dose-h2 { margin: 0 0 16px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--color-ink); line-height: 1.25; }
+  .dose-valrow { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .dose-val { font-family: var(--ios-font-brand); font-size: 76px; font-weight: 700; line-height: 0.95; letter-spacing: -0.03em; color: var(--color-midnight); }
+  .dose-unit { font-size: 30px; font-weight: 700; color: var(--color-midnight); letter-spacing: -0.01em; }
+  .dose-chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px 5px 9px; border-radius: 4px; background: var(--color-moonlight-tint); color: var(--color-moonlight-deep); font-size: 13px; font-weight: 600; }
+  .dose-prev { font-size: 13px; color: var(--color-slate); margin-bottom: 18px; }
+  .dose-prev s { text-decoration: line-through; }
+  .dose-rationale { margin: 0 0 22px; font-size: 15px; line-height: 1.55; color: var(--color-graphite); max-width: 60ch; }
+  .dose-ackbox { background: var(--color-cloud-lilac); border-radius: 16px; padding: 16px 18px 14px; margin-bottom: 20px; }
+  .dose-ackbox-h { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-graphite); margin-bottom: 4px; }
+  .dose-ack { display: flex; align-items: flex-start; gap: 14px; width: 100%; min-height: 44px; padding: 10px 4px; background: none; border: none; text-align: left; cursor: pointer; font: inherit; }
+  .dose-box { width: 26px; height: 26px; flex: none; margin-top: 1px; border-radius: 8px; border: 1.5px solid var(--color-border-strong); background: var(--color-white); display: flex; align-items: center; justify-content: center; transition: background 160ms; }
+  .dose-ack[aria-checked="true"] .dose-box { border: none; background: var(--color-midnight); }
+  .dose-lbl { font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--color-ink); }
+  .dose-sub { font-size: 13px; line-height: 1.4; color: var(--color-slate); }
+  .dose-ackdiv { height: 1px; background: var(--color-border-subtle); margin: 2px 0 2px 40px; }
+  .dose-slide { display: flex; flex-direction: column; gap: 8px; }
+  .dose-track { position: relative; height: 60px; border-radius: 999px; background: var(--color-cloud-lilac); overflow: hidden; user-select: none; touch-action: none; }
+  .dose-track.enabled { background: var(--color-periwinkle-mist); }
+  .dose-track.done { background: var(--color-success-bg); }
+  .dose-trail { position: absolute; left: 0; top: 0; bottom: 0; width: 30px; background: var(--color-moonlight-ice); }
+  .dose-track.done .dose-trail { background: var(--color-success-fill); }
+  .dose-tlabel { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; pointer-events: none; font-size: 15px; font-weight: 600; color: var(--color-disabled); }
+  .dose-track.enabled .dose-tlabel { color: var(--color-midnight); }
+  .dose-track.done .dose-tlabel { color: var(--color-success-ink); }
+  .dose-thumb { position: absolute; top: 4px; left: 4px; width: 52px; height: 52px; border-radius: 50%; background: var(--color-white); border: 1px solid var(--color-border-default); display: flex; align-items: center; justify-content: center; }
+  .dose-track.enabled .dose-thumb { background: var(--color-midnight); border: none; box-shadow: 0 2px 8px rgba(4,30,66,0.20); cursor: grab; }
+  .dose-track.done .dose-thumb { background: var(--color-success-ink); border: none; }
+  .dose-hint { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-slate); padding-left: 4px; }
+  .dose-skip { display:flex; justify-content:center; margin-top:16px; }
+  .dose-skip button { background:none; border:none; font:inherit; cursor:pointer; font-size:15px; font-weight:600; color:var(--color-slate); padding:8px 16px; }
+  .dose-banner { display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px 6px 11px; border-radius: 999px; margin-bottom: 16px; font-size: 12px; font-weight: 600; }
+  .dose-banner.info { background: var(--color-info-bg); color: var(--color-info-ink); }
+  .dose-banner.neutral { background: var(--color-cloud-lilac); color: var(--color-graphite); }
+  .dose-banner.critical { background: var(--color-critical-bg); color: var(--color-critical-ink); }
+  .dose-btn { width: 100%; height: 54px; border-radius: 58px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; border: none; }
+  .dose-btn.primary { background: var(--color-midnight); color: var(--color-white); box-shadow: 0 2px 8px rgba(4,30,66,0.20); }
+  .dose-btn.secondary { background: transparent; color: var(--color-ink); border: 1px solid var(--color-border-strong); }
+  .dose-btn.ghost { background: transparent; color: var(--color-slate); }
+  .dose-check-circle { display:flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:50%; background:var(--color-success-bg); margin-bottom:18px; }
+  .dose-metric { display:flex; justify-content:space-between; align-items:baseline; }
+  .dose-metric-l { font-size:14px; color:var(--color-graphite); }
+  .dose-metric-v { font-size:15px; font-weight:700; color:var(--color-ink); font-variant-numeric:tabular-nums; }
+  .dose-metricbox { background:var(--color-cloud-lilac); border-radius:16px; padding:14px 18px; margin-bottom:24px; display:flex; flex-direction:column; gap:10px; }
+  .dose-metricdiv { height:1px; background:var(--color-border-subtle); }
+  .dose-stack { display:flex; flex-direction:column; gap:10px; }
+</style>
+
+<script>
+  const ICON = {
+    arrowRight: "M5 12h14M13 5l7 7-7 7",
+    check: "M20 6L9 17l-5-5",
+    info: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01",
+  };
+  function svg(name: keyof typeof ICON, size = 18, color = "currentColor", sw = 1.5) {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[name]}"/></svg>`;
+  }
+
+  function wireDose(root: HTMLElement) {
+    if (root.dataset.doseWired) return;
+    const variant = root.dataset.variant;
+    if (variant !== "increase" && variant !== "decrease") return;
+    root.dataset.doseWired = "true";
+
+    const ack1 = root.querySelector<HTMLElement>('[data-ack="1"]')!;
+    const ack2 = root.querySelector<HTMLElement>('[data-ack="2"]')!;
+    const track = root.querySelector<HTMLElement>("[data-track]")!;
+    const thumb = root.querySelector<HTMLElement>("[data-thumb]")!;
+    const trail = root.querySelector<HTMLElement>("[data-trail]")!;
+    const tlabel = root.querySelector<HTMLElement>("[data-tlabel]")!;
+    const hint = root.querySelector<HTMLElement>("[data-hint]")!;
+    if (!ack1 || !ack2 || !track) return;
+
+    let s1 = false, s2 = false, p = 0, done = false, dragging = false;
+    const THUMB = 52, PAD = 4;
+    const enabled = () => s1 && s2 && !done;
+    const maxTravel = () => track.clientWidth - THUMB - PAD * 2;
+
+    function paint() {
+      const both = s1 && s2;
+      track.classList.toggle("enabled", both && !done);
+      track.classList.toggle("done", done);
+      track.setAttribute("aria-disabled", !both && !done ? "true" : "false");
+      track.tabIndex = both && !done ? 0 : -1;
+      const x = PAD + p * maxTravel();
+      thumb.style.left = x + "px";
+      trail.style.width = x + THUMB / 2 + "px";
+      track.setAttribute("aria-valuenow", String(Math.round(p * 100)));
+      tlabel.style.opacity = done ? "1" : String(Math.max(0, 1 - p * 2.2));
+      if (done) {
+        tlabel.innerHTML = svg("check", 18, "var(--color-success-ink)", 2.4) + " Confirmed";
+        thumb.innerHTML = svg("check", 22, "var(--color-white)", 2.2);
+      } else {
+        tlabel.textContent = "Slide to confirm both";
+        thumb.innerHTML = svg("arrowRight", 22, both ? "var(--color-moonlight)" : "var(--color-disabled)", 2.2);
+      }
+      hint.style.display = both || done ? "none" : "flex";
+    }
+    function toggle(btn: HTMLElement, which: 1 | 2) {
+      btn.addEventListener("click", () => {
+        if (done) return;
+        if (which === 1) s1 = !s1; else s2 = !s2;
+        const on = which === 1 ? s1 : s2;
+        btn.setAttribute("aria-checked", on ? "true" : "false");
+        const box = btn.querySelector(".dose-box")!;
+        box.innerHTML = on ? svg("check", 16, "var(--color-moonlight)", 2.4) : "";
+        if (!(s1 && s2)) p = 0;
+        paint();
+      });
+    }
+    toggle(ack1, 1);
+    toggle(ack2, 2);
+    function moveTo(clientX: number) {
+      const r = track.getBoundingClientRect();
+      // Account for any CSS scale applied by the Phone frame.
+      const scale = r.width / track.offsetWidth || 1;
+      const x = (clientX - r.left) / scale - PAD - THUMB / 2;
+      p = Math.max(0, Math.min(1, x / maxTravel()));
+      paint();
+    }
+    thumb.addEventListener("pointerdown", (e) => {
+      if (!enabled()) return;
+      dragging = true;
+      thumb.setPointerCapture(e.pointerId);
+      moveTo(e.clientX);
+    });
+    window.addEventListener("pointermove", (e) => { if (dragging) moveTo(e.clientX); });
+    window.addEventListener("pointerup", () => {
+      if (!dragging) return;
+      dragging = false;
+      if (p >= 0.85) { done = true; p = 1; } else { p = 0; }
+      paint();
+    });
+    track.addEventListener("keydown", (e) => {
+      if (!enabled()) return;
+      if (e.key === "Enter" || e.key === " " || e.key === "ArrowRight") {
+        e.preventDefault();
+        done = true; p = 1; paint();
+      }
+    });
+    paint();
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLElement>("[data-dose-root]").forEach(wireDose);
+  }
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

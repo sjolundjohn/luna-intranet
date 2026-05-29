@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luna iOS — UX Review Kit</title>
+<link rel="icon" href="assets/favicon.svg" />
+<link rel="stylesheet" href="css/tokens.css" />
+<style>
+  body { background: var(--color-cloud-lilac); margin: 0; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: var(--space-xl) var(--space-sm) var(--space-xxl); }
+  .masthead { background: var(--color-midnight); border-radius: var(--radius-card); padding: var(--space-lg) var(--space-md);
+              color: var(--color-white); margin-bottom: var(--space-lg); }
+  .masthead img { height: 30px; display: block; margin-bottom: var(--space-md); }
+  .eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--color-moonlight); margin: 0 0 8px; }
+  .masthead h1 { font-size: var(--type-large-title); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .masthead p { font-size: var(--type-callout); line-height: 1.5; color: var(--color-on-dark-sub); margin: 0; max-width: 62ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-card-gap); }
+  .tile { display: block; text-decoration: none; background: var(--color-white); border-radius: var(--radius-card);
+          box-shadow: var(--shadow-card); padding: var(--space-md); color: var(--color-ink); transition: transform 160ms, box-shadow 160ms; }
+  .tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-modal); }
+  .tile .k { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-slate); }
+  .tile h2 { font-size: var(--type-title-3); font-weight: 700; letter-spacing: -0.01em; margin: 6px 0 6px; }
+  .tile p { font-size: var(--type-subhead); line-height: 1.45; color: var(--color-graphite); margin: 0; }
+  .note { margin-top: var(--space-lg); padding: var(--space-md); background: var(--color-soft-paper);
+          border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); }
+  .note h3 { font-size: var(--type-headline); margin: 0 0 8px; }
+  .note p, .note li { font-size: var(--type-subhead); line-height: 1.55; color: var(--color-graphite); }
+  .note code { font-family: var(--font-mono); font-size: 13px; background: var(--color-cloud-lilac); padding: 1px 5px; border-radius: 4px; color: var(--color-ink); }
+  footer { margin-top: var(--space-lg); font-size: var(--type-footnote); color: var(--color-slate); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <img src="assets/luna-on-dark.svg" alt="Luna" />
+    <p class="eyebrow">UX Review · Design System</p>
+    <h1>Luna iOS — Component Kit</h1>
+    <p>The design-system foundation for the Luna iOS app review platform: brand guidelines, the iOS component board, and the canonical two-step dose-confirmation component. Every wireframe and developer build references this kit.</p>
+  </div>
+
+  <div class="grid">
+    <a class="tile" href="brand.html">
+      <div class="k">01 · Reference</div>
+      <h2>Brand Guidelines</h2>
+      <p>Logo usage, color palette + guardrails, the 11-level iOS HIG type scale in D-DIN, spacing, radii, elevation, voice &amp; imagery.</p>
+    </a>
+    <a class="tile" href="components.html">
+      <div class="k">02 · Library</div>
+      <h2>iOS Component Board</h2>
+      <p>Status card, glucose display, CGM chart, buttons, list rows, tab bar, toast, insight card, calendar strip, bottom-sheet modal, nav header, setup cards.</p>
+    </a>
+    <a class="tile" href="dose-confirmation/index.html">
+      <div class="k">03 · Safety-critical</div>
+      <h2>Dose-Confirmation Component</h2>
+      <p>The canonical two-step, two-part-action confirmation: acknowledge both required actions, then slide to confirm. All six states, interactive.</p>
+    </a>
+  </div>
+
+  <div class="note">
+    <h3>About this kit</h3>
+    <p>This is the <strong>Luna iOS app</strong> design system — intentionally distinct from the nightluna intranet's own styling (D-DIN everywhere, iOS HIG type scale, larger radii). Tokens live in <code>css/tokens.css</code>; raw reference cards in <code>preview/</code>; brand assets in <code>assets/</code>; fonts in <code>fonts/</code>.</p>
+    <ul>
+      <li><strong>Portable &amp; offline:</strong> no CDN or build step — open any <code>.html</code> directly.</li>
+      <li><strong>Ports to Astro:</strong> the UX Review section of nightluna scopes these tokens to the wireframe/component render area (separate from intranet chrome) and re-implements <code>ios-kit</code> components + the dose component natively. See <code>INFRASTRUCTURE-BRIEF.md</code>.</li>
+      <li><strong>Figma-ready:</strong> component names here = future Figma layer names.</li>
+    </ul>
+  </div>
+
+  <footer>Luna Health · iOS UX Review Kit · tokens source: luna-design-context-v2 / design-system bundle (May 2026)</footer>
+</div>
+</body>
+</html>

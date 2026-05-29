@@ -1,0 +1,204 @@
+---
+/**
+ * NotificationsBell — lightweight activity surface in the nav.
+ *
+ * Sourced from the UX Review comments store (/api/notifications). Events:
+ * new comment, reply, @mention, comment resolved. "Seen" state is kept in
+ * localStorage keyed on the CF Access email; the unread dot clears when the
+ * dropdown is opened. Polls on load — no SSE. Fails silently (and hides
+ * itself) when the comments store isn't configured.
+ *
+ * Inherits the nav's light/dark link color via the `nav-link` class.
+ */
+---
+<div class="ux-bell" data-bell hidden>
+  <button type="button" class="nav-link ux-bell-btn" aria-label="Notifications" aria-haspopup="true" aria-expanded="false" data-bell-btn>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+    <span class="ux-bell-dot" data-bell-dot hidden></span>
+  </button>
+
+  <div class="ux-bell-panel" data-bell-panel role="menu" hidden>
+    <div class="ux-bell-head">
+      <span>Notifications</span>
+      <button type="button" data-bell-mark class="ux-bell-mark">Mark all read</button>
+    </div>
+    <div class="ux-bell-list" data-bell-list>
+      <p class="ux-bell-empty">No activity yet.</p>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Global: notification list items are created at runtime via createElement. */
+  .ux-bell { position: relative; margin-left: 4px; }
+  .ux-bell-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .ux-bell-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #ff5a7a;
+    border: 1.5px solid var(--color-midnight);
+  }
+  .ux-bell-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 6px;
+    width: 320px;
+    max-height: 420px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(4, 30, 66, 0.16);
+    z-index: 60;
+  }
+  .ux-bell-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--color-border-subtle);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+  .ux-bell-mark { background: none; border: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--color-moonlight-deep); }
+  .ux-bell-list { padding: 4px 0; }
+  .ux-bell-empty { padding: 18px 14px; font-size: 13px; color: var(--color-slate); text-align: center; }
+  .ux-bell-item {
+    display: block;
+    padding: 10px 14px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  .ux-bell-item:last-child { border-bottom: none; }
+  .ux-bell-item:hover { background: var(--color-soft-paper); }
+  .ux-bell-item[data-unread] { background: var(--color-moonlight-tint, #E8FCFF); }
+  .ux-bell-item[data-unread]:hover { background: #d7f6fb; }
+  .ux-bell-kind { font-size: 11px; font-weight: 700; color: var(--color-moonlight-deep); text-transform: uppercase; letter-spacing: 0.04em; }
+  .ux-bell-kind[data-mention] { color: #b3445f; }
+  .ux-bell-text { font-size: 13px; color: var(--color-ink); line-height: 1.4; margin-top: 2px; }
+  .ux-bell-meta { font-size: 11px; color: var(--color-slate); margin-top: 3px; }
+</style>
+
+<script>
+  type Ev = {
+    kind: "comment" | "reply" | "resolved";
+    commentId: string; screenId: string; authorName: string; authorEmail: string;
+    snippet: string; at: number;
+  };
+
+  function setupBell() {
+    const root = document.querySelector<HTMLElement>("[data-bell]");
+    if (!root) return;
+    const btn = root.querySelector<HTMLButtonElement>("[data-bell-btn]")!;
+    const dot = root.querySelector<HTMLElement>("[data-bell-dot]")!;
+    const panel = root.querySelector<HTMLElement>("[data-bell-panel]")!;
+    const list = root.querySelector<HTMLElement>("[data-bell-list]")!;
+    const markBtn = root.querySelector<HTMLButtonElement>("[data-bell-mark]")!;
+
+    let viewerEmail = "";
+    let seenKey = "ux-review:seen:anon";
+
+    function esc(s: string): string {
+      return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
+    }
+    function fmtTime(ts: number): string {
+      return new Date(ts).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+    function lastSeen(): number { return Number(localStorage.getItem(seenKey) || "0"); }
+    function setSeen(ts: number) { localStorage.setItem(seenKey, String(ts)); }
+
+    function mentionTokens(): string[] {
+      const toks: string[] = [];
+      const name = localStorage.getItem("ux-review:name");
+      if (name) toks.push(name.trim().split(/\s+/)[0].toLowerCase());
+      if (viewerEmail) toks.push(viewerEmail.split("@")[0].toLowerCase());
+      return toks;
+    }
+    function isMention(ev: Ev): boolean {
+      const toks = mentionTokens();
+      const m = ev.snippet.toLowerCase().match(/@([\w.-]+)/g) || [];
+      return m.some((raw) => toks.includes(raw.slice(1)));
+    }
+
+    function render(events: Ev[]) {
+      // exclude the viewer's own activity
+      const mine = (e: Ev) => viewerEmail && e.authorEmail.toLowerCase() === viewerEmail.toLowerCase();
+      const visible = events.filter((e) => !mine(e));
+      const seen = lastSeen();
+      const unread = visible.filter((e) => e.at > seen);
+      dot.hidden = unread.length === 0;
+
+      if (!visible.length) {
+        list.innerHTML = '<p class="ux-bell-empty">No activity yet.</p>';
+        return;
+      }
+      list.innerHTML = "";
+      visible.slice(0, 30).forEach((e) => {
+        const mention = isMention(e);
+        const label = mention ? "Mentioned you" : e.kind === "resolved" ? "Resolved" : e.kind === "reply" ? "New reply" : "New comment";
+        const a = document.createElement("a");
+        a.className = "ux-bell-item";
+        a.href = `/tools/ux-review/${encodeURIComponent(e.screenId)}#c=${e.commentId}`;
+        if (e.at > seen) a.setAttribute("data-unread", "true");
+        a.innerHTML = `
+          <span class="ux-bell-kind"${mention ? " data-mention" : ""}>${label}</span>
+          <div class="ux-bell-text">${esc(e.authorName)}: ${esc(e.snippet)}</div>
+          <div class="ux-bell-meta">${fmtTime(e.at)}</div>`;
+        list.appendChild(a);
+      });
+      return visible;
+    }
+
+    let latest: Ev[] = [];
+    function markAllRead() {
+      const max = latest.reduce((m, e) => Math.max(m, e.at), lastSeen());
+      setSeen(max);
+      dot.hidden = true;
+      list.querySelectorAll("[data-unread]").forEach((n) => n.removeAttribute("data-unread"));
+    }
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = !panel.hidden;
+      panel.hidden = open;
+      btn.setAttribute("aria-expanded", String(!open));
+      if (!open) markAllRead();
+    });
+    markBtn.addEventListener("click", (e) => { e.stopPropagation(); markAllRead(); });
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target as Node)) { panel.hidden = true; btn.setAttribute("aria-expanded", "false"); }
+    });
+
+    Promise.all([
+      fetch("/api/whoami").then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch("/api/notifications").then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    ]).then(([who, notif]: [any, any]) => {
+      if (!notif || !Array.isArray(notif.events)) return; // store not configured → stay hidden
+      if (who?.email) { viewerEmail = who.email; seenKey = "ux-review:seen:" + who.email; }
+      latest = notif.events as Ev[];
+      root.hidden = false;
+      render(latest);
+    });
+  }
+
+  setupBell();
+  document.addEventListener("astro:page-load", setupBell);
+</script>

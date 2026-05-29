@@ -1,0 +1,620 @@
+---
+import "~/styles/ios-tokens.css";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import CTAButton from "~/components/CTAButton.astro";
+import Phone from "~/components/ux/Phone.astro";
+import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
+import StatusBadge from "~/components/ux/StatusBadge.astro";
+import CompareSlider from "~/components/ux/CompareSlider.astro";
+import { SCREENS, componentId, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
+
+export function getStaticPaths() {
+  return SCREENS.map((s) => ({ params: { slug: s.id }, props: { screen: s } }));
+}
+
+const { screen } = Astro.props;
+const showCompare = screen.status === "Changed" && componentId(screen.legacy) !== null;
+const COMPARE_SCALE = 0.62;
+---
+
+<BaseLayout title={`${screen.title} · UX Review`} description={screen.summary} heroIsDark={false}>
+  <WhiteSection size="compact">
+    <div class="mb-6 flex items-center justify-between gap-4">
+      <CTAButton href="/tools/ux-review" variant="ghost">← All screens</CTAButton>
+      <a href="/tools/ux-review/review" class="text-graphite text-[13px] hover:text-ink transition-colors">Review dashboard →</a>
+    </div>
+
+    <header class="mb-8">
+      <div class="flex items-center gap-3 flex-wrap">
+        <h1 class="font-display text-ink font-normal" style="font-size: clamp(28px,3.6vw,40px); line-height:1.05; letter-spacing:-0.02em;">
+          {screen.title}
+        </h1>
+        <StatusBadge status={screen.status} />
+      </div>
+      <p class="mt-2 text-graphite text-[15px]">{screen.feature} · BRD {screen.brdTier}</p>
+      {screen.summary && <p class="mt-3 text-graphite text-[15px] leading-[1.55] max-w-[60ch]">{screen.summary}</p>}
+    </header>
+
+    <div class="ux-detail" data-screen-id={screen.id} data-current-version={CURRENT_DESIGN_VERSION}>
+      {/* LEFT — the device frame + pins / compare */}
+      <div class="ux-detail-stage">
+        {showCompare && (
+          <div class="mb-4 inline-flex rounded-full border border-border-default p-0.5" role="tablist" aria-label="Frame mode">
+            <button data-mode-btn="single" class="ux-mode-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="true">Single</button>
+            <button data-mode-btn="compare" class="ux-mode-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="false">Compare</button>
+          </div>
+        )}
+
+        {/* Single view — interactive frame with comment pins */}
+        <div data-frame-panel="single">
+          <div class="mb-3 flex items-center gap-3">
+            <button type="button" data-add-pin class="ux-pinbtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Add pinned comment
+            </button>
+            <span data-pin-hint class="text-slate text-[12px]" hidden>Click anywhere on the screen to drop the pin</span>
+          </div>
+          <div class="ux-stage" data-stage>
+            <div class="ux-ios">
+              <Phone mode="full" scale={1}>
+                <ScreenRenderer id={screen.id} variant="current" />
+              </Phone>
+            </div>
+            <div class="ux-pin-layer" data-pin-layer></div>
+          </div>
+        </div>
+
+        {/* Compare view */}
+        {showCompare && (
+          <div data-frame-panel="compare" hidden>
+            <CompareSlider>
+              <div slot="legacy" class="ux-ios">
+                <Phone mode="thumb" scale={COMPARE_SCALE} thumbHeight={844}>
+                  <ScreenRenderer id={screen.id} variant="legacy" />
+                </Phone>
+              </div>
+              <div slot="current" class="ux-ios">
+                <Phone mode="thumb" scale={COMPARE_SCALE} thumbHeight={844}>
+                  <ScreenRenderer id={screen.id} variant="current" />
+                </Phone>
+              </div>
+            </CompareSlider>
+            <p class="mt-3 text-slate text-[12px]">Drag the handle to wipe between the previous Figma design (Before) and this wireframe (After).</p>
+          </div>
+        )}
+      </div>
+
+      {/* RIGHT — comments rail + context */}
+      <aside class="ux-rail">
+        {/* Context panel */}
+        <div class="ux-context">
+          <p class="eyebrow mb-3">Context</p>
+          <dl class="ux-context-list">
+            <div><dt>Feature</dt><dd>{screen.feature}</dd></div>
+            <div><dt>BRD tier</dt><dd>{screen.brdTier}</dd></div>
+            <div><dt>Status</dt><dd>{screen.status}</dd></div>
+          </dl>
+          {screen.brdLink && (
+            <a href={screen.brdLink} target="_blank" rel="noopener" class="ux-brd-link">
+              Open the BRD ↗
+            </a>
+          )}
+        </div>
+
+        {/* Version switcher */}
+        <div class="ux-version">
+          <label class="eyebrow block mb-2" for="ux-version-select">Design version</label>
+          <select id="ux-version-select" data-version-select class="ux-select w-full">
+            {DESIGN_VERSIONS.map((v) => (
+              <option value={v} selected={v === CURRENT_DESIGN_VERSION}>{v}</option>
+            ))}
+          </select>
+          <label class="mt-2 flex items-center gap-2 text-[12px] text-graphite">
+            <input type="checkbox" data-version-all checked />
+            Show comments from all versions
+          </label>
+          <p class="mt-1 text-slate text-[11px]">New comments are stamped with the selected version.</p>
+        </div>
+
+        {/* Composer */}
+        <div class="ux-composer">
+          <p data-anchor-note class="ux-anchor-note" hidden></p>
+          <textarea data-composer rows="3" placeholder="Leave a comment… use @name to mention"></textarea>
+          <div class="flex items-center justify-between gap-2 mt-2">
+            <span data-composer-as class="text-slate text-[12px]"></span>
+            <div class="flex gap-2">
+              <button type="button" data-cancel-anchor class="ux-btn-ghost" hidden>Clear pin</button>
+              <button type="button" data-submit class="ux-btn-primary">Comment</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Threads */}
+        <div class="ux-threads" data-threads>
+          <p class="text-slate text-[13px] py-6 text-center" data-loading>Loading comments…</p>
+        </div>
+
+        {/* Resolved group */}
+        <details class="ux-resolved" data-resolved-group hidden>
+          <summary><span data-resolved-count>0</span> resolved</summary>
+          <div data-resolved-list></div>
+        </details>
+      </aside>
+    </div>
+  </WhiteSection>
+</BaseLayout>
+
+<style is:global>
+  /* Global (not scoped): the comment threads, pins and reply boxes are
+     created at runtime via createElement, so Astro's scoped-style attribute
+     never lands on them. All selectors are `ux-`-prefixed to stay isolated. */
+  .ux-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .ux-detail { grid-template-columns: 1fr; }
+  }
+  .ux-detail-stage { display: flex; flex-direction: column; align-items: flex-start; }
+
+  .ux-mode-btn { color: var(--color-graphite); }
+  .ux-mode-btn[aria-selected="true"] { background: var(--color-midnight); color: #fff; }
+
+  .ux-pinbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border-default);
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ux-pinbtn:hover { border-color: var(--color-ink); }
+  .ux-pinbtn[aria-pressed="true"] { background: var(--color-moonlight); border-color: var(--color-moonlight); color: var(--color-midnight); }
+
+  .ux-stage { position: relative; display: inline-block; }
+  .ux-pin-layer { position: absolute; pointer-events: none; z-index: 10; }
+  .ux-pin-layer[data-arming] { pointer-events: auto; cursor: crosshair; }
+
+  .ux-pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 26px;
+    height: 26px;
+    border-radius: 999px 999px 999px 2px;
+    background: var(--color-moonlight);
+    color: var(--color-midnight);
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(4, 30, 66, 0.3);
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .ux-pin[data-resolved] { background: var(--color-periwinkle-mist); color: var(--color-graphite); opacity: 0.7; }
+  .ux-pin[data-active] { outline: 3px solid var(--color-moonlight-deep); outline-offset: 1px; }
+  .ux-pin-ghost { background: #fff; border: 2px dashed var(--color-moonlight-deep); }
+
+  .ux-rail { display: flex; flex-direction: column; gap: 16px; }
+
+  .ux-context, .ux-version, .ux-composer {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 14px;
+    padding: 16px;
+    background: var(--color-white);
+  }
+  .ux-context-list { display: flex; flex-direction: column; gap: 8px; }
+  .ux-context-list > div { display: flex; justify-content: space-between; gap: 12px; }
+  .ux-context-list dt { color: var(--color-slate); font-size: 13px; }
+  .ux-context-list dd { color: var(--color-ink); font-size: 13px; font-weight: 600; margin: 0; }
+  .ux-brd-link { display: inline-block; margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--color-moonlight-deep); text-decoration: none; }
+
+  .ux-select {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border-default);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--color-ink);
+    background: var(--color-white);
+  }
+  .ux-select.w-full { width: 100%; }
+
+  .ux-anchor-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--color-moonlight-tint, #E8FCFF);
+    color: var(--color-moonlight-deep);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .ux-composer textarea {
+    width: 100%;
+    border: 1px solid var(--color-border-default);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font: inherit;
+    font-size: 14px;
+    resize: vertical;
+    color: var(--color-ink);
+  }
+  .ux-btn-primary {
+    background: var(--color-midnight);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ux-btn-primary:hover { background: var(--color-midnight-deep); }
+  .ux-btn-ghost {
+    background: transparent;
+    color: var(--color-graphite);
+    border: 1px solid var(--color-border-default);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .ux-threads { display: flex; flex-direction: column; gap: 12px; }
+  .ux-thread {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 14px;
+    padding: 14px;
+    background: var(--color-white);
+    scroll-margin-top: 90px;
+  }
+  .ux-thread[data-highlight] { border-color: var(--color-moonlight-deep); box-shadow: 0 0 0 3px var(--color-moonlight-tint, #E8FCFF); }
+  .ux-c-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .ux-c-pin {
+    flex: none;
+    width: 20px; height: 20px;
+    border-radius: 999px 999px 999px 2px;
+    background: var(--color-moonlight);
+    color: var(--color-midnight);
+    font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ux-c-author { font-size: 13px; font-weight: 700; color: var(--color-ink); }
+  .ux-c-meta { font-size: 11px; color: var(--color-slate); }
+  .ux-c-body { font-size: 14px; color: var(--color-ink); line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .ux-c-body .mention { color: var(--color-moonlight-deep); font-weight: 600; }
+  .ux-c-ver { display: inline-block; margin-top: 6px; font-size: 11px; color: var(--color-slate); }
+  .ux-c-actions { display: flex; gap: 12px; margin-top: 8px; }
+  .ux-c-actions button { background: none; border: none; padding: 0; font-size: 12px; font-weight: 600; color: var(--color-graphite); cursor: pointer; }
+  .ux-c-actions button:hover { color: var(--color-ink); }
+  .ux-replies { margin-top: 10px; padding-left: 14px; border-left: 2px solid var(--color-border-subtle); display: flex; flex-direction: column; gap: 10px; }
+  .ux-reply-box { margin-top: 10px; display: none; }
+  .ux-reply-box[data-open] { display: block; }
+  .ux-reply-box textarea { width: 100%; border: 1px solid var(--color-border-default); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 13px; resize: vertical; }
+
+  .ux-resolved { border: 1px solid var(--color-border-subtle); border-radius: 14px; padding: 4px 14px; background: var(--color-soft-paper); }
+  .ux-resolved summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--color-graphite); padding: 10px 0; }
+  .ux-resolved[data-resolved-group] [data-resolved-list] { display: flex; flex-direction: column; gap: 10px; padding-bottom: 12px; }
+</style>
+
+<script>
+  type Comment = {
+    id: string; screenId: string; authorName: string; authorEmail: string;
+    body: string; anchorX: number | null; anchorY: number | null;
+    parentId: string | null; resolved: boolean; resolvedAt: number | null;
+    designVersion: string | null; createdAt: number;
+  };
+
+  function setup() {
+    const root = document.querySelector<HTMLElement>(".ux-detail");
+    if (!root) return;
+    const screenId = root.dataset.screenId!;
+
+    const stage = root.querySelector<HTMLElement>("[data-stage]");
+    const pinLayer = root.querySelector<HTMLElement>("[data-pin-layer]");
+    const threadsEl = root.querySelector<HTMLElement>("[data-threads]")!;
+    const resolvedGroup = root.querySelector<HTMLElement>("[data-resolved-group]")!;
+    const resolvedList = root.querySelector<HTMLElement>("[data-resolved-list]")!;
+    const resolvedCount = root.querySelector<HTMLElement>("[data-resolved-count]")!;
+    const composer = root.querySelector<HTMLTextAreaElement>("[data-composer]")!;
+    const submitBtn = root.querySelector<HTMLButtonElement>("[data-submit]")!;
+    const anchorNote = root.querySelector<HTMLElement>("[data-anchor-note]")!;
+    const cancelAnchorBtn = root.querySelector<HTMLButtonElement>("[data-cancel-anchor]")!;
+    const composerAs = root.querySelector<HTMLElement>("[data-composer-as]")!;
+    const addPinBtn = root.querySelector<HTMLButtonElement>("[data-add-pin]");
+    const pinHint = root.querySelector<HTMLElement>("[data-pin-hint]");
+    const versionSelect = root.querySelector("[data-version-select]") as unknown as HTMLSelectElement;
+    const versionAll = root.querySelector("[data-version-all]") as unknown as HTMLInputElement;
+
+    let comments: Comment[] = [];
+    let pendingAnchor: { x: number; y: number } | null = null;
+    let arming = false;
+    let activeThreadId: string | null = null;
+
+    // --- identity (free): display name in localStorage, email from CF Access.
+    function getName(): string {
+      let n = localStorage.getItem("ux-review:name");
+      if (!n) {
+        n = (prompt("Your name (shown next to your comments):", "") || "").trim();
+        if (n) localStorage.setItem("ux-review:name", n);
+      }
+      return n || "Anonymous";
+    }
+    function refreshAs() {
+      const n = localStorage.getItem("ux-review:name");
+      composerAs.textContent = n ? `Commenting as ${n}` : "You'll be asked for a name";
+    }
+    refreshAs();
+
+    // --- helpers
+    function esc(s: string): string {
+      return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
+    }
+    function fmtTime(ts: number): string {
+      const d = new Date(ts);
+      return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+    function renderBody(s: string): string {
+      return esc(s).replace(/@([\w.-]+)/g, '<span class="mention">@$1</span>');
+    }
+    function activeVersion(): string { return versionSelect.value; }
+    function versionMatch(c: Comment): boolean {
+      return versionAll.checked || !c.designVersion || c.designVersion === activeVersion();
+    }
+
+    // --- align the pin layer to the rendered 390pt screen rect
+    function screenEl(): HTMLElement | null {
+      return stage ? stage.querySelector<HTMLElement>("[data-ux-screen]") : null;
+    }
+    function alignPinLayer() {
+      if (!stage || !pinLayer) return;
+      const sc = screenEl();
+      if (!sc) return;
+      const sr = sc.getBoundingClientRect();
+      const gr = stage.getBoundingClientRect();
+      pinLayer.style.left = sr.left - gr.left + "px";
+      pinLayer.style.top = sr.top - gr.top + "px";
+      pinLayer.style.width = sr.width + "px";
+      pinLayer.style.height = sr.height + "px";
+    }
+
+    // --- rendering
+    function topLevel(): Comment[] { return comments.filter((c) => !c.parentId); }
+    function repliesOf(id: string): Comment[] {
+      return comments.filter((c) => c.parentId === id).sort((a, b) => a.createdAt - b.createdAt);
+    }
+
+    function renderPins() {
+      if (!pinLayer) return;
+      // keep the arming ghost if present
+      pinLayer.querySelectorAll(".ux-pin:not(.ux-pin-ghost)").forEach((n) => n.remove());
+      const anchored = topLevel().filter((c) => c.anchorX != null && c.anchorY != null && versionMatch(c));
+      anchored.forEach((c, i) => {
+        const pin = document.createElement("button");
+        pin.type = "button";
+        pin.className = "ux-pin";
+        pin.style.left = (c.anchorX as number) * 100 + "%";
+        pin.style.top = (c.anchorY as number) * 100 + "%";
+        pin.textContent = String(i + 1);
+        if (c.resolved) pin.setAttribute("data-resolved", "true");
+        if (c.id === activeThreadId) pin.setAttribute("data-active", "true");
+        pin.addEventListener("click", (e) => {
+          e.stopPropagation();
+          focusThread(c.id);
+        });
+        pinLayer.appendChild(pin);
+      });
+    }
+
+    function pinNumberFor(id: string): number | null {
+      const anchored = topLevel().filter((c) => c.anchorX != null && c.anchorY != null && versionMatch(c));
+      const idx = anchored.findIndex((c) => c.id === id);
+      return idx >= 0 ? idx + 1 : null;
+    }
+
+    function threadCard(c: Comment): HTMLElement {
+      const el = document.createElement("div");
+      el.className = "ux-thread";
+      el.id = "c-" + c.id;
+      el.dataset.commentId = c.id;
+      const pinNo = pinNumberFor(c.id);
+      const replies = repliesOf(c.id);
+      el.innerHTML = `
+        <div class="ux-c-head">
+          ${pinNo ? `<span class="ux-c-pin">${pinNo}</span>` : ""}
+          <span class="ux-c-author">${esc(c.authorName)}</span>
+          <span class="ux-c-meta">${fmtTime(c.createdAt)}</span>
+        </div>
+        <div class="ux-c-body">${renderBody(c.body)}</div>
+        ${c.designVersion ? `<span class="ux-c-ver">on ${esc(c.designVersion)}</span>` : ""}
+        <div class="ux-c-actions">
+          <button data-act="reply">Reply</button>
+          <button data-act="resolve">${c.resolved ? "Reopen" : "Resolve"}</button>
+        </div>
+        <div class="ux-replies"></div>
+        <div class="ux-reply-box"><textarea rows="2" placeholder="Reply…"></textarea>
+          <div style="margin-top:6px"><button class="ux-btn-primary" data-act="send-reply">Reply</button></div>
+        </div>`;
+      const repliesEl = el.querySelector<HTMLElement>(".ux-replies")!;
+      if (!replies.length) repliesEl.style.display = "none";
+      replies.forEach((r) => {
+        const rd = document.createElement("div");
+        rd.innerHTML = `
+          <div class="ux-c-head"><span class="ux-c-author">${esc(r.authorName)}</span><span class="ux-c-meta">${fmtTime(r.createdAt)}</span></div>
+          <div class="ux-c-body">${renderBody(r.body)}</div>`;
+        repliesEl.appendChild(rd);
+      });
+      const replyBox = el.querySelector<HTMLElement>(".ux-reply-box")!;
+      el.querySelector('[data-act="reply"]')!.addEventListener("click", () => {
+        replyBox.toggleAttribute("data-open");
+        replyBox.querySelector("textarea")?.focus();
+      });
+      el.querySelector('[data-act="resolve"]')!.addEventListener("click", () => resolve(c.id, !c.resolved));
+      el.querySelector('[data-act="send-reply"]')!.addEventListener("click", () => {
+        const ta = replyBox.querySelector("textarea")!;
+        const v = ta.value.trim();
+        if (v) post(v, null, c.id);
+      });
+      el.addEventListener("click", () => focusThread(c.id, false));
+      return el;
+    }
+
+    function render() {
+      // open vs resolved top-level threads, honoring version filter
+      const open = topLevel().filter((c) => !c.resolved && versionMatch(c)).sort((a, b) => b.createdAt - a.createdAt);
+      const resolved = topLevel().filter((c) => c.resolved && versionMatch(c)).sort((a, b) => (b.resolvedAt || 0) - (a.resolvedAt || 0));
+
+      threadsEl.innerHTML = "";
+      if (!open.length) {
+        const p = document.createElement("p");
+        p.className = "text-slate text-[13px] py-6 text-center";
+        p.textContent = "No open comments yet. Be the first to leave one.";
+        threadsEl.appendChild(p);
+      } else {
+        open.forEach((c) => threadsEl.appendChild(threadCard(c)));
+      }
+
+      resolvedList.innerHTML = "";
+      resolved.forEach((c) => resolvedList.appendChild(threadCard(c)));
+      resolvedCount.textContent = String(resolved.length);
+      resolvedGroup.hidden = resolved.length === 0;
+
+      renderPins();
+      requestAnimationFrame(alignPinLayer);
+    }
+
+    function focusThread(id: string, scroll = true) {
+      activeThreadId = id;
+      renderPins();
+      document.querySelectorAll<HTMLElement>(".ux-thread[data-highlight]").forEach((e) => e.removeAttribute("data-highlight"));
+      const card = document.getElementById("c-" + id);
+      if (card) {
+        card.setAttribute("data-highlight", "true");
+        if (scroll) card.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    // --- API
+    async function load() {
+      try {
+        const r = await fetch(`/api/comments?screen_id=${encodeURIComponent(screenId)}`);
+        if (!r.ok) throw new Error(String(r.status));
+        const data = (await r.json()) as { comments: Comment[] };
+        comments = data.comments || [];
+        render();
+        handleDeepLink();
+      } catch {
+        threadsEl.innerHTML = '<p class="text-slate text-[13px] py-6 text-center">Comments unavailable — the comments store isn’t configured yet.</p>';
+      }
+    }
+    async function post(body: string, anchor: { x: number; y: number } | null, parentId: string | null) {
+      const authorName = getName();
+      refreshAs();
+      const payload: any = { screenId, body, authorName, designVersion: activeVersion() };
+      if (anchor) { payload.anchorX = anchor.x; payload.anchorY = anchor.y; }
+      if (parentId) payload.parentId = parentId;
+      const r = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) { alert("Could not post comment (" + r.status + ")."); return; }
+      composer.value = "";
+      clearAnchor();
+      await load();
+    }
+    async function resolve(id: string, resolved: boolean) {
+      const r = await fetch(`/api/comments/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ resolved }),
+      });
+      if (!r.ok) { alert("Could not update comment."); return; }
+      await load();
+    }
+
+    // --- anchor / pin placement
+    function clearAnchor() {
+      pendingAnchor = null;
+      anchorNote.hidden = true;
+      cancelAnchorBtn.hidden = true;
+      pinLayer?.querySelector(".ux-pin-ghost")?.remove();
+    }
+    function setArming(on: boolean) {
+      arming = on;
+      if (pinLayer) pinLayer.toggleAttribute("data-arming", on);
+      if (pinHint) pinHint.hidden = !on;
+      addPinBtn?.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    addPinBtn?.addEventListener("click", () => setArming(!arming));
+    pinLayer?.addEventListener("click", (e) => {
+      if (!arming || !pinLayer) return;
+      const r = pinLayer.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      pendingAnchor = { x: Math.max(0, Math.min(1, x)), y: Math.max(0, Math.min(1, y)) };
+      setArming(false);
+      // ghost pin
+      pinLayer.querySelector(".ux-pin-ghost")?.remove();
+      const ghost = document.createElement("div");
+      ghost.className = "ux-pin ux-pin-ghost";
+      ghost.style.left = pendingAnchor.x * 100 + "%";
+      ghost.style.top = pendingAnchor.y * 100 + "%";
+      ghost.textContent = "•";
+      pinLayer.appendChild(ghost);
+      anchorNote.textContent = "📌 Pinned to this spot";
+      anchorNote.hidden = false;
+      cancelAnchorBtn.hidden = false;
+      composer.focus();
+    });
+    cancelAnchorBtn.addEventListener("click", clearAnchor);
+
+    submitBtn.addEventListener("click", () => {
+      const v = composer.value.trim();
+      if (!v) { composer.focus(); return; }
+      post(v, pendingAnchor, null);
+    });
+
+    versionSelect.addEventListener("change", render);
+    versionAll.addEventListener("change", render);
+
+    // --- compare/single mode toggle
+    const modeBtns = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-mode-btn]"));
+    modeBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const mode = btn.dataset.modeBtn;
+        modeBtns.forEach((b) => b.setAttribute("aria-selected", b === btn ? "true" : "false"));
+        const single = root.querySelector<HTMLElement>('[data-frame-panel="single"]');
+        const cmp = root.querySelector<HTMLElement>('[data-frame-panel="compare"]');
+        if (single) single.hidden = mode !== "single";
+        if (cmp) cmp.hidden = mode !== "compare";
+        if (mode === "single") requestAnimationFrame(alignPinLayer);
+      });
+    });
+
+    // --- deep link /tools/ux-review/<id>#c=<comment_id>
+    function handleDeepLink() {
+      const m = location.hash.match(/c=([\w-]+)/);
+      if (m) focusThread(m[1]);
+    }
+
+    window.addEventListener("resize", () => requestAnimationFrame(alignPinLayer));
+    load();
+  }
+
+  setup();
+  document.addEventListener("astro:page-load", setup);
+</script>

@@ -31,18 +31,18 @@ const steps = [
     body:
       "Basal is the shared assistant every Luna employee can use. Day-to-day questions about the company, drafting, summarizing, brainstorming, code snippets. Open a chat, ask it something real, and notice the response. Conversations are private to you; nothing is used to train any model.",
     actionLabel: "Chat with Basal",
-    actionHref: "/chat?agent=basal",
+    actionHref: "/tools/chat?agent=basal",
     actionStyle: "primary" as const,
     secondaryLabel: "About Basal",
-    secondaryHref: "/agents/basal",
+    secondaryHref: "/ai/agents/basal",
   },
   {
     n: "03",
     title: "See what else exists",
     body:
-      "There are six agents on the Luna AI Workforce today. Some are for everyone (Basal, Pen). Some are owner agents — built for one person (Clara). Some are platform-internal (Pump, Sensor — used by the team building this). Lancel is for clinical-data work and is gated to phi-authorized people. Browse the catalog and notice which ones are available to you.",
+      "There are five agents live on the Luna AI Workforce today. Some are for everyone (Basal, Pen). Some are owner agents — built for one person (Clara). Some are platform-internal (Pump, Sensor — used by the team building this). Browse the catalog and notice which ones are available to you.",
     actionLabel: "See all agents",
-    actionHref: "/agents",
+    actionHref: "/ai/agents",
     actionStyle: "primary" as const,
   },
   {
@@ -61,10 +61,10 @@ const steps = [
     body:
       "If you find yourself doing the same multi-step thing twice a week — triage, drafts, lookups — that's a workflow worth giving to an agent. Pen runs the intake. Five minutes to file, a few days from request to working agent. There's no quota; everyone at Luna can ask for one.",
     actionLabel: "Request a new agent",
-    actionHref: "/agents/new",
+    actionHref: "/ai/agents/new",
     actionStyle: "primary" as const,
     secondaryLabel: "How requests work",
-    secondaryHref: "/foundation/how-to#requesting-new-agents",
+    secondaryHref: "/company/help#requesting-new-agents",
   },
 ];
 ---
@@ -214,7 +214,7 @@ const steps = [
             title={track.data.title}
             summary={track.data.summary}
             moduleCount={track.data.modules.length}
-            href={`/onboarding/${track.id}`}
+            href={`/company/onboarding/${track.id}`}
           />
         ))
       }
@@ -249,7 +249,7 @@ const steps = [
       </div>
       <div class="flex flex-wrap gap-3 md:justify-end">
         <a href="/dashboard" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-moonlight text-midnight font-body text-[14px] font-semibold hover:opacity-90 transition-opacity">Go to dashboard</a>
-        <a href="/foundation" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Reference docs</a>
+        <a href="/company" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 text-white font-body text-[14px] font-medium hover:bg-white/10 transition-colors">Reference docs</a>
       </div>
     </div>
   </MidnightBand>

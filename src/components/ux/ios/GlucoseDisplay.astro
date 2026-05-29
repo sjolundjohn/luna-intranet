@@ -1,0 +1,36 @@
+---
+/**
+ * GlucoseDisplay — large value (D-DIN) + Moonlight directional arrow.
+ * `rotate` orients the trend arrow (deg, 0 = straight up).
+ */
+interface Props {
+  value?: number | string;
+  unit?: string;
+  rotate?: number;
+}
+const { value = 101, unit = "mg/dl", rotate = 35 } = Astro.props;
+---
+<div class="ios-glucose">
+  <div class="ios-glucose-info" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A8892" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+  </div>
+  <div class="ios-glucose-row">
+    <span class="ios-glucose-value">{value}</span>
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style={`transform:rotate(${rotate}deg)`}><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </div>
+  <div class="ios-glucose-unit">{unit}</div>
+</div>
+<style>
+  .ios-glucose {
+    position: relative;
+    background: var(--color-white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 24px;
+    text-align: center;
+  }
+  .ios-glucose-info { position: absolute; top: 16px; right: 18px; }
+  .ios-glucose-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .ios-glucose-value { font-size: 84px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+  .ios-glucose-unit { font-size: 15px; color: var(--color-graphite); margin-top: 6px; }
+</style>

@@ -1,13 +1,13 @@
 ---
 /**
- * One row of the audit log. Used on /agents/me ("my activity") and
- * /fleet ("recent invocations"). Shows what was logged — never the
+ * One row of the audit log. Used on /ai/agents/me ("my activity") and
+ * /ai/fleet ("recent invocations"). Shows what was logged — never the
  * prompt content, never the response content.
  */
 interface Props {
   ts: string;
   agent: string;
-  /** "you" on /agents/me, team or aggregate on /fleet. */
+  /** "you" on /ai/agents/me, team or aggregate on /ai/fleet. */
   actor?: string;
   model: string;
   tokens: number;

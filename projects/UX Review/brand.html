@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luna iOS — Brand Guidelines</title>
+<link rel="icon" href="assets/favicon.svg" />
+<link rel="stylesheet" href="css/tokens.css" />
+<style>
+  body { background: var(--color-cloud-lilac); margin: 0; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: var(--space-lg) var(--space-sm) var(--space-xxl); }
+  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-lg); }
+  .top a { font-size: var(--type-subhead); font-weight: 600; color: var(--color-moonlight-deep); text-decoration: none; }
+  h1 { font-size: var(--type-large-title); font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  .lead { font-size: var(--type-callout); color: var(--color-graphite); line-height: 1.5; max-width: 64ch; margin: 8px 0 var(--space-lg); }
+  section { margin-bottom: var(--space-xl); }
+  h2 { font-size: var(--type-title-2); font-weight: 700; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .sub { font-size: var(--type-subhead); color: var(--color-slate); margin: 0 0 var(--space-default); }
+  .frames { display: grid; gap: var(--space-card-gap); grid-template-columns: 1fr; }
+  .frame { background: var(--color-white); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden; }
+  .frame iframe { width: 100%; border: 0; display: block; background: var(--color-cloud-lilac); }
+  .prose { background: var(--color-white); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: var(--space-md); }
+  .prose h3 { font-size: var(--type-headline); margin: 0 0 6px; }
+  .prose p, .prose li { font-size: var(--type-subhead); line-height: 1.55; color: var(--color-graphite); }
+  .prose ul { margin: 8px 0 0; padding-left: 20px; }
+  .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .pill { font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px; background: var(--color-periwinkle-mist); color: var(--color-midnight); }
+  .guard { border-left: 4px solid var(--color-critical); background: var(--color-critical-bg); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1>Brand Guidelines</h1><a href="index.html">← UX Review Kit</a></div>
+  <p class="lead">The Luna iOS app visual language. Calm, precise, trustworthy — the watchful nightlight. D-DIN everywhere; Midnight + Moonlight lead; Plum is the only "critical," never red.</p>
+
+  <section>
+    <h2>Logo</h2>
+    <p class="sub">Primary wordmark with moon phases. Prefer dark surfaces; never stretch, shear, or alter.</p>
+    <div class="frames"><div class="frame"><iframe src="preview/brand-logo.html" style="height:360px" title="Logo"></iframe></div>
+      <div class="frame"><iframe src="preview/brand-gradient.html" style="height:300px" title="Midnight gradient"></iframe></div></div>
+    <div class="prose" style="margin-top:var(--space-card-gap)">
+      <h3>Usage rules</h3>
+      <ul>
+        <li><strong>Primary mark</strong> (full wordmark + moon phases) above all others when in doubt.</li>
+        <li><strong>Secondary mark</strong> (moon glyph only) only alongside a piece already carrying the primary mark.</li>
+        <li><strong>Placement:</strong> upper third for a guardianship feel; prefer dark backgrounds.</li>
+        <li><strong>Clear space</strong> = height of the "a" in the wordmark. <strong>Min size</strong> 40px wide.</li>
+        <li><strong>Never</strong> stretch, squeeze, shear, recolor, or alter letterforms / moon icons.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Color</h2>
+    <p class="sub">Midnight 40–50% · Paper/Cloud/Periwinkle 35–45% · Moonlight ≤7% · Lunar Lavender ≤5%.</p>
+    <div class="frames">
+      <div class="frame"><iframe src="preview/color-primary.html" style="height:300px" title="Primary palette"></iframe></div>
+      <div class="frame"><iframe src="preview/color-secondary.html" style="height:340px" title="Secondary palette"></iframe></div>
+      <div class="frame"><iframe src="preview/color-semantic.html" style="height:320px" title="Semantic palette"></iframe></div>
+      <div class="frame"><iframe src="preview/color-text.html" style="height:300px" title="Text on surfaces"></iframe></div>
+      <div class="frame"><iframe src="preview/color-usage.html" style="height:300px" title="Usage proportions"></iframe></div>
+    </div>
+    <div class="prose guard" style="margin-top:var(--space-card-gap)">
+      <h3>Color guardrails</h3>
+      <ul>
+        <li><strong>No reds or harsh oranges</strong> — Critical = Plum Depth <code>#8E3655</code>, kept rare and significant.</li>
+        <li>No neon / glow gradients. No red/green-only encoding — always pair color with icon or label.</li>
+        <li>Balance Midnight with Paper White / Periwinkle so the UI never reads cold.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Typography</h2>
+    <p class="sub">D-DIN, full 11-level iOS HIG Dynamic Type scale. Headline is the 17pt Semibold cut.</p>
+    <div class="frames">
+      <div class="frame"><iframe src="preview/type-scale-titles.html" style="height:420px" title="Title scale"></iframe></div>
+      <div class="frame"><iframe src="preview/type-scale-text.html" style="height:380px" title="Text scale"></iframe></div>
+      <div class="frame"><iframe src="preview/type-brand.html" style="height:320px" title="Brand type"></iframe></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Spacing · Radii · Elevation</h2>
+    <p class="sub">8pt base (4pt half-step). Screen margins = sm (16). Card padding = md (24). Shadows never layered.</p>
+    <div class="frames">
+      <div class="frame"><iframe src="preview/spacing-scale.html" style="height:360px" title="Spacing scale"></iframe></div>
+      <div class="frame"><iframe src="preview/radii.html" style="height:300px" title="Radii"></iframe></div>
+      <div class="frame"><iframe src="preview/elevation.html" style="height:300px" title="Elevation"></iframe></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Voice &amp; Imagery</h2>
+    <div class="prose">
+      <h3>Voice — Quiet · Calm · Protector · Sleep</h3>
+      <ul>
+        <li>Frame everything through overnight automation: <strong>rest → morning outcome</strong>.</li>
+        <li>Sensor-agnostic language — never hardcode a CGM brand.</li>
+        <li>Regulatory-safe: no clinical claims, no PHI, no EHR logos in UI.</li>
+        <li>Guiding, never alarming — Plum is serious, not panicked. Approachable, not "high-tech."</li>
+        <li>Show the solution, not the problem — the product working, not glucose anxiety.</li>
+      </ul>
+      <div class="pillrow"><span class="pill">Quiet</span><span class="pill">Calm</span><span class="pill">Protector</span><span class="pill">Sleep</span></div>
+      <h3 style="margin-top:var(--space-default)">Imagery</h3>
+      <p>Soft, diffused dawn/dusk or blue-hour light; bedside &amp; in-hand contexts; clean clinic environments. Avoid bright sterile rooms, staged lab-coat poses, cluttered nightstands, saturated warm tones.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>

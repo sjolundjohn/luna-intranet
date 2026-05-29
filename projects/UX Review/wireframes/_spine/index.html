@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luna iOS — System-Locking Spine (7 archetypes)</title>
+<link rel="stylesheet" href="../../css/tokens.css" />
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-brand);
+  background:linear-gradient(to bottom, var(--color-midnight-deep), var(--color-midnight-floor));
+  color:var(--color-on-dark);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.head{padding:40px 32px 8px; max-width:1400px; margin:0 auto;}
+.eyebrow{font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--color-moonlight);}
+.head h1{font-size:34px; font-weight:700; letter-spacing:-0.02em; margin:10px 0 6px; color:var(--color-on-dark);}
+.head p{font-size:15px; line-height:1.55; color:var(--color-on-dark-sub); max-width:70ch; margin:0;}
+.head .meta{margin-top:14px; display:flex; flex-wrap:wrap; gap:8px;}
+.pill{display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600;
+  background:rgba(104,210,223,0.10); border:1px solid rgba(104,210,223,0.30);
+  color:var(--color-moonlight); border-radius:999px; padding:6px 12px;}
+
+.grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+  gap:40px 24px; padding:32px; max-width:1400px; margin:0 auto;
+}
+.cell{display:flex; flex-direction:column; align-items:center;}
+.label{margin-bottom:14px; text-align:center;}
+.label .n{font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--color-moonlight);}
+.label .t{font-size:16px; font-weight:700; color:var(--color-on-dark); margin-top:3px;}
+.label .d{font-size:12px; color:var(--color-on-dark-sub); margin-top:2px;}
+/* phone frame holder — scale down the 414px black-bezel frame to fit cells */
+.frame{
+  width:414px; height:828px; /* 390 screen + 12px bezel padding *2 = 414 */
+  transform:scale(0.72); transform-origin:top center;
+  margin-bottom:-232px; /* claw back the scaled-off space */
+  border-radius:56px; overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.45);
+}
+.frame iframe{width:414px; height:828px; border:none; display:block; background:transparent;}
+.openlink{margin-top:8px;}
+.openlink a{font-size:12px; font-weight:600; color:var(--color-moonlight); text-decoration:none;}
+.openlink a:hover{text-decoration:underline;}
+.foot{padding:8px 32px 56px; max-width:1400px; margin:0 auto; font-size:12px; color:var(--color-on-dark-sub);}
+.foot a{color:var(--color-moonlight);}
+</style>
+</head>
+<body>
+<div class="head">
+  <div class="eyebrow">Luna iOS · Holistic design review</div>
+  <h1>System-Locking Spine</h1>
+  <p>Seven self-contained archetype screens that exercise the entire component kit and lock every cross-feature pattern before mass-build. All share one iPhone frame, one type scale, one button, one list row, one card system, one flag pattern. Force-dark Midnight surfaces throughout. Each screen opens offline; the only external dependency is <code>tokens.css</code>.</p>
+  <div class="meta">
+    <span class="pill">390pt screen · black bezel</span>
+    <span class="pill">Force-dark always</span>
+    <span class="pill">D-DIN · 11-level HIG type</span>
+    <span class="pill">Critical = Plum, never red</span>
+    <span class="pill">Tabs: Dashboard · Session History · Settings</span>
+    <span class="pill">Flag, don't fabricate</span>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="cell">
+    <div class="label"><div class="n">01</div><div class="t">Home Dashboard</div><div class="d">Hero CGM graph · TIR · Luna-delivery dots · active session</div></div>
+    <div class="frame"><iframe src="01-home-dashboard.html" title="Home Dashboard" loading="lazy"></iframe></div>
+    <div class="openlink"><a href="01-home-dashboard.html" target="_blank">Open full screen ↗</a></div>
+  </div>
+  <div class="cell">
+    <div class="label"><div class="n">02</div><div class="t">Training Step</div><div class="d">Apollo video · dot progress · centered copy</div></div>
+    <div class="frame"><iframe src="02-training-step.html" title="Training Step" loading="lazy"></iframe></div>
+    <div class="openlink"><a href="02-training-step.html" target="_blank">Open full screen ↗</a></div>
+  </div>
+  <div class="cell">
+    <div class="label"><div class="n">03</div><div class="t">Dose Confirmation</div><div class="d">Hypo Shield two-step sheet (interactive)</div></div>
+    <div class="frame"><iframe src="03-dose-confirmation.html" title="Dose Confirmation" loading="lazy"></iframe></div>
+    <div class="openlink"><a href="03-dose-confirmation.html" target="_blank">Open full screen ↗</a></div>
+  </div>
+  <div class="cell">
+    <div class="label"><div class="n">04</div><div class="t">Hardware Checkpoint</div><div class="d">Moon-in-orbit detect · Next never gated</div></div>
+    <div class="frame"><iframe src="04-hardware-checkpoint.html" title="Hardware Checkpoint" loading="lazy"></iframe></div>
+    <div class="openlink"><a href="04-hardware-checkpoint.html" target="_blank">Open full screen ↗</a></div>
+  </div>
+  <div class="cell">
+    <div class="label"><div class="n">05</div><div class="t">Settings</div><div class="d">Grouped list · toggle · chevrons</div></div>
+    <div class="frame"><iframe src="05-settings-list.html" title="Settings" loading="lazy"></iframe></div>
+    <div class="openlink"><a href="05-settings-list.html" target="_blank">Open full screen ↗</a></div>
+  </div>
+  <div class="cell">
+    <div class="label"><div class="n">06</div><div class="t">Onboarding Chapter</div><div class="d">Narrated · recurring "Tonight" panel</div></div>
+    <div class="frame"><iframe src="06-onboarding-chapter.html" title="Onboarding Chapter" loading="lazy"></iframe></div>
+    <div class="openlink"><a href="06-onboarding-chapter.html" target="_blank">Open full screen ↗</a></div>
+  </div>
+  <div class="cell">
+    <div class="label"><div class="n">07</div><div class="t">Session History</div><div class="d">Date selector · total insulin · in-range ring · list</div></div>
+    <div class="frame"><iframe src="07-session-history.html" title="Session History" loading="lazy"></iframe></div>
+    <div class="openlink"><a href="07-session-history.html" target="_blank">Open full screen ↗</a></div>
+  </div>
+</div>
+
+<div class="foot">
+  Locked patterns and the mass-build checklist live in <a href="SPINE-NOTES.md">SPINE-NOTES.md</a>. Source of truth: <code>../../css/tokens.css</code>.
+</div>
+</body>
+</html>

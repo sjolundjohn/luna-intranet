@@ -1,0 +1,275 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MidnightBand from "~/components/MidnightBand.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import FearAndAnswer from "~/components/FearAndAnswer.astro";
+import SectionCard from "~/components/SectionCard.astro";
+---
+
+<BaseLayout
+  title="Vision"
+  description="Why Luna is building an AI workplace — the principle, what's changing, what isn't."
+  heroIsDark={true}
+>
+  <Hero size="compact" animateMoons={true}>
+    <Fragment slot="headline">
+      We do our highest value work all the time.
+    </Fragment>
+    <Fragment slot="subcopy">
+      Every person at Luna does the most valuable work they're capable of.
+      AI supports the rest. This page explains what that means here,
+      what's changing, and what we're protecting.
+    </Fragment>
+  </Hero>
+
+  {/* Why this — anchored in Luna's product. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px]">
+      <p class="eyebrow mb-4">Why now</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 44px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        We make overnight glucose control effortless. Our work shouldn't be.
+      </h2>
+      <div class="mt-5"><MoonlightRule width={40} color="midnight" /></div>
+      <div class="mt-7 space-y-5 text-graphite text-[17px] leading-[1.65] max-w-[62ch]">
+        <p>
+          Luna ships a small device and a simple routine that helps people on
+          long-acting insulin wake up in range. The mission is calm, careful,
+          and clinical — and the work behind it is anything but: regulatory
+          submissions that span thousands of pages, clinical-trial deviations
+          that need same-day judgment, hardware iterations on a tight schedule,
+          a customer support queue we never want to be slow on.
+        </p>
+        <p>
+          The principle here is the same one we hold for our patients: the
+          system should do the careful repetitive parts so the human can
+          focus on the parts that matter. For our team, that means giving
+          everyone on the team the AI support they need so the work that requires
+          judgment, taste, or human contact is the work they actually do.
+        </p>
+        <p class="text-ink font-medium">
+          This site is the workplace where that happens.
+        </p>
+      </div>
+    </div>
+  </WhiteSection>
+
+  {/* What is here — the four jobs of the platform. */}
+  <WhiteSection size="compact" class="bg-soft-paper">
+    <div class="max-w-[720px] mb-10">
+      <p class="eyebrow mb-3">What lives here</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 40px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Four surfaces, one job each.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    <div class="grid gap-6 md:gap-7 md:grid-cols-2 auto-rows-fr">
+      <SectionCard
+        href="/tools/chat"
+        eyebrow="01 · Chat"
+        title="Talk to your team."
+        description="Full-page conversations with any Luna agent you have access to. Threads persist, attachments live in Luna-owned storage, identity is verified."
+      />
+      <SectionCard
+        href="/ai/agents/me"
+        eyebrow="02 · My Agents"
+        title="Configure yours."
+        description="Each person on the team controls their own agents — toggles, custom instructions, what's remembered. You see exactly what each agent retains about you."
+      />
+      <SectionCard
+        href="/workflows"
+        eyebrow="03 · Workflows"
+        title="Repeat the work."
+        description="Multi-step tasks Luna runs over and over — morning briefing, support triage, fleet briefing. Designed, observed, and tuned in one place."
+      />
+      <SectionCard
+        href="/ai/fleet"
+        eyebrow="04 · Fleet"
+        title="See the whole."
+        description="What every Luna agent is doing right now, plus a daily and weekly briefing — written report and audio podcast — of what the fleet has been working on."
+      />
+    </div>
+  </WhiteSection>
+
+  {/* What's changing / not changing. */}
+  <WhiteSection size="tall">
+    <div class="grid md:grid-cols-2 gap-10 md:gap-14">
+      <div>
+        <p class="eyebrow mb-3">What's changing</p>
+        <h3 class="font-display text-ink font-normal text-[28px] md:text-[34px] leading-[1.1]">
+          More leverage. Faster cycles. Less repetition.
+        </h3>
+        <ul class="mt-5 space-y-3 text-graphite text-[16px] leading-[1.55]">
+          <li class="flex gap-3">
+            <span class="mt-2 block h-[5px] w-[5px] rounded-full bg-moonlight flex-shrink-0" aria-hidden="true"></span>
+            <span>The hardest, most repetitive parts of every role can lean on a dedicated agent.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-2 block h-[5px] w-[5px] rounded-full bg-moonlight flex-shrink-0" aria-hidden="true"></span>
+            <span>Workflows we already run informally can become explicit, observed, and improvable.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-2 block h-[5px] w-[5px] rounded-full bg-moonlight flex-shrink-0" aria-hidden="true"></span>
+            <span>The first hour of your day can shift from triage to direction-setting.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-2 block h-[5px] w-[5px] rounded-full bg-moonlight flex-shrink-0" aria-hidden="true"></span>
+            <span>Onboarding can speed up — new team members ramping on a question instead of a wiki crawl.</span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow mb-3">What's not</p>
+        <h3 class="font-display text-ink font-normal text-[28px] md:text-[34px] leading-[1.1]">
+          Your judgment. Your craft. Patient outcomes.
+        </h3>
+        <ul class="mt-5 space-y-3 text-graphite text-[16px] leading-[1.55]">
+          <li class="flex gap-3">
+            <span class="mt-2 block h-[5px] w-[5px] rounded-full bg-midnight flex-shrink-0" aria-hidden="true"></span>
+            <span>Decisions that affect patients stay with the humans whose names are on the submissions.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-2 block h-[5px] w-[5px] rounded-full bg-midnight flex-shrink-0" aria-hidden="true"></span>
+            <span>Performance is judged by your work, not by how often you used an agent.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-2 block h-[5px] w-[5px] rounded-full bg-midnight flex-shrink-0" aria-hidden="true"></span>
+            <span>Anything that touches PHI stays inside our HIPAA boundary, with a separate access path.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </WhiteSection>
+
+  {/* Fear-and-answer block — the heart of the change-management voice. */}
+  <WhiteSection size="tall" class="bg-soft-paper">
+    <div class="max-w-[720px] mb-10">
+      <p class="eyebrow mb-3">The honest part</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 40px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        The fears people have about AI at work — and how we're tackling them.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="mt-6 text-graphite text-[16px] leading-[1.6] max-w-[60ch]">
+        We're standing up a small team — a skunkworks — to work through this
+        with the rest of the company. The fears below are ones we expect to
+        hear, ones we share, and ones we want to be honest about up front.
+        Each is paired with the design choice we're aiming for. If a row
+        reads as marketing rather than as a design choice we'll actually
+        build, tell us.
+      </p>
+    </div>
+
+    <div class="bg-white rounded-[20px] border border-border-subtle p-6 md:p-10">
+      <FearAndAnswer
+        fear="Am I being replaced?"
+        answer="No. Luna's headcount plan grows alongside this — agents are a force multiplier, not a substitute. The work AI removes is the work nobody wanted in the first place: meeting-note typing, triage, status rollups, format-converting the same data three times. The work it can't do is what we hire for."
+        enforcedBy="Hiring plan owned by leadership; no agent has 'replace headcount' as a goal."
+      />
+      <FearAndAnswer
+        fear="If the AI gets it wrong, who takes the hit?"
+        answer="The human whose name is on the work. Agents are tools your judgment uses, not co-authors. Anything that goes to a regulator, a patient, an investor, or a clinician carries your sign-off — and the audit log shows you reviewed it. If you spot a consistent failure mode, tell us; that's how we improve the agent or pull it."
+        enforcedBy="Audit log records the reviewer for every regulated artifact; agent outputs are flagged 'unreviewed' until then."
+      />
+      <FearAndAnswer
+        fear="What about my data — my words, my conversations?"
+        answer="Your conversations are yours. Each person at Luna has a private Durable Object instance with their own memory. Anthropic's Zero Data Retention is contractually on. Audit logs capture metadata (who asked what agent, when, how much it cost) — never the contents. You can see and delete what each agent remembers about you on My Agents."
+        enforcedBy="ZDR is a contract clause, not a setting; per-user Durable Objects are how Cloudflare physically partitions state."
+      />
+      <FearAndAnswer
+        fear="Is this going to feel like another tool to keep up with?"
+        answer="The places you already work — Slack, your inbox, this intranet — are where the agents live. We're not adding a new place to check. Onboarding is a 20-minute self-serve flow keyed to your role. If a workflow doesn't make your day better in the first week, we want to hear it."
+        enforcedBy="Slack-first delivery for personal agents; /company/onboarding tracks are role-scoped so you only see what's yours."
+      />
+      <FearAndAnswer
+        fear="Will I lose the parts of my job I actually like?"
+        answer="The opposite is the goal. Luna people stayed because the work matters and the craft is real. We're not automating the craft — we're trying to clear the bureaucratic and repetitive layer around it so there's more time for craft, not less. If a workflow we ship feels like the wrong call here, that's a signal to revise the workflow, not the person."
+        enforcedBy="Workflow ownership lives with the team that does the work — not a central 'automation team.'"
+      />
+    </div>
+  </WhiteSection>
+
+  {/* How decisions get made. */}
+  <WhiteSection size="compact">
+    <div class="max-w-[760px]">
+      <p class="eyebrow mb-3">How decisions get made</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 38px); line-height: 1.1; letter-spacing: -0.02em;"
+      >
+        Small group, written reasons, reversible.
+      </h2>
+      <div class="mt-5"><MoonlightRule width={40} color="midnight" /></div>
+      <ol class="mt-7 space-y-5 text-graphite text-[16px] leading-[1.65]">
+        <li>
+          <span class="text-ink font-semibold">Anyone can propose a new agent or workflow.</span>
+          Drop it in <span class="font-mono text-[14px]">#ai-platform</span> in Slack or open
+          a request on this site (coming with /ai/agents/me).
+        </li>
+        <li>
+          <span class="text-ink font-semibold">A small group reviews scope and risk.</span>
+          For shared agents (Class A), that's John plus the team lead whose
+          domain it lives in. For personal agents (Class B), it's just you.
+        </li>
+        <li>
+          <span class="text-ink font-semibold">Reasons are written down.</span>
+          Every agent and workflow has an "owner," a "why," and a "what it
+          can't do." If a decision is reversed later, the original reasoning
+          stays so we can learn from it.
+        </li>
+        <li>
+          <span class="text-ink font-semibold">If you disagree, say so.</span>
+          The right place is <span class="font-mono text-[14px]">#ai-platform</span>
+          for an open conversation, or <a href="mailto:john@lunadiabetes.com" class="text-ink underline decoration-moonlight decoration-2 underline-offset-4 hover:decoration-ink transition-colors">john@lunadiabetes.com</a>
+          for anything you'd rather not put in a channel. We've changed our
+          minds before. We'll do it again.
+        </li>
+      </ol>
+    </div>
+  </WhiteSection>
+
+  <MidnightBand size="compact">
+    <div class="max-w-[720px]">
+      <p class="eyebrow eyebrow-on-dark mb-4">What to do next</p>
+      <h2
+        class="font-display text-white font-normal"
+        style="font-size: clamp(32px, 5vw, 56px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Take the 20-minute path for your role.
+      </h2>
+      <p class="mt-6 text-white/72 text-[17px] leading-[1.6] max-w-[56ch]">
+        Onboarding is short, role-specific, and ends in a real task you do
+        with an agent. The first module on every track is the same: what
+        we're not asking you to do.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a
+          href="/company/onboarding"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-moonlight text-midnight font-body text-[15px] font-semibold shadow-[0_3px_10px_rgba(104,210,223,0.4)] hover:shadow-[0_6px_20px_rgba(104,210,223,0.5)] transition-shadow"
+        >
+          Start onboarding
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </a>
+        <a
+          href="/ai/governance"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 text-white font-body text-[15px] font-medium hover:bg-white/10 transition-colors"
+        >
+          Read how it's governed
+        </a>
+      </div>
+    </div>
+  </MidnightBand>
+</BaseLayout>

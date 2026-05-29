@@ -9,7 +9,8 @@
  * nav re-renders each navigation so the active underline tracks the
  * current path. Persisting it caused a stale active-bar bug.
  */
-import { getCollection } from "astro:content";
+import { liveAgents, activeWorkflows, liveTools } from "~/lib/content";
+import NotificationsBell from "~/components/ux/NotificationsBell.astro";
 
 interface Props {
   heroIsDark?: boolean;
@@ -17,21 +18,17 @@ interface Props {
 
 const { heroIsDark = true } = Astro.props;
 
-const agents = (await getCollection("agents")).sort(
-  (a, b) => a.data.order - b.data.order,
-);
-const workflows = (await getCollection("workflows")).sort(
-  (a, b) => a.data.order - b.data.order,
-);
-const onboardingTracks = (await getCollection("onboarding")).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const agents = await liveAgents();
+const workflows = await activeWorkflows();
+const tools = await liveTools();
 
 interface SubLink {
   href: string;
   label: string;
   /** Optional tiny right-side annotation, e.g. status. */
   hint?: string;
+  /** External link → opens in a new tab. */
+  external?: boolean;
 }
 
 interface NavItem {
@@ -40,39 +37,63 @@ interface NavItem {
   sub?: { groups: { label?: string; links: SubLink[] }[] };
 }
 
+// Top-level domains: Dashboard (home) · AI System · Tools · Workflows · Company.
 const navLinks: NavItem[] = [
   { href: "/dashboard", label: "Dashboard" },
   {
-    href: "/agents",
-    label: "Agents",
+    href: "/ai",
+    label: "AI System",
     sub: {
       groups: [
         {
           links: [
-            { href: "/agents", label: "Agents catalog" },
-            { href: "/agents/me", label: "My agents" },
-            { href: "/agents/new", label: "Request a new agent" },
+            { href: "/ai", label: "AI System overview" },
+            { href: "/ai/agents", label: "Agents catalog" },
+            { href: "/ai/agents/me", label: "My agents" },
+            { href: "/ai/agents/new", label: "Request a new agent" },
           ],
         },
         {
-          label: "Live agents",
-          links: agents
-            .filter((a) => a.data.status === "live")
-            .map((a) => ({
-              href: `/agents/${a.id}`,
-              label: a.data.name,
-              hint: "Live",
-            })),
+          label: "Agents",
+          links: agents.map((a) => ({
+            href: `/ai/agents/${a.id}`,
+            label: a.data.name,
+            hint: "Live",
+          })),
         },
         {
-          label: "Coming online",
-          links: agents
-            .filter((a) => a.data.status !== "live")
-            .map((a) => ({
-              href: `/agents/${a.id}`,
-              label: a.data.name,
-              hint: a.data.status === "coming-soon" ? "Soon" : "By req",
-            })),
+          label: "Fleet",
+          links: [
+            { href: "/ai/fleet", label: "Fleet overview" },
+            { href: "/ai/fleet/briefing", label: "Today's briefing" },
+          ],
+        },
+        {
+          label: "Platform & governance",
+          links: [
+            { href: "/ai/platform", label: "Platform docs" },
+            { href: "/ai/governance", label: "Governance" },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    href: "/tools",
+    label: "Tools",
+    sub: {
+      groups: [
+        {
+          links: [{ href: "/tools", label: "All tools" }],
+        },
+        {
+          label: "Live tools",
+          links: tools.map((t) => ({
+            href: t.data.href,
+            label: t.data.name,
+            external: t.data.external,
+            hint: t.data.external ? "↗" : undefined,
+          })),
         },
       ],
     },
@@ -86,7 +107,7 @@ const navLinks: NavItem[] = [
           links: [{ href: "/workflows", label: "Workflows catalog" }],
         },
         {
-          label: "Defined workflows",
+          label: "Active workflows",
           links: workflows.map((w) => ({
             href: `/workflows/${w.id}`,
             label: w.data.name,
@@ -96,63 +117,23 @@ const navLinks: NavItem[] = [
     },
   },
   {
-    href: "/fleet",
-    label: "Fleet",
+    href: "/company",
+    label: "Company",
     sub: {
       groups: [
         {
           links: [
-            { href: "/fleet", label: "Fleet overview" },
-            { href: "/fleet/briefing", label: "Today's briefing" },
+            { href: "/company", label: "Company overview" },
+            { href: "/company/onboarding", label: "Onboarding" },
+            { href: "/company/org", label: "Org chart" },
           ],
         },
         {
-          label: "Per-agent",
-          links: agents.map((a) => ({
-            href: `/fleet/${a.id}`,
-            label: a.data.name,
-          })),
-        },
-      ],
-    },
-  },
-  {
-    href: "/onboarding",
-    label: "Onboarding",
-    sub: {
-      groups: [
-        {
-          links: [{ href: "/onboarding", label: "Start onboarding" }],
-        },
-        {
-          label: "By role",
-          links: onboardingTracks.map((t) => ({
-            href: `/onboarding/${t.id}`,
-            label: t.data.role.charAt(0).toUpperCase() + t.data.role.slice(1),
-          })),
-        },
-      ],
-    },
-  },
-  {
-    href: "/foundation",
-    label: "Foundation",
-    sub: {
-      groups: [
-        {
+          label: "Context",
           links: [
-            { href: "/foundation", label: "Foundation" },
-            { href: "/foundation/how-to", label: "How to use it" },
-          ],
-        },
-        {
-          label: "Why & how",
-          links: [
-            { href: "/vision", label: "Vision" },
-            { href: "/governance", label: "Governance" },
-            { href: "/roadmap", label: "Roadmap" },
-            { href: "/org", label: "Org chart" },
-            { href: "/platform", label: "Platform docs" },
+            { href: "/company/vision", label: "Vision" },
+            { href: "/company/roadmap", label: "Roadmap" },
+            { href: "/company/help", label: "How to use it" },
           ],
         },
       ],
@@ -239,6 +220,8 @@ const isActive = (href: string) => {
                             <a
                               href={sub.href}
                               role="menuitem"
+                              target={sub.external ? "_blank" : undefined}
+                              rel={sub.external ? "noopener noreferrer" : undefined}
                               class="flex items-center justify-between gap-3 px-3 py-1.5 text-[13px] text-ink hover:bg-soft-paper transition-colors"
                             >
                               <span>{sub.label}</span>
@@ -257,6 +240,9 @@ const isActive = (href: string) => {
           );
         })
       }
+
+      {/* Notifications — UX Review comment activity. Hidden until the store responds. */}
+      <NotificationsBell />
 
       {/* Sign out — hits Cloudflare Access logout. No-op in local dev. */}
       <a

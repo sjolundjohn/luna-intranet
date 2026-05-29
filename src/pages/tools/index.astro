@@ -1,0 +1,56 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import MoonlightRule from "~/components/MoonlightRule.astro";
+import ToolCard from "~/components/ux/ToolCard.astro";
+import { liveTools } from "~/lib/content";
+
+const tools = await liveTools();
+---
+
+<BaseLayout
+  title="Tools"
+  description="Hands-on apps built on the Luna platform — open one and start."
+  heroIsDark={true}
+>
+  <Hero eyebrow="Luna · Tools" size="compact" animateMoons={false}>
+    <Fragment slot="headline">
+      Tools you can open.
+    </Fragment>
+    <Fragment slot="subcopy">
+      The apps we've built on top of the AI system — chat, design review, clinical
+      reporting, and the odd office utility. Each one is live; open it and go.
+    </Fragment>
+  </Hero>
+
+  <WhiteSection size="tall">
+    <div class="max-w-[760px] mb-10">
+      <p class="eyebrow mb-3">{tools.length} {tools.length === 1 ? "tool" : "tools"} live</p>
+      <h2
+        class="font-display text-ink font-normal"
+        style="font-size: clamp(28px, 3.6vw, 38px); line-height: 1.05; letter-spacing: -0.02em;"
+      >
+        Pick one and go.
+      </h2>
+      <div class="mt-4"><MoonlightRule width={40} color="midnight" /></div>
+    </div>
+
+    {tools.length === 0 ? (
+      <p class="text-graphite text-[17px]">No tools are live yet.</p>
+    ) : (
+      <div class="grid gap-6 md:gap-7 md:grid-cols-2 auto-rows-fr">
+        {tools.map((t) => (
+          <ToolCard
+            href={t.data.href}
+            name={t.data.name}
+            summary={t.data.summary}
+            eyebrow={t.data.eyebrow}
+            external={t.data.external}
+            screenshot={t.data.screenshot}
+          />
+        ))}
+      </div>
+    )}
+  </WhiteSection>
+</BaseLayout>

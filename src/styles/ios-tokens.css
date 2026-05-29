@@ -1,0 +1,168 @@
+/* ============================================================
+   Luna iOS — Design Tokens (SCOPED for the intranet)
+   Ported from `projects/UX Review/css/tokens.css` (Project B).
+
+   This is the **iOS app** design system — intentionally distinct from
+   the intranet's own src/styles/global.css (Inter body, smaller radii).
+   The iOS system uses D-DIN everywhere, the 11-level iOS HIG type scale,
+   and larger radii (card 20 / modal 28).
+
+   IMPORTANT: every custom property and helper class below is scoped to
+   `.ux-ios` so it never leaks into the intranet's Tailwind @theme. Wrap
+   any wireframe/component render area in `<div class="ux-ios">…`.
+   ============================================================ */
+
+/* ---- Brand font: D-DIN (all weights) ----------------------
+   Fonts already self-hosted at /public/fonts (shared with the intranet
+   chrome). We only register the iOS Italic cut here since the intranet's
+   global.css doesn't. Regular/Bold faces are declared in global.css and
+   apply globally, so we reuse them. */
+@font-face {
+  font-family: "D-DIN";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/D-DIN-Italic.otf") format("opentype");
+}
+
+/* ============================================================
+   Token scope — all variables live on `.ux-ios`.
+   ============================================================ */
+.ux-ios {
+  /* ============ FONT FAMILIES ============================ */
+  --ios-font-brand: "D-DIN", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Roboto", system-ui, sans-serif;
+  --ios-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ============ PRIMARY PALETTE ========================= */
+  --color-midnight: #041E42;
+  --color-moonlight: #68D2DF;
+  --color-white: #FFFFFF;
+
+  /* Moonlight tints — used by the dose component + chips. Sourced from
+     the intranet brand scale (tokens.css omitted these, but the dose kit
+     references them, so we supply the canonical values here). */
+  --color-moonlight-deep: #0A9AAE;
+  --color-moonlight-ice: #C9F8FE;
+  --color-moonlight-tint: #E8FCFF;
+
+  /* ============ SECONDARY PALETTE ======================= */
+  --color-soft-paper: #FBFDFE;
+  --color-cloud-lilac: #F2F3FA;
+  --color-periwinkle-mist: #E7EBF8;
+  --color-pebble-blue: #BAC6D9;
+  --color-graphite: #535D65;
+  --color-slate: #7A8892;
+  --color-lunar-lavender: #D6D3E9;
+  --color-step-surface: #F5F6F8;
+
+  /* ============ MIDNIGHT GRADIENT STOPS ================= */
+  --color-midnight-deep: #133465;
+  --color-midnight-soft: #0F1C40;
+  --color-midnight-floor: #031632;
+
+  /* ============ TEXT ON SURFACES ======================== */
+  --color-ink: #041E42;
+  --color-text-2: #535D65;
+  --color-text-3: #7A8892;
+  --color-disabled: #BAC6D9;
+  --color-on-dark: #FFFFFF;
+  --color-on-dark-sub: #ACC1DF;
+
+  /* ============ BORDERS / DIVIDERS ====================== */
+  --color-divider: #BAC6D9;
+  --color-border-subtle: #EDF0F7;
+  --color-border-default: #D1D6E0;
+  --color-border-strong: #ACC1DF;
+  --color-border-focus: #68D2DF;
+
+  /* ============ ALERT & SEMANTIC PALETTE ================ */
+  --color-success: #2E7D32;
+  --color-success-ink: #2E7D32;
+  --color-success-light: #B0F9B3;
+  --color-success-fill: #B0F9B3;
+  --color-success-bg: #E7F8E8;
+  --color-info: #68D2DF;
+  --color-info-ink: #0A9AAE;
+  --color-info-bg: #E8FCFF;
+  --color-warning: #F9CD86;
+  --color-warning-ink: #6B4B10;
+  --color-warning-bg: #FFF4DD;
+  --color-critical: #8E3655;
+  --color-critical-ink: #8E3655;
+  --color-critical-bg: #F7E4EA;
+
+  /* ============ SPACING — 8pt base, 4pt half-step ======= */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-xxl: 56px;
+  --space-default: 16px;
+  --space-card-gap: 20px;
+
+  /* ============ RADII =================================== */
+  --radius-chip: 8px;
+  --radius-input: 12px;
+  --radius-card: 20px;
+  --radius-modal: 28px;
+  --radius-pill: 999px;
+  --radius-full: 999px;
+
+  /* ============ ELEVATION =============================== */
+  --shadow-card: 0 4px 16px rgba(4, 30, 66, 0.06);
+  --shadow-raised: 0 2px 8px rgba(4, 30, 66, 0.05);
+  --shadow-modal: 0 -8px 40px rgba(4, 30, 66, 0.16);
+  --shadow-toast: 0 8px 24px rgba(4, 30, 66, 0.24);
+
+  /* ============ TYPE SCALE — iOS HIG Dynamic Type ======= */
+  --type-large-title: 34px; --w-large-title: 400; --lh-large-title: 1.12;
+  --type-title-1: 28px;     --w-title-1: 400;     --lh-title-1: 1.18;
+  --type-title-2: 22px;     --w-title-2: 400;     --lh-title-2: 1.25;
+  --type-title-3: 20px;     --w-title-3: 400;     --lh-title-3: 1.3;
+  --type-headline: 17px;    --w-headline: 600;    --lh-headline: 1.4;
+  --type-body: 17px;        --w-body: 400;        --lh-body: 1.5;
+  --type-callout: 16px;     --w-callout: 400;     --lh-callout: 1.45;
+  --type-subhead: 15px;     --w-subhead: 400;     --lh-subhead: 1.45;
+  --type-footnote: 13px;    --w-footnote: 400;    --lh-footnote: 1.4;
+  --type-caption-1: 12px;   --w-caption-1: 400;   --lh-caption-1: 1.35;
+  --type-caption-2: 11px;   --w-caption-2: 400;   --lh-caption-2: 1.3;
+
+  /* The iOS surface itself renders in the brand font on a paper bg. */
+  font-family: var(--ios-font-brand);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   Semantic type classes — scoped. Use HIG names in iOS markup.
+   ============================================================ */
+.ux-ios .large-title { font-family: var(--ios-font-brand); font-size: var(--type-large-title); font-weight: var(--w-large-title); line-height: var(--lh-large-title); letter-spacing: -0.02em; }
+.ux-ios .title-1     { font-family: var(--ios-font-brand); font-size: var(--type-title-1);     font-weight: var(--w-title-1);     line-height: var(--lh-title-1);     letter-spacing: -0.015em; }
+.ux-ios .title-2     { font-family: var(--ios-font-brand); font-size: var(--type-title-2);     font-weight: var(--w-title-2);     line-height: var(--lh-title-2);     letter-spacing: -0.01em; }
+.ux-ios .title-3     { font-family: var(--ios-font-brand); font-size: var(--type-title-3);     font-weight: var(--w-title-3);     line-height: var(--lh-title-3); }
+.ux-ios .headline    { font-family: var(--ios-font-brand); font-size: var(--type-headline);    font-weight: var(--w-headline);    line-height: var(--lh-headline); }
+.ux-ios .body        { font-family: var(--ios-font-brand); font-size: var(--type-body);        font-weight: var(--w-body);        line-height: var(--lh-body); }
+.ux-ios .callout     { font-family: var(--ios-font-brand); font-size: var(--type-callout);     font-weight: var(--w-callout);     line-height: var(--lh-callout); }
+.ux-ios .subhead     { font-family: var(--ios-font-brand); font-size: var(--type-subhead);     font-weight: var(--w-subhead);     line-height: var(--lh-subhead); }
+.ux-ios .footnote    { font-family: var(--ios-font-brand); font-size: var(--type-footnote);    font-weight: var(--w-footnote);    line-height: var(--lh-footnote); }
+.ux-ios .caption-1   { font-family: var(--ios-font-brand); font-size: var(--type-caption-1);   font-weight: var(--w-caption-1);   line-height: var(--lh-caption-1); }
+.ux-ios .caption-2   { font-family: var(--ios-font-brand); font-size: var(--type-caption-2);   font-weight: var(--w-caption-2);   line-height: var(--lh-caption-2); }
+
+/* iOS surfaces never inherit the intranet's link/heading resets. */
+.ux-ios h1, .ux-ios h2, .ux-ios h3, .ux-ios h4 {
+  font-family: var(--ios-font-brand);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* Midnight gradient for dark hero/bedside moments inside iOS screens. */
+.ux-ios .bg-midnight-gradient {
+  background: linear-gradient(to bottom,
+    var(--color-midnight-deep) 0%,
+    var(--color-midnight) 55%,
+    var(--color-midnight-floor) 100%);
+}

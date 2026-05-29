@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luna iOS — Two-Step Dose-Confirmation</title>
+<link rel="icon" href="../assets/favicon.svg" />
+<link rel="stylesheet" href="../css/tokens.css" />
+<style>
+  body { background: var(--color-cloud-lilac); margin: 0; color: var(--color-ink); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: var(--space-lg) var(--space-sm) var(--space-xxl); }
+  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-default); }
+  .top a { font-size: var(--type-subhead); font-weight: 600; color: var(--color-moonlight-deep); text-decoration: none; }
+  h1 { font-size: var(--type-title-1); font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  .lead { font-size: var(--type-subhead); color: var(--color-graphite); line-height: 1.5; max-width: 60ch; margin: 8px 0 var(--space-default); }
+  .seg { display: inline-flex; flex-wrap: wrap; gap: 6px; background: var(--color-white); border-radius: 999px; padding: 6px; box-shadow: var(--shadow-raised); margin-bottom: var(--space-lg); }
+  .seg button { font: inherit; font-size: var(--type-footnote); font-weight: 600; border: 0; cursor: pointer; padding: 8px 14px; border-radius: 999px; background: transparent; color: var(--color-graphite); }
+  .seg button[aria-pressed="true"] { background: var(--color-midnight); color: var(--color-white); }
+  /* iPhone frame */
+  .phone { width: 390px; max-width: 100%; margin: 0 auto; background: var(--color-cloud-lilac); border-radius: 44px; padding: 12px;
+           box-shadow: var(--shadow-modal); }
+  .screen { background: linear-gradient(to bottom, var(--color-midnight-deep), var(--color-midnight) 60%, var(--color-midnight-floor));
+            border-radius: 34px; overflow: hidden; min-height: 720px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; }
+  .scrim { position:absolute; inset:0; background: rgba(4,30,66,0.35); }
+  .sheet-host { position: relative; }
+  /* sheet */
+  .sheet { background: var(--color-white); border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 14px 26px 30px; box-shadow: 0 -8px 40px rgba(4,30,66,0.18); font-family: var(--font-brand); }
+  .grabber { width: 40px; height: 5px; border-radius: 999px; background: var(--color-lunar-lavender); margin: 0 auto 18px; }
+  .hdr { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; }
+  .moon { width: 24px; height: 24px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; flex: none; }
+  .moon::before { content:""; position:absolute; right:-5px; top:2px; width:15px; height:15px; border-radius:50%; background: var(--color-moonlight); }
+  .moon::after { content:""; position:absolute; right:-1px; top:4px; width:11px; height:11px; border-radius:50%; background: var(--color-midnight); }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-slate); }
+  .sheet h2 { margin: 0 0 16px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--color-ink); line-height: 1.25; }
+  .valrow { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .val { font-family: var(--font-display); font-size: 76px; font-weight: 700; line-height: 0.95; letter-spacing: -0.03em; color: var(--color-midnight); }
+  .unit { font-family: var(--font-display); font-size: 30px; font-weight: 700; color: var(--color-midnight); letter-spacing: -0.01em; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px 5px 9px; border-radius: 4px; background: var(--color-moonlight-tint); color: var(--color-moonlight-deep); font-size: 13px; font-weight: 600; }
+  .prev { font-size: 13px; color: var(--color-slate); margin-bottom: 18px; }
+  .prev s { text-decoration: line-through; }
+  .rationale { margin: 0 0 22px; font-size: 15px; line-height: 1.55; color: var(--color-graphite); max-width: 60ch; }
+  .ackbox { background: var(--color-cloud-lilac); border-radius: 16px; padding: 16px 18px 14px; margin-bottom: 20px; }
+  .ackbox .h { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-graphite); margin-bottom: 4px; }
+  .ack { display: flex; align-items: flex-start; gap: 14px; width: 100%; min-height: 44px; padding: 10px 4px; background: none; border: none; text-align: left; cursor: pointer; font: inherit; }
+  .ack .box { width: 26px; height: 26px; flex: none; margin-top: 1px; border-radius: 8px; border: 1.5px solid var(--color-border-strong); background: var(--color-white); display: flex; align-items: center; justify-content: center; transition: background 160ms; }
+  .ack[aria-checked="true"] .box { border: none; background: var(--color-midnight); }
+  .ack .lbl { font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--color-ink); }
+  .ack .sub { font-size: 13px; line-height: 1.4; color: var(--color-slate); }
+  .ackdiv { height: 1px; background: var(--color-border-subtle); margin: 2px 0 2px 40px; }
+  /* slider */
+  .slide { display: flex; flex-direction: column; gap: 8px; }
+  .track { position: relative; height: 60px; border-radius: 999px; background: var(--color-cloud-lilac); overflow: hidden; user-select: none; touch-action: none; }
+  .track.enabled { background: var(--color-periwinkle-mist); }
+  .track.done { background: var(--color-success-bg); }
+  .trail { position: absolute; left: 0; top: 0; bottom: 0; width: 30px; background: var(--color-moonlight-ice); }
+  .track.done .trail { background: var(--color-success-fill); }
+  .tlabel { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; pointer-events: none; font-size: 15px; font-weight: 600; color: var(--color-disabled); }
+  .track.enabled .tlabel { color: var(--color-midnight); }
+  .track.done .tlabel { color: var(--color-success-ink); }
+  .thumb { position: absolute; top: 4px; left: 4px; width: 52px; height: 52px; border-radius: 50%; background: var(--color-white); border: 1px solid var(--color-border-default); display: flex; align-items: center; justify-content: center; }
+  .track.enabled .thumb { background: var(--color-midnight); border: none; box-shadow: 0 2px 8px rgba(4,30,66,0.20); cursor: grab; }
+  .track.done .thumb { background: var(--color-success-ink); border: none; }
+  .hint { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-slate); padding-left: 4px; }
+  .skip { display:flex; justify-content:center; margin-top:16px; }
+  .skip button { background:none; border:none; font:inherit; cursor:pointer; font-size:15px; font-weight:600; color:var(--color-slate); padding:8px 16px; }
+  /* shared */
+  .banner { display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px 6px 11px; border-radius: 999px; margin-bottom: 16px; font-size: 12px; font-weight: 600; }
+  .banner.info { background: var(--color-info-bg); color: var(--color-info-ink); }
+  .banner.neutral { background: var(--color-cloud-lilac); color: var(--color-graphite); }
+  .banner.critical { background: var(--color-critical-bg); color: var(--color-critical-ink); }
+  .btn { width: 100%; height: 54px; border-radius: 58px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; border: none; }
+  .btn.primary { background: var(--color-midnight); color: var(--color-white); box-shadow: 0 2px 8px rgba(4,30,66,0.20); }
+  .btn.secondary { background: transparent; color: var(--color-ink); border: 1px solid var(--color-border-strong); }
+  .btn.ghost { background: transparent; color: var(--color-slate); }
+  .check-circle { display:flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:50%; background:var(--color-success-bg); margin-bottom:18px; }
+  .metric { display:flex; justify-content:space-between; align-items:baseline; }
+  .metric .l { font-size:14px; color:var(--color-graphite); }
+  .metric .v { font-size:15px; font-weight:700; color:var(--color-ink); font-variant-numeric:tabular-nums; }
+  .metricbox { background:var(--color-cloud-lilac); border-radius:16px; padding:14px 18px; margin-bottom:24px; display:flex; flex-direction:column; gap:10px; }
+  .metricdiv { height:1px; background:var(--color-border-subtle); }
+  .stack { display:flex; flex-direction:column; gap:10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1>Two-Step Dose-Confirmation</h1><a href="../index.html">← UX Review Kit</a></div>
+  <p class="lead">Canonical safety-critical confirmation. A recommendation is only complete when the user does <strong>both</strong> parts — update the Luna TDBD setting AND take the physical dose — so both must be acknowledged before the slide-to-confirm unlocks. Switch states below; drag the slider (or focus it and press →/Enter).</p>
+
+  <div class="seg" id="seg" role="group" aria-label="Variant">
+    <button data-v="increase" aria-pressed="true">Increase</button>
+    <button data-v="decrease" aria-pressed="false">Decrease</button>
+    <button data-v="nochange" aria-pressed="false">No change</button>
+    <button data-v="reset" aria-pressed="false">Reset required</button>
+    <button data-v="disabled" aria-pressed="false">Disabled</button>
+    <button data-v="skip" aria-pressed="false">Skip</button>
+  </div>
+
+  <div class="phone"><div class="screen"><div class="scrim"></div><div class="sheet-host" id="host"></div></div></div>
+</div>
+
+<script>
+const ICON = {
+  up:"M12 19V5M5 12l7-7 7 7", down:"M12 5v14M19 12l-7 7-7-7", check:"M20 6L9 17l-5-5",
+  arrowRight:"M5 12h14M13 5l7 7-7 7", pause:"M10 4H6v16h4zM18 4h-4v16h4z", minus:"M5 12h14",
+  info:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01"
+};
+function svg(name, size=18, color="currentColor", sw=1.5){
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[name]}"/></svg>`;
+}
+const DEFAULTS = { value:14, prev:12, units:"U" };
+const RATIONALE = {
+  increase:"Over the past several nights your glucose drifted up without Luna insulin. You appear to need a little more basal.",
+  decrease:"Over the past several nights your glucose ran low overnight. You appear to need a little less basal."
+};
+const host = document.getElementById('host');
+let variant = 'increase';
+
+function recBody(dir){
+  const v=DEFAULTS.value, u=DEFAULTS.units, p=DEFAULTS.prev;
+  const word = dir==='up'?'Increase':'Decrease';
+  return `
+  <h2>A new nightly basal dose</h2>
+  <div class="valrow"><span class="val">${v}</span><span class="unit">${u}</span>
+    <span class="chip">${svg(dir,15,'var(--color-moonlight-deep)',2.2)} ${word}</span></div>
+  <div class="prev">Current TDBD <s>${p} ${u}</s></div>
+  <p class="rationale">${RATIONALE[dir==='up'?'increase':'decrease']}</p>
+  <div class="ackbox">
+    <div class="h">To act on this, do both</div>
+    <button class="ack" id="ack1" role="checkbox" aria-checked="false"><span class="box"></span>
+      <span><span class="lbl">Set your Luna TDBD to ${v} ${u}</span><br><span class="sub">Updates the value Luna programs for you</span></span></button>
+    <div class="ackdiv"></div>
+    <button class="ack" id="ack2" role="checkbox" aria-checked="false"><span class="box"></span>
+      <span><span class="lbl">Take your ${v} ${u} basal dose</span><br><span class="sub">Your actual injection tonight</span></span></button>
+  </div>
+  <div class="slide">
+    <div class="track" id="track" role="slider" tabindex="-1" aria-label="Slide to confirm both" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-disabled="true">
+      <div class="trail" id="trail"></div>
+      <div class="tlabel" id="tlabel">Slide to confirm both</div>
+      <div class="thumb" id="thumb">${svg('arrowRight',22,'var(--color-disabled)',2.2)}</div>
+    </div>
+    <div class="hint" id="hint">${svg('info',14,'var(--color-slate)')} Acknowledge both actions above to continue</div>
+  </div>
+  <div class="skip"><button type="button">Skip this recommendation</button></div>`;
+}
+function banner(tone,icon,label){ return `<div class="banner ${tone}">${svg(icon,15,'currentColor',2)} ${label}</div>`; }
+function noChange(){ const v=DEFAULTS.value,u=DEFAULTS.units; return `
+  <div class="check-circle">${svg('check',26,'var(--color-success-ink)',2.2)}</div>
+  <h2>No change needed tonight</h2>
+  <p class="rationale">Your current TDBD seems appropriate for your body's needs. Luna will continue to observe and inform you if this changes.</p>
+  <div class="prev">Current TDBD holding at <strong style="color:var(--color-ink)">${v} ${u}</strong></div>
+  <button class="btn primary">Got it</button>`; }
+function reset(){ return `
+  ${banner('info','pause','Recommendations paused')}
+  <h2>Luna is re-learning your nights</h2>
+  <p class="rationale">Your basal setting changed, so Luna reset its learning. Basal Guidance is paused until Luna has observed enough of your nights again.</p>
+  <div class="metricbox"><div class="metric"><span class="l">Luna sessions observed</span><span class="v">2 of 5</span></div>
+    <div class="metricdiv"></div><div class="metric"><span class="l">Days of wear</span><span class="v">3 of 7</span></div></div>
+  <button class="btn primary">Got it</button>`; }
+function disabled(){ return `
+  ${banner('neutral','minus','Basal Guidance off')}
+  <h2>Basal Guidance isn't on for you</h2>
+  <p class="rationale">Your care setup doesn't include Luna basal dose recommendations. Luna keeps monitoring overnight, but won't suggest dose changes. Talk to your care team if you think this should change.</p>
+  <button class="btn secondary">Close</button>`; }
+function skip(){ const v=DEFAULTS.value,u=DEFAULTS.units; return `
+  ${banner('critical','info','Confirm you’re skipping')}
+  <h2>Skip the increase to ${v} ${u}?</h2>
+  <p class="rationale">Your TDBD stays where it is and you take your usual dose tonight. Luna will keep this recommendation in mind and may suggest it again.</p>
+  <div class="stack"><button class="btn primary">Skip this recommendation</button><button class="btn ghost">Back</button></div>`; }
+
+function render(){
+  let inner;
+  if (variant==='increase') inner = recBody('up');
+  else if (variant==='decrease') inner = recBody('down');
+  else if (variant==='nochange') inner = noChange();
+  else if (variant==='reset') inner = reset();
+  else if (variant==='disabled') inner = disabled();
+  else inner = skip();
+  host.innerHTML = `<div class="sheet"><div class="grabber"></div>
+    <div class="hdr"><div class="moon"></div><span class="eyebrow">Basal Guidance</span></div>${inner}</div>`;
+  if (variant==='increase'||variant==='decrease') wireSlider();
+}
+
+function wireSlider(){
+  const ack1=document.getElementById('ack1'), ack2=document.getElementById('ack2');
+  const track=document.getElementById('track'), thumb=document.getElementById('thumb'),
+        trail=document.getElementById('trail'), tlabel=document.getElementById('tlabel'), hint=document.getElementById('hint');
+  let s1=false,s2=false,p=0,done=false,dragging=false;
+  const THUMB=52,PAD=4;
+  const enabled=()=> s1 && s2 && !done;
+  function maxTravel(){ return track.clientWidth - THUMB - PAD*2; }
+  function paint(){
+    const both=s1&&s2;
+    track.classList.toggle('enabled', both && !done);
+    track.classList.toggle('done', done);
+    track.setAttribute('aria-disabled', (!both&&!done)?'true':'false');
+    track.tabIndex = (both && !done) ? 0 : -1;
+    const x = PAD + p*maxTravel();
+    thumb.style.left = x+'px';
+    trail.style.width = (x+THUMB/2)+'px';
+    track.setAttribute('aria-valuenow', Math.round(p*100));
+    tlabel.style.opacity = done?1:Math.max(0,1-p*2.2);
+    if (done){ tlabel.innerHTML = svg('check',18,'var(--color-success-ink)',2.4)+' Confirmed'; thumb.innerHTML=svg('check',22,'var(--color-white)',2.2); }
+    else { tlabel.textContent='Slide to confirm both'; thumb.innerHTML=svg('arrowRight',22, both?'var(--color-moonlight)':'var(--color-disabled)',2.2); }
+    hint.style.display = (both||done)?'none':'flex';
+  }
+  function toggle(btn,which){ btn.addEventListener('click',()=>{ if(done) return;
+    if(which===1){s1=!s1;} else {s2=!s2;}
+    const on = which===1?s1:s2;
+    btn.setAttribute('aria-checked', on?'true':'false');
+    btn.querySelector('.box').innerHTML = on ? svg('check',16,'var(--color-moonlight)',2.4) : '';
+    if(!(s1&&s2)) p=0; paint(); }); }
+  toggle(ack1,1); toggle(ack2,2);
+  function moveTo(clientX){ const r=track.getBoundingClientRect(); const x=clientX-r.left-PAD-THUMB/2;
+    p=Math.max(0,Math.min(1,x/maxTravel())); paint(); }
+  thumb.addEventListener('pointerdown',e=>{ if(!enabled())return; dragging=true; thumb.setPointerCapture(e.pointerId); moveTo(e.clientX); });
+  window.addEventListener('pointermove',e=>{ if(dragging) moveTo(e.clientX); });
+  window.addEventListener('pointerup',()=>{ if(!dragging)return; dragging=false;
+    if(p>=0.85){ done=true; p=1; } else { p=0; } paint(); });
+  track.addEventListener('keydown',e=>{ if(!enabled())return;
+    if(e.key==='Enter'||e.key===' '||e.key==='ArrowRight'){ e.preventDefault(); done=true; p=1; paint(); } });
+  paint();
+}
+
+document.getElementById('seg').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  variant=b.dataset.v;
+  [...document.querySelectorAll('#seg button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false'));
+  render();
+});
+render();
+</script>
+</body>
+</html>

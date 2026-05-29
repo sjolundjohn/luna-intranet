@@ -1,0 +1,37 @@
+---
+/**
+ * DashboardScreen — Luna home. Glucose + Luna status + nightly insight.
+ * `variant="legacy"` renders the pre-redesign look for the old-vs-new compare.
+ */
+import StatusBar from "../ios/StatusBar.astro";
+import GlucoseDisplay from "../ios/GlucoseDisplay.astro";
+import StatusCard from "../ios/StatusCard.astro";
+import InsightCard from "../ios/InsightCard.astro";
+import TabBar from "../ios/TabBar.astro";
+
+interface Props {
+  variant?: "current" | "legacy";
+}
+const { variant = "current" } = Astro.props;
+const legacy = variant === "legacy";
+---
+<div class="scr">
+  <StatusBar tone="dark" />
+  <div class="scr-body">
+    <header class="scr-head">
+      <p class="scr-eyebrow">{legacy ? "HOME" : "Good evening"}</p>
+      <h1 class="scr-title">{legacy ? "Luna" : "Tonight"}</h1>
+    </header>
+    <GlucoseDisplay value={101} rotate={legacy ? 0 : 35} />
+    <StatusCard legacy={legacy} />
+    {!legacy && <InsightCard />}
+  </div>
+  <TabBar active="dashboard" />
+</div>
+<style>
+  .scr { display: flex; flex-direction: column; min-height: 844px; background: var(--color-cloud-lilac); }
+  .scr-body { flex: 1; padding: 4px 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .scr-head { padding: 8px 2px 4px; }
+  .scr-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-slate); margin: 0 0 4px; }
+  .scr-title { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
+</style>

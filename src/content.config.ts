@@ -165,6 +165,33 @@ const news = defineCollection({
   }),
 });
 
+/**
+ * Tools: the extensible registry of internal apps built on the platform
+ * (Chat, UX Review, Telescope, Kegerator, …). Mirrors the agents/workflows
+ * pattern so adding a tool = dropping an MDX file. Only `status: live` ever
+ * renders — the "don't expose it until it works" rule. A tool can be internal
+ * (href like "/tools/chat") or external (a full URL on another subdomain).
+ */
+const tools = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/tools" }),
+  schema: z.object({
+    name: z.string(),
+    status: z.enum(["live", "building", "planned"]).default("planned"),
+    summary: z.string(),
+    /** Internal path ("/tools/chat") or external URL ("https://…"). */
+    href: z.string(),
+    /** External tools open in a new tab with an ↗ affordance. */
+    external: z.boolean().default(false),
+    /** Optional preview thumbnail under /public (e.g. "/tools/telescope.png"). */
+    screenshot: z.string().optional(),
+    eyebrow: z.string().optional(),
+    icon: z.string().optional(),
+    owner: z.string().optional(),
+    department: z.enum(TEAMS).optional(),
+    order: z.number().default(99),
+  }),
+});
+
 export const collections = {
   agents,
   platform,
@@ -174,6 +201,7 @@ export const collections = {
   news,
   workflows,
   onboarding,
+  tools,
 };
 
 /** Human-readable team labels (source of truth for UI). */

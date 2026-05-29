@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Type — titles</title>
+<style>
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:400;src:url("../fonts/d-din-regular.woff2") format("woff2");}
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:700;src:url("../fonts/d-din-bold.woff2") format("woff2");}
+:root{--font:"D-DIN",-apple-system,system-ui,sans-serif;--mono:ui-monospace,Menlo,monospace;
+--midnight:#041E42;--moonlight:#68D2DF;--graphite:#535D65;--slate:#7A8892;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--font);background:#fff;color:var(--midnight);padding:20px 24px;-webkit-font-smoothing:antialiased;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin:0 0 16px;}
+.mono{font-family:var(--mono);}
+.r{display:flex;align-items:baseline;gap:16px;}
+.k{font-family:var(--mono);font-size:10px;color:var(--slate);flex:none;}
+.s{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+</style></head><body>
+<p class="lbl">Type scale · iOS HIG — titles</p>
+<div style="display:flex;flex-direction:column;gap:16px;">
+  <div class="r"><span class="k" style="width:96px;">Large Title<br>34 · Reg</span><span class="s" style="font-size:34px;letter-spacing:-0.02em;">Sleep well. Wake up well.</span></div>
+  <div class="r"><span class="k" style="width:96px;">Title 1<br>28 · Reg</span><span class="s" style="font-size:28px;letter-spacing:-0.015em;">Last night's session</span></div>
+  <div class="r"><span class="k" style="width:96px;">Title 2<br>22 · Reg</span><span class="s" style="font-size:22px;letter-spacing:-0.01em;">Time in range</span></div>
+  <div class="r"><span class="k" style="width:96px;">Title 3<br>20 · Reg</span><span class="s" style="font-size:20px;">Overnight summary</span></div>
+</div></body></html>

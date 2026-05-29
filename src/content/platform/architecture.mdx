@@ -29,12 +29,12 @@ Instead of calling the AI model directly, the agent goes through **`luna-ai-prox
 
 ## 5 · The model responds
 
-The gateway forwards the request to the actual model (see [Tech stack](/platform/tech-stack) for which model). The response streams back through the same chain in reverse — gateway → proxy → agent → router → Slack — and lands in your DM.
+The gateway forwards the request to the actual model (see [Tech stack](/ai/platform/tech-stack) for which model). The response streams back through the same chain in reverse — gateway → proxy → agent → router → Slack — and lands in your DM.
 
 ## Why so many pieces?
 
 Each Worker does one thing. That makes any one of them easy to replace, upgrade, or monitor in isolation. It also means when something breaks, it's obvious where.
 
-The chain is also what makes **switching models trivial**: a new model provider is a one-line change in `luna-ai-proxy`, not a rewrite of every agent. See [Tech stack](/platform/tech-stack) for more on that.
+The chain is also what makes **switching models trivial**: a new model provider is a one-line change in `luna-ai-proxy`, not a rewrite of every agent. See [Tech stack](/ai/platform/tech-stack) for more on that.
 
-Next: [privacy & security](/platform/privacy) covers how this architecture keeps your conversations safe.
+Next: [privacy & security](/ai/platform/privacy) covers how this architecture keeps your conversations safe.

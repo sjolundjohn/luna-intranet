@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Glucose display</title>
+<style>
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:400;src:url("../fonts/d-din-regular.woff2") format("woff2");}
+@font-face{font-family:"D-DIN";font-style:normal;font-weight:700;src:url("../fonts/d-din-bold.woff2") format("woff2");}
+:root{--font:"D-DIN",-apple-system,system-ui,sans-serif;--midnight:#041E42;--moonlight:#68D2DF;--graphite:#535D65;--slate:#7A8892;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--font);background:#F2F3FA;color:var(--midnight);padding:20px 24px;-webkit-font-smoothing:antialiased;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin:0 0 16px;}
+.card{background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(4,30,66,0.06);}
+</style></head><body>
+<p class="lbl">Glucose display</p>
+<div class="card" style="max-width:380px;padding:24px;position:relative;text-align:center;">
+  <div style="position:absolute;top:16px;right:18px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A8892" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+    <span style="font-size:84px;font-weight:700;line-height:1;letter-spacing:-0.03em;">101</span>
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(35deg);"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </div>
+  <div style="font-size:15px;color:var(--graphite);margin-top:6px;">mg/dl</div>
+</div></body></html>

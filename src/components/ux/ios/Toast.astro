@@ -1,0 +1,32 @@
+---
+/**
+ * Toast — Midnight pill, Moonlight check, bottom of screen.
+ */
+interface Props {
+  label?: string;
+}
+const { label = "Session saved" } = Astro.props;
+---
+<div class="ios-toast-wrap">
+  <div class="ios-toast">
+    <span class="ios-toast-check" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>
+    </span>
+    <span class="ios-toast-label">{label}</span>
+  </div>
+</div>
+<style>
+  .ios-toast-wrap { display: flex; justify-content: center; }
+  .ios-toast {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-midnight);
+    color: #fff;
+    padding: 13px 22px;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-toast);
+  }
+  .ios-toast-check { color: var(--color-moonlight); display: flex; }
+  .ios-toast-label { font-size: 15px; font-weight: 700; }
+</style>
