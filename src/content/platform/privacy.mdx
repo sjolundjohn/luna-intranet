@@ -20,11 +20,15 @@ All model calls flow through `luna-ai-proxy`, a Luna-owned service. That's the o
 
 ## Identity verification
 
-Every message Basal receives is tied to a verified `@lunadiabetes.com` email address from Slack. There's no way for someone outside the company to reach Basal through the Slack app, and there's no anonymous access.
+Every message Basal receives is tied to a verified `@lunadiabetes.com` email address. In Slack, that's enforced by HMAC-signed webhooks plus a `users.info` lookup before the message is ever dispatched to an agent. On this intranet, Cloudflare Access enforces it at the edge before any page loads. Anonymous access is not possible through either entry point.
+
+The internal webhook hosts (`slack.`, `router.`, `ai-proxy.nightluna.com`) are gated by static bearer tokens today, with Cloudflare Access hardening planned as a follow-up. They're not browseable.
 
 ## Audit logging
 
 All interactions are logged through Cloudflare's AI Gateway for security and observability. The log captures request metadata — timing, cost, which agent responded — not message contents.
+
+In addition, every Worker streams trace events to a private R2 bucket (`luna-audit-log`) at 100% sampling via Cloudflare Workers Logpush. That gives us a complete request-level audit trail without sending any data to a third-party logging vendor.
 
 ## What not to send
 

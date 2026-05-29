@@ -18,10 +18,12 @@ Every Luna-owned piece of this system runs on [Cloudflare](https://cloudflare.co
 
 | Primitive | What we use it for |
 |---|---|
-| **Workers** | Every Luna service (`luna-slack-dm`, `luna-router`, `luna-agent-basal`, `luna-ai-proxy`) is a Worker. |
+| **Workers** | Every Luna service (`luna-slack-dm`, `luna-router`, `luna-agent-basal`, `luna-ai-proxy`) is a Worker. The Basal agent is currently deployed under the legacy name `luna-agent-pa` — same Worker, name will catch up to the brand on the next pass. |
 | **Durable Objects** | One per person — holds your Basal conversation history in SQLite. |
-| **R2** | Stores prompt templates, agent configs, and audit logs. No egress fees. |
-| **AI Gateway** | Sits in front of every model call. Rate limits, cost caps, audit trail, provider-key injection. |
+| **R2** | Three buckets: `luna-agent-config` (prompt templates + agent config, etag-cached), `luna-audit-log` (Workers Logpush trace events at 100% sampling), and `luna-agent-archive` (long-term conversation archives). No egress fees. |
+| **AI Gateway** | The `luna-agents` gateway sits in front of every model call. Rate limits, cost caps, audit trail, provider-key injection. |
+| **Analytics Engine** | Per-Worker datasets (`luna_agent_pa_events`, `luna_ai_proxy_events`, `luna_router_events`) capture latency, model, status, and hashed user id for every request. |
+| **Workers Logpush** | Streams Workers Trace Events to the `luna-audit-log` R2 bucket at 100% sampling. Full request-level observability without an external logging vendor. |
 | **Access** | Zero Trust auth — gates this intranet (and the future admin dashboard) behind Google Workspace SSO for `@lunadiabetes.com`. |
 | **Pages** | Hosts this intranet. Static HTML built with Astro, deployed on every push. |
 
@@ -40,16 +42,15 @@ We picked Claude for four reasons specific to Luna's situation:
 
 Here's an architectural choice worth calling out: the agents (`luna-agent-basal`, future ones) **don't know which model they're talking to**. They just post a message to `luna-ai-proxy` and get a response.
 
-The proxy is where model selection happens. Switching from Claude Opus 4.7 to Sonnet 4.6, or from Claude to OpenAI GPT, or to a Workers AI model running on Cloudflare itself, is a configuration change in one place — not a rewrite across every agent.
+The proxy is where model selection happens. Switching from Claude Opus 4.7 to Sonnet 4.6, or adding a Google or Workers AI model alongside, is a configuration change in one place — not a rewrite across every agent.
 
-Routes we already have configured on the gateway:
+Providers wired up through the gateway today:
 
-- **`default`** → Claude Opus 4.7 for conversational work.
-- **`cheap`** → a smaller Workers AI model (Llama 3.1 8B) for classification and routing decisions.
-- **`embed`** → Workers AI BGE embeddings for memory retrieval.
-- **`image`** → Google's Imagen model for the occasional image generation.
+- **Anthropic** — Claude (default for conversational work).
+- **Google AI Studio** — available as an alternate provider.
+- **Workers AI** — Cloudflare's own model catalog, used for cheaper classification and embedding tasks as we add them.
 
-Agents don't pick the route by name — they send the message and the proxy decides. That means we can A/B test models, auto-fail-over, or change providers entirely without anyone noticing.
+The proxy selects a provider based on the request path it receives (`/anthropic/`, `/google-ai-studio/`, `/workers-ai/`). Agents send a message and the proxy decides — which means we can A/B test, auto-fail-over, or swap providers entirely without changing any agent code.
 
 ## This site
 
