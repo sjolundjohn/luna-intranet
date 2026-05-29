@@ -1,6 +1,6 @@
 ---
 title: "Request flow"
-summary: "The same story, but drawn: every service a message touches from Slack to Anthropic."
+summary: "The same story, but drawn: every service a message touches from Slack to the model provider."
 order: 3
 ---
 
@@ -18,6 +18,6 @@ Below is the path of a single message from the moment you hit send in Slack to t
 - **`luna-agent-basal`** — holds your private conversation history and builds the model request with the right context.
 - **`luna-ai-proxy`** — the single egress point for every model call. Injects credentials, strips identifying headers, adds audit metadata.
 - **AI Gateway** — Cloudflare's layer for rate limits, cost caps, and the authoritative audit log.
-- **Anthropic** — the model (Claude) that actually generates the response.
+- **Model provider** — actually generates the response. Claude (Anthropic) today, but the proxy is model-agnostic: this endpoint can be swapped — to another Anthropic model, Google AI Studio, or a Workers AI model — without changing a single agent.
 
-Internal hops between Luna services stay inside Cloudflare's private network — they don't traverse the public internet. The only external call is the last step, from the AI Gateway to Anthropic.
+Internal hops between Luna services stay inside Cloudflare's private network — they don't traverse the public internet. The only external call is the last step, from the AI Gateway out to the model provider (Anthropic today).
