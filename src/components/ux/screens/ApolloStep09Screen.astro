@@ -1,0 +1,14 @@
+---
+import ApolloStep from "../ios/ApolloStep.astro";
+interface Props { variant?: "current" | "legacy"; }
+---
+<ApolloStep moduleLabel="Morning removal" count="Step 2 of 3" total={3} current={2} badge="Step 09"
+  headline="Detach the reservoir" instr="Peel the tab, then press the release button."
+  caption="video: Step 09 — poster TBD">
+  <div style="margin-top:18px;"><span class="flag"><span class="k">Open</span>poster TBD — SOONA mapping</span></div>
+  {/* informative-only checkpoint (never gates Next) */}
+  <div slot="checkpoint" class="conn-row">
+    <span class="lbl">Reservoir detach</span>
+    <span class="stat"><span class="ok"></span><span class="ok-txt">Recent reading OK</span></span>
+  </div>
+</ApolloStep>

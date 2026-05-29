@@ -3,18 +3,19 @@ import "~/styles/ios-tokens.css";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
 import CTAButton from "~/components/CTAButton.astro";
-import Phone from "~/components/ux/Phone.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
 import CompareSlider from "~/components/ux/CompareSlider.astro";
-import { SCREENS, componentId, brdFor, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
+import { SCREENS, brdFor, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
 
 export function getStaticPaths() {
   return SCREENS.map((s) => ({ params: { slug: s.id }, props: { screen: s } }));
 }
 
 const { screen } = Astro.props;
-const showCompare = screen.status === "Changed" && componentId(screen.legacy) !== null;
+// Compare when there's a prior design to wipe against — a native legacy
+// variant (`component:`) or a 2021 Figma screenshot (`.jpg`).
+const showCompare = screen.status === "Changed" && screen.legacy !== null;
 const COMPARE_SCALE = 0.62;
 const brd = brdFor(screen.feature);
 ---
@@ -58,9 +59,7 @@ const brd = brdFor(screen.feature);
           </div>
           <div class="ux-stage" data-stage>
             <div class="ux-ios">
-              <Phone mode="full" scale={1}>
-                <ScreenRenderer id={screen.id} variant="current" />
-              </Phone>
+              <ScreenRenderer id={screen.id} variant="current" mode="full" scale={1} />
             </div>
             <div class="ux-pin-layer" data-pin-layer></div>
           </div>
@@ -71,14 +70,10 @@ const brd = brdFor(screen.feature);
           <div data-frame-panel="compare" hidden>
             <CompareSlider>
               <div slot="legacy" class="ux-ios">
-                <Phone mode="thumb" scale={COMPARE_SCALE} thumbHeight={844}>
-                  <ScreenRenderer id={screen.id} variant="legacy" />
-                </Phone>
+                <ScreenRenderer id={screen.id} variant="legacy" mode="thumb" scale={COMPARE_SCALE} />
               </div>
               <div slot="current" class="ux-ios">
-                <Phone mode="thumb" scale={COMPARE_SCALE} thumbHeight={844}>
-                  <ScreenRenderer id={screen.id} variant="current" />
-                </Phone>
+                <ScreenRenderer id={screen.id} variant="current" mode="thumb" scale={COMPARE_SCALE} />
               </div>
             </CompareSlider>
             <p class="mt-3 text-slate text-[12px]">Drag the handle to wipe between the previous Figma design (Before) and this wireframe (After).</p>

@@ -1,0 +1,53 @@
+---
+/**
+ * PushNotificationScreen — Hypo Shield push (clock 10:18). An iOS lock screen
+ * with a single prompt-to-open banner: NO dose value and NO confirmable action
+ * on the lock screen — tapping opens the app, where the in-app review + two-step
+ * confirm takes over. Force-dark (bedside register), no tab bar. The dashed
+ * flow-note annotation makes the prompt-to-open → in-app handoff explicit.
+ * Lifted verbatim from `hypo-shield/push-notification.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  {/* LOCK-SCREEN FACE */}
+  <div class="lockface">
+    <div class="date">Tuesday, May 26</div>
+    <div class="time">10:18</div>
+    <div class="lock" aria-hidden="true">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Locked
+    </div>
+  </div>
+
+  {/* NOTIFICATION ZONE — a single Luna push, prompt-to-open ONLY */}
+  <div class="notif-zone">
+    {/* Wireframe annotation: prompt-to-open → opens the in-app flow on tap */}
+    <div class="flow-note">
+      <span class="ic" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </span>
+      <span class="ln"><b>Prompt-to-open only.</b> No dose value and no confirmable action on the lock screen. Tapping the banner opens the app, where the in-app recommendation flow handles review and the two-step confirm.</span>
+    </div>
+
+    {/* THE PUSH BANNER — tap opens the in-app recommendation flow */}
+    <button class="push" aria-label="Open Luna to review your basal recommendation">
+      <span class="app-ico" aria-hidden="true"></span>
+      <span class="body-txt">
+        <span class="top">
+          <span class="nm">Luna</span>
+          <span class="ago">now</span>
+        </span>
+        <span class="ttl">A basal suggestion is ready</span>
+        <span class="msg">Open Luna to review it. Nothing changes until you do — your current basal stays in place.</span>
+      </span>
+    </button>
+
+    <div class="open-hint">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      Tap to open Luna
+    </div>
+  </div>
+</div>

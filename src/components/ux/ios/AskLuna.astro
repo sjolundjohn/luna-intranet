@@ -1,0 +1,62 @@
+---
+/**
+ * AskLuna — the discreet "+" launcher (SPINE-NOTES r3). Collapsed: a small
+ * circular Moonlight "+" FAB pinned bottom-right of the content area. Tapping
+ * reveals the inline "Ask Luna" chat entry (moon glyph + placeholder + send)
+ * with a close (×); closing collapses back to the FAB. The insight card stays
+ * visible — only the chat entry is launcher-gated.
+ *
+ * OPEN FLAG (carry, do not invent): the Ask-Luna widget traces to NO BRD in
+ * the audited set (COVERAGE-AUDIT "Untraceable wireframe elements"). Built per
+ * the spine; behavior beyond reveal/collapse is not invented.
+ *
+ * Markup lifted verbatim from spine 01. Styling is in ios-spine.css.
+ * Open/close is document-delegated (works for any number of instances).
+ */
+interface Props {
+  /** Distance from the bezel bottom; 104px clears the tab bar (home screens). */
+  bottom?: number;
+}
+const { bottom = 104 } = Astro.props;
+---
+<div class="ask-host" data-ask-host data-open="false" style={`bottom:${bottom}px;`}>
+  <div class="ask-panel" role="dialog" aria-label="Ask Luna">
+    <div class="head">
+      <span class="lbl">Ask Luna</span>
+      <button class="close" type="button" aria-label="Close" data-ask-close>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="ask-luna">
+      <span class="moon-ic" aria-hidden="true"></span>
+      <span class="ph">Ask Luna anything…</span>
+      <span class="send"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+  </div>
+  <button class="ask-fab" type="button" aria-label="Ask Luna" aria-expanded="false" data-ask-open>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+</div>
+
+<script>
+  function wireAskLuna() {
+    if ((window as any).__uxAskLunaWired) return;
+    (window as any).__uxAskLunaWired = true;
+    document.addEventListener("click", (e) => {
+      const t = e.target as HTMLElement;
+      const openBtn = t.closest("[data-ask-open]");
+      const closeBtn = t.closest("[data-ask-close]");
+      if (openBtn) {
+        const host = openBtn.closest("[data-ask-host]");
+        host?.setAttribute("data-open", "true");
+        openBtn.setAttribute("aria-expanded", "true");
+      } else if (closeBtn) {
+        const host = closeBtn.closest("[data-ask-host]");
+        host?.setAttribute("data-open", "false");
+        host?.querySelector("[data-ask-open]")?.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+  wireAskLuna();
+  document.addEventListener("astro:page-load", wireAskLuna);
+</script>

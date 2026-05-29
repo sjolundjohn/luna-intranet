@@ -1,0 +1,66 @@
+---
+/**
+ * HardwareCheckpointScreen — Hardware checkpoint (spine 04). Informative only:
+ * a slow moon-in-orbit detect animation, two connection rows (Luna Controller
+ * "Connected", CGM "Recent reading OK" — never "Connected"), and the primary
+ * CTA "Confirm and continue" that is ALWAYS enabled (never gated on hardware).
+ *
+ * OPEN FLAGS (carry, do not resolve): "verify-before-body order" and
+ * "error states — Eng/Clinical" rendered as real `.flag` chips.
+ * Copy + markup lifted verbatim from `_spine/04-hardware-checkpoint.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  {/* gate-style header (informative checkpoint) */}
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title" style="font-weight:600; color:var(--color-on-dark);">Hardware checkpoint</span>
+    </div>
+    <div class="prog-bar"><i style="width:70%"></i></div>
+  </div>
+
+  <div class="pad" style="margin-top:18px; flex:1; display:flex; flex-direction:column;">
+    {/* "Device connected" status — slow moon-in-orbit detect animation */}
+    <div style="text-align:center; padding:8px 0 4px;">
+      <div style="display:flex; justify-content:center; margin-bottom:18px;">
+        <div class="orbit" role="img" aria-label="Luna detecting your devices">
+          <div class="ring"></div>
+          <div class="ring r2"></div>
+          <div class="center"></div>
+          <div class="arm"><div class="moon"></div></div>
+        </div>
+      </div>
+      <div class="title-2" style="font-weight:700; letter-spacing:-0.02em;">Device connected</div>
+      <p class="subhead muted" style="margin:6px 14px 0;">Luna can see your controller and sensor. You're ready to start your first session.</p>
+    </div>
+
+    {/* two connection rows */}
+    <div class="stack" style="gap:8px; margin-top:18px;">
+      <div class="conn-row">
+        <span class="lbl">Luna Controller</span>
+        <span class="stat"><span class="ok"></span><span class="ok-txt">Connected</span></span>
+      </div>
+      <div class="conn-row">
+        <span class="lbl">Your CGM sensor</span>
+        <span class="stat"><span class="ok"></span><span class="ok-txt">Recent reading OK</span></span>
+      </div>
+    </div>
+
+    {/* flag chips: open design questions */}
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;">
+      <span class="flag"><span class="k">Open</span>verify-before-body order</span>
+      <span class="flag"><span class="k">Open</span>error states — Eng/Clinical</span>
+    </div>
+
+    <div style="flex:1;"></div>
+  </div>
+
+  {/* informative only: primary ALWAYS enabled */}
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Confirm and continue</button>
+  </div>
+</div>

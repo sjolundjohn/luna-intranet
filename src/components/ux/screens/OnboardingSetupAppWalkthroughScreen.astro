@@ -1,0 +1,66 @@
+---
+/**
+ * OnboardingSetupAppWalkthroughScreen — Setup App Walkthrough (1 of 5 + Done).
+ * Brief guided UI tour that reads as one continuous onboarding; module-scoped
+ * dots. Step 1 spotlights the system-status strip. NO skip valve.
+ * Lifted verbatim from `onboarding/setup-app-walkthrough.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title">App walkthrough</span>
+      <span class="count">Step 1 of 5</span>
+    </div>
+    <div class="prog-dots" role="img" aria-label="Step 1 of 5">
+      <span class="d current"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span>
+    </div>
+  </div>
+
+  <div class="pad" style="margin-top:14px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+    <div class="eyebrow">App walkthrough · 1 of 5</div>
+    <h1 class="title-1" style="font-weight:700; margin:10px 0 0; letter-spacing:-0.015em;">A quick tour of the app</h1>
+    <p class="body muted" style="margin:10px 0 0;">
+      Five short stops so you know your way around before tonight. We'll start at the top of your home screen — the status strip that tells you Luna is working.
+    </p>
+
+    <div class="wt-preview">
+      <div class="mini">
+        <div class="mini-strip spotlight">
+          <span class="it">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.5l2 2 4.5-5"/><circle cx="12" cy="12" r="9"/></svg></span>
+            <span class="v">Automating</span>
+            <span class="lab">System</span>
+          </span>
+          <span class="it">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h11a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5z"/><line x1="20" y1="11" x2="20" y2="13"/></svg></span>
+            <span class="v">Full</span>
+            <span class="lab">Reservoir</span>
+          </span>
+          <span class="it">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="2"/><line x1="21" y1="10" x2="21" y2="14"/></svg></span>
+            <span class="v">86%</span>
+            <span class="lab">Battery</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wt-callout">
+      <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+      <span class="ln">This strip leads your home screen. A glance tells you Luna is automating, your reservoir is filled, and the controller is charged.</span>
+    </div>
+
+    <div class="done-note">5 quick stops, then Done</div>
+
+    <div style="flex:1; min-height:14px;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Next</button>
+  </div>
+</div>

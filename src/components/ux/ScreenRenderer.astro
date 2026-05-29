@@ -1,56 +1,188 @@
 ---
 /**
- * ScreenRenderer — resolves a manifest screen id to its rendered iOS
- * artboard. Today every screen is a native .astro composition (the
- * component kit ported from Project B). When Project B later delivers
- * rasterized wireframes at `wireframes/<id>.*`, add an image branch here;
- * the registry key stays the screen id either way.
+ * ScreenRenderer — resolves a manifest screen id to its rendered iOS artboard
+ * inside the locked Phone frame. Three render kinds:
+ *   1. native component  (wireframe/legacy === "component:<id>")
+ *   2. legacy screenshot (wireframe/legacy === a ".jpg" path) — chrome-off bezel
+ *   3. graceful fallback ("No wireframe yet") for not-yet-built ids
  *
- * `variant` selects "current" vs "legacy" for the old-vs-new compare.
+ * Owning the Phone frame here lets per-screen frame config (dose-sheet
+ * z-index, custom clock) live with the registry. `variant` selects
+ * "current" vs "legacy" for the old-vs-new compare. `scale`/`mode` pass
+ * through to Phone (1/full = detail; <1/thumb = grid + compare).
  */
+import Phone from "./Phone.astro";
+import { getScreen, componentId } from "~/lib/ux-review";
+
 import DashboardScreen from "./screens/DashboardScreen.astro";
-import SessionHistoryScreen from "./screens/SessionHistoryScreen.astro";
 import SettingsScreen from "./screens/SettingsScreen.astro";
+import SessionHistoryScreen from "./screens/SessionHistoryScreen.astro";
+import HardwareCheckpointScreen from "./screens/HardwareCheckpointScreen.astro";
 import DoseConfirmationScreen from "./screens/DoseConfirmationScreen.astro";
+// HypoShield & In-App Comms
+import HomeTipDefaultScreen from "./screens/HomeTipDefaultScreen.astro";
+import HomeTipPostScreen from "./screens/HomeTipPostScreen.astro";
+import LearningStateScreen from "./screens/LearningStateScreen.astro";
+import MidSessionAnnouncementScreen from "./screens/MidSessionAnnouncementScreen.astro";
+import ConfirmResetRequiredScreen from "./screens/ConfirmResetRequiredScreen.astro";
+import ConfirmSkipScreen from "./screens/ConfirmSkipScreen.astro";
+import SettingsHypoShieldScreen from "./screens/SettingsHypoShieldScreen.astro";
+import TdbdDetailScreen from "./screens/TdbdDetailScreen.astro";
+import PushNotificationScreen from "./screens/PushNotificationScreen.astro";
+// IOB Display
+import IobHomeOnScreen from "./screens/IobHomeOnScreen.astro";
+import IobSettingsScreen from "./screens/IobSettingsScreen.astro";
+import IobPreSessionScreen from "./screens/IobPreSessionScreen.astro";
+import IobSessionDetailScreen from "./screens/IobSessionDetailScreen.astro";
+// Onboarding Update
+import OnboardingChapter1Screen from "./screens/OnboardingChapter1Screen.astro";
+import OnboardingChapter2Screen from "./screens/OnboardingChapter2Screen.astro";
+import OnboardingChapter3Screen from "./screens/OnboardingChapter3Screen.astro";
+import OnboardingChapter4Screen from "./screens/OnboardingChapter4Screen.astro";
+import OnboardingChapter5Screen from "./screens/OnboardingChapter5Screen.astro";
+import OnboardingSetupLandingScreen from "./screens/OnboardingSetupLandingScreen.astro";
+import OnboardingUiWalkthroughScreen from "./screens/OnboardingUiWalkthroughScreen.astro";
+import OnboardingTonightPanelStatesScreen from "./screens/OnboardingTonightPanelStatesScreen.astro";
+import OnboardingSetupAppWalkthroughScreen from "./screens/OnboardingSetupAppWalkthroughScreen.astro";
+import OnboardingSessionHistoryIntroScreen from "./screens/OnboardingSessionHistoryIntroScreen.astro";
+import OnboardingLongActingInsulinScreen from "./screens/OnboardingLongActingInsulinScreen.astro";
+import OnboardingSettingsLunaControllerScreen from "./screens/OnboardingSettingsLunaControllerScreen.astro";
+// Apollo Training
+import ApolloIntroScreen from "./screens/ApolloIntroScreen.astro";
+import ApolloStep01Screen from "./screens/ApolloStep01Screen.astro";
+import ApolloStep02Screen from "./screens/ApolloStep02Screen.astro";
+import ApolloStep03Screen from "./screens/ApolloStep03Screen.astro";
+import ApolloStep04Screen from "./screens/ApolloStep04Screen.astro";
+import ApolloStep05Screen from "./screens/ApolloStep05Screen.astro";
+import ApolloStep06Screen from "./screens/ApolloStep06Screen.astro";
+import ApolloStep07Screen from "./screens/ApolloStep07Screen.astro";
+import ApolloStep08Screen from "./screens/ApolloStep08Screen.astro";
+import ApolloStep09Screen from "./screens/ApolloStep09Screen.astro";
+import ApolloStep10Screen from "./screens/ApolloStep10Screen.astro";
+import ApolloEveningOutroScreen from "./screens/ApolloEveningOutroScreen.astro";
+import ApolloOvernightHandoffScreen from "./screens/ApolloOvernightHandoffScreen.astro";
+import ApolloMorningStartScreen from "./screens/ApolloMorningStartScreen.astro";
+import ApolloMorningOutroScreen from "./screens/ApolloMorningOutroScreen.astro";
+import ApolloCompleteScreen from "./screens/ApolloCompleteScreen.astro";
+import ApolloMidSessionResumeScreen from "./screens/ApolloMidSessionResumeScreen.astro";
+import ApolloReplayFromSettingsScreen from "./screens/ApolloReplayFromSettingsScreen.astro";
 
 interface Props {
   id: string;
   variant?: "current" | "legacy";
+  scale?: number;
+  mode?: "full" | "thumb";
 }
-const { id, variant = "current" } = Astro.props;
+const { id, variant = "current", scale = 1, mode = "full" } = Astro.props;
 
+/** id → screen component. Keys are the manifest ids (== component ids). */
 const REGISTRY: Record<string, any> = {
-  dashboard: DashboardScreen,
+  // Core spine archetypes
+  "home-dashboard": DashboardScreen,
+  "settings-list": SettingsScreen,
   "session-history": SessionHistoryScreen,
-  settings: SettingsScreen,
-  "dose-confirmation": DoseConfirmationScreen,
+  "hardware-checkpoint-spine": HardwareCheckpointScreen,
+  "dose-confirmation-spine": DoseConfirmationScreen,
+  // HypoShield & In-App Comms
+  "hypo-home-tip-default": HomeTipDefaultScreen,
+  "hypo-home-tip-post": HomeTipPostScreen,
+  "hypo-learning-state": LearningStateScreen,
+  "hypo-mid-session-announcement": MidSessionAnnouncementScreen,
+  "hypo-confirm-increase": DoseConfirmationScreen,
+  "hypo-confirm-reset-required": ConfirmResetRequiredScreen,
+  "hypo-confirm-skip": ConfirmSkipScreen,
+  "hypo-settings": SettingsHypoShieldScreen,
+  "hypo-tdbd-detail": TdbdDetailScreen,
+  "hypo-push-notification": PushNotificationScreen,
+  // IOB Display
+  "iob-home-on": IobHomeOnScreen,
+  "iob-settings": IobSettingsScreen,
+  "iob-pre-session-announcement": IobPreSessionScreen,
+  "iob-session-detail": IobSessionDetailScreen,
+  // Onboarding Update
+  "onboarding-chapter-1": OnboardingChapter1Screen,
+  "onboarding-chapter-2": OnboardingChapter2Screen,
+  "onboarding-chapter-3": OnboardingChapter3Screen,
+  "onboarding-chapter-4": OnboardingChapter4Screen,
+  "onboarding-chapter-5": OnboardingChapter5Screen,
+  "onboarding-setup-landing": OnboardingSetupLandingScreen,
+  "onboarding-ui-walkthrough": OnboardingUiWalkthroughScreen,
+  "onboarding-tonight-panel-states": OnboardingTonightPanelStatesScreen,
+  "onboarding-setup-app-walkthrough": OnboardingSetupAppWalkthroughScreen,
+  "onboarding-session-history-intro": OnboardingSessionHistoryIntroScreen,
+  "onboarding-long-acting-insulin": OnboardingLongActingInsulinScreen,
+  "onboarding-settings-luna-controller": OnboardingSettingsLunaControllerScreen,
+  // Apollo Training
+  "apollo-intro": ApolloIntroScreen,
+  "apollo-step-01-inventory": ApolloStep01Screen,
+  "apollo-step-02-open-tray": ApolloStep02Screen,
+  "apollo-step-03-fill": ApolloStep03Screen,
+  "apollo-step-04-remove-label": ApolloStep04Screen,
+  "apollo-step-05-attach-capsule": ApolloStep05Screen,
+  "apollo-step-06-remove-base": ApolloStep06Screen,
+  "apollo-step-07-apply-body": ApolloStep07Screen,
+  "apollo-hardware-checkpoint": HardwareCheckpointScreen,
+  "apollo-evening-outro": ApolloEveningOutroScreen,
+  "apollo-overnight-handoff": ApolloOvernightHandoffScreen,
+  "apollo-morning-start": ApolloMorningStartScreen,
+  "apollo-step-08-remove-device": ApolloStep08Screen,
+  "apollo-step-09-detach-reservoir": ApolloStep09Screen,
+  "apollo-step-10-charge": ApolloStep10Screen,
+  "apollo-morning-outro": ApolloMorningOutroScreen,
+  "apollo-complete": ApolloCompleteScreen,
+  "apollo-mid-session-resume": ApolloMidSessionResumeScreen,
+  "apollo-replay-from-settings": ApolloReplayFromSettingsScreen,
 };
 
-const Screen = REGISTRY[id];
+/** Per-screen frame config: sheet raises brandbar/home indicator; custom clock. */
+const FRAME: Record<string, { sheet?: boolean; clock?: string }> = {
+  "dose-confirmation-spine": { sheet: true, clock: "10:18" },
+  "hypo-confirm-increase": { sheet: true, clock: "10:18" },
+  "hypo-confirm-reset-required": { sheet: true, clock: "9:41" },
+  "hypo-confirm-skip": { sheet: true, clock: "10:18" },
+  "hypo-mid-session-announcement": { sheet: true, clock: "2:14" },
+  "hypo-push-notification": { clock: "10:18" },
+  "iob-pre-session-announcement": { sheet: true, clock: "10:18" },
+  // Apollo evening/morning timings
+  "apollo-evening-outro": { clock: "11:22" },
+  "apollo-overnight-handoff": { clock: "11:23" },
+  "apollo-morning-start": { clock: "7:12" },
+  "apollo-morning-outro": { clock: "7:16" },
+  "apollo-complete": { clock: "7:18" },
+  "apollo-mid-session-resume": { clock: "7:08" },
+};
+
+const screen = getScreen(id);
+const src = variant === "legacy" ? (screen?.legacy ?? null) : (screen?.wireframe ?? `component:${id}`);
+const cid = componentId(src);
+const Comp = cid ? REGISTRY[cid] : undefined;
+const cfg = FRAME[cid ?? id] ?? {};
+
+/** Map a manifest legacy path (`wireframes/legacy/x.jpg`) to its public URL. */
+function legacyImg(path: string | null): string | null {
+  if (!path) return null;
+  const m = path.match(/legacy\/([^/]+\.(?:jpe?g|png))$/i);
+  if (m) return `/ux-review/legacy/${m[1]}`;
+  return path.startsWith("/") ? path : null;
+}
+const imgSrc = !cid && src && /\.(jpe?g|png)$/i.test(src) ? legacyImg(src) : null;
 ---
-{Screen ? (
-  <Screen variant={variant} />
+{Comp ? (
+  <Phone scale={scale} mode={mode} sheet={cfg.sheet} clock={cfg.clock}>
+    <Comp variant={variant} />
+  </Phone>
+) : imgSrc ? (
+  <Phone scale={scale} mode={mode} chrome={false}>
+    <img class="ux-legacy-fill" src={imgSrc} alt={`${screen?.title ?? id} (legacy)`} />
+  </Phone>
 ) : (
-  <div class="scr-missing">
-    <p>No wireframe yet</p>
-    <code>{id}</code>
-    <span>Pending Deliverable 3</span>
-  </div>
+  <Phone scale={scale} mode={mode}>
+    <div class="content">
+      <div class="ux-missing">
+        <p>No wireframe yet</p>
+        <code>{id}</code>
+        <span>Native component pending</span>
+      </div>
+    </div>
+  </Phone>
 )}
-<style>
-  .scr-missing {
-    min-height: 844px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--color-soft-paper);
-    color: var(--color-slate);
-    text-align: center;
-    padding: 24px;
-  }
-  .scr-missing p { font-size: 17px; font-weight: 700; color: var(--color-graphite); margin: 0; }
-  .scr-missing code { font-family: var(--ios-font-mono); font-size: 13px; color: var(--color-ink); }
-  .scr-missing span { font-size: 12px; }
-</style>

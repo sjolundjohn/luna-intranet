@@ -1,13 +1,10 @@
 ---
 /**
- * DashboardScreen — Home dashboard (spine 01). The CGM graph is the HERO.
- * System-status strip leads, then glucose + trend, the full-width overnight
- * CGM graph (target band, Amber 180 line, PLUM 70 critical-low line, Moonlight
- * delivery ticks), an always-visible Luna insight card, and the discreet
- * Ask-Luna launcher. Active-insulin (IOB) row is OFF by default (IOB-gated).
- *
- * Renders the `.content` + tab bar slotted into the locked Phone frame.
- * Copy + markup lifted verbatim from `_spine/01-home-dashboard.html`.
+ * IobHomeOnScreen — Home dashboard with IOB Display ON (opted-in). Identical to
+ * the spine Home, plus the Active-Insulin (IOB) row that is OFF by default and
+ * appears only when the flag is on. IOB is decision-support — shown to 0.1 with
+ * a capital "U", scoped to Luna-delivered insulin only; never instructs a dose.
+ * Lifted verbatim from `iob-display/home-iob-on.html`.
  */
 import StatusStrip from "../ios/StatusStrip.astro";
 import CgmHero from "../ios/CgmHero.astro";
@@ -19,10 +16,8 @@ interface Props {
 }
 ---
 <div class="content">
-  {/* SYSTEM-STATUS cards LEAD (greeting + "session started" removed per review). */}
   <StatusStrip />
 
-  {/* GLUCOSE + TREND hero header */}
   <div class="pad gluc-hero" style="margin-top:14px;">
     <div class="glucose">
       <span class="num">112</span>
@@ -31,10 +26,8 @@ interface Props {
     <div class="footnote muted">mg/dL · steady</div>
   </div>
 
-  {/* HERO CGM GRAPH — full-width; Plum 70 critical-low; Moonlight delivery ticks. */}
   <CgmHero trace="inrange" height={190} />
 
-  {/* INSIGHTS companion — a gentle Luna insight, ALWAYS visible. */}
   <div class="pad" style="margin-top:14px;">
     <div class="card-dark insight-card">
       <span class="ic" aria-hidden="true">
@@ -44,13 +37,26 @@ interface Props {
     </div>
   </div>
 
-  {/* Active-insulin (IOB) row intentionally OMITTED by default — appears only
-      when the IOB Display flag is ON (Settings · 05). See iob-home-on. */}
+  {/* ACTIVE-INSULIN (IOB) ROW — visible because the IOB Display flag is ON
+      (Settings · 05, which defaults OFF). Decision-support; 0.1 U, capital U,
+      scoped to Luna-delivered insulin only. */}
+  <div class="pad" style="margin-top:12px;">
+    <div class="card-dark aic">
+      <span class="ico" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S5 9.5 5 14.5a7 7 0 0 0 14 0C19 9.5 12 2.7 12 2.7z"/></svg>
+      </span>
+      <span class="meta">
+        <span class="k">Active insulin · Luna</span>
+        <span class="scope">From Luna-delivered insulin only</span>
+      </span>
+      <span style="flex:1;"></span>
+      <span class="v">0.4 <span class="u">U</span></span>
+    </div>
+  </div>
 
   <div style="flex:1;"></div>
 </div>
 
-{/* Discreet Ask-Luna launcher — pinned bottom-right above the tab bar. */}
 <AskLuna bottom={104} />
 
 <TabBar active="dashboard" />

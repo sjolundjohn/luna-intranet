@@ -1,0 +1,10 @@
+---
+import ApolloStep from "../ios/ApolloStep.astro";
+interface Props { variant?: "current" | "legacy"; }
+// Morning removal is its own module ("Morning removal · Step N of 3").
+---
+<ApolloStep moduleLabel="Morning removal" count="Step 1 of 3" total={3} current={1} badge="Step 08"
+  headline="Good morning. Time to remove it." instr="Before your next meal, gently remove Luna from your body."
+  caption="video: Step 08 — poster TBD">
+  <div style="margin-top:18px;"><span class="flag"><span class="k">Open</span>poster TBD — SOONA mapping</span></div>
+</ApolloStep>

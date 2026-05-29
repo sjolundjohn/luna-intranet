@@ -1,0 +1,55 @@
+---
+/**
+ * OnboardingLongActingInsulinScreen — long-acting insulin capture (Your routine
+ * 2 of 3). PLAIN DATA CAPTURE — a numeric field, NOT the two-step dose gesture.
+ * Generic "long-acting insulin" only (no brand). NO skip valve.
+ * Lifted verbatim from `onboarding/long-acting-insulin.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title">Your routine</span>
+      <span class="count">2 of 3</span>
+    </div>
+    <div class="prog-dots" role="img" aria-label="Step 2 of 3">
+      <span class="d done"></span><span class="d current"></span><span class="d"></span>
+    </div>
+  </div>
+
+  <div class="pad" style="margin-top:14px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+    <div class="eyebrow">Your routine · 2 of 3</div>
+    <h1 class="title-1" style="font-weight:700; margin:10px 0 0; letter-spacing:-0.015em;">Your long-acting insulin</h1>
+    <p class="body muted" style="margin:12px 0 0;">
+      Enter the long-acting (basal) insulin dose you take now, exactly as your clinician prescribed it. This is just what you're already on — not a change.
+    </p>
+
+    <div class="field">
+      <span class="flbl">Long-acting insulin dose, as prescribed</span>
+      <div class="fbox">
+        <span class="val">14</span>
+        <span class="unit">units / day</span>
+        <span class="caret" aria-hidden="true"></span>
+      </div>
+      <p class="hint">Your once-daily long-acting insulin. Mealtime/bolus insulin isn't entered here — Luna doesn't touch it.</p>
+    </div>
+
+    <div class="keypad" aria-hidden="true">
+      <button>1</button><button>2</button><button>3</button>
+      <button>4</button><button>5</button><button>6</button>
+      <button>7</button><button>8</button><button>9</button>
+      <button class="blank"></button><button>0</button>
+      <button><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ACC1DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg></button>
+    </div>
+
+    <div style="flex:1; min-height:14px;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Continue</button>
+  </div>
+</div>

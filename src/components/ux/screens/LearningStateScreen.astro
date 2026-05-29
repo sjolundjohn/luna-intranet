@@ -1,0 +1,64 @@
+---
+/**
+ * LearningStateScreen — Home, Hypo Shield PRE-RECOMMENDATION learning state.
+ * Luna doesn't recommend until it has learned: BOTH 5 Luna sessions AND 7 days
+ * of wear. Shows dual progress toward both thresholds (with an explicit AND
+ * joiner) and the current Dosing Mode (Establishing baseline → compensating
+ * up/down once learned). Lifted verbatim from `hypo-shield/learning-state.html`.
+ */
+import StatusStrip from "../ios/StatusStrip.astro";
+import TabBar from "../ios/TabBar.astro";
+
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <StatusStrip />
+
+  <div class="pad gluc-hero" style="margin-top:14px;">
+    <div class="glucose">
+      <span class="num">108</span>
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(90deg);" aria-label="Steady"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </div>
+    <div class="footnote muted">mg/dL · steady</div>
+  </div>
+
+  {/* HYPO SHIELD LEARNING STATE — no recommendation yet.
+      Both conditions required: 5 Luna sessions AND 7 days of wear. */}
+  <div class="pad" style="margin-top:16px;">
+    <div class="card-dark learn-card">
+      <div class="head">
+        <span class="moon" aria-hidden="true"></span>
+        <span class="eyebrow">Hypo Shield · Learning</span>
+      </div>
+      <div class="title">Luna is learning your nights</div>
+      <div class="sub">Before Luna suggests a basal change, it learns your overnight needs. This takes both <b>5 Luna sessions</b> and <b>7 days of wear</b>. While it learns, dosing stays a little more conservative.</div>
+
+      <div class="learn-prog">
+        <div class="lp-item">
+          <div class="lp-top"><span class="lp-lbl">Luna sessions</span><span class="lp-count">3 of 5</span></div>
+          <div class="lp-bar"><i style="width:60%;"></i></div>
+        </div>
+        <div class="learn-and"><span class="line"></span><span class="pill">AND</span><span class="line"></span></div>
+        <div class="lp-item">
+          <div class="lp-top"><span class="lp-lbl">Days of wear</span><span class="lp-count">4 of 7</span></div>
+          <div class="lp-bar"><i style="width:57%;"></i></div>
+        </div>
+      </div>
+
+      {/* DOSING MODE: establishing baseline / compensating upward / downward. */}
+      <div class="dose-mode">
+        <span class="ic" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19"/></svg>
+        </span>
+        <span class="dm-lbl"><span class="k">Dosing mode</span><span class="v">Establishing baseline</span></span>
+        <span class="note">Next: compensating upward or downward once learned</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex:1;"></div>
+</div>
+
+<TabBar active="dashboard" />

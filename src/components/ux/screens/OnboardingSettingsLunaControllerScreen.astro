@@ -1,0 +1,65 @@
+---
+/**
+ * OnboardingSettingsLunaControllerScreen — Settings › Luna Controller (device
+ * management). Device-state hero, device details, paired CGM ("Recent reading
+ * OK", never "Connected"), and management (rename / forget). Tab-root: Settings.
+ * Lifted verbatim from `onboarding/settings-luna-controller.html`.
+ */
+import TabBar from "../ios/TabBar.astro";
+
+interface Props {
+  variant?: "current" | "legacy";
+}
+const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+---
+<div class="content">
+  <div class="navbar">
+    <button class="back" aria-label="Settings">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Settings
+    </button>
+  </div>
+  <div class="pad" style="padding-bottom:10px;"><h1 style="margin:0; font-size:28px; font-weight:700; letter-spacing:-0.015em;">Luna Controller</h1></div>
+
+  <div class="pad" style="overflow-y:auto;">
+    {/* DEVICE-STATE hero */}
+    <div class="card-dark dev-card">
+      <div class="head">
+        <span class="moon" aria-hidden="true"></span>
+        <div>
+          <div class="nm">Luna Controller</div>
+          <div class="state"><span class="dot"></span>Connected</div>
+        </div>
+      </div>
+      <div class="desc">Your Luna Controller is paired and ready. It manages your insulin overnight and pairs to your phone over Bluetooth.</div>
+    </div>
+
+    {/* DEVICE details */}
+    <div class="sec-label">Device</div>
+    <div class="list">
+      <div class="row"><span class="label">Battery</span><span class="value">86%</span></div>
+      <div class="row"><span class="label">Reservoir</span><span class="value">Full</span></div>
+      <div class="row"><span class="label">Firmware</span><span class="value">1.4.2</span><span class="chev" set:html={chev} /></div>
+      <div class="row"><span class="label">Serial</span><span class="value">LC-7F3A</span></div>
+    </div>
+
+    {/* PAIRED CGM — "Recent reading OK", never "Connected" */}
+    <div class="sec-label">Paired CGM</div>
+    <div class="list">
+      <div class="row"><span class="label">CGM</span><span class="value">Recent reading OK</span><span class="chev" set:html={chev} /></div>
+    </div>
+
+    {/* MANAGEMENT */}
+    <div class="sec-label">Manage</div>
+    <div class="list">
+      <div class="row"><span class="label">Rename controller</span><span class="chev" set:html={chev} /></div>
+      <div class="row"><span class="danger">Forget this controller</span><span class="chev" set:html={chev} /></div>
+    </div>
+
+    <div style="height:12px;"></div>
+  </div>
+
+  <div style="flex:1;"></div>
+</div>
+
+<TabBar active="settings" />

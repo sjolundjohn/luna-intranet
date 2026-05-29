@@ -1,38 +1,67 @@
 ---
 /**
- * SettingsScreen — account + care configuration list.
+ * SettingsScreen — Settings root (spine 05). Moonlight back + bold title (no
+ * divider), grouped lists: Hypo Shield (Active) + IOB Display (default OFF),
+ * Devices (CGM "Recent reading OK", Luna Controller "Connected"), Support.
+ * Copy + markup lifted verbatim from `_spine/05-settings-list.html`.
  */
-import StatusBar from "../ios/StatusBar.astro";
-import ListRows from "../ios/ListRows.astro";
 import TabBar from "../ios/TabBar.astro";
+import Toggle from "../ios/Toggle.astro";
 
 interface Props {
   variant?: "current" | "legacy";
 }
-// Settings is Unchanged — no legacy/current divergence; prop kept for the
-// uniform screen-registry interface.
-
-const rows = [
-  { label: "Target range", value: "70–140" },
-  { label: "Basal Guidance", value: "On" },
-  { label: "Notifications", value: "On" },
-  { label: "Connected sensor", value: "Auto" },
-  { label: "Account", value: "—" },
-];
+const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
 ---
-<div class="scr">
-  <StatusBar tone="dark" />
-  <div class="scr-body">
-    <header class="scr-head">
-      <h1 class="scr-title">Settings</h1>
-    </header>
-    <ListRows rows={rows} />
+<div class="content">
+  {/* nav header: Moonlight back + "Settings", NO divider */}
+  <div class="navbar">
+    <button class="back" aria-label="Back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <h1>Settings</h1>
   </div>
-  <TabBar active="settings" />
+
+  <div class="pad" style="overflow-y:auto;">
+    <div class="sec-label">Hypo Shield</div>
+    <div class="list">
+      <div class="row">
+        <span class="label">Hypo Shield</span>
+        <span class="ok-txt"><span class="dot"></span>Active</span>
+        <span class="chev" set:html={chev} />
+      </div>
+      <div class="row">
+        <span class="label">IOB Display</span>
+        <Toggle checked={false} label="IOB Display" />
+      </div>
+    </div>
+
+    <div class="sec-label">Devices</div>
+    <div class="list">
+      <div class="row">
+        <span class="label">CGM</span>
+        <span class="value">Recent reading OK</span>
+        <span class="chev" set:html={chev} />
+      </div>
+      <div class="row">
+        <span class="label">Luna Controller</span>
+        <span class="value">Connected</span>
+        <span class="chev" set:html={chev} />
+      </div>
+    </div>
+
+    <div class="sec-label">Support</div>
+    <div class="list">
+      <div class="row">
+        <span class="label">Help</span>
+        <span class="chev" set:html={chev} />
+      </div>
+    </div>
+
+    <div style="height:12px;"></div>
+  </div>
+
+  <div style="flex:1;"></div>
 </div>
-<style>
-  .scr { display: flex; flex-direction: column; min-height: 844px; background: var(--color-cloud-lilac); }
-  .scr-body { flex: 1; padding: 4px 16px 20px; display: flex; flex-direction: column; gap: 16px; }
-  .scr-head { padding: 8px 2px 4px; }
-  .scr-title { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
-</style>
+
+<TabBar active="settings" />

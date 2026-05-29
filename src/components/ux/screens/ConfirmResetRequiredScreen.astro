@@ -1,0 +1,67 @@
+---
+/**
+ * ConfirmResetRequiredScreen — Hypo Shield "Reset Required": the user changed
+ * their basal manually, so learning RESET. No dose value to apply and therefore
+ * NO two-step slide — re-learning must complete first (5 sessions AND 7 days).
+ * Single action acknowledges the new baseline. Rendered by ScreenRenderer with
+ * `sheet`. Lifted verbatim from `hypo-shield/confirm-reset-required.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+{/* dimmed Home backdrop */}
+<div class="content backdrop" aria-hidden="true">
+  <div class="pad" style="padding-top:8px;">
+    <div class="title-2" style="font-weight:700;">Hypo Shield</div>
+    <div class="footnote muted" style="margin-top:2px;">Re-learning your nights</div>
+  </div>
+  <div class="pad" style="margin-top:18px;">
+    <div class="card-dark statuscard">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg>
+      <div class="headline" style="font-weight:700;">Learning reset</div>
+      <div class="subhead muted">A manual change restarted learning</div>
+    </div>
+  </div>
+</div>
+
+{/* dim scrim */}
+<div class="scrim"></div>
+
+{/* RESET-REQUIRED SHEET — no dose value, no slide; re-learning state */}
+<div class="sheet-host">
+  <div class="sheet">
+    <div class="grabber"></div>
+    <div class="hdr"><div class="moon"></div><span class="eyebrow">Hypo Shield · Reset Required</span></div>
+    <h2>Luna is re-learning your nights</h2>
+
+    <div class="reset-banner">
+      <span class="ic" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg>
+      </span>
+      <span class="tx">You changed your basal dose manually, so Hypo Shield reset its learning. It won't suggest a new dose until it has re-learned.</span>
+    </div>
+
+    <div class="tdbd-now">
+      <span class="lbl">Now learning around</span>
+      <span class="val">12</span><span class="u">U</span>
+    </div>
+    <p class="rationale">Your current basal stays exactly as you set it. Luna keeps watching and will only suggest a change once it has learned again from both five sessions and seven days of wear.</p>
+
+    <div class="relearn">
+      <div class="h">Re-learning progress</div>
+      <div class="rl-item">
+        <div class="rl-top"><span class="rl-lbl">Luna sessions</span><span class="rl-count">1 of 5</span></div>
+        <div class="rl-bar"><i style="width:20%;"></i></div>
+      </div>
+      <div class="rl-and"><span class="line"></span><span class="pill">AND</span><span class="line"></span></div>
+      <div class="rl-item">
+        <div class="rl-top"><span class="rl-lbl">Days of wear</span><span class="rl-count">2 of 7</span></div>
+        <div class="rl-bar"><i style="width:29%;"></i></div>
+      </div>
+    </div>
+
+    <button class="btn sheet-primary" type="button">Got it</button>
+    <div class="skip"><button type="button">View Hypo Shield settings</button></div>
+  </div>
+</div>

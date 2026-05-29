@@ -1,0 +1,52 @@
+---
+/**
+ * HomeTipDefaultScreen — Home, Hypo Shield "Default Tip" RESTING state. No
+ * pending recommendation: a calm reassurance card stating the standing nightly
+ * basal (a chip that opens TDBD detail), NOT an accept control.
+ * Lifted verbatim from `hypo-shield/home-tip-default.html`.
+ */
+import StatusStrip from "../ios/StatusStrip.astro";
+import CgmHero from "../ios/CgmHero.astro";
+import TabBar from "../ios/TabBar.astro";
+import AskLuna from "../ios/AskLuna.astro";
+
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <StatusStrip />
+
+  <div class="pad gluc-hero" style="margin-top:14px;">
+    <div class="glucose">
+      <span class="num">112</span>
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(90deg);" aria-label="Steady"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </div>
+    <div class="footnote muted">mg/dL · steady</div>
+  </div>
+
+  <CgmHero trace="inrange" height={180} />
+
+  {/* HYPO SHIELD "DEFAULT TIP" — resting. Reassurance, states the standing
+      nightly basal; the chip opens the TDBD detail. No CTA / no slider. */}
+  <div class="pad" style="margin-top:14px;">
+    <div class="card-dark tip-card">
+      <div class="head">
+        <span class="moon" aria-hidden="true"></span>
+        <span class="eyebrow">Hypo Shield</span>
+      </div>
+      <div class="lead">Your nightly basal looks well-matched. Luna is watching and will tell you if it should change.</div>
+      <button class="tdbd-chip" aria-label="View total daily basal dose detail">
+        <span class="k">Nightly basal</span>
+        <span class="v">12 <span class="u">U</span></span>
+        <span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+      </button>
+    </div>
+  </div>
+
+  <div style="flex:1;"></div>
+</div>
+
+<AskLuna bottom={104} />
+
+<TabBar active="dashboard" />

@@ -1,0 +1,38 @@
+---
+/**
+ * IobPreSessionScreen — Pre-session IOB announcement (clock 10:18). The dim
+ * backdrop carries the IOB insight card (the announcement that IOB Display is
+ * available); the elevated sheet REUSES the shared two-step component as a
+ * deliberate OPT-IN ACKNOWLEDGEMENT (DoseSheet variant="optin") — NOT a dose
+ * action, so it carries no dose value. Rendered by ScreenRenderer with `sheet`.
+ * Lifted verbatim from `iob-display/pre-session-iob-announcement.html`.
+ */
+import DoseSheet from "../ios/DoseSheet.astro";
+
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+{/* dimmed Home backdrop — carries the PRE-SESSION IOB INSIGHT CARD */}
+<div class="content backdrop" aria-hidden="true">
+  <div class="pad" style="padding-top:8px;">
+    <div class="title-2" style="font-weight:700;">Before tonight's session</div>
+    <div class="footnote muted" style="margin-top:2px;">Luna's about to start watching · 10:42 PM</div>
+  </div>
+  <div class="pad" style="margin-top:16px;">
+    <div class="card-dark iob-insight">
+      <span class="ic" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+      </span>
+      <span class="txt"><span class="lead">New: see your insulin on board.</span> Luna can show how much of your Luna-delivered insulin is still active — e.g. <span class="sample">0.4 U</span> — during a session and after, so you can avoid stacking. Off until you turn it on.</span>
+    </div>
+  </div>
+</div>
+
+{/* dim scrim */}
+<div class="scrim"></div>
+
+{/* OPT-IN ACKNOWLEDGEMENT SHEET — the shared two-step component as opt-in. */}
+<div class="sheet-host">
+  <DoseSheet variant="optin" />
+</div>

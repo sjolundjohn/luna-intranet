@@ -1,0 +1,75 @@
+---
+/**
+ * OnboardingChapter5Screen — Chapter 5 of 5: clean handoff into Apollo Training
+ * (coordinator closeout — onboarding owns this beat, BR E8). Tonight panel
+ * complete (3 of 3). Required completion → "Start Luna Training"; NO skip valve.
+ * Lifted verbatim from `onboarding/chapter-5-handoff.html`.
+ */
+interface Props {
+  variant?: "current" | "legacy";
+}
+---
+<div class="content">
+  <div class="prog-head">
+    <div class="prog-row">
+      <button class="back" aria-label="Back">‹</button>
+      <span class="title">Getting set up</span>
+      <span class="count">Chapter 5 of 5</span>
+    </div>
+    <div class="prog-dots" role="img" aria-label="Chapter 5 of 5">
+      <span class="d done"></span><span class="d done"></span><span class="d done"></span><span class="d done"></span><span class="d current"></span>
+    </div>
+  </div>
+
+  <div class="pad" style="margin-top:8px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+    <div class="moon-hero">
+      <span class="halo" style="width:84px; height:84px;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+      </span>
+    </div>
+
+    <div class="eyebrow" style="text-align:center;">Chapter 5 of 5</div>
+    <h1 class="title-1" style="font-weight:700; margin:8px 0 0; letter-spacing:-0.015em; text-align:center;">You're set up</h1>
+    <p class="body muted" style="margin:10px 0 0; text-align:center;">
+      Your first night is ready. Next, a coordinator walks you through setting up your device tonight — Luna Training picks up right here.
+    </p>
+
+    <div class="card-dark tonight-panel decompressed">
+      <div class="ph">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <span class="ttl">Your first night</span>
+        <span class="frac">3 of 3 ready</span>
+      </div>
+      <div class="setup-step">
+        <span class="mark done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="txt">Pair your Luna Capsule</span>
+      </div>
+      <div class="setup-step">
+        <span class="mark done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="txt">Pair your CGM sensor</span>
+      </div>
+      <div class="setup-step">
+        <span class="mark done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="txt">Enter your TDBD</span>
+      </div>
+    </div>
+
+    <div class="card-dark" style="margin-top:18px;">
+      <div class="step-badge"><span class="dot"></span> Up next · Luna Training</div>
+      <div class="handoff">
+        <span class="num">1</span>
+        <span class="ln">A coordinator confirms your setup and answers any questions.</span>
+      </div>
+      <div class="handoff">
+        <span class="num">2</span>
+        <span class="ln">You'll walk through tonight's evening setup, step by step.</span>
+      </div>
+    </div>
+
+    <div style="flex:1; min-height:14px;"></div>
+  </div>
+
+  <div class="pad" style="padding-bottom:8px;">
+    <button class="btn primary">Start Luna Training</button>
+  </div>
+</div>

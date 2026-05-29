@@ -4,7 +4,6 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/Hero.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
-import Phone from "~/components/ux/Phone.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
 import { SCREENS, byFeature, features, tiers, STATUS_ORDER, FEATURE_BRDS, SUPPORTING_DOCS } from "~/lib/ux-review";
@@ -94,9 +93,7 @@ const THUMB_SCALE = 0.46;
           data-tier={s.brdTier}
         >
           <div class="ux-card-thumb ux-ios">
-            <Phone mode="thumb" scale={THUMB_SCALE} thumbHeight={844}>
-              <ScreenRenderer id={s.id} />
-            </Phone>
+            <ScreenRenderer id={s.id} mode="thumb" scale={THUMB_SCALE} />
           </div>
           <div class="ux-card-meta">
             <div class="flex items-center gap-2 flex-wrap">
@@ -130,9 +127,7 @@ const THUMB_SCALE = 0.46;
                 data-tier={s.brdTier}
               >
                 <div class="ux-card-thumb ux-ios">
-                  <Phone mode="thumb" scale={THUMB_SCALE} thumbHeight={844}>
-                    <ScreenRenderer id={s.id} />
-                  </Phone>
+                  <ScreenRenderer id={s.id} mode="thumb" scale={THUMB_SCALE} />
                 </div>
                 <div class="ux-card-meta">
                   <div class="flex items-center gap-2 flex-wrap">
