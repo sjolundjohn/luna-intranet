@@ -159,3 +159,125 @@ Tracked flags (documented here + in SPINE-NOTES, not yet on-screen chips):
 - The shared frame/kit `<style>` block is **byte-identical across all 7**
   (single SHA verified); only labeled per-screen sections differ.
 - All 7 screens rendered headless and visually confirmed.
+
+---
+
+# Second revision — change log (John's r2 review, 2026-05-28)
+
+Round-2 fixes to the spine per John's review. All locked rules held: self-contained
+HTML, each links only `../../css/tokens.css`, no CDN/external deps, force-dark,
+D-DIN, 8pt spacing, **Plum-not-red**, and the shared `<style>` frame/kit block is
+**byte-identical across all 7 screens** (re-verified by SHA after the edits) — only
+labeled per-screen sections differ.
+
+## Global — frame + gallery
+
+- **1. Luna wordmark on EVERY screen.** Added the on-dark wordmark
+  (`../../assets/luna-on-dark.svg`) as a shared `.brandbar` flex-none row directly
+  under the status bar — small (~15px), top-left, never stretched/recolored. It
+  clears the status-bar clock (left) and the Dynamic-Island cue (center). The CSS
+  lives in the shared block (still identical across all 7); the one-line `<img>`
+  markup is inserted after each status bar. On 03 the brandbar is raised above the
+  dim scrim (`z-index:30`).
+- **2. Gallery (`index.html`) — no white boxes, no scrollbars.** Each screen now
+  shows as just its **black-bezel phone on the dark canvas**: the per-phone white
+  card wrapper and scrollbars are gone. The iframe is oversized and offset
+  (`translate(-16px,-40px)`) inside a bezel-sized `.frame` with `overflow:hidden`,
+  cropping out each screen file's light page background + 40px body padding. Phones
+  sit in a **tidy, centered, even grid** (fixed 300px columns; larger gaps). Home's
+  gallery description updated (TIR → "Luna insight + Ask Luna chat").
+- **3. Frame clips to the bezel.** `.screen` changed from `min-height:780px` to a
+  **fixed `height:780px`** (shared block), so overflowing content scrolls INSIDE
+  the clipped screen rather than growing the bezel. Added a **hidden scrollbar**
+  (`scrollbar-width:none` + `::-webkit-scrollbar{display:none}`) to `.content` in
+  the shared block. Nothing bleeds outside the bezel; tab bar + home indicator stay
+  pinned.
+
+## Home dashboard (01)
+
+- **4. Greeting + "session started" removed**; the **system-status cards now lead**
+  the screen (System · Reservoir · Battery strip moved to the top).
+- **5. CGM graph full-width + y-axis on the RIGHT.** Plot area redrawn to span the
+  full card width (no left gutter); the 0–400 mg/dL labels are right-anchored.
+  Target band, Amber 180 line, Plum 70 critical-low line, trace, and the grouped
+  insulin-delivery ticks were all rescaled to the new full-width geometry.
+- **6. Time x-axis labels** are now **plain quiet text, no block/background.**
+- **7. Time-in-range metrics removed** from Home entirely (the `.tir-row` markup is
+  gone; the CSS was replaced by the insight/chat styles).
+- **8. Active-insulin row is IOB-gated** — **OFF by default** (not rendered). It
+  appears only when the IOB Display flag is ON (Settings · 05, defaults OFF). The
+  **IOB-on variant** is preserved as an HTML comment in `01` for the mass-build.
+- **9. Insights + chat area added** where the TIR metrics were: a compact
+  **Luna insight card** ("Steady night. …", moon glyph + Moonlight lead) plus an
+  **"Ask Luna anything…" chat widget** (rounded entry, moon icon, Moonlight send
+  arrow). This is the new calm companion to the graph.
+
+## Dose confirmation (03)
+
+- **10. Sheet no longer occluded by the island.** `.sheet-host` is now capped below
+  the Dynamic-Island/notch safe area (`top:62px`) and the sheet's top padding was
+  bumped, so the grabber + "Hypo Shield" eyebrow + "A new nightly basal dose" title
+  are fully visible. The sheet scrolls internally (hidden scrollbar) if tall.
+  Verified in a screenshot: the title and first line are unobstructed.
+
+## Session history (07)
+
+- **11. Scrolls inside the frame.** With the fixed-height screen + clipped `.screen`,
+  the (intentionally tall) content scrolls within `.content` (`overflow-y:auto`,
+  hidden scrollbar); the tab bar + home indicator stay pinned and nothing overflows
+  the bezel. The total-insulin + date selector + in-range ring + metrics from the
+  last round are unchanged.
+
+## Verification (r2)
+
+- Headless render-verified (temporary local static server + headless Chrome
+  screenshots; `.claude/launch.json` untouched) for all 7 screens + the gallery.
+  Confirmed: **logo top-left on every screen**; **gallery has no white box / no
+  per-phone scrollbars** and a clean even grid; **Home** has the right-side full-width
+  axis, no time-label blocks, no TIR, the insight + Ask-Luna widgets present, and no
+  active-insulin by default; **dose title not occluded**; **session history scrolls
+  cleanly inside the frame** with chrome pinned.
+- Shared frame/kit `<style>` block re-verified **byte-identical across all 7** after
+  every r2 edit. No red anywhere; critical = Plum on the threshold lines only. All 7
+  link only `../../css/tokens.css`.
+
+---
+
+# Third revision — change log (John's r3 review, 2026-05-28)
+
+Two small Home-dashboard (`01`) refinements. Both land **only in `01`'s labeled
+per-screen styles + body markup** — the shared frame/kit `<style>` block is
+**unchanged and re-verified byte-identical across all 7** (SHA `710063a9…`). All
+locked rules held: self-contained, links only `../../css/tokens.css`, no CDN,
+force-dark, D-DIN, tokens.
+
+## Home dashboard (01)
+
+- **1. Top status-card text a touch bigger.** The lead system-status strip's
+  primary value (`.statusstrip .lbl .v` — "Automating", "Full", "86%") bumped
+  **one HIG step, 12px → 13px** (caption-1 → footnote in `tokens.css`), staying
+  within the HIG type scale. A touch more prominent; nothing else changed.
+- **2. "Ask Luna" is now a discreet "+" launcher (Whoop-Coach style).** The
+  previously-inline "Ask Luna anything…" chat entry was replaced by a small
+  **circular Moonlight "+" FAB** (44px tap target, bottom-right of the content
+  area, above the tab bar; `box-shadow:0 3px 14px rgba(104,210,223,0.40)`), calm
+  and discreet when collapsed. **Tapping it reveals** the inline chat entry inside
+  a small panel (`.ask-panel`) with an **"ASK LUNA" header + close (×)
+  affordance**; the existing moon glyph + "Ask Luna anything…" + Moonlight send
+  arrow are reused unchanged. Closing collapses back to the bare "+". State is a
+  tiny inline JS toggle (`data-open` on `.ask-host`: collapsed → `.ask-fab`
+  shown; expanded → `.ask-panel` shown). The **Luna insight card stays visible**
+  the whole time — only the chat entry is launcher-gated. (`SPINE-NOTES.md`
+  updated accordingly.)
+
+## Verification (r3)
+
+- Headless render-verified (temporary local static server + headless Chrome
+  screenshots; `.claude/launch.json` untouched). Confirmed: **bigger top-card
+  text** (13px status values); **discreet "+" FAB present** bottom-right when
+  collapsed with the insight card visible; **tapping the "+" reveals** the
+  "Ask Luna" chat panel (header + close ×). Both collapsed and expanded states
+  captured.
+- Shared frame/kit `<style>` block re-verified **byte-identical across all 7**
+  after the edits (SHA `710063a9…`); only `01`'s labeled per-screen section +
+  markup changed. No red; tokens-only; links only `../../css/tokens.css`.

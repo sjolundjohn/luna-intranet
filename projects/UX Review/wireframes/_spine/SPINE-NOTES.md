@@ -21,8 +21,10 @@ Everything below is **locked** unless the holistic review explicitly changes it.
 
 - **390pt screen inside a realistic BLACK BEZEL** (revised 2026-05-28 — the old white/Cloud-Lilac surround read wrong).
   - `.phone` — **414px** outer (390 screen + 12px bezel padding ×2); dark metallic gradient surround (`#2b2b30 → #0b0b0d → #000`), `border-radius:56px`, thin `#3a3a40` rim + `--shadow-modal`.
-  - `.screen` — 390px wide, `border-radius:34px`, `min-height:780px`, flex column, `overflow:hidden`.
+  - `.screen` — 390px wide, `border-radius:34px`, **`height:780px` (FIXED — revised 2026-05-28 r2, was `min-height`)**, flex column, `overflow:hidden`.
   - **Dynamic-Island cue** — `.screen::before` floats a 104×28 black pill over the status bar (`z-index:40`).
+- **Frame-clip rule (locked, r2):** the screen is a **fixed-height device**. Content that exceeds the screen height **scrolls INSIDE the clipped `.screen`** (`.content` is the scroll region; scrollbar is hidden via `scrollbar-width:none` + `::-webkit-scrollbar{display:none}` in the shared block). Content **never bleeds outside the bezel**, and the tab bar + home indicator stay pinned at the bezel bottom. Session History (07) is the canonical scroll-inside case.
+- **Luna wordmark on EVERY screen (locked, r2):** the on-dark wordmark (`../../assets/luna-on-dark.svg`) sits **small, top-left**, in a dedicated `.brandbar` flex-none row directly under the status bar. It is shared chrome on all 7 screens, never collides with the clock (status-bar left) or the Dynamic-Island cue (center), and is **never stretched or recolored** (brand rule). Height ~15px. On 03 the brandbar is raised above the dim scrim (`z-index:30`).
 - **Status bar** (`.statusbar`, 54px) at top with `9:41` clock + signal/battery glyphs; **home indicator** (`.homebar`, 34px) at bottom. Both are safe-area chrome and appear on every screen. (Screen 03 raises `.homebar` z-index in its per-screen block so the indicator sits above the dose sheet.)
 - **Content region** (`.content`) is the flex-1 middle. Tab bar (when present) and home bar are flex-none.
 
@@ -67,20 +69,23 @@ Everything below is **locked** unless the holistic review explicitly changes it.
 - `.card-dark` is the canonical content card on dark. Used for: compact status strip, glucose/CGM hero, TIR metrics, Active-Insulin card, session-summary card, date-range selector, session list, "Tonight" panel, settings groups (as `.list`).
 - The **glucose display** (`.glucose`), **insight card** (`.insight`), and **tab bar** (`.tabbar`) are direct dark-surface translations of the kit's `preview/components-*` cards — same structure, dark-mode colors.
 
-## Locked: Home dashboard — the CGM graph is the HERO (revised 2026-05-28)
+## Locked: Home dashboard — the CGM graph is the HERO (revised 2026-05-28, r2 2026-05-28)
 
-Mirrors the 2021-approved Home/Dashboard (`5_Home/5.1`, `5.2`) so it feels familiar to existing users.
+Mirrors the 2021-approved Home/Dashboard (`5_Home/5.1`, `5.2`) so it feels familiar to existing users. **r2 review:** the greeting/"session started" line was removed; the system-status cards now lead; the graph is full-width with a right-side axis; TIR was removed in favor of an insights+chat companion; and active-insulin is gated behind the IOB flag.
 
-- **Greeting (replaces the old "Tonight" label):** warm + time-based. Morning = "Good morning, sunshine"; night / session-start = **"Good night, moonbeam"** (current). The night line is flagged — John may swap it (alternatives: "Rest easy — Luna's on watch" / "Sleep well tonight").
-- **Compact top status strip** — System (✓ Automating) · Reservoir · Battery, a thin inline row (shrunk hard; mirrors 5.2).
+- **NO greeting / "session started" text (r2).** The warm time-based greeting was removed — not useful on the active dashboard. The **system-status cards lead the screen.**
+- **System-status strip LEADS** — System (✓ Automating) · Reservoir · Battery, a thin inline row (mirrors 5.2). John likes these, so they now top the screen.
 - **Glucose + trend** header (big number + arrow), then the **hero CGM graph**, which dominates the screen:
-  - **y-axis labelled in mg/dL up to 400** with gridlines at every 100.
+  - **FULL-WIDTH graph (r2)** — no left gutter; plot spans the card.
+  - **y-axis labelled in mg/dL up to 400 on the RIGHT side (r2)** with gridlines at every 100.
   - **target-range band** (70–180) + **upper line** (Amber/warning at 180) + **critical-low threshold line at 70 = Plum** (never red).
-  - **time x-axis** (10 PM → 4 AM).
+  - **time x-axis** (10 PM → 4 AM) — **plain quiet text only, NO block/background behind the labels (r2).**
   - **insulin-delivery markers**: small vertical Moonlight ticks above the axis, grouped to show when Luna dosed overnight (the key "Luna is working" signal). A legend explains the tick.
-- **Time-in-range metrics shown explicitly** as three cells (In range / Above / Below) — never ambiguous dotted lines.
-- **Active Insulin** is a small card below the metrics (mirrors 5.1; IOB to 0.1, capital "U").
-- This screen **also serves the active-session role** (was screen 08): the live CGM graph, delivery dots, and "watching" greeting are the live-session view.
+- **Time-in-range metrics REMOVED from Home (r2).** They no longer appear on the dashboard (they live in Session History).
+- **Insights companion (r2, focal pairing with the graph)** where the TIR metrics were: a compact **Luna insight card** (gentle plain-language line, Moonlight accent), **always visible.**
+- **"Ask Luna" is a discreet "+" launcher (r3).** The chat entry is no longer inline. Collapsed, it's a small **circular Moonlight "+" FAB** (~44px tap target, bottom-right of the content area, above the tab bar — Whoop-Coach-launcher style), calm and discreet. **Tapping it reveals** the inline "Ask Luna" chat entry (moon glyph + "Ask Luna anything…" + send arrow) inside a small panel with a **close (×) affordance**; closing collapses back to the bare "+" button. State is toggled by a tiny inline JS handler (`data-open` on `.ask-host` — collapsed shows `.ask-fab`, expanded shows `.ask-panel`). The insight card stays visible the whole time; only the chat entry is launcher-gated.
+- **Active Insulin is IOB-GATED (r2).** The active-insulin row is **OFF by default** and shows ONLY when the IOB Display flag is ON (Settings · 05, which defaults OFF). The IOB-on variant markup is kept as an HTML comment in `01` (card-dark `.aic`, IOB to 0.1, capital "U").
+- This screen **also serves the active-session role** (was screen 08): the live CGM graph + delivery ticks are the live-session view.
 
 ## Locked: the flag pattern ("flag, don't fabricate")
 
@@ -148,6 +153,12 @@ Screen 07 was rebuilt to mirror the approved `6_Session History` screens so noth
 - Per-night **CGM graph** with the Plum critical-low line + insulin-delivery ticks.
 - **IOB on board at wake** to 0.1, capital "U".
 - A **session list** (`.sess-list`, mirrors 6.1): month header + date-range rows ("5/26 – 5/27", "5.0 U delivered · 80% in range") with Moonlight chevrons.
+- **Scrolls inside the fixed-height frame (r2):** content is taller than the 780px device, so `.content` (here `overflow-y:auto`) scrolls within the clipped `.screen` with a hidden scrollbar; the tab bar + home indicator stay pinned and nothing bleeds past the bezel.
+
+## Locked: the gallery (`index.html`) — clean phones, no white boxes (r2 2026-05-28)
+
+- Each screen is shown in its **black-bezel phone on the dark canvas** — **no white card wrapper, no per-phone scrollbars.** The iframe is oversized and offset (`translate(-16px,-40px)`) inside a bezel-sized `.frame` with `overflow:hidden`, so each screen file's light page background + 40px body padding are cropped out, leaving only the phone.
+- Phones are laid out in a **tidy, even, centered grid** (fixed 300px columns). The dose sheet (03) clears the island in the gallery too.
 
 ---
 
@@ -156,6 +167,8 @@ Screen 07 was rebuilt to mirror the approved `6_Session History` screens so noth
 - [ ] Links only `../../css/tokens.css`; opens offline; no CDN/external deps.
 - [ ] Uses the shared spine `<style>` block (frame + kit) verbatim — do not fork. Per-screen styles appended below it under a labeled banner.
 - [ ] 390pt screen inside the **black bezel** (`.phone`, 414px) with status bar + home indicator + Dynamic-Island cue.
+- [ ] **Luna wordmark top-left** in the shared `.brandbar` row (on-dark SVG, small, never stretched/recolored), present on every screen.
+- [ ] **Fixed-height screen (`height:780px`)**; overflowing content scrolls INSIDE the clipped frame with the hidden scrollbar — never bleeds past the bezel.
 - [ ] Force-dark: Midnight gradient. No light full screens; light only for the dose sheet chrome (03).
 - [ ] Type via HIG class names; on-dark color roles (`.muted` / `.accent`) applied.
 - [ ] Spacing via `--space-*` (H-margins `sm`, card padding `md`); radii/shadows from tokens.
