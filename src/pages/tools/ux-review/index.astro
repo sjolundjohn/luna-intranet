@@ -6,10 +6,10 @@ import WhiteSection from "~/components/WhiteSection.astro";
 import MoonlightRule from "~/components/MoonlightRule.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
-import { SCREENS, byFeature, features, STATUS_ORDER, FEATURE_BRDS, SUPPORTING_DOCS } from "~/lib/ux-review";
+import { SCREENS, features, STATUS_ORDER, FEATURE_BRDS, SUPPORTING_DOCS, AREAS, flowsForArea, areaScreenCount, getScreen } from "~/lib/ux-review";
 
-const featureGroups = byFeature();
 const THUMB_SCALE = 0.46;
+const FLOW_SCALE = 0.3;
 ---
 
 <BaseLayout
@@ -54,30 +54,82 @@ const THUMB_SCALE = 0.46;
       </div>
 
       <div class="flex flex-wrap items-center gap-3">
-        {/* View toggle */}
+        {/* View toggle — Flows (default) groups screens into journeys; All screens is the flat grid. */}
         <div class="inline-flex rounded-full border border-border-default p-0.5" role="tablist" aria-label="View">
-          <button data-view-btn="all" class="ux-view-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="true">All screens</button>
-          <button data-view-btn="feature" class="ux-view-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="false">By feature</button>
+          <button data-view-btn="flows" class="ux-view-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="true">Flows</button>
+          <button data-view-btn="all" class="ux-view-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="false">All screens</button>
         </div>
 
-        {/* Filters */}
-        <label class="sr-only" for="f-status">Status</label>
-        <select id="f-status" data-filter="status" class="ux-select">
-          <option value="">All statuses</option>
-          {STATUS_ORDER.map((s) => <option value={s}>{s}</option>)}
-          <option value="__has_comments">Has comments</option>
-        </select>
+        {/* Filters — apply to the All-screens grid; hidden in Flows view. */}
+        <div class="flex flex-wrap items-center gap-3" data-filters hidden>
+          <label class="sr-only" for="f-status">Status</label>
+          <select id="f-status" data-filter="status" class="ux-select">
+            <option value="">All statuses</option>
+            {STATUS_ORDER.map((s) => <option value={s}>{s}</option>)}
+            <option value="__has_comments">Has comments</option>
+          </select>
 
-        <label class="sr-only" for="f-feature">Feature</label>
-        <select id="f-feature" data-filter="feature" class="ux-select">
-          <option value="">All features</option>
-          {features().map((f) => <option value={f}>{f}</option>)}
-        </select>
+          <label class="sr-only" for="f-feature">Feature</label>
+          <select id="f-feature" data-filter="feature" class="ux-select">
+            <option value="">All features</option>
+            {features().map((f) => <option value={f}>{f}</option>)}
+          </select>
+        </div>
       </div>
     </div>
 
-    {/* All Screens — flat grid */}
-    <div data-view-panel="all" class="ux-grid">
+    {/* FLOWS — the default lens: an app map over per-flow filmstrips. */}
+    <div data-view-panel="flows">
+      {/* App map — how the areas connect; click an area to jump to its flows. */}
+      <div class="ux-appmap" aria-label="App map">
+        <div class="ux-appmap-rail">
+          <a class="ux-area" href="#area-onboarding"><span class="ux-area-name">Onboarding</span><span class="ux-area-n">{areaScreenCount("onboarding")} screens</span></a>
+          <span class="ux-appmap-arrow" aria-hidden="true">→</span>
+          <a class="ux-area" href="#area-apollo"><span class="ux-area-name">Apollo Training</span><span class="ux-area-n">{areaScreenCount("apollo")} screens</span></a>
+          <span class="ux-appmap-arrow" aria-hidden="true">→</span>
+          <a class="ux-area ux-area--hub" href="#area-home"><span class="ux-area-tag">Main hub</span><span class="ux-area-name">Home — daily</span><span class="ux-area-n">{areaScreenCount("home")} screens</span></a>
+        </div>
+        <div class="ux-appmap-branch">
+          <span class="ux-appmap-branchlabel">From Home ↓</span>
+          <div class="ux-appmap-branchrow">
+            <a class="ux-area" href="#area-hypo"><span class="ux-area-name">Hypo Shield</span><span class="ux-area-n">{areaScreenCount("hypo")} screens</span></a>
+            <a class="ux-area" href="#area-iob"><span class="ux-area-name">IOB Display</span><span class="ux-area-n">{areaScreenCount("iob")} screens</span></a>
+          </div>
+        </div>
+      </div>
+
+      {/* Filmstrips — one ordered, arrow-connected row per flow, grouped by area. */}
+      {AREAS.map((area) => (
+        <section id={`area-${area.id}`} class="ux-area-section">
+          <div class="ux-area-head">
+            <h3 class="ux-area-title">{area.label}{area.hub && <span class="ux-hub-pill">main hub</span>}</h3>
+            <p class="ux-area-blurb">{area.blurb}</p>
+          </div>
+          {flowsForArea(area.id).map((flow) => (
+            <div class="ux-flow">
+              <div class="ux-flow-head">
+                <span class="ux-flow-label">{flow.label}</span>
+                <span class="ux-flow-blurb">{flow.blurb}</span>
+              </div>
+              <div class="ux-flow-strip">
+                {flow.screens.map((sid, i) => (
+                  <Fragment>
+                    {i > 0 && <span class="ux-flow-arrow" aria-hidden="true">→</span>}
+                    <a class="ux-flow-node" href={`/tools/ux-review/${sid}`}>
+                      <span class="ux-flow-thumb ux-ios"><ScreenRenderer id={sid} mode="thumb" scale={FLOW_SCALE} /></span>
+                      <span class="ux-flow-name">{getScreen(sid)?.title ?? sid}<span class="ux-count ux-count--flow" data-count-for={sid} hidden></span></span>
+                    </a>
+                  </Fragment>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      ))}
+    </div>
+
+    {/* All Screens — the flat grid (secondary view). */}
+    <div data-view-panel="all" class="ux-grid" hidden>
       {SCREENS.map((s) => (
         <a
           href={`/tools/ux-review/${s.id}`}
@@ -98,42 +150,6 @@ const THUMB_SCALE = 0.46;
             <p class="mt-1 text-slate text-[12px]">{s.feature}</p>
           </div>
         </a>
-      ))}
-    </div>
-
-    {/* By Feature — grouped */}
-    <div data-view-panel="feature" hidden>
-      {featureGroups.map((group) => (
-        <section class="ux-feature-group" data-feature-group={group.feature}>
-          <div class="flex items-center gap-3 mb-4 mt-2">
-            <h3 class="font-body text-[16px] font-semibold text-ink">{group.feature}</h3>
-            <span class="text-slate text-[12px]">{group.screens.length} screen{group.screens.length === 1 ? "" : "s"}</span>
-            <div class="flex-1 border-t border-border-subtle"></div>
-          </div>
-          <div class="ux-grid">
-            {group.screens.map((s) => (
-              <a
-                href={`/tools/ux-review/${s.id}`}
-                class="ux-card"
-                data-screen-card
-                data-status={s.status}
-                data-feature={s.feature}
-              >
-                <div class="ux-card-thumb ux-ios">
-                  <ScreenRenderer id={s.id} mode="thumb" scale={THUMB_SCALE} />
-                </div>
-                <div class="ux-card-meta">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <h3 class="font-body text-[15px] font-semibold text-ink leading-tight">{s.title}</h3>
-                    <StatusBadge status={s.status} />
-                    <span data-count-for={s.id} class="ux-count" hidden></span>
-                  </div>
-                  <p class="mt-1 text-slate text-[12px]">{s.feature}</p>
-                </div>
-              </a>
-            ))}
-          </div>
-        </section>
       ))}
     </div>
 
@@ -238,6 +254,63 @@ const THUMB_SCALE = 0.46;
     font-weight: 700;
   }
   .ux-feature-group { margin-bottom: 36px; }
+
+  /* ---- Flows view: app map + filmstrips ---- */
+  .ux-appmap {
+    padding: 18px 20px;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+    background: var(--color-soft-paper);
+    margin-bottom: 8px;
+  }
+  .ux-appmap-rail { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .ux-appmap-arrow { align-self: center; color: var(--color-pebble-blue); font-size: 18px; }
+  .ux-area {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 12px 16px; min-width: 148px;
+    border: 1px solid var(--color-border-default); border-radius: 12px;
+    background: var(--color-white); text-decoration: none;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .ux-area:hover { border-color: var(--color-ink); box-shadow: 0 6px 24px rgba(4, 30, 66, 0.07); }
+  .ux-area-name { font-size: 15px; font-weight: 700; color: var(--color-ink); }
+  .ux-area-n { font-size: 12px; color: var(--color-slate); }
+  .ux-area-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-moonlight-deep); }
+  .ux-area--hub { background: var(--color-midnight); border-color: var(--color-midnight); }
+  .ux-area--hub .ux-area-name { color: #fff; }
+  .ux-area--hub .ux-area-n { color: var(--color-pebble-blue); }
+  .ux-area--hub .ux-area-tag { color: var(--color-moonlight); }
+  .ux-appmap-branch { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--color-border-default); }
+  .ux-appmap-branchlabel { font-size: 12px; color: var(--color-slate); }
+  .ux-appmap-branchrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
+  .ux-area-section { margin-top: 40px; scroll-margin-top: 80px; }
+  .ux-area-title { font-size: 19px; font-weight: 700; color: var(--color-ink); display: flex; align-items: center; gap: 10px; }
+  .ux-hub-pill { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-moonlight-deep); background: var(--color-info-bg); padding: 2px 9px; border-radius: 999px; }
+  .ux-area-blurb { font-size: 13px; color: var(--color-graphite); margin-top: 4px; max-width: 72ch; }
+  .ux-flow { margin-top: 20px; }
+  .ux-flow-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+  .ux-flow-label { font-size: 14px; font-weight: 700; color: var(--color-ink); }
+  .ux-flow-blurb { font-size: 12px; color: var(--color-slate); }
+  .ux-flow-strip {
+    display: flex; align-items: flex-start; gap: 0;
+    overflow-x: auto; padding: 4px 2px 12px;
+    scrollbar-width: thin;
+  }
+  .ux-flow-arrow { flex: none; align-self: center; color: var(--color-pebble-blue); font-size: 16px; padding: 0 4px; }
+  .ux-flow-node {
+    flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    text-decoration: none; border-radius: 12px; padding: 6px;
+    transition: background 150ms;
+  }
+  .ux-flow-node:hover { background: var(--color-cloud-lilac); }
+  .ux-flow-thumb { display: block; pointer-events: none; }
+  .ux-flow-name {
+    font-size: 11px; font-weight: 600; color: var(--color-ink);
+    text-align: center; max-width: 132px; line-height: 1.25;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .ux-count--flow { background: var(--color-critical-bg); color: var(--color-critical-ink); }
 </style>
 
 <script>
@@ -252,9 +325,10 @@ const THUMB_SCALE = 0.46;
     const selects = Array.from(document.querySelectorAll("[data-filter]"));
     const emptyMsg = document.querySelector<HTMLElement>("[data-empty]");
     const panels = {
+      flows: document.querySelector<HTMLElement>('[data-view-panel="flows"]'),
       all: document.querySelector<HTMLElement>('[data-view-panel="all"]'),
-      feature: document.querySelector<HTMLElement>('[data-view-panel="feature"]'),
     };
+    const filters = document.querySelector<HTMLElement>("[data-filters]");
     const viewBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-view-btn]"));
 
     function applyFilters() {
@@ -289,10 +363,11 @@ const THUMB_SCALE = 0.46;
 
     viewBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        const view = btn.dataset.viewBtn as "all" | "feature";
+        const view = btn.dataset.viewBtn as "flows" | "all";
         viewBtns.forEach((b) => b.setAttribute("aria-selected", b === btn ? "true" : "false"));
+        if (panels.flows) panels.flows.hidden = view !== "flows";
         if (panels.all) panels.all.hidden = view !== "all";
-        if (panels.feature) panels.feature.hidden = view !== "feature";
+        if (filters) filters.hidden = view !== "all"; // filters only apply to the grid
       });
     });
 
