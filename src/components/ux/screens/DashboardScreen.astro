@@ -6,8 +6,11 @@
  * delivery ticks), an always-visible Luna insight card, and the discreet
  * Ask-Luna launcher. Active-insulin (IOB) row is OFF by default (IOB-gated).
  *
+ * Layout (r2 feedback): the graph FILLS the freed middle space, the insight bar
+ * sits at the bottom (just above the tab bar), and the Ask-Luna "+" hovers on
+ * the insight bar's top-right corner.
+ *
  * Renders the `.content` + tab bar slotted into the locked Phone frame.
- * Copy + markup lifted verbatim from `_spine/01-home-dashboard.html`.
  */
 import StatusStrip from "../ios/StatusStrip.astro";
 import CgmHero from "../ios/CgmHero.astro";
@@ -31,26 +34,22 @@ interface Props {
     <div class="footnote muted">mg/dL · steady</div>
   </div>
 
-  {/* HERO CGM GRAPH — full-width; Plum 70 critical-low; Moonlight delivery ticks. */}
-  <CgmHero trace="inrange" height={190} />
+  {/* HERO CGM GRAPH — fills the freed space; Plum 70 critical-low; delivery ticks. */}
+  <CgmHero trace="inrange" fill />
 
-  {/* INSIGHTS companion — a gentle Luna insight, ALWAYS visible. */}
-  <div class="pad" style="margin-top:14px;">
-    <div class="card-dark insight-card">
-      <span class="ic" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
-      </span>
-      <span class="txt"><span class="lead">Steady night.</span> Your glucose held in range and Luna made a few small adjustments while you slept.</span>
+  {/* INSIGHTS bar at the bottom, with the Ask-Luna "+" on its top-right corner.
+      Active-insulin (IOB) row is OFF by default — see iob-home-on. */}
+  <div class="pad" style="margin-top:12px; padding-bottom:8px;">
+    <div class="insight-wrap" style="position:relative;">
+      <AskLuna anchor="card" />
+      <div class="card-dark insight-card">
+        <span class="ic" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        </span>
+        <span class="txt"><span class="lead">Steady night.</span> Your glucose held in range and Luna made a few small adjustments while you slept.</span>
+      </div>
     </div>
   </div>
-
-  {/* Active-insulin (IOB) row intentionally OMITTED by default — appears only
-      when the IOB Display flag is ON (Settings · 05). See iob-home-on. */}
-
-  <div style="flex:1;"></div>
 </div>
-
-{/* Discreet Ask-Luna launcher — pinned bottom-right above the tab bar. */}
-<AskLuna bottom={104} />
 
 <TabBar active="dashboard" />
