@@ -242,8 +242,11 @@ const THUMB_SCALE = 0.46;
 
 <script>
   function setup() {
-    const root = document.querySelector('[data-view-panel="all"]')?.closest("section");
+    const root = document.querySelector('[data-view-panel="all"]')?.closest("section") as HTMLElement | null;
     if (!root) return;
+    // Idempotency: ClientRouter fires the inline call + astro:page-load on load.
+    if (root.dataset.uxWired) return;
+    root.dataset.uxWired = "1";
 
     const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-screen-card]"));
     const selects = Array.from(document.querySelectorAll("[data-filter]"));
