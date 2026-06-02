@@ -100,6 +100,88 @@ export const FLOW_NEXT: Record<string, string> = {
 };
 
 /**
+ * The "Flows" view — the default lens on the gallery. Instead of a flat wall of
+ * 58 cards, the app is shown as a small set of journeys (each an ordered
+ * sequence of screens) grouped under areas, with an app-map of how the areas
+ * connect. Reframes review around continuity, not picky per-screen detail.
+ *
+ * Each in-scope screen appears in exactly one flow; the spine archetypes fold
+ * into the flow whose pattern they define (dose-confirmation-spine → Hypo Shield,
+ * hardware-checkpoint-spine → Apollo evening).
+ */
+export interface ReviewArea {
+  id: string;
+  label: string;
+  blurb: string;
+  /** Areas this one hands off to (drives the app-map arrows). */
+  leadsTo: string[];
+  /** The central daily hub. */
+  hub?: boolean;
+}
+export interface ReviewFlow {
+  id: string;
+  area: string;
+  label: string;
+  blurb: string;
+  screens: string[];
+}
+
+export const AREAS: ReviewArea[] = [
+  { id: "onboarding", label: "Onboarding", blurb: "First run: meet Luna, pair your Capsule and CGM, and enter your routine.", leadsTo: ["apollo"] },
+  { id: "apollo", label: "Apollo Training", blurb: "Learn to place and remove the device — evening setup, then morning removal.", leadsTo: ["home"] },
+  { id: "home", label: "Home — daily", blurb: "The hub you live in: tonight's glucose, session history, and settings.", leadsTo: ["hypo", "iob"], hub: true },
+  { id: "hypo", label: "Hypo Shield", blurb: "Overnight basal guidance — surface a recommendation, confirm it safely, manage it.", leadsTo: [] },
+  { id: "iob", label: "IOB Display", blurb: "See how much Luna-delivered insulin is still active (opt-in).", leadsTo: [] },
+];
+
+export const FLOWS: ReviewFlow[] = [
+  {
+    id: "onboarding-chapters", area: "onboarding", label: "Setup chapters (1–5)",
+    blurb: "The main onboarding journey, handing off to Apollo Training.",
+    screens: ["onboarding-chapter-1", "onboarding-chapter-2", "onboarding-chapter-3", "onboarding-chapter-4", "onboarding-chapter-5"],
+  },
+  {
+    id: "onboarding-setup", area: "onboarding", label: "Setup states & first-run education",
+    blurb: "Landing states, routine capture, app/UI walkthroughs, and device management.",
+    screens: ["onboarding-setup-landing", "onboarding-long-acting-insulin", "onboarding-ui-walkthrough", "onboarding-setup-app-walkthrough", "onboarding-session-history-intro", "onboarding-tonight-panel-states", "onboarding-settings-luna-controller"],
+  },
+  {
+    id: "apollo-evening", area: "apollo", label: "Evening setup",
+    blurb: "Intro → 7 steps → hardware checkpoint → personal video → overnight hand-off.",
+    screens: ["apollo-intro", "apollo-step-01-inventory", "apollo-step-02-open-tray", "apollo-step-03-fill", "apollo-step-04-remove-label", "apollo-step-05-attach-capsule", "apollo-step-06-remove-base", "apollo-step-07-apply-body", "hardware-checkpoint-spine", "apollo-hardware-checkpoint", "apollo-evening-outro", "apollo-overnight-handoff"],
+  },
+  {
+    id: "apollo-morning", area: "apollo", label: "Morning removal & re-entry",
+    blurb: "Morning start → 3 removal steps → outro → complete, plus resume & replay.",
+    screens: ["apollo-morning-start", "apollo-step-08-remove-device", "apollo-step-09-detach-reservoir", "apollo-step-10-charge", "apollo-morning-outro", "apollo-complete", "apollo-mid-session-resume", "apollo-replay-from-settings"],
+  },
+  {
+    id: "home-hub", area: "home", label: "The daily hub",
+    blurb: "Home dashboard ⇄ Session History ⇄ Settings, via the tab bar.",
+    screens: ["home-dashboard", "session-history", "settings-list"],
+  },
+  {
+    id: "hypo", area: "hypo", label: "Recommend → confirm → manage",
+    blurb: "Resting tip, learning, recommendation & announcement, the two-step confirm and its variants, settings & TDBD detail.",
+    screens: ["hypo-home-tip-default", "hypo-learning-state", "hypo-home-tip-post", "hypo-mid-session-announcement", "hypo-push-notification", "dose-confirmation-spine", "hypo-confirm-increase", "hypo-confirm-reset-required", "hypo-confirm-skip", "hypo-settings", "hypo-tdbd-detail"],
+  },
+  {
+    id: "iob", area: "iob", label: "Opt in → see it → manage",
+    blurb: "Pre-session announcement → opted-in Home → session detail → settings toggle.",
+    screens: ["iob-pre-session-announcement", "iob-home-on", "iob-session-detail", "iob-settings"],
+  },
+];
+
+/** Flows belonging to an area, in declared order. */
+export function flowsForArea(areaId: string): ReviewFlow[] {
+  return FLOWS.filter((f) => f.area === areaId);
+}
+/** Total in-scope screens in an area. */
+export function areaScreenCount(areaId: string): number {
+  return flowsForArea(areaId).reduce((n, f) => n + f.screens.length, 0);
+}
+
+/**
  * BRD links — one per feature, pointing at the regulated Business Requirements
  * doc on Google Drive (NOT Notion). Keyed by the screen's `feature`. Adding a
  * feature = add one entry here, so every screen in that feature shares the
