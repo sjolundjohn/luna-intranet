@@ -24,8 +24,11 @@ interface Props {
   /** Public path to a real SOONA still; when absent the tile is a dark poster-TBD placeholder. */
   poster?: string;
   posterAlt?: string;
+  /** Hardware-gated step: the primary stays grayed until an auto-detect check passes. */
+  gated?: boolean;
+  gatedLabel?: string;
 }
-const { moduleLabel, count, total, current, badge, headline, instr, instrHtml, caption, cta = "Next", poster, posterAlt } = Astro.props;
+const { moduleLabel, count, total, current, badge, headline, instr, instrHtml, caption, cta = "Next", poster, posterAlt, gated = false, gatedLabel = "" } = Astro.props;
 const dots = Array.from({ length: total }, (_, i) => (i + 1 < current ? "done" : i + 1 === current ? "current" : ""));
 const hasCheckpoint = Astro.slots.has("checkpoint");
 ---
@@ -66,14 +69,27 @@ const hasCheckpoint = Astro.slots.has("checkpoint");
     <slot />
   </div>
 
-  {hasCheckpoint && (
+  {hasCheckpoint && !gated && (
     <div class="pad" style="margin-bottom:12px;">
       <slot name="checkpoint" />
     </div>
   )}
 
-  {/* primary NEVER gated on hardware */}
+  {/* hardware-gated: auto-detect row flips Detecting → Detected, the button enables in sync */}
+  {gated && (
+    <div class="pad" style="margin-bottom:12px;">
+      <div class="conn-row gate-row">
+        <span class="lbl">{gatedLabel}</span>
+        <span class="stat">
+          <span class="gate-dot"></span>
+          <span class="ok-txt gate-txt"><span class="t-wait">Detecting…</span><span class="t-done">Detected</span></span>
+        </span>
+      </div>
+    </div>
+  )}
+
+  {/* primary — gated steps gray out until the hardware check passes */}
   <div class="pad" style="padding-bottom:28px;">
-    <button class="btn primary">{cta}</button>
+    <button class:list={["btn", "primary", gated && "gate-btn"]}>{cta}</button>
   </div>
 </div>

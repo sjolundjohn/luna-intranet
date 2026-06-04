@@ -345,6 +345,16 @@
 .ux-ios .warn-banner { display: flex; gap: 12px; align-items: flex-start; background: rgba(249,205,134,0.10); border: 1px solid rgba(249,205,134,0.40); border-radius: 14px; padding: 13px 14px; }
 .ux-ios .warn-banner .ic { flex: none; margin-top: 1px; color: var(--color-warning); }
 .ux-ios .warn-banner .tx { font-size: 13px; line-height: 1.45; color: var(--color-on-dark); font-weight: 600; }
+/* Hardware-gated step: the primary stays grayed until an auto-detect check passes (~2.4s). */
+@keyframes gateBtn { 0%, 55% { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.45); box-shadow: none; } 70%, 100% { background: var(--color-moonlight); color: var(--color-midnight); box-shadow: 0 3px 14px rgba(104,210,223,0.40); } }
+.ux-ios .btn.primary.gate-btn { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.45); box-shadow: none; animation: gateBtn 3.4s ease 0.6s forwards; }
+@keyframes gateDot { 0%, 55% { background: var(--color-warning); box-shadow: 0 0 8px rgba(249,205,134,0.6); } 70%, 100% { background: var(--color-success-light); box-shadow: 0 0 8px rgba(176,249,179,0.6); } }
+.ux-ios .gate-row .gate-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--color-warning); box-shadow: 0 0 8px rgba(249,205,134,0.6); animation: gateDot 3.4s ease 0.6s forwards; }
+.ux-ios .gate-row .gate-txt { position: relative; display: inline-block; }
+.ux-ios .gate-row .t-wait { color: var(--color-warning); font-weight: 600; animation: gateOut 3.4s ease 0.6s forwards; }
+.ux-ios .gate-row .t-done { color: var(--color-success-light); font-weight: 600; position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; animation: gateIn 3.4s ease 0.6s forwards; }
+@keyframes gateOut { 0%, 55% { opacity: 1; } 65%, 100% { opacity: 0; } }
+@keyframes gateIn { 0%, 55% { opacity: 0; } 65%, 100% { opacity: 1; } }
 .ux-ios .tdbd-now { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
 .ux-ios .tdbd-now .lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-slate); }
 .ux-ios .tdbd-now .val { font-family: var(--font-display); font-size: 36px; font-weight: 700; color: var(--color-midnight); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }

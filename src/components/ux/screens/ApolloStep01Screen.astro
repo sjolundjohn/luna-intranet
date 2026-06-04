@@ -42,22 +42,19 @@ interface Props {
 </div>
 
 <style is:global>
-  /* each item animates ONTO the screen — staggered slide-up + fade, then a soft glow pop */
-  @keyframes invEnter {
-    0%   { opacity: 0; transform: translateY(22px) scale(0.96); }
-    70%  { opacity: 1; }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+  /* each item slides in (staggered), then its number keeps a gentle glowing pulse
+     so there's ongoing motion drawing the eye to each one. */
+  @keyframes invEnter { 0% { opacity: 0; transform: translateX(-20px); } 100% { opacity: 1; transform: translateX(0); } }
+  @keyframes invGlow {
+    0%, 100% { box-shadow: 0 0 0 rgba(104,210,223,0); transform: scale(1); }
+    50%      { box-shadow: 0 0 16px rgba(104,210,223,0.75); transform: scale(1.14); }
   }
-  @keyframes invPop {
-    0%, 100% { box-shadow: 0 0 0 rgba(104,210,223,0); }
-    50%      { box-shadow: 0 0 16px rgba(104,210,223,0.7); }
-  }
-  .ux-ios .inv-item { opacity: 0; animation: invEnter 0.65s cubic-bezier(0.22,1,0.36,1) forwards; }
+  .ux-ios .inv-item { opacity: 0; animation: invEnter 0.55s cubic-bezier(0.22,1,0.36,1) forwards; }
   .ux-ios .inv-item:nth-child(1) { animation-delay: 0.20s; }
-  .ux-ios .inv-item:nth-child(2) { animation-delay: 0.55s; }
-  .ux-ios .inv-item:nth-child(3) { animation-delay: 0.90s; }
-  .ux-ios .inv-item .n { animation: invPop 0.7s ease-out; }
-  .ux-ios .inv-item:nth-child(1) .n { animation-delay: 0.55s; }
-  .ux-ios .inv-item:nth-child(2) .n { animation-delay: 0.90s; }
-  .ux-ios .inv-item:nth-child(3) .n { animation-delay: 1.25s; }
+  .ux-ios .inv-item:nth-child(2) { animation-delay: 0.50s; }
+  .ux-ios .inv-item:nth-child(3) { animation-delay: 0.80s; }
+  .ux-ios .inv-item .n { animation: invGlow 2.4s ease-in-out infinite; }
+  .ux-ios .inv-item:nth-child(1) .n { animation-delay: 1.1s; }
+  .ux-ios .inv-item:nth-child(2) .n { animation-delay: 1.5s; }
+  .ux-ios .inv-item:nth-child(3) .n { animation-delay: 1.9s; }
 </style>
