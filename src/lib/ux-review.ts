@@ -83,6 +83,7 @@ export const FLOW_NEXT: Record<string, string> = {
   "apollo-step-03-fill": "apollo-step-05-attach-capsule",
   "apollo-step-05-attach-capsule": "apollo-pending",
   "apollo-pending": "apollo-step-06-remove-base",
+  "apollo-pending-failure": "apollo-pending",
   "apollo-step-06-remove-base": "apollo-step-07-apply-body",
   "apollo-step-07-apply-body": "apollo-overnight-handoff",
   "apollo-overnight-handoff": "apollo-training-start-morning",
@@ -148,7 +149,7 @@ export const FLOWS: ReviewFlow[] = [
   {
     id: "apollo-evening", area: "apollo", label: "Evening setup",
     blurb: "Training start → gate → intro → 6 steps (Luna-is-preparing check) → overnight hand-off.",
-    screens: ["apollo-training-start", "apollo-training-gate", "apollo-intro", "apollo-step-01-inventory", "apollo-step-02-open-tray", "apollo-step-03-fill", "apollo-step-05-attach-capsule", "apollo-pending", "apollo-step-06-remove-base", "apollo-step-07-apply-body", "apollo-overnight-handoff"],
+    screens: ["apollo-training-start", "apollo-training-gate", "apollo-intro", "apollo-step-01-inventory", "apollo-step-02-open-tray", "apollo-step-03-fill", "apollo-step-05-attach-capsule", "apollo-pending", "apollo-pending-failure", "apollo-step-06-remove-base", "apollo-step-07-apply-body", "apollo-overnight-handoff"],
   },
   {
     id: "apollo-morning", area: "apollo", label: "Morning removal & re-entry",

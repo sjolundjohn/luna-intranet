@@ -351,6 +351,15 @@
     "legacy": null
   },
   {
+    "id": "apollo-pending-failure",
+    "title": "Pending — troubleshooting",
+    "status": "Work in Progress",
+    "feature": "Training Update Apollo",
+    "summary": "Failure state for the readiness check (shown only on error): flags whether the issue is CGM, the Capsule not seated on the Single-Sleep Reservoir, or priming, with Try again / Back to setup.",
+    "wireframe": "component:apollo-pending-failure",
+    "legacy": null
+  },
+  {
     "id": "apollo-step-06-remove-base",
     "title": "Step 05 — Remove from base",
     "status": "Work in Progress",

@@ -70,6 +70,7 @@ import ApolloReplayFromSettingsScreen from "./screens/ApolloReplayFromSettingsSc
 import ApolloTrainingStartScreen from "./screens/ApolloTrainingStartScreen.astro";
 import ApolloTrainingGateScreen from "./screens/ApolloTrainingGateScreen.astro";
 import ApolloPendingScreen from "./screens/ApolloPendingScreen.astro";
+import ApolloPendingFailureScreen from "./screens/ApolloPendingFailureScreen.astro";
 import ApolloTrainingStartMorningScreen from "./screens/ApolloTrainingStartMorningScreen.astro";
 
 interface Props {
@@ -141,6 +142,7 @@ const REGISTRY: Record<string, any> = {
   "apollo-training-start": ApolloTrainingStartScreen,
   "apollo-training-gate": ApolloTrainingGateScreen,
   "apollo-pending": ApolloPendingScreen,
+  "apollo-pending-failure": ApolloPendingFailureScreen,
   "apollo-training-start-morning": ApolloTrainingStartMorningScreen,
 };
 
