@@ -4,7 +4,10 @@ interface Props { variant?: "current" | "legacy"; }
 // Morning removal is its own module ("Morning removal · Step N of 3").
 ---
 <ApolloStep moduleLabel="Morning removal" count="Step 1 of 3" total={3} current={1} badge="Step 08"
-  headline="Good morning. Time to remove it." instr="Before your next meal, gently remove Luna from your body."
+  headline="Remove Luna and start your day" instr="Gently peel the adhesive off your body to remove Luna."
   caption="video: Step 08 — poster TBD">
-  <div style="margin-top:18px;"><span class="flag"><span class="k">Open</span>poster TBD — SOONA mapping</span></div>
+  <div class="warn-banner" style="margin-top:18px;">
+    <span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+    <span class="tx">Heads up — there's an exposed needle when you peel Luna off your body.</span>
+  </div>
 </ApolloStep>

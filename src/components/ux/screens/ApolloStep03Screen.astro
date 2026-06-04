@@ -4,9 +4,13 @@ interface Props { variant?: "current" | "legacy"; }
 // OPEN FLAG: dose value [X] is undecided (Eng/Clinical) — rendered as a real
 // .token-flag inline + a .flag chip; never fabricated.
 ---
-<ApolloStep moduleLabel="Evening setup" count="Step 3 of 7" total={7} current={3} badge="Step 03"
-  headline="Fill the reservoir"
-  instrHtml={'Dial <span class="token-flag">[X]</span> units, then press the plunger until it stops.'}
-  caption="asset: Cam+A-7" poster="/ux-review/apollo-posters/cam-a-7.jpg" posterAlt="Filling the reservoir with insulin">
-  <div style="margin-top:18px;"><span class="flag"><span class="k">Flag</span>dose value [X] — pending Eng/Clinical</span></div>
+<ApolloStep moduleLabel="Getting ready for your first sleep" count="Step 3 of 6" total={6} current={3} badge="Step 03"
+  headline="Fill the Single-Sleep Reservoir"
+  instrHtml={'Dial <span class="token-flag">[X]</span> units, insert your rapid-acting insulin pen into the Single-Sleep Reservoir, then press the injection button to fill with insulin.'}
+  caption="asset: Cam+A-7" poster="/ux-review/apollo-posters/cam-a-7.jpg" posterAlt="Filling the Single-Sleep Reservoir with insulin">
+  <div class="warn-banner" style="margin-top:18px;">
+    <span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+    <span class="tx">Only fill Luna with your rapid-acting insulin.</span>
+  </div>
+  <div style="margin-top:10px;"><span class="flag"><span class="k">Flag</span>dose value [X] — pending Eng/Clinical</span></div>
 </ApolloStep>

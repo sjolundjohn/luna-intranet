@@ -1,28 +1,61 @@
 ---
 /**
- * ApolloOvernightHandoffScreen — overnight pause checkpoint: Luna is active and
- * watching; the session visibly pauses for the night. Nothing appears pending.
- * Clock 11:23. Lifted verbatim from `apollo-training/overnight-handoff.html`.
+ * ApolloOvernightHandoffScreen — overnight handoff (redesign v2.3). Calm and
+ * peaceful: a soft moon glow over a "peaceful sleep" image placeholder (real
+ * gentle stock image TBD), NO time display, and an intro to Phase 2 (morning
+ * training, after you sleep). Feel: sleep, harmony, the moon coming in.
  */
-interface Props {
-  variant?: "current" | "legacy";
-}
+interface Props { variant?: "current" | "legacy"; }
 ---
 <div class="content">
   <div class="center-screen">
-    <div class="orbit lg" role="img" aria-label="Luna is active overnight" style="margin:0 auto 22px;">
-      <div class="ring"></div>
-      <div class="ring r2"></div>
-      <div class="center"></div>
-      <div class="arm"><div class="moon"></div></div>
+    {/* peaceful sleep image placeholder — gentle stock image to be supplied */}
+    <div class="sleep-hero" role="img" aria-label="A peaceful night's sleep">
+      <span class="sleep-glow"></span>
+      <svg class="sleep-moon" width="60" height="60" viewBox="0 0 24 24" fill="none">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z" fill="rgba(104,210,223,0.20)" stroke="var(--color-moonlight)" stroke-width="1.3" stroke-linejoin="round"/>
+      </svg>
+      <span class="sleep-cap">image: peaceful sleep — stock TBD</span>
     </div>
-    <div class="eyebrow">Active session</div>
-    <h1 class="title-1" style="font-weight:700; letter-spacing:-0.02em; margin:0;">Luna is watching over you.</h1>
-    <div class="timehero">11:23 PM</div>
-    <div class="footnote muted" style="margin-bottom:16px;">Session started</div>
-    <p class="body muted" style="margin:0; line-height:1.55;">Rest easy. Luna will manage your insulin overnight. A summary will be waiting in the morning.</p>
+
+    <div class="eyebrow">Luna is on watch</div>
+    <h1 class="title-1" style="font-weight:700; letter-spacing:-0.02em; margin:0;">Rest easy — Luna has the night</h1>
+    <p class="body muted" style="margin:16px 0 0; line-height:1.65;">Luna will quietly manage your insulin while you sleep. There's nothing more to do tonight.</p>
+
+    {/* Phase 2 intro */}
+    <div class="card-dark" style="margin-top:22px; display:flex; gap:12px; align-items:flex-start; text-align:left;">
+      <span style="flex:none; color:var(--color-moonlight); margin-top:1px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="4"/><path d="M12 2v3M4.5 6.5l1.5 1.5M19.5 6.5L18 8M3 13h2M19 13h2"/></svg>
+      </span>
+      <div>
+        <div style="font-weight:700; color:var(--color-on-dark); font-size:14px;">In the morning</div>
+        <div class="subhead muted" style="margin-top:3px;">When you wake, we'll guide you through removing Luna and charging it — that's Phase 2 of your training.</div>
+      </div>
+    </div>
   </div>
-  <div class="pad" style="padding-bottom:8px;">
-    <p class="footnote muted" style="text-align:center; margin:0 0 4px; line-height:1.5;">Put the phone down. The session continues without you.<br/>A notification will arrive in the morning.</p>
+
+  <div class="pad" style="padding-bottom:24px;">
+    <p class="footnote muted" style="text-align:center; margin:0; line-height:1.5;">Put the phone down — the session continues without you.</p>
   </div>
 </div>
+
+<style is:global>
+  .ux-ios .sleep-hero {
+    position: relative; width: 100%; height: 168px; border-radius: 22px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 24px;
+    background: radial-gradient(120% 90% at 50% 25%, #0c3a6e 0%, #061f3f 55%, #04132b 100%);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .ux-ios .sleep-hero .sleep-glow {
+    position: absolute; width: 150px; height: 150px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(104,210,223,0.28), rgba(104,210,223,0) 70%);
+    animation: sleepBreathe 6s ease-in-out infinite;
+  }
+  .ux-ios .sleep-hero .sleep-moon { position: relative; z-index: 1; filter: drop-shadow(0 0 14px rgba(104,210,223,0.4)); animation: sleepFloat 7s ease-in-out infinite; }
+  .ux-ios .sleep-hero .sleep-cap {
+    position: absolute; bottom: 10px; left: 12px; font-size: 9.5px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: rgba(255,255,255,0.4); font-family: var(--font-brand);
+  }
+  @keyframes sleepBreathe { 0%, 100% { transform: scale(0.9); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.9; } }
+  @keyframes sleepFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+</style>

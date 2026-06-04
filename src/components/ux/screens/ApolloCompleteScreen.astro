@@ -1,26 +1,75 @@
 ---
 /**
- * ApolloCompleteScreen — Apollo Training complete. Pop-in check + "You're all
- * set." + stat cards (10 steps done / 1 night logged). Clock 7:18.
- * Lifted verbatim from `apollo-training/complete.html`.
+ * ApolloCompleteScreen — Apollo Training complete (redesign v2.3, merges the
+ * old Morning Outro + Complete into ONE screen). Warm, positive close: a
+ * sunrise/flower motif, the message that Luna really starts here, and a
+ * non-technical note that Luna is now learning about you + your TDBD and will
+ * keep optimizing your settings so you sleep even better. Clock 7:18.
  */
-interface Props {
-  variant?: "current" | "legacy";
-}
+interface Props { variant?: "current" | "legacy"; }
 ---
 <div class="content">
   <div class="center-screen">
-    <div class="complete-check">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-midnight)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    {/* warm sunrise + opening flower — a positive start to the day */}
+    <div class="morning-hero" role="img" aria-label="Sunrise over a blooming flower">
+      <span class="sun-glow"></span>
+      <span class="sun-disc"></span>
+      <svg class="flower" width="72" height="72" viewBox="0 0 48 48" fill="none">
+        <path d="M24 26V44" stroke="#5BBE7A" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M24 36c-3.2-.4-5.4-3-5.4-3s3.8-.6 5.4 2.2z" fill="#5BBE7A"/>
+        <path d="M24 31c3.2-.4 5.4-3 5.4-3s-3.8-.6-5.4 2.2z" fill="#5BBE7A"/>
+        <g class="petals">
+          <circle cx="24" cy="13" r="5.4" fill="#FF8FA3"/>
+          <circle cx="33" cy="19" r="5.4" fill="#FFB3C2"/>
+          <circle cx="30" cy="29" r="5.4" fill="#FF9DB0"/>
+          <circle cx="18" cy="29" r="5.4" fill="#FF9DB0"/>
+          <circle cx="15" cy="19" r="5.4" fill="#FFB3C2"/>
+        </g>
+        <circle cx="24" cy="21" r="5.2" fill="#FFC94D"/>
+      </svg>
     </div>
-    <h1 class="title-1" style="font-weight:700; letter-spacing:-0.02em; margin:0;">You're all set.</h1>
-    <p class="body muted" style="margin:14px 0 0; line-height:1.55;">Luna is ready for tonight. From here, it's just the evening steps — you'll know them by heart.</p>
-    <div class="stat-row">
-      <div class="stat-card"><div class="v">10</div><div class="l">Steps done</div></div>
-      <div class="stat-card"><div class="v">1</div><div class="l">Night logged</div></div>
+
+    <div class="eyebrow" style="color:#E6A94B;">You're all set</div>
+    <h1 class="title-1" style="font-weight:700; letter-spacing:-0.02em; margin:0;">This is where Luna really begins</h1>
+    <p class="body muted" style="margin:14px 0 0; line-height:1.6;">Nice work — your first night's done. From here, Luna learns about you and your TDBD, getting better each night at optimizing your settings so you sleep even better.</p>
+
+    <div class="card-dark" style="margin-top:16px; display:flex; gap:12px; align-items:flex-start; text-align:left;">
+      <span style="flex:none; color:var(--color-moonlight); margin-top:1px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8c2.5 0 4 1.5 4 4M19 8c-2.5 0-4 1.5-4 4"/></svg>
+      </span>
+      <div>
+        <div style="font-weight:700; color:var(--color-on-dark); font-size:14px;">Luna is learning</div>
+        <div class="subhead muted" style="margin-top:3px;">Each night sharpens your overnight settings — you don't have to do anything.</div>
+      </div>
     </div>
   </div>
-  <div class="pad" style="padding-bottom:8px;">
+
+  <div class="pad" style="padding-bottom:24px;">
     <button class="btn primary">Go to dashboard</button>
   </div>
 </div>
+
+<style is:global>
+  .ux-ios .morning-hero {
+    position: relative; width: 100%; height: 124px; border-radius: 22px; overflow: hidden;
+    display: flex; align-items: flex-end; justify-content: center; margin-bottom: 18px;
+    background: linear-gradient(180deg, #15264f 0%, #3a4f86 28%, #E8975A 76%, #F8CE86 100%);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .ux-ios .morning-hero .sun-glow {
+    position: absolute; bottom: -55px; width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,214,140,0.9), rgba(255,184,96,0) 62%);
+    animation: sunRise 3.6s ease-in-out infinite;
+  }
+  .ux-ios .morning-hero .sun-disc {
+    position: absolute; bottom: 4px; width: 62px; height: 62px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 38%, #FFE9AE, #FFC24D 68%, #FF9E3D);
+    box-shadow: 0 0 30px rgba(255,196,77,0.75); animation: sunRise 3.6s ease-in-out infinite;
+  }
+  .ux-ios .morning-hero .flower {
+    position: relative; z-index: 1; margin-bottom: 8px; transform-origin: bottom center;
+    animation: flowerBloom 3.2s ease-in-out infinite; filter: drop-shadow(0 5px 12px rgba(0,0,0,0.28));
+  }
+  @keyframes sunRise { 0%, 100% { transform: translateY(22px); opacity: 0.85; } 50% { transform: translateY(-4px); opacity: 1; } }
+  @keyframes flowerBloom { 0%, 100% { transform: scale(0.88) rotate(-3deg); } 50% { transform: scale(1.1) rotate(3deg); } }
+</style>

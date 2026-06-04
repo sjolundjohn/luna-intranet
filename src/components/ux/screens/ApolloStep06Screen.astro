@@ -2,8 +2,11 @@
 import ApolloStep from "../ios/ApolloStep.astro";
 interface Props { variant?: "current" | "legacy"; }
 ---
-<ApolloStep moduleLabel="Evening setup" count="Step 6 of 7" total={7} current={6} badge="Step 06"
-  headline="Lift it off the base" instr="Detach the assembled device from its base. It's ready to apply."
+<ApolloStep moduleLabel="Getting ready for your first sleep" count="Step 5 of 6" total={6} current={5} badge="Step 05"
+  headline="Lift Luna off the base" instr="Using both your hands, lift Luna straight up from the base."
   caption="still: Step 06 — poster TBD">
-  <div style="margin-top:18px;"><span class="flag"><span class="k">Open</span>poster TBD — SOONA mapping</span></div>
+  <div class="warn-banner" style="margin-top:18px;">
+    <span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+    <span class="tx">Heads up — there's an exposed needle in this step.</span>
+  </div>
 </ApolloStep>

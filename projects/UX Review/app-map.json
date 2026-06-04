@@ -279,6 +279,24 @@
     "legacy": null
   },
   {
+    "id": "apollo-training-start",
+    "title": "Training start",
+    "status": "Work in Progress",
+    "feature": "Training Update Apollo",
+    "summary": "Evening entry. Over the Home dashboard, a bottom sheet asks whether to start the first Luna session now.",
+    "wireframe": "component:apollo-training-start",
+    "legacy": null
+  },
+  {
+    "id": "apollo-training-gate",
+    "title": "Training gate — preconditions",
+    "status": "Work in Progress",
+    "feature": "Training Update Apollo",
+    "summary": "Conditional gate (shown only on failure): TDBD entered, Capsule paired & present, recent CGM. Routes back to setup to fix.",
+    "wireframe": "component:apollo-training-gate",
+    "legacy": null
+  },
+  {
     "id": "apollo-intro",
     "title": "Intro — first session setup",
     "status": "Work in Progress",
@@ -292,80 +310,62 @@
     "title": "Step 01 — Inventory",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Evening setup 1 of 7. Gather the rapid-acting pen, Single-Sleep Reservoir, and a charged Luna Capsule.",
+    "summary": "Evening setup 1 of 6. Getting ready for your first sleep — gather pen, Single-Sleep Reservoir, charged Luna Capsule (still, no video).",
     "wireframe": "component:apollo-step-01-inventory",
     "legacy": null
   },
   {
     "id": "apollo-step-02-open-tray",
-    "title": "Step 02 — Open tray",
+    "title": "Step 02 — Open Reservoir",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Evening setup 2 of 7. Lift the lid until it clicks. Auto-looping video; no 'Watch again'.",
+    "summary": "Evening setup 2 of 6. Lift the lid until it clicks. Auto-looping video; no 'Watch again'.",
     "wireframe": "component:apollo-step-02-open-tray",
     "legacy": null
   },
   {
     "id": "apollo-step-03-fill",
-    "title": "Step 03 — Fill reservoir",
+    "title": "Step 03 — Fill Reservoir",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Evening setup 3 of 7. Dial [X] units — dose value [X] is an OPEN flag (Eng/Clinical), rendered as a real token, never fabricated.",
+    "summary": "Evening setup 3 of 6. Dial [X] units — dose value [X] is an OPEN flag (Eng/Clinical), rendered as a real token, never fabricated.",
     "wireframe": "component:apollo-step-03-fill",
     "legacy": null
   },
   {
-    "id": "apollo-step-04-remove-label",
-    "title": "Step 04 — Remove label",
-    "status": "Work in Progress",
-    "feature": "Training Update Apollo",
-    "summary": "Evening setup 4 of 7. Peel the label fully away so the reservoir seats cleanly.",
-    "wireframe": "component:apollo-step-04-remove-label",
-    "legacy": null
-  },
-  {
     "id": "apollo-step-05-attach-capsule",
-    "title": "Step 05 — Attach capsule",
+    "title": "Step 04 — Attach capsule",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Evening setup 5 of 7. Snap the controller on; lift straight up to remove the adhesive liner.",
+    "summary": "Evening setup 4 of 6. Snap the controller on; lift straight up to remove the adhesive liner.",
     "wireframe": "component:apollo-step-05-attach-capsule",
     "legacy": null
   },
   {
-    "id": "apollo-step-06-remove-base",
-    "title": "Step 06 — Remove from base",
+    "id": "apollo-pending",
+    "title": "Luna is preparing",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Evening setup 6 of 7. Lift the assembled device off its base; it's ready to apply.",
+    "summary": "Un-numbered interstitial after Attach. Verifies CGM data, capsule attached, priming; auto-advances on success; failure → troubleshooting.",
+    "wireframe": "component:apollo-pending",
+    "legacy": null
+  },
+  {
+    "id": "apollo-step-06-remove-base",
+    "title": "Step 05 — Remove from base",
+    "status": "Work in Progress",
+    "feature": "Training Update Apollo",
+    "summary": "Evening setup 5 of 6. Lift the assembled device off its base; it's ready to apply.",
     "wireframe": "component:apollo-step-06-remove-base",
     "legacy": null
   },
   {
     "id": "apollo-step-07-apply-body",
-    "title": "Step 07 — Apply to body",
+    "title": "Step 06 — Apply to body",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Evening setup 7 of 7. Apply it to your upper arm — press firmly for a few seconds.",
+    "summary": "Evening setup 6 of 6. Apply it to your upper arm — press firmly for a few seconds.",
     "wireframe": "component:apollo-step-07-apply-body",
-    "legacy": null
-  },
-  {
-    "id": "apollo-hardware-checkpoint",
-    "title": "Hardware checkpoint",
-    "status": "Work in Progress",
-    "feature": "Training Update Apollo",
-    "summary": "Informative checkpoint (moon-in-orbit detect). CGM = 'Recent reading OK'. CTA never gated. Carries the verify-before-body + error-states open flags.",
-    "wireframe": "component:apollo-hardware-checkpoint",
-    "legacy": "wireframes/legacy/hardware-checkpoint.jpg"
-  },
-  {
-    "id": "apollo-evening-outro",
-    "title": "Evening outro — personal video",
-    "status": "Work in Progress",
-    "feature": "Training Update Apollo",
-    "summary": "Personal 'Tonight' video. Auto-loops; no 'Watch again'. 'You're all set for tonight.'",
-    "wireframe": "component:apollo-evening-outro",
     "legacy": null
   },
   {
@@ -373,8 +373,17 @@
     "title": "Overnight handoff — Luna active",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Overnight pause checkpoint: Luna is active and watching; the session visibly pauses for the night. Nothing appears pending.",
+    "summary": "Calm overnight handoff: peaceful-sleep image, no time shown, and an intro to Phase 2 (morning training after you sleep).",
     "wireframe": "component:apollo-overnight-handoff",
+    "legacy": null
+  },
+  {
+    "id": "apollo-training-start-morning",
+    "title": "Morning training start",
+    "status": "Work in Progress",
+    "feature": "Training Update Apollo",
+    "summary": "Morning re-entry (~4h after session start). Bottom sheet over the dashboard to begin removal; step count restarts at 1.",
+    "wireframe": "component:apollo-training-start-morning",
     "legacy": null
   },
   {
@@ -382,44 +391,35 @@
     "title": "Morning start",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Next-morning re-entry into Morning training — a single clear way back in. (BR-B4 trigger mechanism BRD-undecided; this is the destination.)",
+    "summary": "Morning re-entry — a fresh sunrise start; progress dots from the beginning of the 3-step morning module.",
     "wireframe": "component:apollo-morning-start",
     "legacy": null
   },
   {
     "id": "apollo-step-08-remove-device",
-    "title": "Step 08 — Remove device",
+    "title": "Step 01 — Remove Luna",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Morning removal 1 of 3. Good morning — before your next meal, gently remove Luna from your body.",
+    "summary": "Morning removal 1 of 3. Good morning — gently peel the adhesive off your body to remove Luna. Warns of the exposed needle.",
     "wireframe": "component:apollo-step-08-remove-device",
     "legacy": null
   },
   {
     "id": "apollo-step-09-detach-reservoir",
-    "title": "Step 09 — Detach reservoir",
+    "title": "Step 02 — Unclip capsule",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Morning removal 2 of 3. Peel the tab, then press the release button. Informative checkpoint never gates Next.",
+    "summary": "Morning removal 2 of 3. Unclip the Luna capsule from the Single-Sleep Reservoir; hardware check gates Next until removal is detected.",
     "wireframe": "component:apollo-step-09-detach-reservoir",
     "legacy": null
   },
   {
     "id": "apollo-step-10-charge",
-    "title": "Step 10 — Charge controller",
+    "title": "Step 03 — Charge Capsule",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Morning removal 3 of 3. Set the controller on its charger, ready for tonight. Done.",
+    "summary": "Morning removal 3 of 3. Place Luna on the Bedside Charging Dock; hardware check gates Done until the capsule is recognized.",
     "wireframe": "component:apollo-step-10-charge",
-    "legacy": null
-  },
-  {
-    "id": "apollo-morning-outro",
-    "title": "Morning outro — personal video",
-    "status": "Work in Progress",
-    "feature": "Training Update Apollo",
-    "summary": "Personal 'week ahead' video. Auto-loops; no 'Watch again'. 'Nice work — your morning's complete.'",
-    "wireframe": "component:apollo-morning-outro",
     "legacy": null
   },
   {
@@ -427,26 +427,8 @@
     "title": "Complete",
     "status": "Work in Progress",
     "feature": "Training Update Apollo",
-    "summary": "Training complete — 'You're all set.' 10 steps done · 1 night logged.",
+    "summary": "Training complete (merged with the morning outro). This is where Luna really begins — now learning you + your TDBD.",
     "wireframe": "component:apollo-complete",
-    "legacy": null
-  },
-  {
-    "id": "apollo-mid-session-resume",
-    "title": "Mid-session resume — clean step boundary",
-    "status": "Work in Progress",
-    "feature": "Training Update Apollo",
-    "summary": "Re-entry that lands at a clean step boundary (start of the morning module), never partway through a step (closes BR-B2).",
-    "wireframe": "component:apollo-mid-session-resume",
-    "legacy": null
-  },
-  {
-    "id": "apollo-replay-from-settings",
-    "title": "Replay from Settings — Training Guide (BR-B6)",
-    "status": "Work in Progress",
-    "feature": "Training Update Apollo",
-    "summary": "Settings › Help › Training Guide. Replay any step or whole module after setup; nothing here changes the device.",
-    "wireframe": "component:apollo-replay-from-settings",
     "legacy": null
   },
   {

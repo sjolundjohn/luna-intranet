@@ -26,8 +26,8 @@ export interface Screen {
 export const SCREENS: Screen[] = rawManifest as Screen[];
 
 /** Design versions a comment can be stamped against (newest last). */
-export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026"] as const;
-export const CURRENT_DESIGN_VERSION = "v0.2 — May 2026";
+export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026", "v0.3 — Jun 2026"] as const;
+export const CURRENT_DESIGN_VERSION = "v0.3 — Jun 2026";
 
 export const STATUS_ORDER: ScreenStatus[] = ["Work in Progress", "Approved"];
 
@@ -73,24 +73,24 @@ export const FLOW_NEXT: Record<string, string> = {
   "onboarding-chapter-2": "onboarding-chapter-3",
   "onboarding-chapter-3": "onboarding-chapter-4",
   "onboarding-chapter-4": "onboarding-chapter-5",
-  "onboarding-chapter-5": "apollo-intro",
+  "onboarding-chapter-5": "apollo-training-start",
   // Apollo — evening setup → overnight → morning removal → complete
+  "apollo-training-start": "apollo-intro",
+  "apollo-training-gate": "onboarding-setup-landing",
   "apollo-intro": "apollo-step-01-inventory",
   "apollo-step-01-inventory": "apollo-step-02-open-tray",
   "apollo-step-02-open-tray": "apollo-step-03-fill",
-  "apollo-step-03-fill": "apollo-step-04-remove-label",
-  "apollo-step-04-remove-label": "apollo-step-05-attach-capsule",
-  "apollo-step-05-attach-capsule": "apollo-step-06-remove-base",
+  "apollo-step-03-fill": "apollo-step-05-attach-capsule",
+  "apollo-step-05-attach-capsule": "apollo-pending",
+  "apollo-pending": "apollo-step-06-remove-base",
   "apollo-step-06-remove-base": "apollo-step-07-apply-body",
-  "apollo-step-07-apply-body": "apollo-hardware-checkpoint",
-  "apollo-hardware-checkpoint": "apollo-evening-outro",
-  "apollo-evening-outro": "apollo-overnight-handoff",
-  "apollo-overnight-handoff": "apollo-morning-start",
+  "apollo-step-07-apply-body": "apollo-overnight-handoff",
+  "apollo-overnight-handoff": "apollo-training-start-morning",
+  "apollo-training-start-morning": "apollo-morning-start",
   "apollo-morning-start": "apollo-step-08-remove-device",
   "apollo-step-08-remove-device": "apollo-step-09-detach-reservoir",
   "apollo-step-09-detach-reservoir": "apollo-step-10-charge",
-  "apollo-step-10-charge": "apollo-morning-outro",
-  "apollo-morning-outro": "apollo-complete",
+  "apollo-step-10-charge": "apollo-complete",
   "apollo-complete": "home-dashboard",
   // Hypo Shield — surface a recommendation → the two-step confirm
   "hypo-home-tip-post": "hypo-confirm-increase",
@@ -147,13 +147,13 @@ export const FLOWS: ReviewFlow[] = [
   },
   {
     id: "apollo-evening", area: "apollo", label: "Evening setup",
-    blurb: "Intro → 7 steps → hardware checkpoint → personal video → overnight hand-off.",
-    screens: ["apollo-intro", "apollo-step-01-inventory", "apollo-step-02-open-tray", "apollo-step-03-fill", "apollo-step-04-remove-label", "apollo-step-05-attach-capsule", "apollo-step-06-remove-base", "apollo-step-07-apply-body", "hardware-checkpoint-spine", "apollo-hardware-checkpoint", "apollo-evening-outro", "apollo-overnight-handoff"],
+    blurb: "Training start → gate → intro → 6 steps (Luna-is-preparing check) → overnight hand-off.",
+    screens: ["apollo-training-start", "apollo-training-gate", "apollo-intro", "apollo-step-01-inventory", "apollo-step-02-open-tray", "apollo-step-03-fill", "apollo-step-05-attach-capsule", "apollo-pending", "apollo-step-06-remove-base", "apollo-step-07-apply-body", "apollo-overnight-handoff"],
   },
   {
     id: "apollo-morning", area: "apollo", label: "Morning removal & re-entry",
-    blurb: "Morning start → 3 removal steps → outro → complete, plus resume & replay.",
-    screens: ["apollo-morning-start", "apollo-step-08-remove-device", "apollo-step-09-detach-reservoir", "apollo-step-10-charge", "apollo-morning-outro", "apollo-complete", "apollo-mid-session-resume", "apollo-replay-from-settings"],
+    blurb: "Morning training start → 3 removal steps → complete.",
+    screens: ["apollo-training-start-morning", "apollo-morning-start", "apollo-step-08-remove-device", "apollo-step-09-detach-reservoir", "apollo-step-10-charge", "apollo-complete"],
   },
   {
     id: "home-hub", area: "home", label: "The daily hub",

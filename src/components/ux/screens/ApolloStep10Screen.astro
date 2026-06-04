@@ -3,11 +3,12 @@ import ApolloStep from "../ios/ApolloStep.astro";
 interface Props { variant?: "current" | "legacy"; }
 ---
 <ApolloStep moduleLabel="Morning removal" count="Step 3 of 3" total={3} current={3} badge="Step 10"
-  headline="Place it on the charger" instr="Set the controller on its charger so it's ready for tonight."
-  caption="asset: Cam+A-30" cta="Done" poster="/ux-review/apollo-posters/cam-a-30.jpg" posterAlt="Placing the controller on its charger">
-  {/* informative-only checkpoint (never gates Done) */}
+  headline="Place Luna on the Bedside Charging Dock" instr="Set the Luna Capsule on the Bedside Charging Dock so it's ready for tonight."
+  caption="still: Step 10 — Bedside Charging Dock — poster TBD" cta="Done">
+  <div style="margin-top:18px;"><span class="flag"><span class="k">Hardware</span>Done is blocked until the Capsule is recognized on the dock</span></div>
+  {/* hardware check — gates Done until the capsule is detected on the dock */}
   <div slot="checkpoint" class="conn-row">
-    <span class="lbl">Controller charging</span>
-    <span class="stat"><span class="ok"></span><span class="ok-txt">Connected</span></span>
+    <span class="lbl">Capsule on Bedside Charging Dock</span>
+    <span class="stat"><span class="ok"></span><span class="ok-txt">Detected</span></span>
   </div>
 </ApolloStep>

@@ -149,7 +149,7 @@
 .ux-ios .stack { display: flex; flex-direction: column; }
 /* Luna wordmark — small, top-left, on EVERY screen (brand: never stretch/recolor). */
 .ux-ios .brandbar { flex: none; display: flex; align-items: center; padding: 0 0 6px 22px; }
-.ux-ios .brandbar .luna-mark { height: 20px; width: auto; display: block; opacity: 0.95; }
+.ux-ios .brandbar .luna-mark { height: 50px; width: auto; display: block; opacity: 0.95; }
 .ux-ios hr.divider { border: none; border-top: 1px solid rgba(255,255,255,0.10); margin: 0; }
 
 /* ============================================================
@@ -337,6 +337,14 @@
 .ux-ios .reset-banner { display: flex; gap: 12px; align-items: flex-start; background: var(--color-warning-bg); border: 1px solid var(--color-warning); border-radius: 14px; padding: 13px 14px; margin-bottom: 16px; }
 .ux-ios .reset-banner .ic { flex: none; margin-top: 1px; color: var(--color-warning-ink); }
 .ux-ios .reset-banner .tx { font-size: 13px; line-height: 1.45; color: var(--color-warning-ink); font-weight: 600; }
+/* Informational tip banner (moonlight) — same shape as the warning banner. */
+.ux-ios .tip-banner { display: flex; gap: 12px; align-items: flex-start; background: rgba(104,210,223,0.10); border: 1px solid rgba(104,210,223,0.35); border-radius: 14px; padding: 13px 14px; margin-bottom: 0; }
+.ux-ios .tip-banner .ic { flex: none; margin-top: 1px; color: var(--color-moonlight); }
+.ux-ios .tip-banner .tx { font-size: 13px; line-height: 1.45; color: var(--color-on-dark); font-weight: 600; }
+/* Warning banner — same sleek treatment as the tip banner, amber-accented. */
+.ux-ios .warn-banner { display: flex; gap: 12px; align-items: flex-start; background: rgba(249,205,134,0.10); border: 1px solid rgba(249,205,134,0.40); border-radius: 14px; padding: 13px 14px; }
+.ux-ios .warn-banner .ic { flex: none; margin-top: 1px; color: var(--color-warning); }
+.ux-ios .warn-banner .tx { font-size: 13px; line-height: 1.45; color: var(--color-on-dark); font-weight: 600; }
 .ux-ios .tdbd-now { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
 .ux-ios .tdbd-now .lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-slate); }
 .ux-ios .tdbd-now .val { font-family: var(--font-display); font-size: 36px; font-weight: 700; color: var(--color-midnight); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
@@ -619,9 +627,11 @@
 .ux-ios .prog-dots .d { width: 7px; height: 7px; border-radius: 999px; background: rgba(255,255,255,0.20); transition: width 200ms; }
 .ux-ios .prog-dots .d.done { background: var(--color-moonlight); opacity: 0.55; }
 .ux-ios .prog-dots .d.current { background: var(--color-moonlight); width: 22px; box-shadow: 0 0 10px rgba(104,210,223,0.55); }
-.ux-ios .step-copy { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 8px; }
+/* Step copy: top-anchored + left-aligned so the title/subtext sit in the SAME
+   place on every step (consistent with the Inventory step). */
+.ux-ios .step-copy { flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; text-align: left; padding: 22px 8px 0; }
 .ux-ios .step-copy h1 { font-weight: 700; margin: 0; letter-spacing: -0.02em; }
-.ux-ios .step-copy .instr { margin: 14px 0 0; line-height: 1.5; }
+.ux-ios .step-copy .instr { margin: 16px 0 0; line-height: 1.65; }
 /* Apollo app-only layouts: centered screen, icon badge, close, time hero. */
 .ux-ios .center-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 28px; }
 .ux-ios .center-screen .eyebrow { margin-bottom: 12px; }
