@@ -57,7 +57,6 @@ const hasCheckpoint = Astro.slots.has("checkpoint");
 
   {/* step copy CENTERED at larger text; step badge tight above headline */}
   <div class="pad step-copy">
-    <div class="step-badge"><span class="dot"></span>{badge}</div>
     <h1 class="title-1">{headline}</h1>
     {instrHtml ? (
       <p class="instr body muted" set:html={instrHtml} />
@@ -74,7 +73,7 @@ const hasCheckpoint = Astro.slots.has("checkpoint");
   )}
 
   {/* primary NEVER gated on hardware */}
-  <div class="pad" style="padding-bottom:8px;">
+  <div class="pad" style="padding-bottom:28px;">
     <button class="btn primary">{cta}</button>
   </div>
 </div>

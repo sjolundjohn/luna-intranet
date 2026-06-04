@@ -66,6 +66,11 @@ import ApolloMorningOutroScreen from "./screens/ApolloMorningOutroScreen.astro";
 import ApolloCompleteScreen from "./screens/ApolloCompleteScreen.astro";
 import ApolloMidSessionResumeScreen from "./screens/ApolloMidSessionResumeScreen.astro";
 import ApolloReplayFromSettingsScreen from "./screens/ApolloReplayFromSettingsScreen.astro";
+// Apollo Training — v2.3 new screens
+import ApolloTrainingStartScreen from "./screens/ApolloTrainingStartScreen.astro";
+import ApolloTrainingGateScreen from "./screens/ApolloTrainingGateScreen.astro";
+import ApolloPendingScreen from "./screens/ApolloPendingScreen.astro";
+import ApolloTrainingStartMorningScreen from "./screens/ApolloTrainingStartMorningScreen.astro";
 
 interface Props {
   id: string;
@@ -132,6 +137,11 @@ const REGISTRY: Record<string, any> = {
   "apollo-complete": ApolloCompleteScreen,
   "apollo-mid-session-resume": ApolloMidSessionResumeScreen,
   "apollo-replay-from-settings": ApolloReplayFromSettingsScreen,
+  // Apollo Training — v2.3 new screens
+  "apollo-training-start": ApolloTrainingStartScreen,
+  "apollo-training-gate": ApolloTrainingGateScreen,
+  "apollo-pending": ApolloPendingScreen,
+  "apollo-training-start-morning": ApolloTrainingStartMorningScreen,
 };
 
 /** Per-screen frame config: sheet raises brandbar/home indicator; custom clock. */
@@ -150,6 +160,9 @@ const FRAME: Record<string, { sheet?: boolean; clock?: string }> = {
   "apollo-morning-outro": { clock: "7:16" },
   "apollo-complete": { clock: "7:18" },
   "apollo-mid-session-resume": { clock: "7:08" },
+  // v2.3 new screens — bottom-sheet over dashboard (sheet raises brandbar/home indicator)
+  "apollo-training-start": { sheet: true, clock: "10:42" },
+  "apollo-training-start-morning": { sheet: true, clock: "7:08" },
 };
 
 const screen = getScreen(id);

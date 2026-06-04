@@ -2,6 +2,11 @@
 import ApolloStep from "../ios/ApolloStep.astro";
 interface Props { variant?: "current" | "legacy"; }
 ---
-<ApolloStep moduleLabel="Evening setup" count="Step 7 of 7" total={7} current={7} badge="Step 07"
-  headline="Apply it to your upper arm" instr="Press firmly on your upper arm for a few seconds."
-  caption="asset: Cam+A-32" poster="/ux-review/apollo-posters/cam-a-32.jpg" posterAlt="Applying the device to your upper arm" />
+<ApolloStep moduleLabel="Getting ready for your first sleep" count="Step 6 of 6" total={6} current={6} badge="Step 06"
+  headline="Apply Luna to your body" instr="Apply Luna to any site that you normally take an insulin injection."
+  caption="asset: Cam+A-32" poster="/ux-review/apollo-posters/cam-a-32.jpg" posterAlt="Applying Luna to your body">
+  <div class="tip-banner" style="margin-top:18px;">
+    <span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg></span>
+    <span class="tx">Tip: keep the base — you'll use it for disposal in the morning.</span>
+  </div>
+</ApolloStep>
