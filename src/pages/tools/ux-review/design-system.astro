@@ -93,6 +93,19 @@ const shadows = [
   { name: "modal", css: "0 -8px 40px rgba(4,30,66,0.16)" },
   { name: "toast", css: "0 8px 24px rgba(4,30,66,0.24)" },
 ];
+
+// ── Wireframe conventions (codified from the Apollo Training v2.3 pass) ──
+const conventions = [
+  { t: "Titles", k: ".title-1", d: "Sentence case — capitalize only the first word and proper nouns (Luna, Capsule, Single-Sleep Reservoir, Bedside Charging Dock, TDBD). Screen headlines use .title-1; keep one heading size per screen type. Gallery titles match the on-screen casing." },
+  { t: "Title & body placement", k: "eyebrow → title → body", d: "Stack with a consistent vertical rhythm. On step screens the title sits directly below the media tile, left-aligned (not vertically centered); body follows ~16–20px below. Keep the same offset across steps so titles line up screen-to-screen." },
+  { t: "Primary action", k: ".btn.primary", d: "One full-width pill anchored at the bottom of the screen, with ~24–28px bottom padding so it clears the home indicator." },
+  { t: "Warnings", k: ".warn-banner", d: "A filled, rounded banner with an amber icon + accent and light text. Never a dashed chip." },
+  { t: "Tips / info", k: ".tip-banner", d: "Same banner shape as a warning, moonlight-accented, for non-warning guidance." },
+  { t: "Hardware-gated actions", k: ".gate-btn / .gate-row", d: "When an action waits on a detected device, the primary grays out while a “Detecting… → Detected” row resolves; it enables only once the check passes." },
+  { t: "Brand mark & close", k: ".brandbar / .close-x", d: "Luna wordmark top-left on every screen (50px), never recolored or stretched. A screen-level close (✕) sits top-right at the logo’s level and returns to the dashboard." },
+  { t: "Spacing", k: "8pt base", d: "Generous, consistent vertical rhythm between eyebrow, title, subhead and body — don’t crowd the stack." },
+  { t: "Motion", k: "purposeful · calm", d: "Entrance reveals to draw attention (e.g. staggered list items); gentle ambient motion for “in progress” states. Nothing mechanical or jittery." },
+];
 ---
 
 <BaseLayout
@@ -234,6 +247,30 @@ const shadows = [
             <IosButton variant="link" label="Skip and set up later" />
           </div>
         </div>
+      </div>
+    </section>
+
+    {/* ── Wireframe conventions ── */}
+    <section class="ds-section">
+      <p class="eyebrow mb-2">Patterns</p>
+      <h2 class="ds-h2">Wireframe conventions</h2>
+      <div class="mt-4 mb-7"><MoonlightRule width={40} color="midnight" /></div>
+      <p class="text-graphite text-[15px] leading-[1.55] max-w-[64ch] mb-7">
+        How screens are assembled, so every feature reads as one app. Apply these
+        before a screen-by-screen review — they're the conventions the Apollo
+        Training wireframes were normalized to, and the baseline for every new
+        feature.
+      </p>
+      <div class="flex flex-col divide-y divide-border-subtle">
+        {conventions.map((c) => (
+          <div class="grid md:grid-cols-[200px_1fr] gap-1.5 md:gap-6 py-4">
+            <div>
+              <p class="text-ink text-[14px] font-semibold leading-tight">{c.t}</p>
+              {c.k && <p class="text-slate text-[11px] font-mono mt-1">{c.k}</p>}
+            </div>
+            <p class="text-graphite text-[14px] leading-[1.55]">{c.d}</p>
+          </div>
+        ))}
       </div>
     </section>
 
