@@ -85,23 +85,25 @@ interface Props { variant?: "current" | "legacy"; }
   .ux-ios .rec-head .moon::before { content: ""; position: absolute; right: -5px; top: 5.5px; width: 17px; height: 17px; border-radius: 50%; background: var(--color-moonlight); }
   .ux-ios .rec-head .moon::after { content: ""; position: absolute; right: -1px; top: 7.5px; width: 13px; height: 13px; border-radius: 50%; background: var(--color-midnight); }
   .ux-ios .rec-title { margin: 0 0 14px; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.22; color: var(--color-on-dark); }
-  .ux-ios .rec-compare { display: flex; align-items: center; gap: 14px; padding: 18px; margin-bottom: 10px; border-color: rgba(104,210,223,0.40); background: rgba(104,210,223,0.07); }
+  /* v0.4 r2 — white cards, matching the .hypo-pop treatment on the Home cards */
+  .ux-ios .rec-compare { display: flex; align-items: center; gap: 14px; padding: 18px; margin-bottom: 10px; border-color: rgba(255,255,255,0.92); background: var(--color-soft-paper); box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
   .ux-ios .rec-compare .col { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-  .ux-ios .rec-compare .col .k { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--color-on-dark-sub); }
+  .ux-ios .rec-compare .col .k { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--color-slate); }
   .ux-ios .rec-compare .col .v { font-size: 40px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
   .ux-ios .rec-compare .col .v .u { font-size: 17px; font-weight: 700; margin-left: 3px; }
-  .ux-ios .rec-compare .cur .v { color: var(--color-on-dark-sub); }
+  .ux-ios .rec-compare .cur .v { color: var(--color-slate); }
   .ux-ios .rec-compare .cur .v s { text-decoration-thickness: 2px; }
-  .ux-ios .rec-compare .new .v { color: var(--color-moonlight); }
-  .ux-ios .rec-compare .arrow { flex: none; color: var(--color-on-dark-sub); display: flex; }
-  .ux-ios .rec-compare .dir { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin-top: 4px; padding: 3px 9px; border-radius: var(--radius-chip); background: rgba(104,210,223,0.16); color: var(--color-moonlight); font-size: 11px; font-weight: 700; }
-  .ux-ios .rec-sec { padding: 15px 16px; margin-bottom: 10px; }
-  .ux-ios .rec-sec .h { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-moonlight); margin-bottom: 7px; }
-  .ux-ios .rec-sec p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--color-on-dark-sub); }
-  .ux-ios .rec-sec p b { color: var(--color-on-dark); font-weight: 700; }
+  .ux-ios .rec-compare .new .v { color: var(--color-moonlight-deep); }
+  .ux-ios .rec-compare .arrow { flex: none; color: var(--color-slate); display: flex; }
+  .ux-ios .rec-compare .dir { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin-top: 4px; padding: 3px 9px; border-radius: var(--radius-chip); background: var(--color-moonlight-tint, #E8FCFF); color: var(--color-moonlight-deep); font-size: 11px; font-weight: 700; }
+  .ux-ios .rec-sec { padding: 15px 16px; margin-bottom: 10px; border-color: rgba(255,255,255,0.92); background: var(--color-soft-paper); box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+  .ux-ios .rec-sec .h { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-moonlight-deep); margin-bottom: 7px; }
+  .ux-ios .rec-sec p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--color-graphite); }
+  .ux-ios .rec-sec p b { color: var(--color-ink); font-weight: 700; }
   .ux-ios .rec-stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .ux-ios .rec-stats .chip { font-size: 11px; font-weight: 600; color: var(--color-on-dark); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 4px 10px; font-variant-numeric: tabular-nums; }
+  .ux-ios .rec-stats .chip { font-size: 11px; font-weight: 600; color: var(--color-ink); background: var(--color-cloud-lilac, #F2F3FA); border: 1px solid var(--color-border-subtle, #E3E8F2); border-radius: 999px; padding: 4px 10px; font-variant-numeric: tabular-nums; }
   .ux-ios .howlink { display: inline-flex; align-items: center; gap: 3px; margin-top: 10px; background: none; border: none; padding: 0; cursor: pointer; font-family: var(--font-brand); font-size: 13px; font-weight: 700; color: var(--color-moonlight); }
+  .ux-ios .rec-sec .howlink { color: var(--color-moonlight-deep); }
   .ux-ios .rec-note { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--color-on-dark-sub); padding: 2px 2px 0; }
   .ux-ios .rec-note svg { flex: none; }
 </style>

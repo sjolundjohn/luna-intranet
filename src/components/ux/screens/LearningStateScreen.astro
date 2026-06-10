@@ -7,17 +7,16 @@
  * up/down once learned). Lifted verbatim from `hypo-shield/learning-state.html`.
  */
 import StatusStrip from "../ios/StatusStrip.astro";
-import CgmHero from "../ios/CgmHero.astro";
 import TabBar from "../ios/TabBar.astro";
 
 interface Props {
   variant?: "current" | "legacy";
 }
 ---
-<div class="content" style="overflow-y:auto;">
+<div class="content">
   <StatusStrip />
 
-  <div class="pad gluc-hero" style="margin-top:14px;">
+  <div class="pad gluc-hero" style="margin-top:10px;">
     <div class="glucose">
       <span class="num">108</span>
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(90deg);" aria-label="Steady"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
@@ -25,15 +24,10 @@ interface Props {
     <div class="footnote muted">mg/dL · steady</div>
   </div>
 
-  {/* CGM graph for context — the learning card no longer just pops up
-      against a bare background (v0.4). */}
-  <CgmHero trace="inrange" height={100} />
-
-  {/* HYPO SHIELD LEARNING STATE — no suggestion yet. Both conditions
-      required: 5 Luna sessions AND 7 days of wear. High-contrast card;
-      explanation lives on How Hypo Shield works (linked), the card shows
-      YOUR nights instead of re-explaining the feature. */}
-  <div class="pad" style="margin-top:12px;">
+  {/* HYPO SHIELD LEARNING STATE — moved UP so the full card is visible
+      without scrolling (v0.4 r2); the CGM graph fills the space below.
+      Both conditions required: 5 Luna sessions AND 7 days of wear. */}
+  <div class="pad" style="margin-top:10px;">
     <div class="card-dark learn-card hypo-pop">
       <div class="head">
         <span class="moon" aria-hidden="true"></span>

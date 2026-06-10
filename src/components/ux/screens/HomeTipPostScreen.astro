@@ -26,13 +26,11 @@ interface Props {
     <div class="footnote muted">mg/dL · drifting up overnight</div>
   </div>
 
-  <CgmHero trace="up" height={158} />
-
-  {/* HYPO SHIELD "SUGGESTION READY" — v0.4: a compact two-step gate. No dose
-      detail here; the ONLY action opens the full-screen suggestion review
-      (hypo-recommendation-detail), which then leads to the two-step confirm.
-      Reading never accepts. */}
-  <div class="pad" style="margin-top:14px;">
+  {/* HYPO SHIELD "SUGGESTION READY" — v0.4 r2: moved UP so the full card is
+      visible without scrolling; the graph fills the space below. Compact
+      two-step gate: no dose detail here; the ONLY action opens the
+      full-screen suggestion review. Reading never accepts. */}
+  <div class="pad" style="margin-top:10px;">
     <div class="card-dark tip-post hypo-pop">
       <div class="head">
         <span class="moon" aria-hidden="true"></span>
@@ -47,7 +45,8 @@ interface Props {
     </div>
   </div>
 
-  <div style="flex:1;"></div>
+  {/* CGM graph fills the remaining space below the card */}
+  <CgmHero trace="up" fill />
 </div>
 
 <TabBar active="dashboard" />
