@@ -7,6 +7,8 @@
  */
 interface Props { variant?: "current" | "legacy"; }
 ---
+{/* top-right close, aligned to the Luna logo — returns to the dashboard */}
+<button class="close-x" style="top:64px; left:auto; right:22px;" aria-label="Close — back to dashboard">✕</button>
 <div class="content">
   <div class="center-screen">
     {/* peaceful sleep image placeholder — gentle stock image to be supplied */}
@@ -35,7 +37,7 @@ interface Props { variant?: "current" | "legacy"; }
   </div>
 
   <div class="pad" style="padding-bottom:24px;">
-    <p class="footnote muted" style="text-align:center; margin:0; line-height:1.5;">Put the phone down — the session continues without you.</p>
+    <button class="btn primary">Close Training</button>
   </div>
 </div>
 
