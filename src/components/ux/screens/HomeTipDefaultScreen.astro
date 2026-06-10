@@ -29,20 +29,22 @@ interface Props {
   <CgmHero trace="inrange" fill />
 
   {/* HYPO SHIELD "DEFAULT TIP" at the bottom, with the Ask-Luna "+" on its
-      top-right corner. Resting reassurance; the chip opens TDBD detail. */}
+      top-right corner. The bubble only appears when Hypo Shield has something
+      to say — the first thing it says is that it's learning about you. The
+      chip deep-links to Settings · Hypo Shield. */}
   <div class="pad" style="margin-top:12px; padding-bottom:8px;">
     <div class="insight-wrap" style="position:relative;">
       <AskLuna anchor="card" />
-      <div class="card-dark tip-card">
+      <div class="card-dark tip-card hypo-pop">
         <div class="head">
           <span class="moon" aria-hidden="true"></span>
           <span class="eyebrow">Hypo Shield</span>
         </div>
-        <div class="lead">Your nightly basal looks well-matched. Luna is watching and will tell you if it should change.</div>
-        <button class="tdbd-chip" aria-label="View total daily basal dose detail">
-          <span class="k">Nightly basal</span>
+        <div class="lead">Luna is getting to know your nights. You'll hear from Hypo Shield here the moment there's something to know.</div>
+        <button class="tdbd-chip" style="align-self:stretch; width:100%;" aria-label="View your long-acting dose in Hypo Shield settings">
+          <span class="k">Long-acting dose</span>
           <span class="v">12 <span class="u">U</span></span>
-          <span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          <span class="chev" style="margin-left:auto;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </button>
       </div>
     </div>

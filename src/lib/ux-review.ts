@@ -26,8 +26,8 @@ export interface Screen {
 export const SCREENS: Screen[] = rawManifest as Screen[];
 
 /** Design versions a comment can be stamped against (newest last). */
-export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026", "v0.3 — Jun 2026"] as const;
-export const CURRENT_DESIGN_VERSION = "v0.3 — Jun 2026";
+export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026", "v0.3 — Jun 2026", "v0.4 — Jun 2026"] as const;
+export const CURRENT_DESIGN_VERSION = "v0.4 — Jun 2026";
 
 export const STATUS_ORDER: ScreenStatus[] = ["Work in Progress", "Approved"];
 
@@ -93,9 +93,13 @@ export const FLOW_NEXT: Record<string, string> = {
   "apollo-step-09-detach-reservoir": "apollo-step-10-charge",
   "apollo-step-10-charge": "apollo-complete",
   "apollo-complete": "home-dashboard",
-  // Hypo Shield — surface a recommendation → the two-step confirm
-  "hypo-home-tip-post": "hypo-confirm-increase",
-  "hypo-mid-session-announcement": "hypo-confirm-increase",
+  // Hypo Shield — every entry point gates through the full-screen suggestion
+  // review, then the two-step confirm, then the success confirmation
+  "hypo-home-tip-post": "hypo-recommendation-detail",
+  "hypo-mid-session-announcement": "hypo-recommendation-detail",
+  "hypo-recommendation-detail": "dose-confirmation-spine",
+  "dose-confirmation-spine": "hypo-confirm-success",
+  "hypo-confirm-success": "home-dashboard",
   // IOB — pre-session opt-in → opted-in home
   "iob-pre-session-announcement": "iob-home-on",
 };
@@ -162,9 +166,9 @@ export const FLOWS: ReviewFlow[] = [
     screens: ["home-dashboard", "session-history", "settings-list"],
   },
   {
-    id: "hypo", area: "hypo", label: "Recommend → confirm → manage",
-    blurb: "Resting tip, learning, recommendation & announcement, the two-step confirm and its variants, settings & TDBD detail.",
-    screens: ["hypo-home-tip-default", "hypo-learning-state", "hypo-home-tip-post", "hypo-mid-session-announcement", "hypo-push-notification", "dose-confirmation-spine", "hypo-confirm-increase", "hypo-confirm-reset-required", "hypo-confirm-skip", "hypo-settings", "hypo-tdbd-detail"],
+    id: "hypo", area: "hypo", label: "Suggest → review → confirm → manage",
+    blurb: "Learning states, the three suggestion entry points, the full-screen review that gates every suggestion, the two-step confirm, success & skip, settings, and how-it-works.",
+    screens: ["hypo-home-tip-default", "hypo-learning-state", "hypo-home-tip-post", "hypo-mid-session-announcement", "hypo-push-notification", "hypo-recommendation-detail", "dose-confirmation-spine", "hypo-confirm-success", "hypo-confirm-skip", "hypo-settings", "hypo-how-it-works"],
   },
   {
     id: "iob", area: "iob", label: "Opt in → see it → manage",

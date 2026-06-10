@@ -28,8 +28,8 @@ const dir = variant === "increase" ? "up" : "down";
 const word = dir === "up" ? "Increase" : "Decrease";
 const rationale =
   variant === "increase"
-    ? "Over the past several nights, Luna Eclipse has been monitoring your glucose. We've noticed it's drifted up — you may need a bit more of your basal insulin."
-    : "Over the past several nights, Luna Eclipse has been monitoring your glucose. We've noticed it's run low — you may need a bit less of your basal insulin.";
+    ? "Over the past several nights, Luna Eclipse has been monitoring your glucose. We've noticed it's drifted up — you may need a bit more of your long-acting insulin."
+    : "Over the past several nights, Luna Eclipse has been monitoring your glucose. We've noticed it's run low — you may need a bit less of your long-acting insulin.";
 
 const ICONS: Record<string, string> = {
   up: "M12 19V5M5 12l7-7 7 7",
@@ -81,11 +81,11 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
 
   {isRec && (
     <Fragment>
-      <h2 class="dose-h2">A new nightly basal dose</h2>
+      <h2 class="dose-h2">A new long-acting dose</h2>
       <div class="dose-valrow">
         <span class="dose-val">{value}</span>
         <span class="dose-unit">{unit}</span>
-        <span class="dose-chip" set:html={`${icon(dir, 15, "var(--color-moonlight-deep)", 2.2)} ${word}`} />
+        <span class="dose-chip" set:html={`${icon(dir, 15, "var(--color-moonlight-deep)", 2.2)} ${word} your long-acting dose`} />
       </div>
       <div class="dose-prev">Current dose <s>{prev} {unit}</s></div>
       <p class="dose-rationale">{rationale}</p>
@@ -93,12 +93,12 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
         <div class="dose-ackbox-h">To act on this, do both</div>
         <button class="dose-ack" data-ack="1" role="checkbox" aria-checked="false">
           <span class="dose-box"></span>
-          <span><span class="dose-lbl">Set your long-acting insulin dose to {value} units in Luna's settings</span><br /><span class="dose-sub">Updates the value Luna programs for you</span></span>
+          <span><span class="dose-lbl">Set your long-acting dose to {value} units in Luna's settings</span></span>
         </button>
         <div class="dose-ackdiv"></div>
         <button class="dose-ack" data-ack="2" role="checkbox" aria-checked="false">
           <span class="dose-box"></span>
-          <span><span class="dose-lbl">Take your {value}-unit long-acting dose</span><br /><span class="dose-sub">Your actual injection tonight</span></span>
+          <span><span class="dose-lbl">{word} your long-acting dose to {value} units</span></span>
         </button>
       </div>
       <div class="dose-slide">
@@ -127,7 +127,7 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
     <Fragment>
       <div class="dose-banner info" set:html={`${icon("pause", 15, "currentColor", 2)} Recommendations paused`} />
       <h2 class="dose-h2">Luna is re-learning your nights</h2>
-      <p class="dose-rationale">Your basal setting changed, so Luna reset its learning. Hypo Shield is paused until Luna has observed enough of your nights again.</p>
+      <p class="dose-rationale">Your long-acting dose setting changed, so Luna reset its learning. Hypo Shield is paused until Luna has observed enough of your nights again.</p>
       <div class="dose-metricbox">
         <div class="dose-metric"><span class="dose-metric-l">Luna sessions observed</span><span class="dose-metric-v">2 of 5</span></div>
         <div class="dose-metricdiv"></div>
@@ -150,7 +150,7 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
     <Fragment>
       <div class="dose-banner critical" set:html={`${icon("info", 15, "currentColor", 2)} Confirm you're skipping`} />
       <h2 class="dose-h2">Skip the increase to {value} {unit}?</h2>
-      <p class="dose-rationale">Your TDBD stays where it is and you take your usual dose tonight. Luna will keep this recommendation in mind and may suggest it again.</p>
+      <p class="dose-rationale">Your long-acting dose stays where it is and you take your usual dose tonight. Luna will keep this suggestion in mind and may offer it again.</p>
       <div class="dose-stack">
         <button class="dose-btn primary">Skip this recommendation</button>
         <button class="dose-btn ghost">Back</button>
@@ -160,12 +160,13 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
 </div>
 
 <style>
-  .dose-sheet { background: var(--color-white); border-top-left-radius: 28px; border-top-right-radius: 28px; padding: 14px 26px 30px; box-shadow: 0 -8px 40px rgba(4,30,66,0.18); font-family: var(--ios-font-brand); }
+  .dose-sheet { background: var(--color-white); border-top-left-radius: 28px; border-top-right-radius: 28px; padding: 14px 26px 30px; box-shadow: 0 -8px 40px rgba(4,30,66,0.18); font-family: var(--ios-font-brand); max-height: 100%; overflow-y: auto; scrollbar-width: none; }
+  .dose-sheet::-webkit-scrollbar { width: 0; display: none; }
   .dose-grabber { width: 40px; height: 5px; border-radius: 999px; background: var(--color-lunar-lavender); margin: 0 auto 18px; }
   .dose-hdr { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; }
   .dose-moon { width: 24px; height: 24px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; flex: none; }
-  .dose-moon::before { content:""; position:absolute; right:-5px; top:2px; width:15px; height:15px; border-radius:50%; background: var(--color-moonlight); }
-  .dose-moon::after { content:""; position:absolute; right:-1px; top:4px; width:11px; height:11px; border-radius:50%; background: var(--color-midnight); }
+  .dose-moon::before { content:""; position:absolute; right:-5px; top:4.5px; width:15px; height:15px; border-radius:50%; background: var(--color-moonlight); }
+  .dose-moon::after { content:""; position:absolute; right:-1px; top:6.5px; width:11px; height:11px; border-radius:50%; background: var(--color-midnight); }
   .dose-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-slate); }
   .dose-h2 { margin: 0 0 16px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--color-ink); line-height: 1.25; }
   .dose-valrow { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }

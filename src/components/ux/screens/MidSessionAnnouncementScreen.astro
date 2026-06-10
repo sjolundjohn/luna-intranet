@@ -7,6 +7,8 @@
  * Rendered by ScreenRenderer with `sheet`. Lifted verbatim from
  * `hypo-shield/mid-session-announcement.html`.
  */
+import TabBar from "../ios/TabBar.astro";
+
 interface Props {
   variant?: "current" | "legacy";
 }
@@ -38,21 +40,33 @@ interface Props {
 {/* dim scrim */}
 <div class="scrim"></div>
 
-{/* MID-SESSION ANNOUNCEMENT — announcement only; opens the two-step sheet. */}
-<div class="announce-host">
-  <div class="announce" role="dialog" aria-label="Hypo Shield recommendation">
+{/* TAB BAR — bottom navigation is never missing (v0.4); raised above the
+    scrim so it stays visible under the announcement. */}
+<div style="position:relative; z-index:15; margin-top:auto;">
+  <TabBar active="dashboard" />
+</div>
+
+{/* MID-SESSION ANNOUNCEMENT — announcement only; opens the full-screen
+    suggestion review. "Not now" SNOOZES TO MORNING: it reappears as the Home
+    tip card when you wake — no repeat nighttime nags, never expires, always
+    retrievable under Settings · Hypo Shield. */}
+<div class="announce-host" style="bottom:96px;">
+  <div class="announce" role="dialog" aria-label="Hypo Shield suggestion">
     <div class="grabber"></div>
     <div class="moonwrap">
       <span class="moon" aria-hidden="true"></span>
       <span class="eyebrow">Hypo Shield · Mid-session</span>
     </div>
-    <div class="title">Luna has a basal suggestion for tonight</div>
-    <div class="body">While watching your glucose, Luna noticed your overnight numbers drifting up. When you're ready, review the suggested change — nothing happens until you confirm.</div>
+    <div class="title">Luna has a long-acting dose suggestion</div>
+    <div class="body">While watching your glucose, Luna noticed your nighttime numbers drifting up. When you're ready, review the suggested change — nothing happens until you confirm.</div>
     <div class="note">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-      You can review now or in the morning — your current basal stays in place until then.
+      You can review now or in the morning — your current dose stays in place until then.
     </div>
-    <button class="btn primary" type="button">Review recommendation</button>
+    <button class="btn primary" type="button">Review suggestion</button>
     <div class="skip"><button type="button">Not now</button></div>
+    <div style="display:flex; justify-content:center;">
+      <span class="flag"><span class="k">Not now</span>snoozes to the morning Home tip · kept in Settings · Hypo Shield</span>
+    </div>
   </div>
 </div>

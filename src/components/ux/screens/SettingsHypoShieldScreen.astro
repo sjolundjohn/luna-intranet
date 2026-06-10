@@ -1,10 +1,10 @@
 ---
 /**
- * SettingsHypoShieldScreen — Settings › Hypo Shield. Always-on for the T1D
- * pivotal (NO participant toggle); the product-level disable exists only for
- * T2D basal-only, surfaced as an explanatory footnote, not a user control.
- * Shows feature state, last recommendation + disposition, TDBD + learning, help.
- * Lifted verbatim from `hypo-shield/settings-hypo-shield.html`.
+ * SettingsHypoShieldScreen — Settings › Hypo Shield (v0.4). The ONE management
+ * surface: feature state, last suggestions + dispositions, your long-acting
+ * dose, learning progress and the full history (merged from the deleted TDBD
+ * Detail screen — the Home chip deep-links here), and help. Study-facing
+ * "always on" copy removed: it's not an option, so it isn't flagged as one.
  */
 import TabBar from "../ios/TabBar.astro";
 
@@ -12,6 +12,7 @@ interface Props {
   variant?: "current" | "legacy";
 }
 const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+const check = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
 ---
 <div class="content">
   {/* nav header: Moonlight back ("Settings"), then "Hypo Shield" title; NO divider */}
@@ -33,20 +34,15 @@ const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke
           <div class="state"><span class="dot"></span>Active</div>
         </div>
       </div>
-      <div class="desc">Hypo Shield learns your overnight basal needs and suggests a corrected dose when your standing basal looks mis-set. It never changes your dose for you.</div>
-      <div class="alwayson">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Always on for your study
-      </div>
-      <div class="t2d-note">A product-level disable exists for T2D basal-only users; it isn't a setting you control in the pivotal.</div>
+      <div class="desc">Hypo Shield learns your overnight insulin needs and suggests a corrected dose when your long-acting dose looks mis-set. It never changes your dose for you.</div>
     </div>
 
-    {/* LAST RECOMMENDATION + disposition */}
-    <div class="sec-label">Last recommendation</div>
+    {/* LAST SUGGESTIONS + disposition */}
+    <div class="sec-label">Last suggestions</div>
     <div class="list">
       <div class="row">
         <span class="sub-label">
-          <span class="t">New basal · 14 U</span>
+          <span class="t">New dose · 14 U</span>
           <span class="s">May 26 · 10:18 PM</span>
         </span>
         <span class="disp skipped">Skipped</span>
@@ -54,7 +50,7 @@ const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke
       </div>
       <div class="row">
         <span class="sub-label">
-          <span class="t">New basal · 14 U</span>
+          <span class="t">New dose · 14 U</span>
           <span class="s">May 24 · 9:32 AM</span>
         </span>
         <span class="disp applied">Applied</span>
@@ -62,23 +58,79 @@ const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke
       </div>
     </div>
 
-    {/* TDBD + detail */}
+    {/* DOSING — your long-acting dose (the Home chip deep-links here) */}
     <div class="sec-label">Dosing</div>
     <div class="list">
       <div class="row">
-        <span class="label">Total daily basal (TDBD)</span>
+        <span class="label">Long-acting dose</span>
         <span class="value">12 U</span>
-        <span class="chev" set:html={chev} />
       </div>
-      <div class="row">
-        <span class="label">Learning &amp; history</span>
-        <span class="value">5 sessions · 7 days</span>
-        <span class="chev" set:html={chev} />
+    </div>
+
+    {/* LEARNING — merged from the old TDBD detail */}
+    <div class="sec-label">Learning</div>
+    <div class="card-dark" style="padding:18px;">
+      <div class="lp">
+        <div class="lp-item">
+          <div class="lp-top">
+            <span class="lp-lbl"><span class="done" set:html={check} /> Luna sessions</span>
+            <span class="lp-count">5 of 5</span>
+          </div>
+          <div class="lp-bar"><i style="width:100%;"></i></div>
+        </div>
+        <div class="lp-item">
+          <div class="lp-top">
+            <span class="lp-lbl"><span class="done" set:html={check} /> Days of wear</span>
+            <span class="lp-count">7 of 7</span>
+          </div>
+          <div class="lp-bar"><i style="width:100%;"></i></div>
+        </div>
+      </div>
+      <span class="learned">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        Learned · Hypo Shield can now suggest
+      </span>
+    </div>
+
+    {/* HISTORY — merged from the old TDBD detail */}
+    <div class="sec-label" style="margin-top:14px;">History</div>
+    <div class="list">
+      <div class="hist-row">
+        <span class="dt">May<br>26</span>
+        <span class="mid">
+          <span class="t">Suggested 14 U</span>
+          <span class="s">Drifted up · you declined</span>
+        </span>
+        <span class="tag skipped">Skipped</span>
+      </div>
+      <div class="hist-row">
+        <span class="dt">May<br>24</span>
+        <span class="mid">
+          <span class="t">Changed to 12 U</span>
+          <span class="s">Suggestion applied</span>
+        </span>
+        <span class="tag applied">Applied</span>
+      </div>
+      <div class="hist-row">
+        <span class="dt">May<br>19</span>
+        <span class="mid">
+          <span class="t">Manual change to 10 U</span>
+          <span class="s">Learning reset, then re-learned</span>
+        </span>
+        <span class="tag reset">Reset</span>
+      </div>
+      <div class="hist-row">
+        <span class="dt">May<br>12</span>
+        <span class="mid">
+          <span class="t">Started at 10 U</span>
+          <span class="s">Your starting dose at setup</span>
+        </span>
+        <span class="tag applied">Set</span>
       </div>
     </div>
 
     {/* Help */}
-    <div class="sec-label">Support</div>
+    <div class="sec-label" style="margin-top:14px;">Support</div>
     <div class="list">
       <div class="row">
         <span class="label">How Hypo Shield works</span>

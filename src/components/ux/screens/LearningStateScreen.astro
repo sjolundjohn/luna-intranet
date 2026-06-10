@@ -7,13 +7,14 @@
  * up/down once learned). Lifted verbatim from `hypo-shield/learning-state.html`.
  */
 import StatusStrip from "../ios/StatusStrip.astro";
+import CgmHero from "../ios/CgmHero.astro";
 import TabBar from "../ios/TabBar.astro";
 
 interface Props {
   variant?: "current" | "legacy";
 }
 ---
-<div class="content">
+<div class="content" style="overflow-y:auto;">
   <StatusStrip />
 
   <div class="pad gluc-hero" style="margin-top:14px;">
@@ -24,16 +25,22 @@ interface Props {
     <div class="footnote muted">mg/dL · steady</div>
   </div>
 
-  {/* HYPO SHIELD LEARNING STATE — no recommendation yet.
-      Both conditions required: 5 Luna sessions AND 7 days of wear. */}
-  <div class="pad" style="margin-top:16px;">
-    <div class="card-dark learn-card">
+  {/* CGM graph for context — the learning card no longer just pops up
+      against a bare background (v0.4). */}
+  <CgmHero trace="inrange" height={100} />
+
+  {/* HYPO SHIELD LEARNING STATE — no suggestion yet. Both conditions
+      required: 5 Luna sessions AND 7 days of wear. High-contrast card;
+      explanation lives on How Hypo Shield works (linked), the card shows
+      YOUR nights instead of re-explaining the feature. */}
+  <div class="pad" style="margin-top:12px;">
+    <div class="card-dark learn-card hypo-pop">
       <div class="head">
         <span class="moon" aria-hidden="true"></span>
         <span class="eyebrow">Hypo Shield · Learning</span>
       </div>
       <div class="title">Luna is learning your nights</div>
-      <div class="sub">Before Luna suggests a basal change, it learns your overnight needs. This takes both <b>5 Luna sessions</b> and <b>7 days of wear</b>. While it learns, dosing stays a little more conservative.</div>
+      <div class="sub">Before suggesting any change to your long-acting insulin, Luna learns from your own nights — <b>3 watched so far</b>, in range by morning on 2 of them.</div>
 
       <div class="learn-prog">
         <div class="lp-item">
@@ -53,8 +60,12 @@ interface Props {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19"/></svg>
         </span>
         <span class="dm-lbl"><span class="k">Dosing mode</span><span class="v">Establishing baseline</span></span>
-        <span class="note">Next: compensating upward or downward once learned</span>
+        <span class="note">While learning, dosing stays a little more conservative</span>
       </div>
+
+      <button class="howlink" type="button" style="margin-top:12px;">What is Hypo Shield?
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
   </div>
 

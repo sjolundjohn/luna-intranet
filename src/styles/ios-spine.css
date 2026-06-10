@@ -160,9 +160,10 @@
 .ux-ios .screen--sheet .brandbar { position: relative; z-index: 30; }
 .ux-ios .screen--sheet .homebar { position: relative; z-index: 30; }
 .ux-ios .scrim { position: absolute; inset: 0; background: rgba(3,22,50,0.55); z-index: 10; }
-/* sheet host capped below the Dynamic-Island safe area so the sheet top is never occluded */
+/* sheet host capped below the statusbar + brandbar so a tall sheet never
+   cuts across the Luna logo (v0.4 — "logo compressed" fix) */
 .ux-ios .sheet-host {
-  position: absolute; left: 0; right: 0; bottom: 0; top: 62px; z-index: 20;
+  position: absolute; left: 0; right: 0; bottom: 0; top: 114px; z-index: 20;
   display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;
 }
 .ux-ios .backdrop { filter: blur(1px); }
@@ -210,8 +211,8 @@
   border-radius: var(--radius-pill); padding: 11px 14px; cursor: pointer;
 }
 .ux-ios .ask-luna .moon-ic { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; }
-.ux-ios .ask-luna .moon-ic::before { content: ""; position: absolute; right: -5px; top: 3px; width: 15px; height: 15px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .ask-luna .moon-ic::after { content: ""; position: absolute; right: -1px; top: 5px; width: 11px; height: 11px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .ask-luna .moon-ic::before { content: ""; position: absolute; right: -5px; top: 4.5px; width: 15px; height: 15px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .ask-luna .moon-ic::after { content: ""; position: absolute; right: -1px; top: 6.5px; width: 11px; height: 11px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .ask-luna .ph { flex: 1; font-size: 14px; color: var(--color-on-dark-sub); }
 .ux-ios .ask-luna .send { flex: none; color: var(--color-moonlight); display: flex; }
 .ux-ios .aic { display: flex; align-items: center; gap: 12px; padding: 13px 16px; }
@@ -257,8 +258,8 @@
 .ux-ios .tip-card { display: flex; flex-direction: column; gap: 12px; padding: 16px 16px 16px; }
 .ux-ios .tip-card .head { display: flex; align-items: center; gap: 10px; }
 .ux-ios .tip-card .moon { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; border: 1px solid rgba(104,210,223,0.35); }
-.ux-ios .tip-card .moon::before { content: ""; position: absolute; right: -5px; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .tip-card .moon::after { content: ""; position: absolute; right: -1px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .tip-card .moon::before { content: ""; position: absolute; right: -5px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .tip-card .moon::after { content: ""; position: absolute; right: -1px; top: 7px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .tip-card .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-on-dark-sub); }
 .ux-ios .tip-card .lead { font-size: 15px; line-height: 1.45; color: var(--color-on-dark); }
 .ux-ios .tip-card .tdbd-chip { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; background: rgba(104,210,223,0.10); border: 1px solid rgba(104,210,223,0.30); border-radius: var(--radius-pill); padding: 8px 12px; cursor: pointer; }
@@ -271,8 +272,8 @@
 .ux-ios .tip-post { display: flex; flex-direction: column; gap: 14px; padding: 18px 18px; border: 1px solid rgba(104,210,223,0.45); background: rgba(104,210,223,0.07); }
 .ux-ios .tip-post .head { display: flex; align-items: center; gap: 10px; }
 .ux-ios .tip-post .moon { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; border: 1px solid rgba(104,210,223,0.45); }
-.ux-ios .tip-post .moon::before { content: ""; position: absolute; right: -5px; top: 4px; width: 17px; height: 17px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .tip-post .moon::after { content: ""; position: absolute; right: -1px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .tip-post .moon::before { content: ""; position: absolute; right: -5px; top: 5.5px; width: 17px; height: 17px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .tip-post .moon::after { content: ""; position: absolute; right: -1px; top: 7.5px; width: 13px; height: 13px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .tip-post .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-moonlight); }
 .ux-ios .tip-post .title { font-size: 18px; font-weight: 700; line-height: 1.3; color: var(--color-on-dark); letter-spacing: -0.01em; }
 .ux-ios .tip-post .recrow { display: flex; align-items: baseline; gap: 10px; }
@@ -289,8 +290,8 @@
 .ux-ios .learn-card { display: flex; flex-direction: column; gap: 0; padding: 18px 18px; }
 .ux-ios .learn-card .head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .ux-ios .learn-card .moon { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; border: 1px solid rgba(104,210,223,0.45); }
-.ux-ios .learn-card .moon::before { content: ""; position: absolute; right: -5px; top: 4px; width: 17px; height: 17px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .learn-card .moon::after { content: ""; position: absolute; right: -1px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .learn-card .moon::before { content: ""; position: absolute; right: -5px; top: 5.5px; width: 17px; height: 17px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .learn-card .moon::after { content: ""; position: absolute; right: -1px; top: 7.5px; width: 13px; height: 13px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .learn-card .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-moonlight); }
 .ux-ios .learn-card .title { font-size: 17px; font-weight: 700; line-height: 1.35; color: var(--color-on-dark); letter-spacing: -0.01em; margin-bottom: 6px; }
 .ux-ios .learn-card .sub { font-size: 13px; line-height: 1.5; color: var(--color-on-dark-sub); margin-bottom: 16px; }
@@ -304,7 +305,8 @@
 /* learning-state fill = Moonlight (still learning) */
 .ux-ios .learn-prog .lp-item .lp-count { color: var(--color-moonlight); }
 .ux-ios .learn-prog .lp-bar > i { background: var(--color-moonlight); }
-.ux-ios .learn-and { display: flex; align-items: center; gap: 8px; margin: -4px 0 12px; padding-left: 2px; }
+/* symmetric: rely on the .learn-prog gap on both sides of the AND divider */
+.ux-ios .learn-and { display: flex; align-items: center; gap: 8px; margin: 0; padding-left: 2px; }
 .ux-ios .learn-and .pill { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--color-on-dark-sub); border: 1px solid rgba(255,255,255,0.16); border-radius: var(--radius-pill); padding: 2px 9px; }
 .ux-ios .learn-and .line { flex: 1; height: 1px; background: rgba(255,255,255,0.10); }
 .ux-ios .dose-mode { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: rgba(104,210,223,0.08); border: 1px solid rgba(104,210,223,0.25); border-radius: 14px; }
@@ -313,6 +315,42 @@
 .ux-ios .dose-mode .dm-lbl .k { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-on-dark-sub); }
 .ux-ios .dose-mode .dm-lbl .v { font-size: 14px; font-weight: 700; color: var(--color-on-dark); }
 .ux-ios .dose-mode .note { font-size: 11px; color: var(--color-on-dark-sub); margin-left: auto; text-align: right; max-width: 46%; line-height: 1.3; }
+
+/* v0.4 — Hypo Shield communication cards: high-contrast "pop" treatment.
+   John's note: the dark bubbles read blue-on-blue and disappear in daylight.
+   The applied direction (B) inverts to a light card on the dark dashboard —
+   maximum day-legibility. Variants A (boosted dark) and C (amber) kept for
+   the on-screen comparison. MUST stay below the tip-card/tip-post/learn-card
+   blocks: equal specificity, cascade order decides. */
+.ux-ios .hypo-pop { background: var(--color-soft-paper); border: 1px solid rgba(255,255,255,0.92); box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+.ux-ios .hypo-pop .eyebrow { color: var(--color-moonlight-deep); }
+.ux-ios .hypo-pop .lead, .ux-ios .hypo-pop .title,
+.ux-ios .hypo-pop .recrow .num, .ux-ios .hypo-pop .recrow .u { color: var(--color-ink); }
+.ux-ios .hypo-pop .sub, .ux-ios .hypo-pop .prev, .ux-ios .hypo-pop .rationale, .ux-ios .hypo-pop .note { color: var(--color-graphite); }
+.ux-ios .hypo-pop .sub b { color: var(--color-ink); }
+.ux-ios .hypo-pop .note svg { color: var(--color-graphite); }
+.ux-ios .hypo-pop .lp-item .lp-lbl { color: var(--color-ink); }
+.ux-ios .hypo-pop .lp-bar { background: var(--color-periwinkle-mist); }
+.ux-ios .hypo-pop .learn-prog .lp-item .lp-count { color: var(--color-moonlight-deep); }
+.ux-ios .hypo-pop .learn-prog .lp-bar > i { background: var(--color-moonlight-deep); }
+.ux-ios .hypo-pop .learn-and .pill { color: var(--color-slate); border-color: var(--color-border-default, #D8DEE9); }
+.ux-ios .hypo-pop .learn-and .line { background: var(--color-border-default, #D8DEE9); }
+.ux-ios .hypo-pop .dose-mode { background: var(--color-moonlight-tint, #E8FCFF); border-color: rgba(10,154,174,0.30); }
+.ux-ios .hypo-pop .dose-mode .ic { color: var(--color-moonlight-deep); }
+.ux-ios .hypo-pop .dose-mode .dm-lbl .k, .ux-ios .hypo-pop .dose-mode .note { color: var(--color-slate); }
+.ux-ios .hypo-pop .dose-mode .dm-lbl .v { color: var(--color-ink); }
+.ux-ios .hypo-pop .tdbd-chip { background: var(--color-moonlight-tint, #E8FCFF); border-color: rgba(10,154,174,0.35); }
+.ux-ios .hypo-pop .tdbd-chip .k { color: var(--color-slate); }
+.ux-ios .hypo-pop .tdbd-chip .v { color: var(--color-ink); }
+.ux-ios .hypo-pop .tdbd-chip .v .u { color: var(--color-slate); }
+.ux-ios .hypo-pop .tdbd-chip .chev { color: var(--color-moonlight-deep); }
+.ux-ios .hypo-pop .moon { border-color: rgba(4,30,66,0.18); }
+.ux-ios .hypo-pop .howlink { color: var(--color-moonlight-deep); }
+.ux-ios .hypo-pop .dir { background: var(--color-moonlight-tint, #E8FCFF); color: var(--color-moonlight-deep); }
+/* comparison-only variants */
+.ux-ios .hypo-pop-a { background: rgba(104,210,223,0.15); border: 1.5px solid rgba(104,210,223,0.65); box-shadow: 0 0 26px rgba(104,210,223,0.28); }
+.ux-ios .hypo-pop-c { background: rgba(249,205,134,0.10); border: 1.5px solid rgba(249,205,134,0.55); box-shadow: 0 0 22px rgba(249,205,134,0.18); }
+.ux-ios .hypo-pop-c .eyebrow { color: var(--color-warning); }
 
 /* ============================================================
    GENERIC WHITE SHEET chrome (HypoShield confirm-reset / confirm-skip).
@@ -324,8 +362,8 @@
 .ux-ios .sheet .grabber { width: 40px; height: 5px; border-radius: 999px; background: var(--color-lunar-lavender); margin: 0 auto 16px; }
 .ux-ios .sheet .hdr { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
 .ux-ios .sheet .moon { width: 24px; height: 24px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; flex: none; }
-.ux-ios .sheet .moon::before { content: ""; position: absolute; right: -5px; top: 2px; width: 15px; height: 15px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .sheet .moon::after { content: ""; position: absolute; right: -1px; top: 4px; width: 11px; height: 11px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .sheet .moon::before { content: ""; position: absolute; right: -5px; top: 4.5px; width: 15px; height: 15px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .sheet .moon::after { content: ""; position: absolute; right: -1px; top: 6.5px; width: 11px; height: 11px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .sheet .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-slate); }
 .ux-ios .sheet h2 { margin: 0 0 14px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--color-ink); line-height: 1.25; }
 .ux-ios .sheet .rationale { margin: 0 0 18px; font-size: 15px; line-height: 1.5; color: var(--color-graphite); }
@@ -394,8 +432,8 @@
 .ux-ios .announce .grabber { width: 40px; height: 5px; border-radius: 999px; background: rgba(255,255,255,0.22); margin: -6px auto 4px; }
 .ux-ios .announce .moonwrap { display: flex; align-items: center; gap: 10px; }
 .ux-ios .announce .moon { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; border: 1px solid rgba(104,210,223,0.45); }
-.ux-ios .announce .moon::before { content: ""; position: absolute; right: -5px; top: 5px; width: 18px; height: 18px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .announce .moon::after { content: ""; position: absolute; right: -1px; top: 7px; width: 14px; height: 14px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .announce .moon::before { content: ""; position: absolute; right: -5px; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .announce .moon::after { content: ""; position: absolute; right: -1px; top: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .announce .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-moonlight); }
 .ux-ios .announce .title { font-size: 21px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-on-dark); }
 .ux-ios .announce .body { font-size: 14px; line-height: 1.5; color: var(--color-on-dark-sub); }
@@ -410,8 +448,8 @@
 .ux-ios .feat-card { display: flex; flex-direction: column; gap: 0; padding: 18px; }
 .ux-ios .feat-card .head { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
 .ux-ios .feat-card .moon { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; border: 1px solid rgba(104,210,223,0.45); }
-.ux-ios .feat-card .moon::before { content: ""; position: absolute; right: -5px; top: 4px; width: 18px; height: 18px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .feat-card .moon::after { content: ""; position: absolute; right: -1px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .feat-card .moon::before { content: ""; position: absolute; right: -5px; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .feat-card .moon::after { content: ""; position: absolute; right: -1px; top: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .feat-card .nm { font-size: 18px; font-weight: 700; color: var(--color-on-dark); letter-spacing: -0.01em; }
 .ux-ios .feat-card .state { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: var(--color-success-light); margin-top: 2px; }
 .ux-ios .feat-card .state .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-success-light); box-shadow: 0 0 8px rgba(176,249,179,0.6); }
@@ -495,8 +533,8 @@
 .ux-ios .explain-card { margin-top: 14px; }
 .ux-ios .explain-card .lead { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .ux-ios .explain-card .lead .moon { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; }
-.ux-ios .explain-card .lead .moon::before { content: ""; position: absolute; right: -5px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .explain-card .lead .moon::after { content: ""; position: absolute; right: -1px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .explain-card .lead .moon::before { content: ""; position: absolute; right: -5px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .explain-card .lead .moon::after { content: ""; position: absolute; right: -1px; top: 7px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .explain-card .lead .t { font-size: 15px; font-weight: 700; color: var(--color-on-dark); }
 .ux-ios .explain-card p { margin: 0 0 10px; font-size: 14px; line-height: 1.5; color: var(--color-on-dark-sub); }
 .ux-ios .explain-card p:last-child { margin-bottom: 0; }
@@ -516,8 +554,8 @@
 /* Session-detail residual IOB focal card */
 .ux-ios .iob-residual { display: flex; align-items: center; gap: 14px; }
 .ux-ios .iob-residual .moon-ic { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; }
-.ux-ios .iob-residual .moon-ic::before { content: ""; position: absolute; right: -9px; top: 6px; width: 28px; height: 28px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .iob-residual .moon-ic::after { content: ""; position: absolute; right: -2px; top: 9px; width: 21px; height: 21px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .iob-residual .moon-ic::before { content: ""; position: absolute; right: -9px; top: 8px; width: 28px; height: 28px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .iob-residual .moon-ic::after { content: ""; position: absolute; right: -2px; top: 11px; width: 21px; height: 21px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .iob-residual .col { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .ux-ios .iob-residual .k { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-on-dark-sub); }
 .ux-ios .iob-residual .big { font-size: 34px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; color: var(--color-on-dark); font-variant-numeric: tabular-nums; }
@@ -598,8 +636,8 @@
 .ux-ios .dev-card { display: flex; flex-direction: column; gap: 0; padding: 18px; }
 .ux-ios .dev-card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .ux-ios .dev-card .moon { flex: none; width: 34px; height: 34px; border-radius: 9px; background: var(--color-midnight); position: relative; overflow: hidden; border: 1px solid rgba(104,210,223,0.45); }
-.ux-ios .dev-card .moon::before { content: ""; position: absolute; right: -6px; top: 6px; width: 21px; height: 21px; border-radius: 50%; background: var(--color-moonlight); }
-.ux-ios .dev-card .moon::after { content: ""; position: absolute; right: -1px; top: 9px; width: 15px; height: 15px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .dev-card .moon::before { content: ""; position: absolute; right: -6px; top: 6.5px; width: 21px; height: 21px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .dev-card .moon::after { content: ""; position: absolute; right: -1px; top: 9.5px; width: 15px; height: 15px; border-radius: 50%; background: var(--color-midnight); }
 .ux-ios .dev-card .nm { font-size: 18px; font-weight: 700; color: var(--color-on-dark); letter-spacing: -0.01em; }
 .ux-ios .dev-card .state { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: var(--color-success-light); margin-top: 2px; }
 .ux-ios .dev-card .state .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-success-light); box-shadow: 0 0 8px rgba(176,249,179,0.6); }

@@ -6,7 +6,7 @@ import CTAButton from "~/components/CTAButton.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
 import CompareSlider from "~/components/ux/CompareSlider.astro";
-import { SCREENS, brdFor, FLOW_NEXT, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
+import { SCREENS, brdFor, FLOW_NEXT, FLOWS, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
 
 export function getStaticPaths() {
   return SCREENS.map((s) => ({ params: { slug: s.id }, props: { screen: s } }));
@@ -20,12 +20,34 @@ const COMPARE_SCALE = 0.62;
 const brd = brdFor(screen.feature);
 // Prototype walkthrough: the next screen this screen's primary CTA advances to.
 const flowNext = FLOW_NEXT[screen.id] ?? "";
+// Flow navigation: skip forward/backward within the screen's feature flow
+// (the FLOWS order), from any screen — independent of the prototype CTA wiring.
+const flow = FLOWS.find((f) => f.screens.includes(screen.id));
+const flowIdx = flow ? flow.screens.indexOf(screen.id) : -1;
+const flowPrev = flow && flowIdx > 0 ? flow.screens[flowIdx - 1] : "";
+const flowNextNav = flow && flowIdx >= 0 && flowIdx < flow.screens.length - 1 ? flow.screens[flowIdx + 1] : "";
+const flowPos = flow ? `${flowIdx + 1} of ${flow.screens.length}` : "";
 ---
 
 <BaseLayout title={`${screen.title} · UX Review`} description={screen.summary} heroIsDark={false}>
   <WhiteSection size="compact">
-    <div class="mb-6 flex items-center justify-between gap-4">
+    <div class="mb-6 flex items-center justify-between gap-4 flex-wrap">
       <CTAButton href="/tools/ux-review" variant="ghost">← All screens</CTAButton>
+      {flow && (
+        <nav class="ux-flownav" aria-label={`${flow.label} flow navigation`}>
+          {flowPrev ? (
+            <a href={`/tools/ux-review/${flowPrev}`} class="ux-flownav-btn" data-flow-prev>‹ Prev</a>
+          ) : (
+            <span class="ux-flownav-btn is-disabled" aria-disabled="true">‹ Prev</span>
+          )}
+          <span class="ux-flownav-pos">{flowPos} · {flow.label}</span>
+          {flowNextNav ? (
+            <a href={`/tools/ux-review/${flowNextNav}`} class="ux-flownav-btn" data-flow-next-nav>Next ›</a>
+          ) : (
+            <span class="ux-flownav-btn is-disabled" aria-disabled="true">Next ›</span>
+          )}
+        </nav>
+      )}
       <a href="/tools/ux-review/review" class="text-graphite text-[13px] hover:text-ink transition-colors">Review dashboard →</a>
     </div>
 
@@ -160,6 +182,18 @@ const flowNext = FLOW_NEXT[screen.id] ?? "";
 
   .ux-mode-btn { color: var(--color-graphite); }
   .ux-mode-btn[aria-selected="true"] { background: var(--color-midnight); color: #fff; }
+
+  /* Flow navigation — skip back/forward within the current feature flow. */
+  .ux-flownav { display: inline-flex; align-items: center; gap: 10px; }
+  .ux-flownav-btn {
+    display: inline-flex; align-items: center; padding: 6px 14px;
+    border: 1px solid var(--color-border-default); border-radius: 999px;
+    background: var(--color-white); color: var(--color-ink);
+    font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap;
+  }
+  .ux-flownav-btn:hover { border-color: var(--color-ink); }
+  .ux-flownav-btn.is-disabled { opacity: 0.35; pointer-events: none; }
+  .ux-flownav-pos { font-size: 12px; color: var(--color-slate); white-space: nowrap; }
 
   .ux-pinbtn {
     display: inline-flex;
@@ -664,6 +698,20 @@ const flowNext = FLOW_NEXT[screen.id] ?? "";
     if (protoHint && stage && (stage.querySelector("[data-tab]") || (flowNext && stage.querySelector(".btn.primary")))) {
       protoHint.hidden = false;
     }
+
+    // --- flow navigation: ← / → arrow keys skip within the feature flow
+    // (ignored while typing in the composer / a reply box).
+    document.addEventListener("keydown", (e) => {
+      const t = e.target as HTMLElement;
+      if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT" || t.tagName === "SELECT" || t.isContentEditable)) return;
+      if (e.key === "ArrowLeft") {
+        const prev = document.querySelector<HTMLAnchorElement>("[data-flow-prev]");
+        if (prev) location.assign(prev.href);
+      } else if (e.key === "ArrowRight") {
+        const next = document.querySelector<HTMLAnchorElement>("[data-flow-next-nav]");
+        if (next) location.assign(next.href);
+      }
+    });
 
     // --- deep link /tools/ux-review/<id>#c=<comment_id>
     function handleDeepLink() {

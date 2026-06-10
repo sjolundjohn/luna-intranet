@@ -24,30 +24,27 @@ interface Props {
 
   {/* NOTIFICATION ZONE — a single Luna push, prompt-to-open ONLY */}
   <div class="notif-zone">
-    {/* Wireframe annotation: prompt-to-open → opens the in-app flow on tap */}
+    {/* Wireframe annotation: prompt-to-open → opens the in-app flow on tap.
+        Placement matches stock iOS 16+: lock-screen notifications STACK AT
+        THE BOTTOM; top banners only appear while the phone is unlocked. */}
     <div class="flow-note">
       <span class="ic" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </span>
-      <span class="ln"><b>Prompt-to-open only.</b> No dose value and no confirmable action on the lock screen. Tapping the banner opens the app, where the in-app recommendation flow handles review and the two-step confirm.</span>
+      <span class="ln"><b>Prompt-to-open only.</b> No dose value and no action on the lock screen — tapping the banner opens the full-screen suggestion review in the app. Bottom-stacked placement matches stock iOS 16+ lock-screen notifications.</span>
     </div>
 
-    {/* THE PUSH BANNER — tap opens the in-app recommendation flow */}
-    <button class="push" aria-label="Open Luna to review your basal recommendation">
+    {/* THE PUSH BANNER — tapping the banner itself opens the in-app review */}
+    <button class="push" aria-label="Open Luna to review your long-acting dose suggestion">
       <span class="app-ico" aria-hidden="true"></span>
       <span class="body-txt">
         <span class="top">
           <span class="nm">Luna</span>
           <span class="ago">now</span>
         </span>
-        <span class="ttl">A basal suggestion is ready</span>
-        <span class="msg">Open Luna to review it. Nothing changes until you do — your current basal stays in place.</span>
+        <span class="ttl">A long-acting dose suggestion is ready</span>
+        <span class="msg">Open Luna to review it. You'll need to take action yourself to adjust your insulin dose — nothing changes on its own.</span>
       </span>
     </button>
-
-    <div class="open-hint">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-      Tap to open Luna
-    </div>
   </div>
 </div>

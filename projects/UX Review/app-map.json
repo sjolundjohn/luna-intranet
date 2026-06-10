@@ -36,74 +36,83 @@
     "legacy": "wireframes/legacy/hardware-checkpoint.jpg"
   },
   {
-    "id": "dose-confirmation-spine",
-    "title": "Dose Confirmation",
-    "status": "Work in Progress",
-    "feature": "Hypo Shield & In-App Comms",
-    "summary": "Safely act on a dose recommendation: acknowledge that you've updated the setting AND taken the dose, then slide to confirm both — the safeguard behind every Hypo Shield dose change.",
-    "wireframe": "component:dose-confirmation-spine",
-    "legacy": null
-  },
-  {
     "id": "hypo-home-tip-default",
-    "title": "Home — Default Tip",
+    "title": "Home — default tip",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Resting Hypo Shield tip: nightly basal looks well-matched. States the standing dose (chip opens TDBD detail); a reassurance line, not an accept control.",
+    "summary": "Resting state: Hypo Shield tells you it's learning about you (the bubble only ever appears to communicate something). The long-acting dose chip opens Settings · Hypo Shield.",
     "wireframe": "component:hypo-home-tip-default",
     "legacy": "wireframes/legacy/home-dashboard.jpg"
   },
   {
-    "id": "hypo-home-tip-post",
-    "title": "Home — Tip Post (recommendation)",
-    "status": "Work in Progress",
-    "feature": "Hypo Shield & In-App Comms",
-    "summary": "A basal recommendation is available — decision-support framing (14 U Increase). A suggestion only; the only action opens the two-step confirm. The read never accepts.",
-    "wireframe": "component:hypo-home-tip-post",
-    "legacy": "wireframes/legacy/home-dashboard.jpg"
-  },
-  {
     "id": "hypo-learning-state",
-    "title": "Learning State & Dosing Mode",
+    "title": "Learning state & dosing mode",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Pre-recommendation: Luna learns before suggesting — both 5 Luna sessions AND 7 days of wear. Dual progress + current Dosing Mode (Establishing baseline).",
+    "summary": "Pre-suggestion: Luna learns before suggesting — 5 Luna sessions AND 7 days of wear, shown against your own nights. Links to How Hypo Shield works.",
     "wireframe": "component:hypo-learning-state",
     "legacy": null
   },
   {
-    "id": "hypo-mid-session-announcement",
-    "title": "Mid-Session Dose Announcement",
+    "id": "hypo-home-tip-post",
+    "title": "Home — suggestion ready",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Calm bedside hand-off over the dimmed live dashboard. Announcement only — review now or in the morning; current basal stays in place until confirmed.",
+    "summary": "A long-acting dose suggestion is available — a compact notice, no dose detail. The only action opens the full-screen suggestion review; reading never accepts.",
+    "wireframe": "component:hypo-home-tip-post",
+    "legacy": "wireframes/legacy/home-dashboard.jpg"
+  },
+  {
+    "id": "hypo-mid-session-announcement",
+    "title": "Mid-session dose announcement",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
+    "summary": "Calm bedside hand-off over the dimmed live dashboard. Announcement only — review now or in the morning; 'Not now' snoozes to the morning Home tip. Current dose stays in place.",
     "wireframe": "component:hypo-mid-session-announcement",
     "legacy": null
   },
   {
-    "id": "hypo-confirm-increase",
-    "title": "Confirm Amount — Increase (two-part)",
+    "id": "hypo-push-notification",
+    "title": "Push notification — prompt to open",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Two-part action: acknowledge update-setting AND take-dose, then slide to confirm both. Slider disabled until both acknowledged. Dose value [X]/14 U is a placeholder.",
-    "wireframe": "component:hypo-confirm-increase",
+    "summary": "Lock-screen push: prompt-to-open only — no dose value, no action on the lock screen. Tapping the banner opens the in-app suggestion review. iOS 16+ bottom-stack placement.",
+    "wireframe": "component:hypo-push-notification",
     "legacy": null
   },
   {
-    "id": "hypo-confirm-reset-required",
-    "title": "Confirm Amount — Reset Required",
+    "id": "hypo-recommendation-detail",
+    "title": "Suggestion review (full screen)",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "A manual basal change reset learning — no dose value and no slide. Re-learning progress (5 sessions AND 7 days); single action acknowledges the new baseline.",
-    "wireframe": "component:hypo-confirm-reset-required",
+    "summary": "The full-screen review that gates EVERY suggestion: old vs new dose contrast, what Luna noticed in your own nights, how Luna decided, and the education link — then on to the two-step confirm.",
+    "wireframe": "component:hypo-recommendation-detail",
+    "legacy": null
+  },
+  {
+    "id": "dose-confirmation-spine",
+    "title": "Dose confirmation",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
+    "summary": "Safely act on a dose suggestion: acknowledge that you've updated the setting AND committed to the dose, then slide to confirm both — the safeguard behind every Hypo Shield change.",
+    "wireframe": "component:dose-confirmation-spine",
+    "legacy": null
+  },
+  {
+    "id": "hypo-confirm-success",
+    "title": "Confirmation — settings adjusted",
+    "status": "Work in Progress",
+    "feature": "Hypo Shield & In-App Comms",
+    "summary": "Positive confirmation after the two-step confirm: dose updated to 14 U, a reminder to take the actual dose this evening, and relearning started (7 days + 5 sessions).",
+    "wireframe": "component:hypo-confirm-success",
     "legacy": null
   },
   {
     "id": "hypo-confirm-skip",
-    "title": "Confirm Skip (decline / defer)",
+    "title": "Confirm skip (decline / defer)",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Decline/defer: nothing changes, current basal stands. Consequence shown in Plum (never red); the recommendation isn't lost — retrievable under Settings · Hypo Shield.",
+    "summary": "Decline/defer: nothing changes, the current long-acting dose stands. Consequence shown in Plum (never red); the suggestion isn't lost — it waits under Settings · Hypo Shield.",
     "wireframe": "component:hypo-confirm-skip",
     "legacy": null
   },
@@ -112,26 +121,17 @@
     "title": "Settings — Hypo Shield",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Settings › Hypo Shield: always-on for the T1D pivotal (no participant toggle; T2D disable is a footnote). State, last recommendation + disposition, TDBD + learning.",
+    "summary": "Feature state, last suggestions + dispositions, your long-acting dose, learning progress and full history (merged from the old TDBD detail), and help.",
     "wireframe": "component:hypo-settings",
     "legacy": "wireframes/legacy/settings-root.jpg"
   },
   {
-    "id": "hypo-tdbd-detail",
-    "title": "TDBD Detail (current value, learning, history)",
+    "id": "hypo-how-it-works",
+    "title": "How Hypo Shield works",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Current programmed total daily basal (you set this — Luna never changes it), learning progress (5 AND 7, learned), and a plain change/recommendation history.",
-    "wireframe": "component:hypo-tdbd-detail",
-    "legacy": null
-  },
-  {
-    "id": "hypo-push-notification",
-    "title": "Push notification — prompt-to-open only",
-    "status": "Work in Progress",
-    "feature": "Hypo Shield & In-App Comms",
-    "summary": "Lock-screen push: prompt-to-open only — no dose value, no confirmable action on the lock screen. Tapping opens the in-app review + two-step confirm.",
-    "wireframe": "component:hypo-push-notification",
+    "summary": "The single education surface: what Hypo Shield is, how it learns, what it does (suggests only), and what you do. Linked from Learning State, Settings and the suggestion review.",
+    "wireframe": "component:hypo-how-it-works",
     "legacy": null
   },
   {

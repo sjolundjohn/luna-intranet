@@ -24,10 +24,11 @@ import HomeTipDefaultScreen from "./screens/HomeTipDefaultScreen.astro";
 import HomeTipPostScreen from "./screens/HomeTipPostScreen.astro";
 import LearningStateScreen from "./screens/LearningStateScreen.astro";
 import MidSessionAnnouncementScreen from "./screens/MidSessionAnnouncementScreen.astro";
-import ConfirmResetRequiredScreen from "./screens/ConfirmResetRequiredScreen.astro";
+import RecommendationDetailScreen from "./screens/RecommendationDetailScreen.astro";
+import ConfirmSuccessScreen from "./screens/ConfirmSuccessScreen.astro";
 import ConfirmSkipScreen from "./screens/ConfirmSkipScreen.astro";
 import SettingsHypoShieldScreen from "./screens/SettingsHypoShieldScreen.astro";
-import TdbdDetailScreen from "./screens/TdbdDetailScreen.astro";
+import HypoHowItWorksScreen from "./screens/HypoHowItWorksScreen.astro";
 import PushNotificationScreen from "./screens/PushNotificationScreen.astro";
 // IOB Display
 import IobHomeOnScreen from "./screens/IobHomeOnScreen.astro";
@@ -89,16 +90,18 @@ const REGISTRY: Record<string, any> = {
   "session-history": SessionHistoryScreen,
   "hardware-checkpoint-spine": HardwareCheckpointScreen,
   "dose-confirmation-spine": DoseConfirmationScreen,
-  // HypoShield & In-App Comms
+  // Hypo Shield & In-App Comms (v0.4: every recommendation gates through the
+  // full-screen takeover; confirm-increase + tdbd-detail removed; success +
+  // how-it-works added)
   "hypo-home-tip-default": HomeTipDefaultScreen,
   "hypo-home-tip-post": HomeTipPostScreen,
   "hypo-learning-state": LearningStateScreen,
   "hypo-mid-session-announcement": MidSessionAnnouncementScreen,
-  "hypo-confirm-increase": DoseConfirmationScreen,
-  "hypo-confirm-reset-required": ConfirmResetRequiredScreen,
+  "hypo-recommendation-detail": RecommendationDetailScreen,
+  "hypo-confirm-success": ConfirmSuccessScreen,
   "hypo-confirm-skip": ConfirmSkipScreen,
   "hypo-settings": SettingsHypoShieldScreen,
-  "hypo-tdbd-detail": TdbdDetailScreen,
+  "hypo-how-it-works": HypoHowItWorksScreen,
   "hypo-push-notification": PushNotificationScreen,
   // IOB Display
   "iob-home-on": IobHomeOnScreen,
@@ -149,8 +152,8 @@ const REGISTRY: Record<string, any> = {
 /** Per-screen frame config: sheet raises brandbar/home indicator; custom clock. */
 const FRAME: Record<string, { sheet?: boolean; clock?: string }> = {
   "dose-confirmation-spine": { sheet: true, clock: "10:18" },
-  "hypo-confirm-increase": { sheet: true, clock: "10:18" },
-  "hypo-confirm-reset-required": { sheet: true, clock: "9:41" },
+  "hypo-recommendation-detail": { clock: "10:18" },
+  "hypo-confirm-success": { sheet: true, clock: "10:18" },
   "hypo-confirm-skip": { sheet: true, clock: "10:18" },
   "hypo-mid-session-announcement": { sheet: true, clock: "2:14" },
   "hypo-push-notification": { clock: "10:18" },

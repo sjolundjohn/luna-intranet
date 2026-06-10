@@ -28,29 +28,22 @@ interface Props {
 
   <CgmHero trace="up" height={158} />
 
-  {/* HYPO SHIELD "TIP POST" — decision-support; the ONLY action opens the
-      two-step confirm sheet. Reading never accepts. */}
+  {/* HYPO SHIELD "SUGGESTION READY" — v0.4: a compact two-step gate. No dose
+      detail here; the ONLY action opens the full-screen suggestion review
+      (hypo-recommendation-detail), which then leads to the two-step confirm.
+      Reading never accepts. */}
   <div class="pad" style="margin-top:14px;">
-    <div class="card-dark tip-post">
+    <div class="card-dark tip-post hypo-pop">
       <div class="head">
         <span class="moon" aria-hidden="true"></span>
-        <span class="eyebrow">Hypo Shield · Recommendation</span>
+        <span class="eyebrow">Hypo Shield · Suggestion</span>
       </div>
-      <div class="title">A new nightly basal dose is ready for you to review</div>
-      <div class="recrow">
-        <span class="num">14</span><span class="u">U</span>
-        <span class="dir">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-          Increase
-        </span>
-      </div>
-      <div class="prev">Current dose <s>12 U</s></div>
-      <div class="rationale">Your overnight glucose has been drifting up — Luna suggests a bit more of your long-acting basal.</div>
+      <div class="title">A new long-acting dose suggestion is ready</div>
       <div class="note">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-        This is a suggestion only — nothing changes until you review and confirm.
+        Review it when you're ready — nothing changes until you confirm.
       </div>
-      <button class="btn primary" type="button">Review recommendation</button>
+      <button class="btn primary" type="button">Review suggestion</button>
     </div>
   </div>
 
