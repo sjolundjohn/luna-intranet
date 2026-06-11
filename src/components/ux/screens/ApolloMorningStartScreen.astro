@@ -20,7 +20,7 @@ interface Props { variant?: "current" | "legacy"; }
     </div>
   </div>
 
-  <div class="center-screen">
+  <div class="center-screen" style="justify-content:flex-start; padding-top:12px;">
     <div class="morning-hero" role="img" aria-label="Luna watching over your night — dawn breaking">
       <div class="sky-base"></div>
       <div class="dawn-sky-overlay"></div>
@@ -80,7 +80,7 @@ interface Props { variant?: "current" | "legacy"; }
     background: linear-gradient(to top, #E8975A 0%, #C97BA0 12%, #3a2a1a 25%, #1a1f4a 45%, transparent 100%);
     z-index: 2;
     mix-blend-mode: screen;
-    animation: dawnSequence 5s ease-in-out infinite;
+    animation: dawnSequence 60s ease-in-out infinite;
   }
 
   .ux-ios .morning-hero .star {
@@ -91,11 +91,11 @@ interface Props { variant?: "current" | "legacy"; }
     border-radius: 50%;
     z-index: 3;
   }
-  .ux-ios .morning-hero .star-1 { top: 25px; left: 15%; animation: starTwinkle 5s infinite 0.1s; }
-  .ux-ios .morning-hero .star-2 { top: 45px; left: 28%; animation: starTwinkle 5s infinite 0.4s; }
-  .ux-ios .morning-hero .star-3 { top: 20px; left: 45%; animation: starTwinkle 5s infinite 0.2s; }
-  .ux-ios .morning-hero .star-4 { top: 35px; left: 72%; animation: starTwinkle 5s infinite 0.6s; }
-  .ux-ios .morning-hero .star-5 { top: 50px; left: 88%; animation: starTwinkle 5s infinite 0.3s; }
+  .ux-ios .morning-hero .star-1 { top: 25px; left: 15%; animation: starTwinkle 60s infinite 0.1s; }
+  .ux-ios .morning-hero .star-2 { top: 45px; left: 28%; animation: starTwinkle 60s infinite 0.4s; }
+  .ux-ios .morning-hero .star-3 { top: 20px; left: 45%; animation: starTwinkle 60s infinite 0.2s; }
+  .ux-ios .morning-hero .star-4 { top: 35px; left: 72%; animation: starTwinkle 60s infinite 0.6s; }
+  .ux-ios .morning-hero .star-5 { top: 50px; left: 88%; animation: starTwinkle 60s infinite 0.3s; }
 
   .ux-ios .morning-hero .horizon-glow {
     position: absolute;
@@ -106,7 +106,7 @@ interface Props { variant?: "current" | "legacy"; }
     height: 80px;
     background: radial-gradient(ellipse at center, rgba(233,151,90,0.45) 0%, transparent 70%);
     z-index: 4;
-    animation: horizonBloom 5s ease-in-out infinite;
+    animation: horizonBloom 60s ease-in-out infinite;
   }
 
   .ux-ios .morning-hero .luna-moon {
@@ -118,7 +118,7 @@ interface Props { variant?: "current" | "legacy"; }
     height: 30px;
     z-index: 5;
     filter: drop-shadow(0 0 12px rgba(104,210,223,0.55));
-    animation: moonLifecycle 5s ease-in-out infinite;
+    animation: moonLifecycle 60s ease-in-out infinite;
   }
   .ux-ios .morning-hero .luna-moon path {
     stroke: #68D2DF;
@@ -141,7 +141,7 @@ interface Props { variant?: "current" | "legacy"; }
     vector-effect: non-scaling-stroke;
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
-    animation: drawTrace 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation: drawTrace 60s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
   .ux-ios .morning-hero .terminal-pulse-wrapper {
@@ -157,7 +157,7 @@ interface Props { variant?: "current" | "legacy"; }
     background-color: #68D2DF;
     border-radius: 50%;
     box-shadow: 0 0 6px #68D2DF;
-    animation: dotState 5s ease-in-out infinite;
+    animation: dotState 60s ease-in-out infinite;
   }
   .ux-ios .morning-hero .terminal-pulse {
     position: absolute;
@@ -169,7 +169,7 @@ interface Props { variant?: "current" | "legacy"; }
     border: 1.5px solid #68D2DF;
     border-radius: 50%;
     opacity: 0;
-    animation: terminalPulse 5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+    animation: terminalPulse 60s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
   }
 
   @keyframes dawnSequence {
