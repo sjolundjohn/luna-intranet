@@ -25,8 +25,8 @@ interface Props { variant?: "current" | "legacy"; }
 
 {/* bottom sheet — start the first session (distinct light card, ~half screen) */}
 <div class="sheet-host">
-  <div class="apollo-sheet">
-    <div class="grab"></div>
+  {/* no grab handle — the buttons are the only paths forward or out (v2.3 r3) */}
+  <div class="apollo-sheet" style="padding-top:28px;">
     <h2 style="font-family:var(--font-brand); font-size:22px; font-weight:700; letter-spacing:-0.02em; margin:0; text-align:center; color:#041E42;">Ready to start your first Luna session?</h2>
     <p style="margin:14px 0 0; text-align:center; line-height:1.6; font-size:15px; color:#5b6b7a;">We'll set up together — about five minutes — and then Luna is on watch for the night.</p>
     <div class="stack" style="gap:12px; margin-top:28px;">

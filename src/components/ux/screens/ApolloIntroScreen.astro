@@ -7,8 +7,9 @@ interface Props {
   variant?: "current" | "legacy";
 }
 ---
+{/* top-right close, aligned to the Luna logo (screen-level, like the overnight handoff) */}
+<button class="close-x" style="top:64px; left:auto; right:22px;" aria-label="Close">✕</button>
 <div class="content" style="position:relative;">
-  <button class="close-x" aria-label="Close">✕</button>
   <div class="center-screen">
     <div class="icon-badge">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-moonlight)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
