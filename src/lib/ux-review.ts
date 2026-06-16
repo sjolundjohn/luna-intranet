@@ -31,6 +31,45 @@ export const CURRENT_DESIGN_VERSION = "v0.4 — Jun 2026";
 
 export const STATUS_ORDER: ScreenStatus[] = ["Work in Progress", "Approved"];
 
+/**
+ * Scenario states — the dynamic-content axis. Some screens change over time
+ * (e.g. Hypo Shield's communication differs on day one vs. mid-learning vs.
+ * ready). A screen listed here renders ALL its states into the DOM (each block
+ * wrapped in `[data-ux-state="<id>"]`, the first visible and the rest `hidden`)
+ * and the detail page shows a segmented "Scenario" control above the phone so a
+ * reviewer can switch between them. Orthogonal to the New/Old variant and the
+ * design-version dropdown. First entry is the default shown on load.
+ */
+export interface ScreenState {
+  id: string;
+  /** Short control label (e.g. "Days 1–7 · Establishing"). */
+  label: string;
+  /** One line under the control explaining what the reviewer is looking at. */
+  caption: string;
+}
+export const SCREEN_STATES: Record<string, ScreenState[]> = {
+  "hypo-learning-state": [
+    {
+      id: "establishing",
+      label: "Days 1–7 · Establishing",
+      caption: "First week of wear — Luna is building your baseline. Suggestions begin once you've had 5 sessions within a 7-day window.",
+    },
+    {
+      id: "ready",
+      label: "Ready · 5+ this week",
+      caption: "Five or more sessions in the last 7 days — Hypo Shield is active and can now suggest a dose change.",
+    },
+    {
+      id: "paused",
+      label: "Paused · under 5",
+      caption: "Fewer than 5 sessions in the last 7 days — suggestions pause until you're back to 5 in 7 days.",
+    },
+  ],
+};
+export function statesFor(id: string): ScreenState[] {
+  return SCREEN_STATES[id] ?? [];
+}
+
 export function getScreen(id: string): Screen | undefined {
   return SCREENS.find((s) => s.id === id);
 }
@@ -93,10 +132,10 @@ export const FLOW_NEXT: Record<string, string> = {
   "apollo-step-09-detach-reservoir": "apollo-step-10-charge",
   "apollo-step-10-charge": "apollo-complete",
   "apollo-complete": "home-dashboard",
-  // Hypo Shield — every entry point gates through the full-screen suggestion
-  // review, then the two-step confirm, then the success confirmation
+  // Hypo Shield — the peek card opens its takeover; the suggestion peek gates
+  // through the full-screen review, then the two-step confirm, then success
+  "hypo-home-tip-default": "hypo-learning-state",
   "hypo-home-tip-post": "hypo-recommendation-detail",
-  "hypo-mid-session-announcement": "hypo-recommendation-detail",
   "hypo-recommendation-detail": "dose-confirmation-spine",
   "dose-confirmation-spine": "hypo-confirm-success",
   "hypo-confirm-success": "home-dashboard",
@@ -135,7 +174,7 @@ export const AREAS: ReviewArea[] = [
   { id: "onboarding", label: "Onboarding", blurb: "First run: meet Luna, pair your Capsule and CGM, and enter your routine.", leadsTo: ["apollo"] },
   { id: "apollo", label: "Apollo Training", blurb: "Learn to place and remove the device — evening setup, then morning removal.", leadsTo: ["home"] },
   { id: "home", label: "Home — daily", blurb: "The hub you live in: tonight's glucose, session history, and settings.", leadsTo: ["hypo", "iob"], hub: true },
-  { id: "hypo", label: "Hypo Shield", blurb: "Overnight basal guidance — surface a recommendation, confirm it safely, manage it.", leadsTo: [] },
+  { id: "hypo", label: "Hypo Shield", blurb: "Overnight long-acting dose guidance — surface a suggestion, confirm it safely, manage it.", leadsTo: [] },
   { id: "iob", label: "IOB Display", blurb: "See how much Luna-delivered insulin is still active (opt-in).", leadsTo: [] },
 ];
 
@@ -168,7 +207,7 @@ export const FLOWS: ReviewFlow[] = [
   {
     id: "hypo", area: "hypo", label: "Suggest → review → confirm → manage",
     blurb: "Learning states, the three suggestion entry points, the full-screen review that gates every suggestion, the two-step confirm, success & skip, settings, and how-it-works.",
-    screens: ["hypo-home-tip-default", "hypo-learning-state", "hypo-home-tip-post", "hypo-mid-session-announcement", "hypo-push-notification", "hypo-recommendation-detail", "dose-confirmation-spine", "hypo-confirm-success", "hypo-confirm-skip", "hypo-settings", "hypo-how-it-works"],
+    screens: ["hypo-home-tip-default", "hypo-learning-state", "hypo-home-tip-post", "hypo-push-notification", "hypo-recommendation-detail", "dose-confirmation-spine", "hypo-confirm-success", "hypo-confirm-skip", "hypo-settings", "hypo-how-it-works"],
   },
   {
     id: "iob", area: "iob", label: "Opt in → see it → manage",

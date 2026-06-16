@@ -1,11 +1,10 @@
 ---
 /**
- * HypoHowItWorksScreen — "How Hypo Shield works" education (v0.4). The ONE
+ * HypoHowItWorksScreen — "How Hypo Shield works" education (v0.5). The ONE
  * place the feature is explained, linked from the Learning State card,
  * Settings · Hypo Shield, and the recommendation takeover — so individual
- * screens never have to repeat it. This is also the single spot where the
- * clinical term appears: "total daily basal dose (TDBD)", as a parenthetical
- * mapping to what clinicians say. Pushed detail (Moonlight back), no tab bar.
+ * screens never have to repeat it. User-facing copy uses "long-acting dose"
+ * throughout (no TDBD). Pushed detail (Moonlight back), no tab bar.
  */
 interface Props { variant?: "current" | "legacy"; }
 ---
@@ -21,22 +20,22 @@ interface Props { variant?: "current" | "legacy"; }
   <div class="pad hiw">
     <div class="sec-label">What it is</div>
     <div class="card-dark hiw-card">
-      <p>Hypo Shield watches your nighttime glucose and learns how well your <b>long-acting insulin</b> — what your care team may call your total daily basal dose (TDBD) — matches your overnight needs.</p>
+      <p>Hypo Shield watches your nighttime glucose and learns how well your <b>long-acting dose</b> matches your overnight needs.</p>
     </div>
 
     <div class="sec-label">How it learns</div>
     <div class="card-dark hiw-card">
-      <p>Luna learns from <b>7 days of wear and 5 Luna sessions</b> before suggesting anything. While it learns, dosing stays a little more conservative. If you change your dose manually, learning starts over around the new dose.</p>
+      <p>Over your first week, Luna learns from your own nights — once you've had <b>5 Luna sessions within a 7-day window</b>, it can start suggesting. While it learns, dosing stays a little more conservative. If you change your dose manually, learning starts over.</p>
     </div>
 
     <div class="sec-label">What it does</div>
     <div class="card-dark hiw-card">
-      <p>When your long-acting dose looks mis-set, Hypo Shield <b>suggests</b> a corrected dose and explains why. It never changes your dose, your settings, or delivers anything on its own.</p>
+      <p>When your long-acting dose looks mis-set, Hypo Shield <b>suggests</b> a corrected dose and explains why. It never changes anything until you confirm.</p>
     </div>
 
     <div class="sec-label">What you do</div>
     <div class="card-dark hiw-card">
-      <p>You review the suggestion, and if you agree you do both: <b>update the dose in Luna's settings</b> and <b>take the new dose yourself</b>. You can skip any suggestion — it waits for you under Settings · Hypo Shield.</p>
+      <p>You review the suggestion, and if you agree you confirm two things: that you'll <b>take the new dose yourself</b>, and that <b>Luna can adjust the setting for you</b> going forward. You can skip any suggestion — it waits for you under Settings · Hypo Shield.</p>
     </div>
 
     <div style="height:16px;"></div>

@@ -6,7 +6,7 @@ import CTAButton from "~/components/CTAButton.astro";
 import ScreenRenderer from "~/components/ux/ScreenRenderer.astro";
 import StatusBadge from "~/components/ux/StatusBadge.astro";
 import CompareSlider from "~/components/ux/CompareSlider.astro";
-import { SCREENS, brdFor, FLOW_NEXT, FLOWS, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION } from "~/lib/ux-review";
+import { SCREENS, brdFor, FLOW_NEXT, FLOWS, DESIGN_VERSIONS, CURRENT_DESIGN_VERSION, statesFor } from "~/lib/ux-review";
 
 export function getStaticPaths() {
   return SCREENS.map((s) => ({ params: { slug: s.id }, props: { screen: s } }));
@@ -27,6 +27,9 @@ const flowIdx = flow ? flow.screens.indexOf(screen.id) : -1;
 const flowPrev = flow && flowIdx > 0 ? flow.screens[flowIdx - 1] : "";
 const flowNextNav = flow && flowIdx >= 0 && flowIdx < flow.screens.length - 1 ? flow.screens[flowIdx + 1] : "";
 const flowPos = flow ? `${flowIdx + 1} of ${flow.screens.length}` : "";
+// Scenario states — the dynamic-content axis. Non-empty only for screens that
+// change over time; drives the segmented "Scenario" control above the phone.
+const states = statesFor(screen.id);
 ---
 
 <BaseLayout title={`${screen.title} · UX Review`} description={screen.summary} heroIsDark={false}>
@@ -58,8 +61,6 @@ const flowPos = flow ? `${flowIdx + 1} of ${flow.screens.length}` : "";
         </h1>
         <StatusBadge status={screen.status} />
       </div>
-      <p class="mt-2 text-graphite text-[15px]">{screen.feature}</p>
-      {screen.summary && <p class="mt-3 text-graphite text-[15px] leading-[1.55] max-w-[60ch]">{screen.summary}</p>}
     </header>
 
     <div class="ux-detail" data-screen-id={screen.id} data-current-version={CURRENT_DESIGN_VERSION} data-flow-next={flowNext}>
@@ -69,6 +70,28 @@ const flowPos = flow ? `${flowIdx + 1} of ${flow.screens.length}` : "";
           <div class="mb-4 inline-flex rounded-full border border-border-default p-0.5" role="tablist" aria-label="New or Old design">
             <button data-mode-btn="single" class="ux-mode-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="true">New</button>
             <button data-mode-btn="compare" class="ux-mode-btn px-3 py-1.5 rounded-full text-[13px] font-medium" aria-selected="false">Old</button>
+          </div>
+        )}
+
+        {/* Scenario selector — the dynamic-content axis. Switches which time-
+            state of the screen is shown (e.g. Day 1 vs. mid-learning vs. ready).
+            Only rendered for screens that declare states. */}
+        {states.length > 0 && (
+          <div class="ux-scenario" data-scenario>
+            <p class="ux-scenario-eyebrow">Scenario</p>
+            <div class="ux-scenario-tabs" role="tablist" aria-label="Screen scenario">
+              {states.map((s, i) => (
+                <button
+                  type="button"
+                  class="ux-scenario-btn"
+                  data-state-btn={s.id}
+                  data-caption={s.caption}
+                  role="tab"
+                  aria-selected={i === 0 ? "true" : "false"}
+                >{s.label}</button>
+              ))}
+            </div>
+            <p class="ux-scenario-caption" data-scenario-caption>{states[0].caption}</p>
           </div>
         )}
 
@@ -182,6 +205,18 @@ const flowPos = flow ? `${flowIdx + 1} of ${flow.screens.length}` : "";
 
   .ux-mode-btn { color: var(--color-graphite); }
   .ux-mode-btn[aria-selected="true"] { background: var(--color-midnight); color: #fff; }
+
+  /* Scenario selector — the dynamic-content axis (time-states of a screen). */
+  .ux-scenario { margin-bottom: 16px; max-width: 420px; }
+  .ux-scenario-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-slate); margin-bottom: 6px; }
+  .ux-scenario-tabs { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border: 1px solid var(--color-border-default); border-radius: 12px; background: var(--color-soft-paper); }
+  .ux-scenario-btn {
+    padding: 6px 12px; border-radius: 9px; border: none; background: transparent;
+    color: var(--color-graphite); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .ux-scenario-btn:hover { color: var(--color-ink); }
+  .ux-scenario-btn[aria-selected="true"] { background: var(--color-moonlight); color: var(--color-midnight); }
+  .ux-scenario-caption { margin-top: 8px; font-size: 12.5px; line-height: 1.45; color: var(--color-graphite); max-width: 60ch; }
 
   /* Flow navigation — skip back/forward within the current feature flow. */
   .ux-flownav { display: inline-flex; align-items: center; gap: 10px; }
@@ -669,6 +704,31 @@ const flowPos = flow ? `${flowIdx + 1} of ${flow.screens.length}` : "";
         if (mode === "single") requestAnimationFrame(alignPinLayer);
       });
     });
+
+    // --- scenario selector: switch which time-state of the screen is shown.
+    // The rendered component carries every state as a [data-ux-state] block
+    // (first visible, rest hidden); here we just toggle which one is shown.
+    const scenario = root.querySelector<HTMLElement>("[data-scenario]");
+    if (scenario && stage) {
+      const scenarioBtns = Array.from(scenario.querySelectorAll<HTMLButtonElement>("[data-state-btn]"));
+      const caption = scenario.querySelector<HTMLElement>("[data-scenario-caption]");
+      const showState = (id: string) => {
+        stage.querySelectorAll<HTMLElement>("[data-ux-state]").forEach((el) => {
+          el.hidden = el.dataset.uxState !== id;
+        });
+        requestAnimationFrame(alignPinLayer);
+      };
+      scenarioBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.stateBtn!;
+          scenarioBtns.forEach((b) => b.setAttribute("aria-selected", b === btn ? "true" : "false"));
+          if (caption) caption.textContent = btn.dataset.caption || "";
+          showState(id);
+        });
+      });
+      // Normalize to the first state on load (defensive — component already does this).
+      if (scenarioBtns[0]) showState(scenarioBtns[0].dataset.stateBtn!);
+    }
 
     // --- prototype mode: the tab bar + primary CTA navigate through the app,
     // exactly like the real thing — without changing any screen. Clicks pass

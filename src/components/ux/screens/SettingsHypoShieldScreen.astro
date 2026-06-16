@@ -67,28 +67,21 @@ const check = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" strok
       </div>
     </div>
 
-    {/* LEARNING — merged from the old TDBD detail */}
+    {/* LEARNING — single 7-day session window (5 in 7 days unlocks suggestions) */}
     <div class="sec-label">Learning</div>
     <div class="card-dark" style="padding:18px;">
       <div class="lp">
         <div class="lp-item">
           <div class="lp-top">
-            <span class="lp-lbl"><span class="done" set:html={check} /> Luna sessions</span>
-            <span class="lp-count">5 of 5</span>
+            <span class="lp-lbl"><span class="done" set:html={check} /> Sessions this week</span>
+            <span class="lp-count">5 of 7</span>
           </div>
-          <div class="lp-bar"><i style="width:100%;"></i></div>
-        </div>
-        <div class="lp-item">
-          <div class="lp-top">
-            <span class="lp-lbl"><span class="done" set:html={check} /> Days of wear</span>
-            <span class="lp-count">7 of 7</span>
-          </div>
-          <div class="lp-bar"><i style="width:100%;"></i></div>
+          <div class="lp-bar"><i style="width:71%;"></i></div>
         </div>
       </div>
       <span class="learned">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-        Learned · Hypo Shield can now suggest
+        Active · 5+ sessions in the last 7 days
       </span>
     </div>
 

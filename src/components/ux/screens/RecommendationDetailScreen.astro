@@ -1,24 +1,26 @@
 ---
 /**
- * RecommendationDetailScreen — the full-screen recommendation takeover (v0.4).
- * EVERY recommendation gates through this screen: the Home tip post, the
- * mid-session announcement and the push notification all converge here before
- * the two-step confirm. Shows the old-vs-new dose contrast, what Luna noticed
- * (the user's own nights — personalized, not generic), how Luna decided, and
- * links to the How-Hypo-Shield-works education screen. Decision support only:
- * nothing changes until the user confirms on the next screen.
+ * RecommendationDetailScreen — the full-screen suggestion takeover (v0.5).
+ * Consistent with the Learning-state takeover: system-status pills at the top,
+ * the tab bar at the bottom, the card filling between. EVERY suggestion gates
+ * through here before the confirm. Compressed so the current→suggested dose
+ * contrast, what Luna noticed, how Luna decided, and the Continue / Not now
+ * actions all fit without scrolling. Decision support only — nothing changes
+ * until the user confirms on the next screen.
  */
+import StatusStrip from "../ios/StatusStrip.astro";
 import TabBar from "../ios/TabBar.astro";
 
 interface Props { variant?: "current" | "legacy"; }
 ---
-<div class="content" style="overflow-y:auto;">
-  <div class="pad" style="padding-top:4px;">
+<div class="content">
+  <StatusStrip />
+
+  <div class="pad hypo-takeover" style="padding-bottom:14px;">
     <div class="rec-head">
       <span class="moon" aria-hidden="true"></span>
       <span class="eyebrow">Hypo Shield · Suggestion</span>
     </div>
-    <h1 class="rec-title">A new long-acting dose suggestion</h1>
 
     {/* OLD vs NEW — the contrast is the headline of this screen */}
     <div class="card-dark rec-compare">
@@ -39,7 +41,7 @@ interface Props { variant?: "current" | "legacy"; }
       </div>
     </div>
 
-    {/* WHAT LUNA NOTICED — the user's own nights, not generic copy */}
+    {/* WHAT LUNA NOTICED + HOW LUNA DECIDED — one compact card, two parts */}
     <div class="card-dark rec-sec">
       <div class="h">What Luna noticed</div>
       <p>Over <b>your last 7 nights</b>, your nighttime glucose drifted above range after 2 AM on <b>5 of them</b>, even with Luna's microboluses helping.</p>
@@ -47,32 +49,22 @@ interface Props { variant?: "current" | "legacy"; }
         <span class="chip">5 of 7 nights drifted up</span>
         <span class="chip">Avg +24 mg/dL by morning</span>
       </div>
-    </div>
-
-    {/* HOW LUNA DECIDED */}
-    <div class="card-dark rec-sec">
+      <div class="rec-div"></div>
       <div class="h">How Luna decided</div>
-      <p>Hypo Shield compares the insulin Luna delivers overnight with your long-acting dose. A steady upward drift like yours usually means the long-acting side is set a little low.</p>
+      <p>A steady upward drift like this usually means your long-acting dose is set a little low.</p>
       <button class="howlink" type="button">How Hypo Shield works
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </button>
     </div>
 
-    <div class="rec-note">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-      This is a suggestion only — nothing changes until you review and confirm.
-    </div>
-  </div>
+    <div class="grow"></div>
 
-  <div style="flex:1;"></div>
-
-  <div class="pad" style="padding-bottom:14px;">
     <div class="stack" style="gap:8px;">
       <button class="btn primary">Continue to confirm</button>
       <button class="btn ghost">Not now</button>
     </div>
-    <div style="display:flex; justify-content:center; margin-top:6px;">
-      <span class="flag"><span class="k">Not now</span>snoozes to the morning Home tip · always in Settings</span>
+    <div style="display:flex; justify-content:center; margin-top:8px;">
+      <span class="flag"><span class="k">Not now</span>keeps your current dose · find it again in Settings</span>
     </div>
   </div>
 </div>
@@ -80,13 +72,13 @@ interface Props { variant?: "current" | "legacy"; }
 <TabBar active="dashboard" />
 
 <style is:global>
-  .ux-ios .rec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .ux-ios .rec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .ux-ios .rec-head .moon { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; border: 1px solid rgba(104,210,223,0.45); }
   .ux-ios .rec-head .moon::before { content: ""; position: absolute; right: -5px; top: 5.5px; width: 17px; height: 17px; border-radius: 50%; background: var(--color-moonlight); }
   .ux-ios .rec-head .moon::after { content: ""; position: absolute; right: -1px; top: 7.5px; width: 13px; height: 13px; border-radius: 50%; background: var(--color-midnight); }
-  .ux-ios .rec-title { margin: 0 0 14px; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.22; color: var(--color-on-dark); }
-  /* v0.4 r2 — white cards, matching the .hypo-pop treatment on the Home cards */
-  .ux-ios .rec-compare { display: flex; align-items: center; gap: 14px; padding: 18px; margin-bottom: 10px; border-color: rgba(255,255,255,0.92); background: var(--color-soft-paper); box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+  .ux-ios .rec-head .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-moonlight-deep); }
+  /* white cards, matching the .hypo-pop treatment on the Home cards */
+  .ux-ios .rec-compare { display: flex; align-items: center; gap: 14px; padding: 18px; margin-bottom: 12px; border-color: rgba(255,255,255,0.92); background: var(--color-soft-paper); box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
   .ux-ios .rec-compare .col { flex: 1; display: flex; flex-direction: column; gap: 3px; }
   .ux-ios .rec-compare .col .k { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--color-slate); }
   .ux-ios .rec-compare .col .v { font-size: 40px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
@@ -102,8 +94,7 @@ interface Props { variant?: "current" | "legacy"; }
   .ux-ios .rec-sec p b { color: var(--color-ink); font-weight: 700; }
   .ux-ios .rec-stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .ux-ios .rec-stats .chip { font-size: 11px; font-weight: 600; color: var(--color-ink); background: var(--color-cloud-lilac, #F2F3FA); border: 1px solid var(--color-border-subtle, #E3E8F2); border-radius: 999px; padding: 4px 10px; font-variant-numeric: tabular-nums; }
+  .ux-ios .rec-div { height: 1px; background: var(--color-border-subtle, #E3E8F2); margin: 14px 0; }
   .ux-ios .howlink { display: inline-flex; align-items: center; gap: 3px; margin-top: 10px; background: none; border: none; padding: 0; cursor: pointer; font-family: var(--font-brand); font-size: 13px; font-weight: 700; color: var(--color-moonlight); }
   .ux-ios .rec-sec .howlink { color: var(--color-moonlight-deep); }
-  .ux-ios .rec-note { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--color-on-dark-sub); padding: 2px 2px 0; }
-  .ux-ios .rec-note svg { flex: none; }
 </style>

@@ -3,12 +3,13 @@
  * DoseSheet — the canonical two-step Dose-Confirmation bottom sheet.
  * Ported from projects/UX Review/dose-confirmation/index.html (vanilla).
  *
- * Acting on a basal recommendation requires BOTH: update the programmed
- * TDBD setting AND take the physical dose. Both acknowledgements gate the
- * slide-to-confirm gesture. `variant` selects one of the six states.
+ * Acting on a long-acting dose suggestion requires BOTH: take the new dose
+ * yourself AND allow Luna to auto-adjust the setting going forward. Both
+ * acknowledgements gate a single Confirm button (no Settings trip). `variant`
+ * selects one of the states; the IOB opt-in still uses the slide gesture.
  *
- * The slider + ack toggles are wired per-instance (scoped to [data-dose-root])
- * so multiple sheets can coexist (e.g. the old-vs-new compare).
+ * The button/slider + ack toggles are wired per-instance (scoped to
+ * [data-dose-root]) so multiple sheets can coexist (e.g. the old-vs-new compare).
  */
 interface Props {
   variant?: "increase" | "decrease" | "nochange" | "reset" | "disabled" | "skip" | "optin";
@@ -90,26 +91,20 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
       <div class="dose-prev">Current dose <s>{prev} {unit}</s></div>
       <p class="dose-rationale">{rationale}</p>
       <div class="dose-ackbox">
-        <div class="dose-ackbox-h">To act on this, do both</div>
+        <div class="dose-ackbox-h">Confirm both to continue</div>
         <button class="dose-ack" data-ack="1" role="checkbox" aria-checked="false">
           <span class="dose-box"></span>
-          <span><span class="dose-lbl">Set your long-acting dose to {value} units in Luna's settings</span></span>
+          <span><span class="dose-lbl">Take {value} units of your long-acting dose the next time you take your dose</span></span>
         </button>
         <div class="dose-ackdiv"></div>
         <button class="dose-ack" data-ack="2" role="checkbox" aria-checked="false">
           <span class="dose-box"></span>
-          <span><span class="dose-lbl">{word} your long-acting dose to {value} units</span></span>
+          <span><span class="dose-lbl">Allow Luna to automatically adjust your long-acting dose going forward</span></span>
         </button>
       </div>
-      <div class="dose-slide">
-        <div class="dose-track" data-track role="slider" tabindex="-1" aria-label="Slide to confirm both" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-disabled="true">
-          <div class="dose-trail" data-trail></div>
-          <div class="dose-tlabel" data-tlabel>Slide to confirm both</div>
-          <div class="dose-thumb" data-thumb set:html={icon("arrowRight", 22, "var(--color-disabled)", 2.2)} />
-        </div>
-        <div class="dose-hint" data-hint set:html={`${icon("info", 14, "var(--color-slate)")} Acknowledge both actions above to continue`} />
-      </div>
-      <div class="dose-skip"><button type="button">Skip this recommendation</button></div>
+      <button class="dose-btn primary" data-confirm-btn disabled>Confirm changes</button>
+      <div class="dose-hint" data-confirm-hint set:html={`${icon("info", 14, "var(--color-slate)")} Confirm both above to continue`} />
+      <div class="dose-skip"><button type="button">Skip this suggestion</button></div>
     </Fragment>
   )}
 
@@ -207,6 +202,9 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
   .dose-btn.primary { background: var(--color-midnight); color: var(--color-white); box-shadow: 0 2px 8px rgba(4,30,66,0.20); }
   .dose-btn.secondary { background: transparent; color: var(--color-ink); border: 1px solid var(--color-border-strong); }
   .dose-btn.ghost { background: transparent; color: var(--color-slate); }
+  .dose-btn[disabled] { background: var(--color-cloud-lilac); color: var(--color-disabled); box-shadow: none; cursor: not-allowed; }
+  .dose-btn.done { background: var(--color-success-ink); color: var(--color-white); }
+  .dose-hint[data-confirm-hint] { justify-content: center; margin-top: 10px; }
   .dose-check-circle { display:flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:50%; background:var(--color-success-bg); margin-bottom:18px; }
   .dose-metric { display:flex; justify-content:space-between; align-items:baseline; }
   .dose-metric-l { font-size:14px; color:var(--color-graphite); }
@@ -226,13 +224,46 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
     return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[name]}"/></svg>`;
   }
 
-  function wireDose(root: HTMLElement) {
+  // The IOB opt-in keeps the slide-to-turn-on gesture; the dose-confirmation
+  // (increase/decrease) now uses two checkboxes + a single Confirm button —
+  // consistent with the app's other confirmatory buttons (team feedback).
+  function wireButton(root: HTMLElement) {
     if (root.dataset.doseWired) return;
-    const variant = root.dataset.variant;
-    if (variant !== "increase" && variant !== "decrease" && variant !== "optin") return;
     root.dataset.doseWired = "true";
-    const slideLabel = root.dataset.slideLabel || "Slide to confirm both";
-    const doneLabel = root.dataset.doneLabel || "Confirmed";
+    const ack1 = root.querySelector<HTMLElement>('[data-ack="1"]')!;
+    const ack2 = root.querySelector<HTMLElement>('[data-ack="2"]')!;
+    const btn = root.querySelector<HTMLButtonElement>("[data-confirm-btn]")!;
+    const hint = root.querySelector<HTMLElement>("[data-confirm-hint]");
+    if (!ack1 || !ack2 || !btn) return;
+    let s1 = false, s2 = false, done = false;
+    function paint() {
+      const both = s1 && s2;
+      btn.disabled = !both || done;
+      if (hint) hint.style.display = both || done ? "none" : "flex";
+      if (done) { btn.textContent = "Confirmed"; btn.classList.add("done"); }
+    }
+    function toggle(b: HTMLElement, which: 1 | 2) {
+      b.addEventListener("click", () => {
+        if (done) return;
+        if (which === 1) s1 = !s1; else s2 = !s2;
+        const on = which === 1 ? s1 : s2;
+        b.setAttribute("aria-checked", on ? "true" : "false");
+        const box = b.querySelector(".dose-box")!;
+        box.innerHTML = on ? svg("check", 16, "var(--color-moonlight)", 2.4) : "";
+        paint();
+      });
+    }
+    toggle(ack1, 1);
+    toggle(ack2, 2);
+    btn.addEventListener("click", () => { if (btn.disabled) return; done = true; paint(); });
+    paint();
+  }
+
+  function wireSlider(root: HTMLElement) {
+    if (root.dataset.doseWired) return;
+    root.dataset.doseWired = "true";
+    const slideLabel = root.dataset.slideLabel || "Slide to turn on";
+    const doneLabel = root.dataset.doneLabel || "Turned on";
 
     const ack1 = root.querySelector<HTMLElement>('[data-ack="1"]')!;
     const ack2 = root.querySelector<HTMLElement>('[data-ack="2"]')!;
@@ -314,7 +345,11 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
   }
 
   function init() {
-    document.querySelectorAll<HTMLElement>("[data-dose-root]").forEach(wireDose);
+    document.querySelectorAll<HTMLElement>("[data-dose-root]").forEach((r) => {
+      const v = r.dataset.variant;
+      if (v === "optin") wireSlider(r);
+      else if (v === "increase" || v === "decrease") wireButton(r);
+    });
   }
   init();
   document.addEventListener("astro:page-load", init);

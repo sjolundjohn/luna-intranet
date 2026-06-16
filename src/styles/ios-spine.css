@@ -352,6 +352,38 @@
 .ux-ios .hypo-pop-c { background: rgba(249,205,134,0.10); border: 1.5px solid rgba(249,205,134,0.55); box-shadow: 0 0 22px rgba(249,205,134,0.18); }
 .ux-ios .hypo-pop-c .eyebrow { color: var(--color-warning); }
 
+/* ── Hypo Shield two-state card ──────────────────────────────────────────
+   Peek = a collapsed strip under the CGM graph on Home; tap/swipe up expands
+   to the takeover (Learning state, Suggestion review) that covers the graph
+   and fills between the status pills and the bottom menu. */
+.ux-ios .peek-grip { width: 36px; height: 4px; border-radius: 999px; background: var(--color-pebble-blue); margin: -2px auto 12px; }
+.ux-ios .peek-more { display: inline-flex; align-items: center; gap: 4px; align-self: center; margin-top: 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: var(--color-moonlight-deep); }
+.ux-ios .peek-more svg { transform: rotate(-90deg); }
+/* Takeover fills the freed middle space down to the tab bar. */
+.ux-ios .hypo-takeover { flex: 1; display: flex; flex-direction: column; margin: 10px 0 0; }
+.ux-ios .hypo-takeover .grow { flex: 1; }
+
+/* ── 7-day session week graph ────────────────────────────────────────────
+   Seven segments (one per day); filled = a Luna session that day. Need 5 in a
+   rolling 7-day window to unlock suggestions. Reads on the white hypo-pop card. */
+.ux-ios .week { display: flex; flex-direction: column; gap: 12px; }
+.ux-ios .week-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.ux-ios .week-count { font-size: 13px; font-weight: 600; color: var(--color-graphite); }
+.ux-ios .week-count b { font-size: 22px; font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.ux-ios .week-goal { flex: none; font-size: 11px; font-weight: 700; color: var(--color-moonlight-deep); background: var(--color-moonlight-tint, #E8FCFF); border-radius: 999px; padding: 4px 11px; }
+.ux-ios .week-goal.met { color: var(--color-success-ink); background: var(--color-success-bg); }
+.ux-ios .week-bars { display: flex; gap: 7px; }
+.ux-ios .week-bars .d { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.ux-ios .week-bars .seg { width: 100%; height: 38px; border-radius: 9px; background: var(--color-periwinkle-mist); }
+.ux-ios .week-bars .d.on .seg { background: var(--color-moonlight-deep); }
+.ux-ios .week-bars .d.today .seg { box-shadow: 0 0 0 2px var(--color-moonlight-deep); }
+.ux-ios .week-bars .dl { font-size: 10px; font-weight: 600; color: var(--color-slate); }
+.ux-ios .week-bars .d.on .dl { color: var(--color-ink); }
+.ux-ios .week-msg { display: flex; align-items: center; gap: 8px; font-size: 12.5px; line-height: 1.4; color: var(--color-graphite); }
+.ux-ios .week-msg svg { flex: none; color: var(--color-moonlight-deep); }
+.ux-ios .week-msg.met svg { color: var(--color-success-ink); }
+.ux-ios .week-msg b { color: var(--color-ink); font-weight: 700; }
+
 /* ============================================================
    GENERIC WHITE SHEET chrome (HypoShield confirm-reset / confirm-skip).
    The two-step dose sheet itself is the DoseSheet component (.dose-*);

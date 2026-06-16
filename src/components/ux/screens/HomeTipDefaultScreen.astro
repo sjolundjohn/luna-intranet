@@ -1,9 +1,10 @@
 ---
 /**
- * HomeTipDefaultScreen — Home, Hypo Shield "Default Tip" RESTING state. No
- * pending recommendation: a calm reassurance card stating the standing nightly
- * basal (a chip that opens TDBD detail), NOT an accept control.
- * Lifted verbatim from `hypo-shield/home-tip-default.html`.
+ * HomeTipDefaultScreen — Home, Hypo Shield first-run RESTING state. The peek
+ * card sits UNDER the CGM graph (collapsed state of the two-state card; tap /
+ * swipe up expands to the Learning-state takeover). First time a user opens
+ * Luna it signals that a week-long learning process is starting and explains
+ * what Hypo Shield is — no dose value, no accept control.
  */
 import StatusStrip from "../ios/StatusStrip.astro";
 import CgmHero from "../ios/CgmHero.astro";
@@ -25,27 +26,31 @@ interface Props {
     <div class="footnote muted">mg/dL · steady</div>
   </div>
 
-  {/* HERO CGM GRAPH — fills the freed space (tip bar sits at the bottom). */}
+  {/* HERO CGM GRAPH fills the freed space; the Hypo Shield peek sits below it. */}
   <CgmHero trace="inrange" fill />
 
-  {/* HYPO SHIELD "DEFAULT TIP" at the bottom, with the Ask-Luna "+" on its
-      top-right corner. The bubble only appears when Hypo Shield has something
-      to say — the first thing it says is that it's learning about you. The
-      chip deep-links to Settings · Hypo Shield. */}
+  {/* HYPO SHIELD PEEK (collapsed) — under the CGM graph. Tap / swipe up expands
+      to the Learning-state takeover. First-run copy: a week of learning is
+      starting; explain the feature, no dose value, no accept control. */}
   <div class="pad" style="margin-top:12px; padding-bottom:8px;">
     <div class="insight-wrap" style="position:relative;">
       <AskLuna anchor="card" />
       <div class="card-dark tip-card hypo-pop">
+        <div class="peek-grip"></div>
         <div class="head">
           <span class="moon" aria-hidden="true"></span>
           <span class="eyebrow">Hypo Shield</span>
         </div>
-        <div class="lead">Luna is getting to know your nights. You'll hear from Hypo Shield here the moment there's something to know.</div>
-        <button class="tdbd-chip" style="align-self:stretch; width:100%;" aria-label="View your long-acting dose in Hypo Shield settings">
-          <span class="k">Long-acting dose</span>
-          <span class="v">12 <span class="u">U</span></span>
-          <span class="chev" style="margin-left:auto;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-        </button>
+        <div class="lead">Over your first week, Hypo Shield learns your insulin sensitivity and how your glucose moves overnight — then suggests adjusting your long-acting dose as needed.</div>
+        <div class="sub" style="font-size:13px; line-height:1.5;">It watches each night on its own and never changes anything for you. When there's a suggestion, you'll see it right here.</div>
+        <div class="head" style="justify-content:space-between; margin-top:2px;">
+          <button class="howlink" type="button">What is Hypo Shield?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <span class="peek-more">Tap to view
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </span>
+        </div>
       </div>
     </div>
   </div>

@@ -1,15 +1,15 @@
 ---
 /**
- * HomeTipPostScreen — Home, Hypo Shield "Tip Post": a basal recommendation is
- * AVAILABLE. Decision-support framing (recommended value + direction + one-line
- * rationale), explicitly "a suggestion only — nothing changes until you review
- * and confirm". The only action — "Review recommendation" — opens the two-step
- * confirm sheet; the read never accepts.
- * Lifted verbatim from `hypo-shield/home-tip-post.html`.
+ * HomeTipPostScreen — Home, Hypo Shield "Suggestion ready" peek. A long-acting
+ * dose suggestion is available. The peek card sits UNDER the CGM graph (collapsed
+ * state of the two-state card), consistent with the default tip. Compact notice
+ * only — no dose detail; the single action opens the full-screen suggestion
+ * review. Reading never accepts.
  */
 import StatusStrip from "../ios/StatusStrip.astro";
 import CgmHero from "../ios/CgmHero.astro";
 import TabBar from "../ios/TabBar.astro";
+import AskLuna from "../ios/AskLuna.astro";
 
 interface Props {
   variant?: "current" | "legacy";
@@ -26,27 +26,27 @@ interface Props {
     <div class="footnote muted">mg/dL · drifting up overnight</div>
   </div>
 
-  {/* HYPO SHIELD "SUGGESTION READY" — v0.4 r2: moved UP so the full card is
-      visible without scrolling; the graph fills the space below. Compact
-      two-step gate: no dose detail here; the ONLY action opens the
-      full-screen suggestion review. Reading never accepts. */}
-  <div class="pad" style="margin-top:10px;">
-    <div class="card-dark tip-post hypo-pop">
-      <div class="head">
-        <span class="moon" aria-hidden="true"></span>
-        <span class="eyebrow">Hypo Shield · Suggestion</span>
+  {/* HERO CGM GRAPH fills the freed space; the Hypo Shield peek sits below it. */}
+  <CgmHero trace="up" fill />
+
+  {/* HYPO SHIELD "SUGGESTION READY" PEEK (collapsed) — under the CGM graph,
+      consistent with the default tip. No dose detail here; the only action
+      opens the full-screen suggestion review. Reading never accepts. */}
+  <div class="pad" style="margin-top:12px; padding-bottom:8px;">
+    <div class="insight-wrap" style="position:relative;">
+      <AskLuna anchor="card" />
+      <div class="card-dark tip-card hypo-pop">
+        <div class="peek-grip"></div>
+        <div class="head">
+          <span class="moon" aria-hidden="true"></span>
+          <span class="eyebrow">Hypo Shield · Suggestion</span>
+        </div>
+        <div class="lead">A new long-acting dose suggestion is ready</div>
+        <div class="sub" style="font-size:13px; line-height:1.5;">Review it when you're ready — nothing changes until you confirm.</div>
+        <button class="btn primary" type="button" style="margin-top:2px;">Review suggestion</button>
       </div>
-      <div class="title">A new long-acting dose suggestion is ready</div>
-      <div class="note">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-        Review it when you're ready — nothing changes until you confirm.
-      </div>
-      <button class="btn primary" type="button">Review suggestion</button>
     </div>
   </div>
-
-  {/* CGM graph fills the remaining space below the card */}
-  <CgmHero trace="up" fill />
 </div>
 
 <TabBar active="dashboard" />

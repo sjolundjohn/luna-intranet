@@ -63,15 +63,6 @@
     "legacy": "wireframes/legacy/home-dashboard.jpg"
   },
   {
-    "id": "hypo-mid-session-announcement",
-    "title": "Mid-session dose announcement",
-    "status": "Work in Progress",
-    "feature": "Hypo Shield & In-App Comms",
-    "summary": "Calm bedside hand-off over the dimmed live dashboard. Announcement only — review now or in the morning; 'Not now' snoozes to the morning Home tip. Current dose stays in place.",
-    "wireframe": "component:hypo-mid-session-announcement",
-    "legacy": null
-  },
-  {
     "id": "hypo-push-notification",
     "title": "Push notification — prompt to open",
     "status": "Work in Progress",
@@ -94,7 +85,7 @@
     "title": "Dose confirmation",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Safely act on a dose suggestion: acknowledge that you've updated the setting AND committed to the dose, then slide to confirm both — the safeguard behind every Hypo Shield change.",
+    "summary": "Safely act on a dose suggestion: check both boxes — you'll take the new dose, and Luna can auto-adjust the setting — then a single Confirm button. The safeguard behind every Hypo Shield change.",
     "wireframe": "component:dose-confirmation-spine",
     "legacy": null
   },

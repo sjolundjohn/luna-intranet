@@ -1,11 +1,10 @@
 ---
 /**
  * ConfirmSkipScreen — Hypo Shield "Confirm Skip" (decline / defer), clock 10:18.
- * Nothing changes: the current basal stands, no setting touched, no dose taken.
- * The consequence of skipping is shown in PLUM (--color-critical), never red.
- * The recommendation isn't lost — retrievable under Settings · Hypo Shield. No
- * slide gesture (skipping is not a dose action). Rendered with `sheet`.
- * Lifted verbatim from `hypo-shield/confirm-skip.html`.
+ * Simplified (team feedback): one neutral acknowledgement, no competing
+ * green-check / plum-warning colors. Nothing changes — the current long-acting
+ * dose stands, no dose taken. The suggestion isn't lost; it waits under
+ * Settings · Hypo Shield. No slide gesture (skipping is not a dose action).
  */
 interface Props {
   variant?: "current" | "legacy";
@@ -32,40 +31,22 @@ interface Props {
 {/* dim scrim */}
 <div class="scrim"></div>
 
-{/* CONFIRM-SKIP SHEET — no dose value to apply, no slide; decline/defer */}
+{/* CONFIRM-SKIP SHEET — simplified: one neutral acknowledgement, no slide, no
+    competing green/plum colors. Just confirm the skip and say what happens. */}
 <div class="sheet-host">
   <div class="sheet">
     <div class="grabber"></div>
     <div class="hdr"><div class="moon"></div><span class="eyebrow">Hypo Shield · Skip</span></div>
     <h2>Skip this suggestion?</h2>
 
-    <div class="stands">
-      <span class="lbl">Your long-acting dose stays at</span>
-      <span class="val">12</span><span class="u">U</span>
-    </div>
-    <span class="unchanged">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-      Nothing changes
-    </span>
-    <p class="rationale">If you skip, Luna doesn't update your setting and you don't take a new dose. Your current long-acting dose stays exactly as it is.</p>
-
-    {/* CONSEQUENCE of skipping — Plum critical note, never red */}
-    <div class="skip-note">
-      <span class="ic" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
-      </span>
-      <span class="tx">Luna Eclipse found your long-acting dose could be optimized. Skipping means you may keep waking outside range until you act on a future suggestion.</span>
-    </div>
-
-    {/* Retrievable later */}
-    <div class="retrieve">
-      <span class="ic" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg>
-      </span>
-      <span class="tx">This suggestion isn't lost. You can find it any time under <b>Settings · Hypo Shield</b>.</span>
-    </div>
+    <p class="rationale">Your long-acting dose stays at <b>12 U</b> and you take your usual dose tonight — nothing changes.</p>
+    <p class="rationale">Luna keeps this suggestion for you under <b>Settings · Hypo Shield</b>, and may offer it again if the same pattern continues.</p>
 
     <button class="btn sheet-primary" type="button">Skip this suggestion</button>
     <div class="skip"><button type="button">Back</button></div>
   </div>
 </div>
+
+<style is:global>
+  .ux-ios .sheet .rationale b { color: var(--color-ink); font-weight: 700; }
+</style>
