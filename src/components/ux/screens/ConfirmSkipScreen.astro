@@ -6,6 +6,7 @@
  * dose stands, no dose taken. The suggestion isn't lost; it waits under
  * Settings · Hypo Shield. No slide gesture (skipping is not a dose action).
  */
+import TabBar from "../ios/TabBar.astro";
 interface Props {
   variant?: "current" | "legacy";
 }
@@ -33,7 +34,7 @@ interface Props {
 
 {/* CONFIRM-SKIP SHEET — simplified: one neutral acknowledgement, no slide, no
     competing green/plum colors. Just confirm the skip and say what happens. */}
-<div class="sheet-host">
+<div class="sheet-host sheet-host--tabs">
   <div class="sheet">
     <div class="grabber"></div>
     <div class="hdr"><div class="moon"></div><span class="eyebrow">Hypo Shield · Skip</span></div>
@@ -46,6 +47,9 @@ interface Props {
     <div class="skip"><button type="button">Back</button></div>
   </div>
 </div>
+
+{/* bottom menu stays visible above the scrim */}
+<div class="tabbar-float"><TabBar active="dashboard" /></div>
 
 <style is:global>
   .ux-ios .sheet .rationale b { color: var(--color-ink); font-weight: 700; }

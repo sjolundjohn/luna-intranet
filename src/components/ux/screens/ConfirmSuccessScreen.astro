@@ -8,6 +8,7 @@
  * needed). Wording keeps the user as the actor — Luna never changed anything
  * on its own. Rendered with `sheet`.
  */
+import TabBar from "../ios/TabBar.astro";
 interface Props { variant?: "current" | "legacy"; }
 ---
 {/* dimmed Home backdrop */}
@@ -28,8 +29,9 @@ interface Props { variant?: "current" | "legacy"; }
 {/* dim scrim */}
 <div class="scrim"></div>
 
-{/* SUCCESS SHEET — settings adjusted; reminder + relearning */}
-<div class="sheet-host">
+{/* SUCCESS SHEET — settings adjusted; reminder + relearning. Stops above the
+    tab bar, which stays visible (the bottom menu must never be covered). */}
+<div class="sheet-host sheet-host--tabs">
   <div class="sheet">
     <div class="grabber"></div>
     <div class="hdr"><div class="moon"></div><span class="eyebrow">Hypo Shield · Updated</span></div>
@@ -65,6 +67,9 @@ interface Props { variant?: "current" | "legacy"; }
     <div class="skip"><button type="button">View Hypo Shield settings</button></div>
   </div>
 </div>
+
+{/* bottom menu stays visible above the scrim */}
+<div class="tabbar-float"><TabBar active="dashboard" /></div>
 
 <style is:global>
   .ux-ios .sheet .success-circle {

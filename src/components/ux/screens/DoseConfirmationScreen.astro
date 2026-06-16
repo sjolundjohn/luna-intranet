@@ -10,6 +10,7 @@
  * markup lifted from `_spine/03-dose-confirmation.html`; the sheet is DoseSheet.
  */
 import DoseSheet from "../ios/DoseSheet.astro";
+import TabBar from "../ios/TabBar.astro";
 
 interface Props {
   variant?: "current" | "legacy";
@@ -36,7 +37,11 @@ interface Props {
 {/* dim scrim */}
 <div class="scrim"></div>
 
-{/* DOSE CONFIRMATION SHEET (increase state) */}
-<div class="sheet-host">
+{/* DOSE CONFIRMATION SHEET (increase state) — stops above the tab bar, which
+    stays visible (the bottom menu must never be covered). */}
+<div class="sheet-host sheet-host--tabs">
   <DoseSheet variant="increase" value={14} prev={12} />
 </div>
+
+{/* bottom menu stays visible above the scrim */}
+<div class="tabbar-float"><TabBar active="dashboard" /></div>
