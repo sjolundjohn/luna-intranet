@@ -29,8 +29,8 @@ const dir = variant === "increase" ? "up" : "down";
 const word = dir === "up" ? "Increase" : "Decrease";
 const rationale =
   variant === "increase"
-    ? "Over your last 7 nights, Hypo Shield noticed your glucose drifting above range after 2 AM on 5 of them — even with Luna's microboluses. You may need a bit more of your long-acting insulin."
-    : "Over your last 7 nights, Hypo Shield noticed your glucose running low overnight. You may need a bit less of your long-acting insulin.";
+    ? "Hypo Shield has observed your glucose drifting up overnight, which may mean you need a bit more of your long-acting insulin."
+    : "Hypo Shield has observed your glucose drifting low overnight, which may mean you need a bit less of your long-acting insulin.";
 
 const ICONS: Record<string, string> = {
   up: "M12 19V5M5 12l7-7 7 7",
@@ -102,9 +102,11 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
           <span><span class="dose-lbl">Allow Luna to automatically update your long-acting insulin settings in the app.</span></span>
         </button>
       </div>
-      <button class="dose-btn primary" data-confirm-btn disabled>Confirm changes</button>
+      <button class="dose-btn primary" data-confirm-btn data-proto-to="hypo-confirm-success" disabled>Confirm changes</button>
       <div class="dose-hint" data-confirm-hint set:html={`${icon("info", 14, "var(--color-slate)")} Confirm both above to continue`} />
-      <button class="dose-btn secondary" type="button" style="margin-top:10px;">Not now</button>
+      {/* Not now → back to Home with the Hypo Shield card minimized (still there
+          to review later) — the suggestion-ready peek. */}
+      <button class="dose-btn secondary" type="button" style="margin-top:10px;" data-proto-to="hypo-home-tip-post">Not now</button>
     </Fragment>
   )}
 

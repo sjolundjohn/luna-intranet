@@ -750,12 +750,19 @@ const states = statesFor(screen.id);
         if (to && to !== screenId) { e.preventDefault(); location.assign(`/tools/ux-review/${to}`); }
         return;
       }
+      // explicit per-control destination (e.g. a sheet's "Not now" button)
+      const protoEl = target.closest<HTMLElement>("[data-proto-to]");
+      if (protoEl && !(protoEl as HTMLButtonElement).disabled) {
+        e.preventDefault();
+        location.assign(`/tools/ux-review/${protoEl.dataset.protoTo}`);
+        return;
+      }
       if (flowNext && target.closest(".btn.primary")) {
         e.preventDefault();
         location.assign(`/tools/ux-review/${flowNext}`);
       }
     });
-    if (protoHint && stage && (stage.querySelector("[data-tab]") || (flowNext && stage.querySelector(".btn.primary")))) {
+    if (protoHint && stage && (stage.querySelector("[data-tab]") || stage.querySelector("[data-proto-to]") || (flowNext && stage.querySelector(".btn.primary")))) {
       protoHint.hidden = false;
     }
 
