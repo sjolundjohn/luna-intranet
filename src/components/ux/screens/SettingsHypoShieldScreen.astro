@@ -1,21 +1,20 @@
 ---
 /**
- * SettingsHypoShieldScreen — Settings › Hypo Shield (v0.4). The ONE management
- * surface: feature state, last suggestions + dispositions, your long-acting
- * dose, learning progress and the full history (merged from the deleted TDBD
- * Detail screen — the Home chip deep-links here), and help. Study-facing
- * "always on" copy removed: it's not an option, so it isn't flagged as one.
+ * SettingsHypoShieldScreen — Settings › Hypo Shield (v0.5). Simplified to the
+ * two things users need: (1) an on/off toggle with a clear current state, and
+ * (2) a plain explanation of what Hypo Shield is and how it works (merged from
+ * the deleted How-it-works screen). No suggestion log / history / dosing log.
+ * White-card layout + colors matching the rest of the feature (the old dark
+ * cards were too low-contrast to read).
  */
 import TabBar from "../ios/TabBar.astro";
 
 interface Props {
   variant?: "current" | "legacy";
 }
-const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
-const check = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
 ---
 <div class="content">
-  {/* nav header: Moonlight back ("Settings"), then "Hypo Shield" title; NO divider */}
+  {/* nav header: Moonlight back ("Settings"), then "Hypo Shield" title */}
   <div class="navbar">
     <button class="back" aria-label="Settings">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -25,109 +24,35 @@ const check = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" strok
   <div class="pad" style="padding-bottom:10px;"><h1 style="margin:0; font-size:28px; font-weight:700; letter-spacing:-0.015em; color:var(--color-on-dark);">Hypo Shield</h1></div>
 
   <div class="pad" style="overflow-y:auto;">
-    {/* FEATURE-STATE hero: always-on, no participant toggle */}
-    <div class="card-dark feat-card">
-      <div class="head">
+    {/* ON/OFF toggle + clear state */}
+    <div class="card-dark hypo-pop hs-set-card">
+      <div class="hs-set-top">
         <span class="moon" aria-hidden="true"></span>
-        <div>
+        <div class="hs-set-name">
           <div class="nm">Hypo Shield</div>
-          <div class="state"><span class="dot"></span>Active</div>
+          <div class="state"><span class="dot"></span>On · learning your nights</div>
         </div>
+        <button class="hs-toggle on" role="switch" aria-checked="true" aria-label="Turn Hypo Shield off"><span class="knob"></span></button>
       </div>
-      <div class="desc">Hypo Shield learns your overnight insulin needs and suggests a corrected dose when your long-acting dose looks mis-set. It never changes your dose for you.</div>
+      <p class="hs-set-desc">Hypo Shield watches your nighttime glucose and, once it's learned your nights, suggests a long-acting dose change if yours looks set too high or too low. It never changes anything until you confirm.</p>
     </div>
 
-    {/* LAST SUGGESTIONS + disposition */}
-    <div class="sec-label">Last suggestions</div>
-    <div class="list">
-      <div class="row">
-        <span class="sub-label">
-          <span class="t">New dose · 14 U</span>
-          <span class="s">May 26 · 10:18 PM</span>
-        </span>
-        <span class="disp skipped">Skipped</span>
-        <span class="chev" set:html={chev} />
+    {/* WHAT IT IS / HOW IT WORKS — merged from the old How-it-works screen */}
+    <div class="sec-label">How it works</div>
+    <div class="card-dark hypo-pop hs-set-card">
+      <div class="hiw-row">
+        <div class="hiw-h">It learns first</div>
+        <p>Over your first <b>7 Luna sessions</b>, Luna learns your overnight patterns and doses conservatively. The sessions don't need to be consecutive.</p>
       </div>
-      <div class="row">
-        <span class="sub-label">
-          <span class="t">New dose · 14 U</span>
-          <span class="s">May 24 · 9:32 AM</span>
-        </span>
-        <span class="disp applied">Applied</span>
-        <span class="chev" set:html={chev} />
+      <div class="hiw-div"></div>
+      <div class="hiw-row">
+        <div class="hiw-h">It suggests — you decide</div>
+        <p>When your long-acting dose looks mis-set, Hypo Shield suggests a change and explains why. Nothing happens until you confirm.</p>
       </div>
-    </div>
-
-    {/* DOSING — your long-acting dose (the Home chip deep-links here) */}
-    <div class="sec-label">Dosing</div>
-    <div class="list">
-      <div class="row">
-        <span class="label">Long-acting dose</span>
-        <span class="value">12 U</span>
-      </div>
-    </div>
-
-    {/* LEARNING — single 7-day session window (5 in 7 days unlocks suggestions) */}
-    <div class="sec-label">Learning</div>
-    <div class="card-dark" style="padding:18px;">
-      <div class="lp">
-        <div class="lp-item">
-          <div class="lp-top">
-            <span class="lp-lbl"><span class="done" set:html={check} /> Sessions this week</span>
-            <span class="lp-count">5 of 7</span>
-          </div>
-          <div class="lp-bar"><i style="width:71%;"></i></div>
-        </div>
-      </div>
-      <span class="learned">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-        Active · 5+ sessions in the last 7 days
-      </span>
-    </div>
-
-    {/* HISTORY — merged from the old TDBD detail */}
-    <div class="sec-label" style="margin-top:14px;">History</div>
-    <div class="list">
-      <div class="hist-row">
-        <span class="dt">May<br>26</span>
-        <span class="mid">
-          <span class="t">Suggested 14 U</span>
-          <span class="s">Drifted up · you declined</span>
-        </span>
-        <span class="tag skipped">Skipped</span>
-      </div>
-      <div class="hist-row">
-        <span class="dt">May<br>24</span>
-        <span class="mid">
-          <span class="t">Changed to 12 U</span>
-          <span class="s">Suggestion applied</span>
-        </span>
-        <span class="tag applied">Applied</span>
-      </div>
-      <div class="hist-row">
-        <span class="dt">May<br>19</span>
-        <span class="mid">
-          <span class="t">Manual change to 10 U</span>
-          <span class="s">Learning reset, then re-learned</span>
-        </span>
-        <span class="tag reset">Reset</span>
-      </div>
-      <div class="hist-row">
-        <span class="dt">May<br>12</span>
-        <span class="mid">
-          <span class="t">Started at 10 U</span>
-          <span class="s">Your starting dose at setup</span>
-        </span>
-        <span class="tag applied">Set</span>
-      </div>
-    </div>
-
-    {/* Help */}
-    <div class="sec-label" style="margin-top:14px;">Support</div>
-    <div class="list">
-      <div class="row">
-        <span class="label">How Hypo Shield works</span>
-        <span class="chev" set:html={chev} />
+      <div class="hiw-div"></div>
+      <div class="hiw-row">
+        <div class="hiw-h">You stay in control</div>
+        <p>You take the new dose yourself; if you allow it, Luna updates your long-acting insulin setting in the app. You can turn Hypo Shield off any time using the switch above.</p>
       </div>
     </div>
 

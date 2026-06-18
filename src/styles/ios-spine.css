@@ -388,6 +388,35 @@
 .ux-ios .week-msg.met svg { color: var(--color-success-ink); }
 .ux-ios .week-msg b { color: var(--color-ink); font-weight: 700; }
 
+/* Conservative-mode indicator — stacked (not cramped left/right). On white card. */
+.ux-ios .hs-mode { background: var(--color-moonlight-tint, #E8FCFF); border: 1px solid rgba(10,154,174,0.22); border-radius: 14px; padding: 14px 16px; }
+.ux-ios .hs-mode .row { display: flex; align-items: center; gap: 8px; }
+.ux-ios .hs-mode .ic { color: var(--color-moonlight-deep); display: flex; }
+.ux-ios .hs-mode .k { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-slate); }
+.ux-ios .hs-mode .v { font-size: 16px; font-weight: 700; color: var(--color-ink); margin-top: 8px; }
+.ux-ios .hs-mode .note { font-size: 12.5px; line-height: 1.45; color: var(--color-graphite); margin-top: 5px; }
+
+/* Settings · Hypo Shield (v0.5) — white cards, on/off toggle, merged explainer */
+.ux-ios .hs-set-card { padding: 16px 18px; margin-bottom: 10px; }
+.ux-ios .hs-set-top { display: flex; align-items: center; gap: 12px; }
+.ux-ios .hs-set-card .moon { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--color-midnight); position: relative; overflow: hidden; border: 1px solid rgba(4,30,66,0.18); }
+.ux-ios .hs-set-card .moon::before { content: ""; position: absolute; right: -5px; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: var(--color-moonlight); }
+.ux-ios .hs-set-card .moon::after { content: ""; position: absolute; right: -1px; top: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--color-midnight); }
+.ux-ios .hs-set-name { flex: 1; }
+.ux-ios .hs-set-name .nm { font-size: 17px; font-weight: 700; color: var(--color-ink); letter-spacing: -0.01em; }
+.ux-ios .hs-set-name .state { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 13px; font-weight: 700; color: var(--color-success-ink); }
+.ux-ios .hs-set-name .state .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-success-ink); }
+.ux-ios .hs-set-name .state.off { color: var(--color-slate); }
+.ux-ios .hs-set-name .state.off .dot { background: var(--color-slate); }
+.ux-ios .hs-set-desc { margin: 14px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--color-graphite); }
+.ux-ios .hs-toggle { flex: none; width: 46px; height: 28px; border-radius: 999px; background: var(--color-pebble-blue); border: none; position: relative; cursor: pointer; padding: 0; }
+.ux-ios .hs-toggle.on { background: var(--color-moonlight-deep); }
+.ux-ios .hs-toggle .knob { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
+.ux-ios .hs-toggle.on .knob { left: 21px; }
+.ux-ios .hiw-row .hiw-h { font-size: 14px; font-weight: 700; color: var(--color-ink); margin-bottom: 4px; }
+.ux-ios .hiw-row p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--color-graphite); }
+.ux-ios .hiw-div { height: 1px; background: var(--color-border-subtle, #E3E8F2); margin: 14px 0; }
+
 /* ============================================================
    GENERIC WHITE SHEET chrome (HypoShield confirm-reset / confirm-skip).
    The two-step dose sheet itself is the DoseSheet component (.dose-*);

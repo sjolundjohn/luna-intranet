@@ -1,17 +1,17 @@
 ---
 /**
- * LearningStateScreen — Home, Hypo Shield learning takeover. The EXPANDED state
- * of the two-state card: it covers the glucose reading and the CGM graph,
- * sitting between the system-status pills (top) and the bottom menu. Luna needs
- * 5 Luna sessions within a rolling 7-day window before it suggests — shown as a
- * single 7-day session graph with light gamification.
+ * LearningStateScreen — Home, Hypo Shield learning takeover (v0.5). The
+ * conservative "we're still getting to know you" mode, shown until the first
+ * suggestion arrives (after which this screen goes away and the user just gets
+ * suggestions). Covers the glucose + CGM graph, between the status pills and the
+ * tab bar.
  *
- * Three scenarios drive the dynamic-content selector (see SCREEN_STATES):
- *   establishing — first week, building a baseline
- *   ready        — 5+ sessions this week, Hypo Shield active
- *   paused       — under 5 this week, suggestions paused
- * Each is a [data-ux-state] block; the first is shown, the rest are hidden, and
- * the detail page's Scenario control toggles between them.
+ * Learning rule (v0.5): 7 Luna sessions — they do NOT need to be consecutive.
+ * Shown as a 7-segment progress (one per session needed), gamified ("2 more to
+ * unlock"). Three scenarios drive the dynamic-content selector (SCREEN_STATES):
+ *   early  — first sessions, lots to go
+ *   almost — close to 7, gamified nudge
+ *   ready  — hit 7, Hypo Shield ready (next thing is a real suggestion)
  */
 import StatusStrip from "../ios/StatusStrip.astro";
 import TabBar from "../ios/TabBar.astro";
@@ -19,107 +19,84 @@ import TabBar from "../ios/TabBar.astro";
 interface Props {
   variant?: "current" | "legacy";
 }
-const sun = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19"/></svg>';
+const sun = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19"/></svg>';
 const arrow = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
 const check = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
-const pause = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H7v16h3zM17 4h-3v16h3z"/></svg>';
+// 7-segment session graph: `done` of 7 filled.
+const seg = (done: number) => Array.from({ length: 7 }, (_, i) => `<div class="d${i < done ? ' on' : ''}"><span class="seg"></span></div>`).join("");
 ---
 <div class="content">
   <StatusStrip />
 
-  {/* HYPO SHIELD LEARNING TAKEOVER — covers the glucose + CGM graph, fills the
-      space between the status pills and the tab bar. */}
+  {/* HYPO SHIELD LEARNING TAKEOVER — covers glucose + CGM, between the status
+      pills and the tab bar. */}
   <div class="pad hypo-takeover">
     <div class="card-dark learn-card hypo-pop" style="flex:1; display:flex; flex-direction:column;">
       <div class="head">
         <span class="moon" aria-hidden="true"></span>
-        <span class="eyebrow">Hypo Shield · Learning</span>
+        <span class="eyebrow">Hypo Shield</span>
       </div>
 
-      {/* ── STATE: establishing (days 1–7) ───────────────────────────── */}
-      <div data-ux-state="establishing">
-        <div class="title">Luna is learning your nights</div>
-        <div class="sub">Before suggesting any change to your long-acting dose, Luna learns from your own nights — <b>3 watched so far</b>.</div>
+      {/* ── STATE: early (first sessions) ────────────────────────────── */}
+      <div data-ux-state="early">
+        <div class="title">Getting to know your nights</div>
+        <div class="sub">Hypo Shield is learning how your body responds overnight. For now it stays conservative — your first dose suggestion comes after <b>7 Luna sessions</b> (they don't have to be in a row).</div>
 
-        <div class="dose-mode" style="margin-bottom:18px;">
-          <span class="ic" aria-hidden="true" set:html={sun} />
-          <span class="dm-lbl"><span class="k">Hypo Shield mode</span><span class="v">Establishing baseline</span></span>
-          <span class="note">First week — building your baseline</span>
+        <div class="hs-mode" style="margin-bottom:18px;">
+          <div class="row"><span class="ic" aria-hidden="true" set:html={sun} /><span class="k">Hypo Shield mode</span></div>
+          <div class="v">Conservative · learning you</div>
+          <div class="note">While we learn, dosing stays a little more careful — and it keeps getting better.</div>
         </div>
 
         <div class="week">
           <div class="week-top">
-            <span class="week-count"><b>3</b> of 7 sessions this week</span>
-            <span class="week-goal">Goal: 5</span>
+            <span class="week-count"><b>2</b> of 7 Luna sessions</span>
+            <span class="week-goal">Unlocks at 7</span>
           </div>
-          <div class="week-bars">
-            <div class="d on"><span class="seg"></span><span class="dl">M</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">T</span></div>
-            <div class="d on"><span class="seg"></span><span class="dl">W</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">T</span></div>
-            <div class="d on"><span class="seg"></span><span class="dl">F</span></div>
-            <div class="d today"><span class="seg"></span><span class="dl">S</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">S</span></div>
-          </div>
-          <div class="week-msg"><span set:html={arrow} /><span><b>2 more sessions</b> this week to unlock suggestions.</span></div>
+          <div class="week-bars" set:html={seg(2)} />
+          <div class="week-msg"><span set:html={arrow} /><span><b>5 more sessions</b> to unlock Hypo Shield suggestions.</span></div>
         </div>
       </div>
 
-      {/* ── STATE: ready (5+ sessions in last 7 days) ────────────────── */}
+      {/* ── STATE: almost (close to 7) ───────────────────────────────── */}
+      <div data-ux-state="almost" hidden>
+        <div class="title">Almost ready</div>
+        <div class="sub">You're nearly there. Hypo Shield has watched most of your nights and will start suggesting once you reach <b>7 Luna sessions</b>.</div>
+
+        <div class="hs-mode" style="margin-bottom:18px;">
+          <div class="row"><span class="ic" aria-hidden="true" set:html={sun} /><span class="k">Hypo Shield mode</span></div>
+          <div class="v">Conservative · learning you</div>
+          <div class="note">Still dosing carefully — almost ready to suggest.</div>
+        </div>
+
+        <div class="week">
+          <div class="week-top">
+            <span class="week-count"><b>5</b> of 7 Luna sessions</span>
+            <span class="week-goal">Unlocks at 7</span>
+          </div>
+          <div class="week-bars" set:html={seg(5)} />
+          <div class="week-msg"><span set:html={arrow} /><span>Just <b>2 more sessions</b> to go — you're almost there!</span></div>
+        </div>
+      </div>
+
+      {/* ── STATE: ready (reached 7) ─────────────────────────────────── */}
       <div data-ux-state="ready" hidden>
-        <div class="title">Hypo Shield is active</div>
-        <div class="sub">You've worn Luna <b>5 nights this week</b> — enough for Luna to suggest a long-acting dose change when your nights call for it.</div>
+        <div class="title">Hypo Shield is ready</div>
+        <div class="sub">You've reached <b>7 Luna sessions</b>. From here, Hypo Shield will suggest a long-acting dose change whenever your nights call for it — this screen steps aside once your first suggestion arrives.</div>
 
-        <div class="dose-mode" style="margin-bottom:18px;">
-          <span class="ic" aria-hidden="true" set:html={sun} />
-          <span class="dm-lbl"><span class="k">Hypo Shield mode</span><span class="v">Active · tuning your dose</span></span>
-          <span class="note">Suggesting when your nights call for it</span>
+        <div class="hs-mode" style="margin-bottom:18px;">
+          <div class="row"><span class="ic" aria-hidden="true" set:html={sun} /><span class="k">Hypo Shield mode</span></div>
+          <div class="v">Active · watching your nights</div>
+          <div class="note">You'll only hear from Hypo Shield when there's something worth changing.</div>
         </div>
 
         <div class="week">
           <div class="week-top">
-            <span class="week-count"><b>5</b> of 7 sessions this week</span>
-            <span class="week-goal met">Goal met</span>
+            <span class="week-count"><b>7</b> of 7 Luna sessions</span>
+            <span class="week-goal met">Unlocked</span>
           </div>
-          <div class="week-bars">
-            <div class="d on"><span class="seg"></span><span class="dl">M</span></div>
-            <div class="d on"><span class="seg"></span><span class="dl">T</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">W</span></div>
-            <div class="d on"><span class="seg"></span><span class="dl">T</span></div>
-            <div class="d on"><span class="seg"></span><span class="dl">F</span></div>
-            <div class="d today on"><span class="seg"></span><span class="dl">S</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">S</span></div>
-          </div>
-          <div class="week-msg met"><span set:html={check} /><span>You're covered. Keep <b>5 nights a week</b> to stay active.</span></div>
-        </div>
-      </div>
-
-      {/* ── STATE: paused (under 5 in last 7 days) ───────────────────── */}
-      <div data-ux-state="paused" hidden>
-        <div class="title">Suggestions are paused</div>
-        <div class="sub">You've worn Luna <b>2 nights this week</b>. Luna needs 5 within a 7-day window to keep suggesting safely.</div>
-
-        <div class="dose-mode" style="margin-bottom:18px;">
-          <span class="ic" aria-hidden="true" set:html={pause} />
-          <span class="dm-lbl"><span class="k">Hypo Shield mode</span><span class="v">Paused</span></span>
-          <span class="note">Resume by reaching 5 nights this week</span>
-        </div>
-
-        <div class="week">
-          <div class="week-top">
-            <span class="week-count"><b>2</b> of 7 sessions this week</span>
-            <span class="week-goal">Goal: 5</span>
-          </div>
-          <div class="week-bars">
-            <div class="d on"><span class="seg"></span><span class="dl">M</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">T</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">W</span></div>
-            <div class="d on"><span class="seg"></span><span class="dl">T</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">F</span></div>
-            <div class="d today"><span class="seg"></span><span class="dl">S</span></div>
-            <div class="d"><span class="seg"></span><span class="dl">S</span></div>
-          </div>
-          <div class="week-msg"><span set:html={arrow} /><span><b>3 more sessions</b> this week to resume suggestions.</span></div>
+          <div class="week-bars" set:html={seg(7)} />
+          <div class="week-msg met"><span set:html={check} /><span>Learning complete — Hypo Shield is on.</span></div>
         </div>
       </div>
 

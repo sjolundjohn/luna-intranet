@@ -26,8 +26,8 @@ export interface Screen {
 export const SCREENS: Screen[] = rawManifest as Screen[];
 
 /** Design versions a comment can be stamped against (newest last). */
-export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026", "v0.3 — Jun 2026", "v0.4 — Jun 2026"] as const;
-export const CURRENT_DESIGN_VERSION = "v0.4 — Jun 2026";
+export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026", "v0.3 — Jun 2026", "v0.4 — Jun 2026", "v0.5 — Jun 2026"] as const;
+export const CURRENT_DESIGN_VERSION = "v0.5 — Jun 2026";
 
 export const STATUS_ORDER: ScreenStatus[] = ["Work in Progress", "Approved"];
 
@@ -50,19 +50,19 @@ export interface ScreenState {
 export const SCREEN_STATES: Record<string, ScreenState[]> = {
   "hypo-learning-state": [
     {
-      id: "establishing",
-      label: "Days 1–7 · Establishing",
-      caption: "First week of wear — Luna is building your baseline. Suggestions begin once you've had 5 sessions within a 7-day window.",
+      id: "early",
+      label: "Getting to know you",
+      caption: "Your first Luna sessions. Hypo Shield is learning your nights and dosing conservatively — no suggestions yet. Threshold is 7 Luna sessions (they don't need to be consecutive).",
+    },
+    {
+      id: "almost",
+      label: "Almost there",
+      caption: "Most of the way to unlocking suggestions — gamified to nudge the user over the line (e.g. \"2 more sessions to go\").",
     },
     {
       id: "ready",
-      label: "Ready · 5+ this week",
-      caption: "Five or more sessions in the last 7 days — Hypo Shield is active and can now suggest a dose change.",
-    },
-    {
-      id: "paused",
-      label: "Paused · under 5",
-      caption: "Fewer than 5 sessions in the last 7 days — suggestions pause until you're back to 5 in 7 days.",
+      label: "Ready",
+      caption: "Reached 7 Luna sessions — Hypo Shield is ready and will surface a suggestion when your nights call for it. After the first suggestion, this learning screen goes away.",
     },
   ],
 };
@@ -132,11 +132,11 @@ export const FLOW_NEXT: Record<string, string> = {
   "apollo-step-09-detach-reservoir": "apollo-step-10-charge",
   "apollo-step-10-charge": "apollo-complete",
   "apollo-complete": "home-dashboard",
-  // Hypo Shield — the peek card opens its takeover; the suggestion peek gates
-  // through the full-screen review, then the two-step confirm, then success
+  // Hypo Shield (v0.5) — the peek card / push open the dose confirmation
+  // directly (the full-screen review is gone); confirm → success → home.
   "hypo-home-tip-default": "hypo-learning-state",
-  "hypo-home-tip-post": "hypo-recommendation-detail",
-  "hypo-recommendation-detail": "dose-confirmation-spine",
+  "hypo-home-tip-post": "dose-confirmation-spine",
+  "hypo-push-notification": "dose-confirmation-spine",
   "dose-confirmation-spine": "hypo-confirm-success",
   "hypo-confirm-success": "home-dashboard",
   // IOB — pre-session opt-in → opted-in home
@@ -205,9 +205,9 @@ export const FLOWS: ReviewFlow[] = [
     screens: ["home-dashboard", "session-history", "settings-list"],
   },
   {
-    id: "hypo", area: "hypo", label: "Suggest → review → confirm → manage",
-    blurb: "Learning states, the three suggestion entry points, the full-screen review that gates every suggestion, the two-step confirm, success & skip, settings, and how-it-works.",
-    screens: ["hypo-home-tip-default", "hypo-learning-state", "hypo-home-tip-post", "hypo-push-notification", "hypo-recommendation-detail", "dose-confirmation-spine", "hypo-confirm-success", "hypo-confirm-skip", "hypo-settings", "hypo-how-it-works"],
+    id: "hypo", area: "hypo", label: "Learn → suggest → confirm → manage",
+    blurb: "The first-week learning states, the suggestion entry points (Home peek + lock-screen push), the dose confirmation with its two paths, the success confirmation, and settings.",
+    screens: ["hypo-home-tip-default", "hypo-learning-state", "hypo-home-tip-post", "hypo-push-notification", "dose-confirmation-spine", "hypo-confirm-success", "hypo-settings"],
   },
   {
     id: "iob", area: "iob", label: "Opt in → see it → manage",

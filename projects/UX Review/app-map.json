@@ -72,15 +72,6 @@
     "legacy": null
   },
   {
-    "id": "hypo-recommendation-detail",
-    "title": "Suggestion review (full screen)",
-    "status": "Work in Progress",
-    "feature": "Hypo Shield & In-App Comms",
-    "summary": "The full-screen review that gates EVERY suggestion: old vs new dose contrast, what Luna noticed in your own nights, how Luna decided, and the education link — then on to the two-step confirm.",
-    "wireframe": "component:hypo-recommendation-detail",
-    "legacy": null
-  },
-  {
     "id": "dose-confirmation-spine",
     "title": "Dose confirmation",
     "status": "Work in Progress",
@@ -94,17 +85,8 @@
     "title": "Confirmation — settings adjusted",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Positive confirmation after the two-step confirm: dose updated to 14 U, a reminder to take the actual dose this evening, and relearning started (7 days + 5 sessions).",
+    "summary": "Positive confirmation after the confirm: long-acting dose updated to 14 U, a reminder to take the actual dose this evening, and relearning started.",
     "wireframe": "component:hypo-confirm-success",
-    "legacy": null
-  },
-  {
-    "id": "hypo-confirm-skip",
-    "title": "Confirm skip (decline / defer)",
-    "status": "Work in Progress",
-    "feature": "Hypo Shield & In-App Comms",
-    "summary": "Decline/defer: nothing changes, the current long-acting dose stands. Consequence shown in Plum (never red); the suggestion isn't lost — it waits under Settings · Hypo Shield.",
-    "wireframe": "component:hypo-confirm-skip",
     "legacy": null
   },
   {
@@ -112,18 +94,9 @@
     "title": "Settings — Hypo Shield",
     "status": "Work in Progress",
     "feature": "Hypo Shield & In-App Comms",
-    "summary": "Feature state, last suggestions + dispositions, your long-acting dose, learning progress and full history (merged from the old TDBD detail), and help.",
+    "summary": "On/off toggle + clear state, and a plain explanation of what Hypo Shield is and how it works (merged from the old How-it-works screen). White-card layout matching the rest of the feature.",
     "wireframe": "component:hypo-settings",
     "legacy": "wireframes/legacy/settings-root.jpg"
-  },
-  {
-    "id": "hypo-how-it-works",
-    "title": "How Hypo Shield works",
-    "status": "Work in Progress",
-    "feature": "Hypo Shield & In-App Comms",
-    "summary": "The single education surface: what Hypo Shield is, how it learns, what it does (suggests only), and what you do. Linked from Learning State, Settings and the suggestion review.",
-    "wireframe": "component:hypo-how-it-works",
-    "legacy": null
   },
   {
     "id": "iob-home-on",
