@@ -1,10 +1,11 @@
 ---
 /**
- * StudyRemindersNotificationsScreen — the two study reminders as they appear on
- * the iOS lock screen (v0.1). Delivered by Apple Health / iOS, so they reach the
- * user even when Luna is closed. Two examples stacked bottom-aligned (stock iOS
- * 16+ placement): the nightly wear reminder and the missed-session nudge.
- * Modeled on the Hypo push-notification screen.
+ * StudyRemindersNotificationsScreen — the two study reminders as native Apple
+ * Health reminder notifications (v0.1 r2). Because Luna schedules these through
+ * Apple Health (lean-on-iOS approach), they appear FROM THE HEALTH APP — Health
+ * icon + "Health" sender + the system reminder style — not a Luna-branded push.
+ * Two examples, bottom-stacked (stock iOS 16+ placement): nightly wear + the
+ * missed-session follow-up.
  */
 interface Props { variant?: "current" | "legacy"; }
 ---
@@ -19,33 +20,50 @@ interface Props { variant?: "current" | "legacy"; }
     </div>
   </div>
 
-  {/* NOTIFICATION ZONE — two study reminders, bottom-stacked (iOS 16+) */}
+  {/* NOTIFICATION ZONE — Apple Health reminders, bottom-stacked (iOS 16+) */}
   <div class="notif-zone">
     <div class="flow-note">
       <span class="ic" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </span>
-      <span class="ln"><b>Delivered by Apple Health / iOS.</b> These reminders are scheduled in the OS, so they reach the user even when Luna is closed. Tapping opens Luna.</span>
+      <span class="ln"><b>Native Apple Health reminders.</b> Luna schedules these in Apple Health, so they arrive from the <b>Health</b> app and fire even when Luna is closed — not a Luna-branded push.</span>
     </div>
 
-    {/* NIGHTLY WEAR */}
-    <button class="push" aria-label="Time for tonight's Luna session">
-      <span class="app-ico" aria-hidden="true"></span>
+    {/* NIGHTLY WEAR — from Health */}
+    <button class="push" aria-label="Apple Health reminder: time for tonight's Luna session">
+      <span class="health-ico" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 21s-7.5-4.7-10-9.3C0.6 8.6 2.2 4.6 6 4.6c2.1 0 3.3 1.2 4 2.2.7-1 1.9-2.2 4-2.2 3.8 0 5.4 4 4 7.1C19.5 16.3 12 21 12 21z" fill="#FF2D55"/>
+        </svg>
+      </span>
       <span class="body-txt">
-        <span class="top"><span class="nm">Luna</span><span class="ago">now</span></span>
+        <span class="top"><span class="nm">Health</span><span class="ago">now</span></span>
         <span class="ttl">Time for tonight's Luna session</span>
-        <span class="msg">Wear Luna before bed to keep your study on track.</span>
+        <span class="msg">Reminder · Wear Luna before bed to keep your study on track.</span>
       </span>
     </button>
 
-    {/* MISSED-SESSION NUDGE */}
-    <button class="push" aria-label="You missed last night's session" style="margin-top:10px;">
-      <span class="app-ico" aria-hidden="true"></span>
+    {/* MISSED-SESSION FOLLOW-UP — from Health */}
+    <button class="push" aria-label="Apple Health reminder: you missed last night's session" style="margin-top:10px;">
+      <span class="health-ico" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 21s-7.5-4.7-10-9.3C0.6 8.6 2.2 4.6 6 4.6c2.1 0 3.3 1.2 4 2.2.7-1 1.9-2.2 4-2.2 3.8 0 5.4 4 4 7.1C19.5 16.3 12 21 12 21z" fill="#FF2D55"/>
+        </svg>
+      </span>
       <span class="body-txt">
-        <span class="top"><span class="nm">Luna</span><span class="ago">8:00 AM</span></span>
-        <span class="ttl">You missed last night's session</span>
-        <span class="msg">No problem — wear Luna tonight so your study stays on track.</span>
+        <span class="top"><span class="nm">Health</span><span class="ago">8:00 AM</span></span>
+        <span class="ttl">No Luna session logged last night</span>
+        <span class="msg">Reminder · Wear Luna tonight so your study stays on track.</span>
       </span>
     </button>
   </div>
 </div>
+
+<style is:global>
+  /* Apple Health app icon: white rounded tile with the Health heart. */
+  .ux-ios .health-ico {
+    flex: none; width: 38px; height: 38px; border-radius: 9px; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+  }
+</style>
