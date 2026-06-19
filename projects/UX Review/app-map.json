@@ -153,15 +153,6 @@
     "legacy": "wireframes/legacy/settings-root.jpg"
   },
   {
-    "id": "iob-session-detail",
-    "title": "Session History detail — residual Luna IOB",
-    "status": "Work in Progress",
-    "feature": "IOB Display",
-    "summary": "Drilled-in session detail surfacing the residual Luna IOB after a session ends (0.1 U, capital U), shown so you can avoid stacking a manual dose.",
-    "wireframe": "component:iob-session-detail",
-    "legacy": "wireframes/legacy/session-history-swipe.jpg"
-  },
-  {
     "id": "onboarding-chapter-1",
     "title": "Chapter 1 — What Luna is",
     "status": "Work in Progress",

@@ -210,7 +210,7 @@ export const FLOWS: ReviewFlow[] = [
   {
     id: "iob", area: "iob", label: "Opt in → see it → manage",
     blurb: "Pre-session announcement → opted-in Home → session detail → settings toggle.",
-    screens: ["iob-pre-session-announcement", "iob-home-on", "iob-session-detail", "iob-settings"],
+    screens: ["iob-pre-session-announcement", "iob-home-on", "iob-settings"],
   },
   {
     id: "reminders", area: "reminders", label: "Set up → manage → see it",
