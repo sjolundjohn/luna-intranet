@@ -8,6 +8,7 @@
  * Lifted verbatim from `iob-display/pre-session-iob-announcement.html`.
  */
 import DoseSheet from "../ios/DoseSheet.astro";
+import TabBar from "../ios/TabBar.astro";
 
 interface Props {
   variant?: "current" | "legacy";
@@ -32,7 +33,11 @@ interface Props {
 {/* dim scrim */}
 <div class="scrim"></div>
 
-{/* OPT-IN ACKNOWLEDGEMENT SHEET — the shared two-step component as opt-in. */}
-<div class="sheet-host">
+{/* OPT-IN ACKNOWLEDGEMENT SHEET — the shared component as opt-in. Stops above
+    the tab bar, which stays visible (the bottom menu must never be covered). */}
+<div class="sheet-host sheet-host--tabs">
   <DoseSheet variant="optin" />
 </div>
+
+{/* bottom menu stays visible above the scrim */}
+<div class="tabbar-float"><TabBar active="dashboard" /></div>

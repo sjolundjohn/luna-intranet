@@ -19,11 +19,6 @@ interface Props {
 }
 const { variant = "increase", value = 14, prev = 12, unit = "U" } = Astro.props;
 
-// The slide gesture is shared by the dose-confirmation (increase/decrease) and
-// the IOB opt-in acknowledgement. The labels differ; the mechanics are identical.
-const slideLabel = variant === "optin" ? "Slide to turn on" : "Slide to confirm both";
-const doneLabel = variant === "optin" ? "Turned on" : "Confirmed";
-
 const isRec = variant === "increase" || variant === "decrease";
 const dir = variant === "increase" ? "up" : "down";
 const word = dir === "up" ? "Increase" : "Decrease";
@@ -45,7 +40,7 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[name]}"/></svg>`;
 }
 ---
-<div class="dose-sheet" data-dose-root data-variant={variant} data-slide-label={slideLabel} data-done-label={doneLabel}>
+<div class="dose-sheet" data-dose-root data-variant={variant}>
   <div class="dose-grabber"></div>
   <div class="dose-hdr">
     <div class="dose-moon" aria-hidden="true"></div>
@@ -68,15 +63,9 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
           <span><span class="dose-lbl">It's information, not an instruction</span><br /><span class="dose-sub">Luna won't change or deliver a dose based on it</span></span>
         </button>
       </div>
-      <div class="dose-slide">
-        <div class="dose-track" data-track role="slider" tabindex="-1" aria-label="Slide to turn on IOB Display" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-disabled="true">
-          <div class="dose-trail" data-trail></div>
-          <div class="dose-tlabel" data-tlabel>Slide to turn on</div>
-          <div class="dose-thumb" data-thumb set:html={icon("arrowRight", 22, "var(--color-disabled)", 2.2)} />
-        </div>
-        <div class="dose-hint" data-hint set:html={`${icon("info", 14, "var(--color-slate)")} Acknowledge both points above to continue`} />
-      </div>
-      <div class="dose-skip"><button type="button">Not now</button></div>
+      <button class="dose-btn primary" data-confirm-btn data-proto-to="iob-home-on" disabled>Turn on insulin on board</button>
+      <div class="dose-hint" data-confirm-hint set:html={`${icon("info", 14, "var(--color-slate)")} Confirm both above to continue`} />
+      <button class="dose-btn secondary" type="button" style="margin-top:10px;" data-proto-to="home-dashboard">Not now</button>
     </Fragment>
   )}
 
@@ -261,96 +250,10 @@ function icon(name: string, size = 18, color = "currentColor", sw = 1.5) {
     paint();
   }
 
-  function wireSlider(root: HTMLElement) {
-    if (root.dataset.doseWired) return;
-    root.dataset.doseWired = "true";
-    const slideLabel = root.dataset.slideLabel || "Slide to turn on";
-    const doneLabel = root.dataset.doneLabel || "Turned on";
-
-    const ack1 = root.querySelector<HTMLElement>('[data-ack="1"]')!;
-    const ack2 = root.querySelector<HTMLElement>('[data-ack="2"]')!;
-    const track = root.querySelector<HTMLElement>("[data-track]")!;
-    const thumb = root.querySelector<HTMLElement>("[data-thumb]")!;
-    const trail = root.querySelector<HTMLElement>("[data-trail]")!;
-    const tlabel = root.querySelector<HTMLElement>("[data-tlabel]")!;
-    const hint = root.querySelector<HTMLElement>("[data-hint]")!;
-    if (!ack1 || !ack2 || !track) return;
-
-    let s1 = false, s2 = false, p = 0, done = false, dragging = false;
-    const THUMB = 52, PAD = 4;
-    const enabled = () => s1 && s2 && !done;
-    const maxTravel = () => track.clientWidth - THUMB - PAD * 2;
-
-    function paint() {
-      const both = s1 && s2;
-      track.classList.toggle("enabled", both && !done);
-      track.classList.toggle("done", done);
-      track.setAttribute("aria-disabled", !both && !done ? "true" : "false");
-      track.tabIndex = both && !done ? 0 : -1;
-      const x = PAD + p * maxTravel();
-      thumb.style.left = x + "px";
-      trail.style.width = x + THUMB / 2 + "px";
-      track.setAttribute("aria-valuenow", String(Math.round(p * 100)));
-      tlabel.style.opacity = done ? "1" : String(Math.max(0, 1 - p * 2.2));
-      if (done) {
-        tlabel.innerHTML = svg("check", 18, "var(--color-success-ink)", 2.4) + " " + doneLabel;
-        thumb.innerHTML = svg("check", 22, "var(--color-white)", 2.2);
-      } else {
-        tlabel.textContent = slideLabel;
-        thumb.innerHTML = svg("arrowRight", 22, both ? "var(--color-moonlight)" : "var(--color-disabled)", 2.2);
-      }
-      hint.style.display = both || done ? "none" : "flex";
-    }
-    function toggle(btn: HTMLElement, which: 1 | 2) {
-      btn.addEventListener("click", () => {
-        if (done) return;
-        if (which === 1) s1 = !s1; else s2 = !s2;
-        const on = which === 1 ? s1 : s2;
-        btn.setAttribute("aria-checked", on ? "true" : "false");
-        const box = btn.querySelector(".dose-box")!;
-        box.innerHTML = on ? svg("check", 16, "var(--color-moonlight)", 2.4) : "";
-        if (!(s1 && s2)) p = 0;
-        paint();
-      });
-    }
-    toggle(ack1, 1);
-    toggle(ack2, 2);
-    function moveTo(clientX: number) {
-      const r = track.getBoundingClientRect();
-      // Account for any CSS scale applied by the Phone frame.
-      const scale = r.width / track.offsetWidth || 1;
-      const x = (clientX - r.left) / scale - PAD - THUMB / 2;
-      p = Math.max(0, Math.min(1, x / maxTravel()));
-      paint();
-    }
-    thumb.addEventListener("pointerdown", (e) => {
-      if (!enabled()) return;
-      dragging = true;
-      thumb.setPointerCapture(e.pointerId);
-      moveTo(e.clientX);
-    });
-    window.addEventListener("pointermove", (e) => { if (dragging) moveTo(e.clientX); });
-    window.addEventListener("pointerup", () => {
-      if (!dragging) return;
-      dragging = false;
-      if (p >= 0.85) { done = true; p = 1; } else { p = 0; }
-      paint();
-    });
-    track.addEventListener("keydown", (e) => {
-      if (!enabled()) return;
-      if (e.key === "Enter" || e.key === " " || e.key === "ArrowRight") {
-        e.preventDefault();
-        done = true; p = 1; paint();
-      }
-    });
-    paint();
-  }
-
   function init() {
     document.querySelectorAll<HTMLElement>("[data-dose-root]").forEach((r) => {
       const v = r.dataset.variant;
-      if (v === "optin") wireSlider(r);
-      else if (v === "increase" || v === "decrease") wireButton(r);
+      if (v === "optin" || v === "increase" || v === "decrease") wireButton(r);
     });
   }
   init();
