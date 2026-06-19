@@ -48,6 +48,14 @@ export interface ProxyOptions {
  * has already passed Access at the edge, so the assertion is trustworthy
  * here. This keeps identity working even when the email header is absent. */
 export function getCallerEmail(request: Request): string {
+  // Identity verified by the root middleware (functions/_middleware.ts) from
+  // the first-party nl_session cookie. The middleware strips this header off
+  // every inbound request before setting it, so it cannot be spoofed from
+  // outside. This is the primary identity source now that most paths are
+  // Bypassed at the Access layer (Access forwards no headers on Bypass).
+  const verified = (request.headers.get("x-nl-verified-email") ?? "").toLowerCase();
+  if (verified) return verified;
+
   const header = (request.headers.get("cf-access-authenticated-user-email") ?? "").toLowerCase();
   if (header) return header;
 

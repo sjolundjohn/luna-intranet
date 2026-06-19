@@ -15,14 +15,14 @@ import {
   json,
   err,
   requireDb,
-  getCallerEmail,
+  getVerifiedEmail,
 } from "./_shared";
 
 export const onRequestPatch: PagesFunction<CommentsEnv> = async (ctx) => {
   const db = requireDb(ctx.env);
   if (db instanceof Response) return db;
 
-  const email = getCallerEmail(ctx.request);
+  const email = await getVerifiedEmail(ctx.request, ctx.env);
   if (!email) return err("unauthenticated", 401);
 
   const id = ctx.params.id as string;

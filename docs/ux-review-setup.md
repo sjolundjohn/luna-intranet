@@ -125,25 +125,29 @@ npx wrangler pages dev dist --port 8788
 # → http://localhost:8788/tools/ux-review  ·  /tools/kegerator
 ```
 
-Note: Cloudflare reserves `cf-*` request headers, so the
-`Cf-Access-Authenticated-User-Email` identity header is **stripped by
-miniflare locally** — POSTs will 401 unless you seed rows directly:
+Note: locally there's no session cookie and no Access, so the comments API
+can't resolve an identity — POSTs will 401 unless you seed rows directly:
 
 ```bash
 npx wrangler d1 execute luna-ux-review --local \
   --command "INSERT INTO comments (id,screen_id,author_name,author_email,body,resolved,created_at) VALUES ('demo','dashboard','Alice','a@lunadiabetes.com','hello',0,1716900000000)"
 ```
 
-In production, Cloudflare Access injects the email header, so identity works.
+In production, the root middleware verifies the caller's `nl_session` cookie
+and forwards the email to the function, so identity works. See
+[`docs/auth.md`](./auth.md) for the full flow.
 
 ---
 
 ## Identity & access
 
-- **No separate auth.** The whole site is behind the Cloudflare Access
-  allowlist; the comments API reads the verified email from
-  `Cf-Access-Authenticated-User-Email`. Add colleague emails to the Access
-  app to let them in (this is unreleased product design — keep it gated).
+- **First-party session, not direct Access gating.** The whole site sits
+  behind the `nl_session` middleware gate (see [`docs/auth.md`](./auth.md));
+  the comments API reads the verified email via `getVerifiedEmail` (the signed
+  `nl_session` cookie, with the Access-header path as a fallback). To let a new
+  colleague in, add their email to the **Google SSO policy on the
+  `nightluna.com/auth/login` Access app** — that's the one gated path. (This is
+  unreleased product design — keep it gated.)
 - **Display name** is a one-time client-side prompt stored in `localStorage`
   (`ux-review:name`), reconciled to the verified email server-side.
 
