@@ -9,7 +9,7 @@ import {
   json,
   err,
   requireDb,
-  getVerifiedEmail,
+  getCallerEmail,
   LIMITS,
 } from "./_shared";
 
@@ -62,7 +62,7 @@ export const onRequestPost: PagesFunction<CommentsEnv> = async (ctx) => {
   const db = requireDb(ctx.env);
   if (db instanceof Response) return db;
 
-  const email = await getVerifiedEmail(ctx.request, ctx.env);
+  const email = getCallerEmail(ctx.request);
   if (!email) return err("unauthenticated", 401);
 
   let b: CreateBody;

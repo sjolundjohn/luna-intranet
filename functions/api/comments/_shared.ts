@@ -1,20 +1,15 @@
 /**
  * Shared types + helpers for the UX Review comments API (D1-backed).
  *
- * Identity comes from `getVerifiedEmail`: the first-party signed `nl_session`
- * cookie minted by the root middleware (functions/_middleware.ts), with the
- * Access-header path as a fallback. See functions/api/_session.ts and
- * docs/auth.md. Display name is supplied by the client (one-time prompt,
- * stored client-side) and reconciled to the verified email server-side — we
- * trust the email, not the name.
+ * Identity is free: the caller's verified email comes from the CF Access
+ * header (the whole site is gated by Access). Display name is supplied by
+ * the client (one-time prompt, stored client-side) and reconciled to the
+ * verified email server-side — we trust the email, not the name.
  */
 import { getCallerEmail } from "../_lib";
-import { getVerifiedEmail } from "../_session";
 
 export interface CommentsEnv {
   DB?: D1Database;
-  /** HMAC secret for the first-party nl_session cookie (see _session.ts). */
-  SESSION_SECRET?: string;
 }
 
 /** A row as stored in D1. */
@@ -88,7 +83,7 @@ export function requireDb(env: CommentsEnv): D1Database | Response {
   return env.DB;
 }
 
-export { getCallerEmail, getVerifiedEmail };
+export { getCallerEmail };
 
 /** Reasonable guards so a single bad request can't bloat the store. */
 export const LIMITS = {
