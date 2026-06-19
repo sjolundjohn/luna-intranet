@@ -1,0 +1,43 @@
+---
+/**
+ * StudyRemindersSetupScreen — Study Reminders opt-in / setup (v0.1). Lean-on-iOS
+ * approach: Luna explains the two study-compliance reminders (nightly wear +
+ * missed-session) and hands them to Apple Health / iOS so they fire reliably
+ * even when Luna is closed. Primary action requests the OS permission and adds
+ * the reminders; "Not now" defers. White-card content matching the rest of the
+ * feature set.
+ */
+interface Props { variant?: "current" | "legacy"; }
+const bell = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+const nudge = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+---
+<div class="content">
+  <div class="center-screen">
+    <div class="icon-badge">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--color-moonlight)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    </div>
+    <div class="eyebrow">Study reminders</div>
+    <h1 class="title-1" style="font-weight:700; letter-spacing:-0.02em; margin:0;">Stay on track with your study</h1>
+    <p class="body muted" style="margin:16px 0 0; line-height:1.6;">Luna can remind you to wear it each night and nudge you if you miss a session — both help keep your study on track. Reminders run through <b style="color:var(--color-on-dark);">Apple Health</b>, so they reach you even when Luna is closed.</p>
+
+    <div class="card-dark hypo-pop hs-set-card" style="text-align:left; margin-top:22px;">
+      <div class="hiw-row" style="display:flex; gap:12px; align-items:flex-start;">
+        <span style="flex:none; color:var(--color-moonlight-deep); margin-top:1px;" set:html={bell} />
+        <div><div class="hiw-h">Nightly wear reminder</div><p>A bedtime nudge to start tonight's Luna session.</p></div>
+      </div>
+      <div class="hiw-div"></div>
+      <div class="hiw-row" style="display:flex; gap:12px; align-items:flex-start;">
+        <span style="flex:none; color:var(--color-moonlight-deep); margin-top:1px;" set:html={nudge} />
+        <div><div class="hiw-h">Missed-session nudge</div><p>If you skip a night, a gentle reminder to wear Luna and stay on track.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad" style="padding-bottom:24px;">
+    <button class="btn primary">Add reminders to Apple Health</button>
+    <div style="display:flex; justify-content:center; margin-top:10px;">
+      <button class="btn" style="background:transparent; border:none; color:var(--color-on-dark-sub); font-weight:600;">Not now</button>
+    </div>
+    <p class="footnote muted" style="text-align:center; margin:8px 0 0;">You can change or turn these off any time in Apple Health or iOS Settings.</p>
+  </div>
+</div>

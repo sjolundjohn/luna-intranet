@@ -99,6 +99,33 @@
     "legacy": "wireframes/legacy/settings-root.jpg"
   },
   {
+    "id": "study-reminders-setup",
+    "title": "Study reminders — setup",
+    "status": "Work in Progress",
+    "feature": "Study Reminders",
+    "summary": "Opt-in: explain the two compliance reminders (nightly wear + missed-session) and add them to Apple Health / iOS so they fire even when Luna is closed.",
+    "wireframe": "component:study-reminders-setup",
+    "legacy": null
+  },
+  {
+    "id": "study-reminders-settings",
+    "title": "Study reminders — settings",
+    "status": "Work in Progress",
+    "feature": "Study Reminders",
+    "summary": "On/off toggle + state, the two reminders with their schedule, and a note that delivery is managed through Apple Health / iOS.",
+    "wireframe": "component:study-reminders-settings",
+    "legacy": null
+  },
+  {
+    "id": "study-reminders-notifications",
+    "title": "Study reminders — notifications",
+    "status": "Work in Progress",
+    "feature": "Study Reminders",
+    "summary": "The two reminders on the iOS lock screen (delivered by Apple Health / iOS): the nightly wear nudge and the missed-session catch-up.",
+    "wireframe": "component:study-reminders-notifications",
+    "legacy": null
+  },
+  {
     "id": "iob-home-on",
     "title": "Home dashboard — IOB Display enabled",
     "status": "Work in Progress",

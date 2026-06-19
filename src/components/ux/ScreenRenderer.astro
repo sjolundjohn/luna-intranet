@@ -31,6 +31,10 @@ import IobHomeOnScreen from "./screens/IobHomeOnScreen.astro";
 import IobSettingsScreen from "./screens/IobSettingsScreen.astro";
 import IobPreSessionScreen from "./screens/IobPreSessionScreen.astro";
 import IobSessionDetailScreen from "./screens/IobSessionDetailScreen.astro";
+// Study Reminders (lean on Apple Health / iOS)
+import StudyRemindersSetupScreen from "./screens/StudyRemindersSetupScreen.astro";
+import StudyRemindersSettingsScreen from "./screens/StudyRemindersSettingsScreen.astro";
+import StudyRemindersNotificationsScreen from "./screens/StudyRemindersNotificationsScreen.astro";
 // Onboarding Update
 import OnboardingChapter1Screen from "./screens/OnboardingChapter1Screen.astro";
 import OnboardingChapter2Screen from "./screens/OnboardingChapter2Screen.astro";
@@ -100,6 +104,10 @@ const REGISTRY: Record<string, any> = {
   "iob-settings": IobSettingsScreen,
   "iob-pre-session-announcement": IobPreSessionScreen,
   "iob-session-detail": IobSessionDetailScreen,
+  // Study Reminders
+  "study-reminders-setup": StudyRemindersSetupScreen,
+  "study-reminders-settings": StudyRemindersSettingsScreen,
+  "study-reminders-notifications": StudyRemindersNotificationsScreen,
   // Onboarding Update
   "onboarding-chapter-1": OnboardingChapter1Screen,
   "onboarding-chapter-2": OnboardingChapter2Screen,
@@ -146,6 +154,7 @@ const FRAME: Record<string, { sheet?: boolean; clock?: string }> = {
   "dose-confirmation-spine": { sheet: true, clock: "10:18" },
   "hypo-confirm-success": { sheet: true, clock: "10:18" },
   "hypo-push-notification": { clock: "10:18" },
+  "study-reminders-notifications": { clock: "9:30" },
   "iob-pre-session-announcement": { sheet: true, clock: "10:18" },
   // Apollo evening/morning timings
   "apollo-evening-outro": { clock: "11:22" },

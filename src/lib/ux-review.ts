@@ -136,6 +136,8 @@ export const FLOW_NEXT: Record<string, string> = {
   "hypo-confirm-success": "home-dashboard",
   // IOB — pre-session opt-in → opted-in home
   "iob-pre-session-announcement": "iob-home-on",
+  // Study Reminders — setup → settings
+  "study-reminders-setup": "study-reminders-settings",
 };
 
 /**
@@ -168,9 +170,10 @@ export interface ReviewFlow {
 export const AREAS: ReviewArea[] = [
   { id: "onboarding", label: "Onboarding", blurb: "First run: meet Luna, pair your Capsule and CGM, and enter your routine.", leadsTo: ["apollo"] },
   { id: "apollo", label: "Apollo Training", blurb: "Learn to place and remove the device — evening setup, then morning removal.", leadsTo: ["home"] },
-  { id: "home", label: "Home — daily", blurb: "The hub you live in: tonight's glucose, session history, and settings.", leadsTo: ["hypo", "iob"], hub: true },
+  { id: "home", label: "Home — daily", blurb: "The hub you live in: tonight's glucose, session history, and settings.", leadsTo: ["hypo", "iob", "reminders"], hub: true },
   { id: "hypo", label: "Hypo Shield", blurb: "Overnight long-acting dose guidance — surface a suggestion, confirm it safely, manage it.", leadsTo: [] },
   { id: "iob", label: "IOB Display", blurb: "See how much Luna-delivered insulin is still active (opt-in).", leadsTo: [] },
+  { id: "reminders", label: "Study Reminders", blurb: "Keep study participants on track — nightly wear + missed-session reminders, delivered via Apple Health / iOS.", leadsTo: [] },
 ];
 
 export const FLOWS: ReviewFlow[] = [
@@ -208,6 +211,11 @@ export const FLOWS: ReviewFlow[] = [
     id: "iob", area: "iob", label: "Opt in → see it → manage",
     blurb: "Pre-session announcement → opted-in Home → session detail → settings toggle.",
     screens: ["iob-pre-session-announcement", "iob-home-on", "iob-session-detail", "iob-settings"],
+  },
+  {
+    id: "reminders", area: "reminders", label: "Set up → manage → see it",
+    blurb: "Opt-in (add to Apple Health) → settings → the lock-screen reminders.",
+    screens: ["study-reminders-setup", "study-reminders-settings", "study-reminders-notifications"],
   },
 ];
 

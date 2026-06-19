@@ -1,0 +1,65 @@
+---
+/**
+ * StudyRemindersSettingsScreen — Settings › Study reminders (v0.1). White-card
+ * layout matching Hypo / IOB settings. An on/off toggle + clear state, the two
+ * reminders (nightly wear, missed-session) with their schedule, and a note that
+ * delivery is handled by Apple Health / iOS (where the user fine-tunes them).
+ */
+import TabBar from "../ios/TabBar.astro";
+interface Props { variant?: "current" | "legacy"; }
+const bell = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+const nudge = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+---
+<div class="content">
+  <div class="navbar">
+    <button class="back" aria-label="Back to Settings">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Settings
+    </button>
+  </div>
+  <div class="pad" style="padding-bottom:10px;"><h1 style="margin:0; font-size:28px; font-weight:700; letter-spacing:-0.015em; color:var(--color-on-dark);">Study reminders</h1></div>
+
+  <div class="pad" style="overflow-y:auto;">
+    {/* ON/OFF toggle + clear state */}
+    <div class="card-dark hypo-pop hs-set-card">
+      <div class="hs-set-top">
+        <span class="moon" aria-hidden="true"></span>
+        <div class="hs-set-name">
+          <div class="nm">Study reminders</div>
+          <div class="state"><span class="dot"></span>On</div>
+        </div>
+        <button class="hs-toggle on" role="switch" aria-checked="true" aria-label="Turn study reminders off"><span class="knob"></span></button>
+      </div>
+      <p class="hs-set-desc">Reminders that help keep your study on track. Delivered through Apple Health, so they reach you even when Luna is closed.</p>
+    </div>
+
+    {/* THE TWO REMINDERS + schedule */}
+    <div class="sec-label">Reminders</div>
+    <div class="card-dark hypo-pop hs-set-card">
+      <div class="hiw-row" style="display:flex; gap:12px; align-items:flex-start;">
+        <span style="flex:none; color:var(--color-moonlight-deep); margin-top:1px;" set:html={bell} />
+        <div style="flex:1;"><div class="hiw-h">Nightly wear</div><p>Every night at 9:30 PM — a nudge to start tonight's session.</p></div>
+      </div>
+      <div class="hiw-div"></div>
+      <div class="hiw-row" style="display:flex; gap:12px; align-items:flex-start;">
+        <span style="flex:none; color:var(--color-moonlight-deep); margin-top:1px;" set:html={nudge} />
+        <div style="flex:1;"><div class="hiw-h">Missed-session nudge</div><p>The morning after a skipped night — a reminder to wear Luna tonight.</p></div>
+      </div>
+    </div>
+
+    {/* MANAGED BY iOS */}
+    <div class="sec-label">Delivery</div>
+    <div class="card-dark hypo-pop hs-set-card">
+      <div class="hiw-row">
+        <div class="hiw-h">Managed through Apple Health</div>
+        <p>Times and notification style are controlled in Apple Health and iOS Settings. Turning the toggle off here removes Luna's reminders from Apple Health.</p>
+      </div>
+    </div>
+
+    <div style="height:12px;"></div>
+  </div>
+
+  <div style="flex:1;"></div>
+</div>
+
+<TabBar active="settings" />
