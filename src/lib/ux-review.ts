@@ -52,17 +52,12 @@ export const SCREEN_STATES: Record<string, ScreenState[]> = {
     {
       id: "early",
       label: "Getting to know you",
-      caption: "Your first Luna sessions. Hypo Shield is learning your nights and dosing conservatively — no suggestions yet. Threshold is 7 Luna sessions (they don't need to be consecutive).",
+      caption: "Your first Luna sessions. Hypo Shield is learning your nights and dosing conservatively to avoid lows — no suggestions yet. Threshold is 7 Luna sessions (they don't need to be consecutive).",
     },
     {
       id: "almost",
       label: "Almost there",
-      caption: "Most of the way to unlocking suggestions — gamified to nudge the user over the line (e.g. \"2 more sessions to go\").",
-    },
-    {
-      id: "ready",
-      label: "Ready",
-      caption: "Reached 7 Luna sessions — Hypo Shield is ready and will surface a suggestion when your nights call for it. After the first suggestion, this learning screen goes away.",
+      caption: "Most of the way to unlocking suggestions — gamified to nudge the user over the line (e.g. \"2 more sessions to go\"). After the 7th session the first suggestion appears directly (no separate \"ready\" screen).",
     },
   ],
 };

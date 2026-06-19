@@ -187,9 +187,12 @@
    HOME DASHBOARD (01) — CGM graph hero + status strip + insight +
    Ask-Luna launcher. Reused by hypo home-tip-* and iob-home-on.
    ============================================================ */
-.ux-ios .statusstrip { display: flex; align-items: center; gap: 0; padding: 10px 14px; }
-.ux-ios .statusstrip .item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; }
+.ux-ios .statusstrip { display: flex; align-items: stretch; gap: 0; padding: 10px 6px; }
+/* 4-up: stack icon above the label so longer values ("Automating") fit. */
+.ux-ios .statusstrip .item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 0 4px; min-width: 0; text-align: center; }
 .ux-ios .statusstrip .item + .item { border-left: 1px solid rgba(255,255,255,0.10); }
+.ux-ios .statusstrip .item svg { flex: none; }
+.ux-ios .statusstrip .lbl { align-items: center; }
 .ux-ios .statusstrip .lbl { display: flex; flex-direction: column; line-height: 1.15; }
 .ux-ios .statusstrip .lbl .k { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-on-dark-sub); }
 .ux-ios .statusstrip .lbl .v { font-size: 13px; font-weight: 700; color: var(--color-on-dark); }
@@ -573,8 +576,8 @@
 .ux-ios .push .body-txt .top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .ux-ios .push .body-txt .nm { font-size: 12px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: var(--color-on-dark); }
 .ux-ios .push .body-txt .ago { font-size: 11px; color: var(--color-on-dark-sub); flex: none; }
-.ux-ios .push .body-txt .ttl { font-size: 15px; font-weight: 700; color: var(--color-on-dark); margin-top: 3px; }
-.ux-ios .push .body-txt .msg { font-size: 14px; line-height: 1.4; color: var(--color-on-dark); opacity: 0.92; margin-top: 2px; }
+.ux-ios .push .body-txt .ttl { display: block; font-size: 15px; font-weight: 700; color: var(--color-on-dark); margin-top: 3px; }
+.ux-ios .push .body-txt .msg { display: block; font-size: 14px; line-height: 1.4; color: var(--color-on-dark); opacity: 0.92; margin-top: 4px; }
 .ux-ios .open-hint { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 0 2px; font-size: 12px; font-weight: 600; color: var(--color-moonlight); }
 .ux-ios .flow-note { display: flex; gap: 10px; align-items: flex-start; margin: 0 14px 4px; padding: 11px 12px; border: 1px dashed rgba(104,210,223,0.4); border-radius: 12px; background: rgba(104,210,223,0.06); }
 .ux-ios .flow-note .ic { flex: none; color: var(--color-moonlight); margin-top: 1px; }

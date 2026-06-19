@@ -1,17 +1,16 @@
 ---
 /**
- * LearningStateScreen — Home, Hypo Shield learning takeover (v0.5). The
+ * LearningStateScreen — Home, Hypo Shield learning takeover (v0.5 r2). The
  * conservative "we're still getting to know you" mode, shown until the first
  * suggestion arrives (after which this screen goes away and the user just gets
- * suggestions). Covers the glucose + CGM graph, between the status pills and the
- * tab bar.
+ * a recommendation — there is no separate "ready" screen). Covers the glucose +
+ * CGM graph, between the status pills and the tab bar.
  *
- * Learning rule (v0.5): 7 Luna sessions — they do NOT need to be consecutive.
- * Shown as a 7-segment progress (one per session needed), gamified ("2 more to
- * unlock"). Three scenarios drive the dynamic-content selector (SCREEN_STATES):
- *   early  — first sessions, lots to go
+ * Learning rule: 7 Luna sessions — they do NOT need to be consecutive. Shown as
+ * a 7-segment progress (one per session needed), gamified ("2 more to unlock").
+ * Two scenarios drive the dynamic-content selector (SCREEN_STATES):
+ *   early  — first sessions, conservative, lots to go
  *   almost — close to 7, gamified nudge
- *   ready  — hit 7, Hypo Shield ready (next thing is a real suggestion)
  */
 import StatusStrip from "../ios/StatusStrip.astro";
 import TabBar from "../ios/TabBar.astro";
@@ -19,9 +18,7 @@ import TabBar from "../ios/TabBar.astro";
 interface Props {
   variant?: "current" | "legacy";
 }
-const sun = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19"/></svg>';
 const arrow = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
-const check = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
 // 7-segment session graph: `done` of 7 filled.
 const seg = (done: number) => Array.from({ length: 7 }, (_, i) => `<div class="d${i < done ? ' on' : ''}"><span class="seg"></span></div>`).join("");
 ---
@@ -39,14 +36,8 @@ const seg = (done: number) => Array.from({ length: 7 }, (_, i) => `<div class="d
 
       {/* ── STATE: early (first sessions) ────────────────────────────── */}
       <div data-ux-state="early">
-        <div class="title">Getting to know your nights</div>
-        <div class="sub">Hypo Shield is learning how your body responds overnight. For now it stays conservative — your first dose suggestion comes after <b>7 Luna sessions</b> (they don't have to be in a row).</div>
-
-        <div class="hs-mode" style="margin-bottom:18px;">
-          <div class="row"><span class="ic" aria-hidden="true" set:html={sun} /><span class="k">Hypo Shield mode</span></div>
-          <div class="v">Conservative · learning you</div>
-          <div class="note">While we learn, dosing stays a little more careful — and it keeps getting better.</div>
-        </div>
+        <div class="title">Getting to know your insulin needs</div>
+        <p class="ls-body">Hypo Shield is learning how your body responds overnight. For the first week, it is conservative to avoid hypoglycemia. You may have higher glucose than you expect — give us a little time to learn about your needs. Your first dose suggestion comes after <b>7 Luna sessions</b> (they don't have to be in a row).</p>
 
         <div class="week">
           <div class="week-top">
@@ -60,14 +51,8 @@ const seg = (done: number) => Array.from({ length: 7 }, (_, i) => `<div class="d
 
       {/* ── STATE: almost (close to 7) ───────────────────────────────── */}
       <div data-ux-state="almost" hidden>
-        <div class="title">Almost ready</div>
-        <div class="sub">You're nearly there. Hypo Shield has watched most of your nights and will start suggesting once you reach <b>7 Luna sessions</b>.</div>
-
-        <div class="hs-mode" style="margin-bottom:18px;">
-          <div class="row"><span class="ic" aria-hidden="true" set:html={sun} /><span class="k">Hypo Shield mode</span></div>
-          <div class="v">Conservative · learning you</div>
-          <div class="note">Still dosing carefully — almost ready to suggest.</div>
-        </div>
+        <div class="title">Almost there</div>
+        <p class="ls-body">You're nearly there. Hypo Shield has watched most of your nights and will start suggesting once you reach <b>7 Luna sessions</b>.</p>
 
         <div class="week">
           <div class="week-top">
@@ -79,34 +64,20 @@ const seg = (done: number) => Array.from({ length: 7 }, (_, i) => `<div class="d
         </div>
       </div>
 
-      {/* ── STATE: ready (reached 7) ─────────────────────────────────── */}
-      <div data-ux-state="ready" hidden>
-        <div class="title">Hypo Shield is ready</div>
-        <div class="sub">You've reached <b>7 Luna sessions</b>. From here, Hypo Shield will suggest a long-acting dose change whenever your nights call for it — this screen steps aside once your first suggestion arrives.</div>
-
-        <div class="hs-mode" style="margin-bottom:18px;">
-          <div class="row"><span class="ic" aria-hidden="true" set:html={sun} /><span class="k">Hypo Shield mode</span></div>
-          <div class="v">Active · watching your nights</div>
-          <div class="note">You'll only hear from Hypo Shield when there's something worth changing.</div>
-        </div>
-
-        <div class="week">
-          <div class="week-top">
-            <span class="week-count"><b>7</b> of 7 Luna sessions</span>
-            <span class="week-goal met">Unlocked</span>
-          </div>
-          <div class="week-bars" set:html={seg(7)} />
-          <div class="week-msg met"><span set:html={check} /><span>Learning complete — Hypo Shield is on.</span></div>
-        </div>
-      </div>
-
       <div class="grow"></div>
 
-      <button class="howlink" type="button" style="margin-top:16px;">What is Hypo Shield?
+      <button class="howlink" type="button" style="margin-top:16px; white-space:nowrap;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        What is Hypo Shield?
       </button>
     </div>
   </div>
 </div>
 
 <TabBar active="dashboard" />
+
+<style is:global>
+  /* Body copy matches the Home card paragraph — bigger + darker than the old sub. */
+  .ux-ios .learn-card .ls-body { margin: 0 0 18px; font-size: 15px; line-height: 1.55; color: var(--color-ink); }
+  .ux-ios .learn-card .ls-body b { font-weight: 700; }
+</style>
