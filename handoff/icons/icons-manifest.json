@@ -1,0 +1,237 @@
+{
+  "icons": [
+    {
+      "name": "apple-health-heart",
+      "type": "custom",
+      "usedIn": [
+        "StudyRemindersNotificationsScreen"
+      ],
+      "file": "icons/apple-health-heart.svg"
+    },
+    {
+      "name": "arrow-right",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ApolloMidSessionResumeScreen",
+        "AskLuna",
+        "LearningStateScreen",
+        "SessionHistoryScreen"
+      ],
+      "sfSymbol": "arrow.right"
+    },
+    {
+      "name": "arrow-up",
+      "type": "sf-symbol",
+      "usedIn": [
+        "DashboardScreen",
+        "GlucoseDisplay",
+        "HomeTipDefaultScreen",
+        "HomeTipPostScreen",
+        "IobHomeOnScreen"
+      ],
+      "sfSymbol": "arrow.up"
+    },
+    {
+      "name": "bell",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ConfirmSuccessScreen",
+        "StudyRemindersSettingsScreen",
+        "StudyRemindersSetupScreen"
+      ],
+      "sfSymbol": "bell.fill"
+    },
+    {
+      "name": "checkmark",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ConfirmSuccessScreen",
+        "DoseConfirmationScreen",
+        "OnboardingChapter1Screen",
+        "OnboardingChapter3Screen",
+        "OnboardingChapter4Screen",
+        "OnboardingChapter5Screen",
+        "OnboardingSetupAppWalkthroughScreen",
+        "OnboardingSetupLandingScreen",
+        "OnboardingTonightPanelStatesScreen",
+        "StatusCard",
+        "StatusStrip"
+      ],
+      "sfSymbol": "checkmark"
+    },
+    {
+      "name": "chevron-left",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ApolloReplayFromSettingsScreen",
+        "IobSettingsScreen",
+        "OnboardingSettingsLunaControllerScreen",
+        "SettingsHypoShieldScreen",
+        "SettingsScreen",
+        "StudyRemindersSettingsScreen"
+      ],
+      "sfSymbol": "chevron.left"
+    },
+    {
+      "name": "chevron-right",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ApolloMidSessionResumeScreen",
+        "ApolloReplayFromSettingsScreen",
+        "ListRows",
+        "OnboardingSettingsLunaControllerScreen",
+        "SessionHistoryScreen",
+        "SettingsScreen"
+      ],
+      "sfSymbol": "chevron.right"
+    },
+    {
+      "name": "clock",
+      "type": "sf-symbol",
+      "usedIn": [
+        "OnboardingSessionHistoryIntroScreen",
+        "TabBar"
+      ],
+      "sfSymbol": "clock"
+    },
+    {
+      "name": "droplet",
+      "type": "sf-symbol",
+      "usedIn": [
+        "IobHomeOnScreen",
+        "SessionHistoryScreen",
+        "StatusStrip"
+      ],
+      "sfSymbol": "drop.fill"
+    },
+    {
+      "name": "home",
+      "type": "sf-symbol",
+      "usedIn": [
+        "TabBar"
+      ],
+      "sfSymbol": "house.fill"
+    },
+    {
+      "name": "info",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ApolloPendingFailureScreen",
+        "ApolloStep03Screen",
+        "ApolloStep06Screen",
+        "ApolloStep07Screen",
+        "ApolloStep08Screen",
+        "ApolloTrainingGateScreen"
+      ],
+      "sfSymbol": "info.circle"
+    },
+    {
+      "name": "lock",
+      "type": "sf-symbol",
+      "usedIn": [
+        "PushNotificationScreen",
+        "StudyRemindersNotificationsScreen"
+      ],
+      "sfSymbol": "lock.fill"
+    },
+    {
+      "name": "message",
+      "type": "sf-symbol",
+      "usedIn": [
+        "StudyRemindersSettingsScreen",
+        "StudyRemindersSetupScreen"
+      ],
+      "sfSymbol": "message.fill"
+    },
+    {
+      "name": "moon-mark",
+      "type": "custom",
+      "usedIn": [
+        "ApolloCompleteScreen",
+        "ApolloIntroScreen",
+        "ApolloMorningStartScreen",
+        "ApolloOvernightHandoffScreen",
+        "ApolloPendingScreen",
+        "DashboardScreen",
+        "IobHomeOnScreen",
+        "IobPreSessionScreen",
+        "OnboardingChapter1Screen",
+        "OnboardingChapter3Screen",
+        "OnboardingChapter4Screen",
+        "OnboardingChapter5Screen",
+        "OnboardingSetupLandingScreen",
+        "OnboardingTonightPanelStatesScreen"
+      ],
+      "file": "icons/moon-mark.svg"
+    },
+    {
+      "name": "play",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ApolloEveningOutroScreen",
+        "ApolloMorningOutroScreen",
+        "ApolloStep"
+      ],
+      "sfSymbol": "play.fill"
+    },
+    {
+      "name": "relearn",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ConfirmSuccessScreen"
+      ],
+      "sfSymbol": "arrow.triangle.2.circlepath"
+    },
+    {
+      "name": "settings-gear",
+      "type": "sf-symbol",
+      "usedIn": [
+        "TabBar"
+      ],
+      "sfSymbol": "gearshape.fill"
+    },
+    {
+      "name": "xmark",
+      "type": "sf-symbol",
+      "usedIn": [
+        "AskLuna"
+      ],
+      "sfSymbol": "xmark"
+    }
+  ],
+  "unmappedCount": 39,
+  "unmappedSamples": [
+    {
+      "file": "ApolloCompleteScreen.astro",
+      "geom": "M 0,118 Q 200,112 400,122 T 750,116 L 930,118"
+    },
+    {
+      "file": "ApolloCompleteScreen.astro",
+      "geom": "M12 3v18M5 8c2.5 0 4 1.5 4 4M19 8c-2.5 0-4 1.5-4 4"
+    },
+    {
+      "file": "ApolloEveningOutroScreen.astro",
+      "geom": "M17 2l4 4-4 4M21 6H7a4 4 0 0 0-4 4v1M7 22l-4-4 4-4M3 18h14a4 4 0 0 0 4"
+    },
+    {
+      "file": "ApolloMidSessionResumeScreen.astro",
+      "geom": "M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 1"
+    },
+    {
+      "file": "ApolloMidSessionResumeScreen.astro",
+      "geom": ""
+    },
+    {
+      "file": "ApolloMorningOutroScreen.astro",
+      "geom": "M17 2l4 4-4 4M21 6H7a4 4 0 0 0-4 4v1M7 22l-4-4 4-4M3 18h14a4 4 0 0 0 4"
+    },
+    {
+      "file": "ApolloMorningStartScreen.astro",
+      "geom": "M 0,118 Q 200,112 400,122 T 750,116 L 930,118"
+    },
+    {
+      "file": "ApolloOvernightHandoffScreen.astro",
+      "geom": "M12 2v3M4.5 6.5l1.5 1.5M19.5 6.5L18 8M3 13h2M19 13h2"
+    }
+  ]
+}

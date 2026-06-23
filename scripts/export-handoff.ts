@@ -1,0 +1,134 @@
+/**
+ * export-handoff.ts — generates the engineering handoff bundle into `handoff/`:
+ *   - Colors.xcassets  (one colorset per token; PascalCase from the canonical
+ *     alias; sRGB; universal appearance) — drop into an Xcode project.
+ *   - icons/           (deduped custom-icon SVGs + a manifest classifying every
+ *     icon as a custom asset or an SF Symbol).
+ *   - colors-manifest.json / README.md.
+ *
+ * Source of truth: src/lib/design-tokens.ts (mirrors ios-tokens.css). Run:
+ *   node scripts/export-handoff.ts        (Node ≥23 strips TS types)
+ *
+ * NOTE: this reads the repo and writes only into `handoff/` — it never edits the
+ * wireframe screens (zero regression risk on the signed-off designs).
+ */
+import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync } from "node:fs";
+import { join, dirname, basename } from "node:path";
+import { fileURLToPath } from "node:url";
+import { COLOR_TOKENS, ICONS, pascalCase, matchIcon } from "../src/lib/design-tokens.ts";
+
+const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const out = join(root, "handoff");
+rmSync(out, { recursive: true, force: true });
+mkdirSync(out, { recursive: true });
+
+// ── Colors.xcassets ─────────────────────────────────────────────────────────
+const xc = join(out, "Colors.xcassets");
+mkdirSync(xc, { recursive: true });
+writeFileSync(join(xc, "Contents.json"), JSON.stringify({ info: { author: "xcode", version: 1 } }, null, 2));
+
+const usedNames = new Set<string>();
+const colorManifest: { token: string; alias: string; pascal: string; hex: string }[] = [];
+for (const t of COLOR_TOKENS) {
+  let pascal = pascalCase(t.name);
+  while (usedNames.has(pascal)) pascal += "_";
+  usedNames.add(pascal);
+  const hex = t.hex.replace("#", "");
+  const comp = (i: number) => "0x" + hex.slice(i, i + 2).toUpperCase();
+  const set = join(xc, `${pascal}.colorset`);
+  mkdirSync(set, { recursive: true });
+  writeFileSync(
+    join(set, "Contents.json"),
+    JSON.stringify(
+      {
+        colors: [
+          {
+            idiom: "universal",
+            color: {
+              "color-space": "srgb",
+              components: { red: comp(0), green: comp(2), blue: comp(4), alpha: "1.000" },
+            },
+          },
+        ],
+        info: { author: "xcode", version: 1 },
+      },
+      null,
+      2
+    )
+  );
+  colorManifest.push({ token: t.v, alias: t.name, pascal, hex: t.hex });
+}
+writeFileSync(join(out, "colors-manifest.json"), JSON.stringify(colorManifest, null, 2));
+
+// ── Icons ────────────────────────────────────────────────────────────────────
+const iconsDir = join(out, "icons");
+mkdirSync(iconsDir, { recursive: true });
+
+const screenDirs = [join(root, "src/components/ux/screens"), join(root, "src/components/ux/ios")];
+const svgRe = /<svg[\s\S]*?<\/svg>/g;
+const geomRe = /\b(?:d|points)="([^"]+)"/g;
+
+type Found = { name: string; sf: string | null; markup: string; usedIn: Set<string> };
+const byName = new Map<string, Found>();
+let unmapped = 0;
+const unmappedSamples: { file: string; geom: string }[] = [];
+
+for (const dir of screenDirs) {
+  for (const file of readdirSync(dir).filter((f) => f.endsWith(".astro"))) {
+    const src = readFileSync(join(dir, file), "utf8");
+    for (const m of src.match(svgRe) ?? []) {
+      let geom = "";
+      let g: RegExpExecArray | null;
+      geomRe.lastIndex = 0;
+      while ((g = geomRe.exec(m))) geom += " " + g[1];
+      const icon = matchIcon(geom);
+      if (!icon) {
+        unmapped++;
+        if (unmappedSamples.length < 8) unmappedSamples.push({ file, geom: geom.trim().slice(0, 70) });
+        continue;
+      }
+      if (!byName.has(icon.name)) byName.set(icon.name, { name: icon.name, sf: icon.sf, markup: m, usedIn: new Set() });
+      byName.get(icon.name)!.usedIn.add(file.replace(".astro", ""));
+    }
+  }
+}
+
+const iconManifest: any[] = [];
+for (const f of [...byName.values()].sort((a, b) => a.name.localeCompare(b.name))) {
+  const entry: any = { name: f.name, type: f.sf ? "sf-symbol" : "custom", usedIn: [...f.usedIn].sort() };
+  if (f.sf) entry.sfSymbol = f.sf;
+  if (!f.sf) {
+    // export custom icons as SVG (normalize: ensure a viewBox is present)
+    let svg = f.markup;
+    if (!/viewBox=/.test(svg)) svg = svg.replace("<svg", '<svg viewBox="0 0 24 24"');
+    writeFileSync(join(iconsDir, `${f.name}.svg`), svg + "\n");
+    entry.file = `icons/${f.name}.svg`;
+  }
+  iconManifest.push(entry);
+}
+writeFileSync(
+  join(iconsDir, "icons-manifest.json"),
+  JSON.stringify({ icons: iconManifest, unmappedCount: unmapped, unmappedSamples }, null, 2)
+);
+
+// ── README ───────────────────────────────────────────────────────────────────
+const customCount = iconManifest.filter((i) => i.type === "custom").length;
+const sfCount = iconManifest.filter((i) => i.type === "sf-symbol").length;
+writeFileSync(
+  join(out, "README.md"),
+  `# Luna iOS — engineering handoff bundle
+
+Generated by \`scripts/export-handoff.ts\` from \`src/lib/design-tokens.ts\` (mirrors \`src/styles/ios-tokens.css\`). Regenerate with \`node scripts/export-handoff.ts\`.
+
+## Colors.xcassets
+Drop \`Colors.xcassets\` into the Xcode project. ${colorManifest.length} color sets, one per design token, named in PascalCase from the canonical alias (e.g. \`Moonlight Deep\` → \`MoonlightDeep\`). sRGB, universal appearance. Some tokens intentionally share a hex (e.g. Moonlight / Info / BorderFocus = #68D2DF) so you can reference by semantic name — see \`colors-manifest.json\` for the token↔alias↔hex map. Tokens used at reduced opacity in the wireframes (rgba) have no colorset; apply alpha in code.
+
+## icons/
+${customCount} custom icons exported as SVG; ${sfCount} icons map to **SF Symbols** (use the system symbol, not an asset). See \`icons/icons-manifest.json\` for names, SF-Symbol mappings, and which screens use each. ${unmapped} inline SVG instance(s) didn't match the curated map and need naming.
+
+## Inspect mode
+For per-element type/color tokens, use **Inspect mode** in the UX Review tool (toggle top-right of any screen) — it shows the typography token, color token (with shared-hex candidates), and icon name/SF Symbol on hover.
+`
+);
+
+console.log(`✓ handoff/ generated: ${colorManifest.length} colors, ${customCount} custom icons, ${sfCount} SF-symbol icons, ${unmapped} unmapped.`);
