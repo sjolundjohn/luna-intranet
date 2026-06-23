@@ -51,7 +51,10 @@ const states = statesFor(screen.id);
           )}
         </nav>
       )}
-      <a href="/tools/ux-review/review" class="text-graphite text-[13px] hover:text-ink transition-colors">Review dashboard →</a>
+      <div class="flex items-center gap-3">
+        <button type="button" data-inspect-toggle class="ux-inspect-btn" aria-pressed="false" title="Hover elements to see their type + color tokens and icon names (engineering handoff)">⌖ Inspect</button>
+        <a href="/tools/ux-review/review" class="text-graphite text-[13px] hover:text-ink transition-colors">Review dashboard →</a>
+      </div>
     </div>
 
     <header class="mb-8">
@@ -205,6 +208,30 @@ const states = statesFor(screen.id);
 
   .ux-mode-btn { color: var(--color-graphite); }
   .ux-mode-btn[aria-selected="true"] { background: var(--color-midnight); color: #fff; }
+
+  /* Inspect mode — engineering handoff: hover an element to see its computed
+     type + color (with token match) and icon name. */
+  .ux-inspect-btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+    border: 1px solid var(--color-border-default); border-radius: 999px;
+    background: var(--color-white); color: var(--color-graphite);
+    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .ux-inspect-btn:hover { border-color: var(--color-ink); color: var(--color-ink); }
+  .ux-inspect-btn[aria-pressed="true"] { background: var(--color-moonlight); border-color: var(--color-moonlight); color: var(--color-midnight); }
+  .ux-stage.ux-inspecting { cursor: crosshair; }
+  .ux-stage.ux-inspecting * { cursor: crosshair; }
+  .ux-inspect-tip {
+    position: fixed; z-index: 9999; max-width: 320px; pointer-events: none;
+    background: var(--color-midnight); color: #fff; border: 1px solid rgba(104,210,223,0.4);
+    border-radius: 10px; padding: 10px 12px; font-family: var(--ios-font-mono, ui-monospace, monospace);
+    font-size: 11.5px; line-height: 1.5; box-shadow: 0 8px 28px rgba(4,30,66,0.4);
+  }
+  .ux-inspect-tip .h { font-weight: 700; color: var(--color-moonlight); margin-bottom: 4px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .ux-inspect-tip .r { display: flex; align-items: center; gap: 6px; margin-top: 3px; word-break: break-word; }
+  .ux-inspect-tip .r b { color: var(--color-on-dark-sub); font-weight: 700; }
+  .ux-inspect-tip .sw { flex: none; width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.5); }
+  .ux-inspect-tip .flag { color: var(--color-warning); }
 
   /* Scenario selector — the dynamic-content axis (time-states of a screen). */
   .ux-scenario { margin-bottom: 16px; max-width: 420px; }
@@ -378,6 +405,8 @@ const states = statesFor(screen.id);
 </style>
 
 <script>
+  import { toHex, tokensForHex, matchType, matchIcon } from "~/lib/design-tokens";
+
   type Comment = {
     id: string; screenId: string; authorName: string; authorEmail: string;
     body: string; anchorX: number | null; anchorY: number | null;
@@ -729,6 +758,120 @@ const states = statesFor(screen.id);
       // Normalize to the first state on load (defensive — component already does this).
       if (scenarioBtns[0]) showState(scenarioBtns[0].dataset.stateBtn!);
     }
+
+    // --- Inspect mode (engineering handoff): hover an element in the screen to
+    // see its computed typography + color (with a design-system token match) and
+    // icon name / SF Symbol. Read-only, additive — no screen edits. Honest by
+    // design: reports COMPUTED values, appends a token name only on exact match.
+    const INSPECT_KEY = "ux-review:inspect";
+    const inspectBtn = document.querySelector<HTMLButtonElement>("[data-inspect-toggle]");
+    let inspecting = localStorage.getItem(INSPECT_KEY) === "1";
+    let tip = document.getElementById("ux-inspect-tip");
+    if (!tip) {
+      tip = document.createElement("div");
+      tip.id = "ux-inspect-tip";
+      tip.className = "ux-inspect-tip";
+      tip.hidden = true;
+      document.body.appendChild(tip);
+    }
+    const tipEl = tip;
+    function reflectInspect() {
+      inspectBtn?.setAttribute("aria-pressed", inspecting ? "true" : "false");
+      stage?.classList.toggle("ux-inspecting", inspecting);
+      if (!inspecting) tipEl.hidden = true;
+    }
+    inspectBtn?.addEventListener("click", () => {
+      inspecting = !inspecting;
+      localStorage.setItem(INSPECT_KEY, inspecting ? "1" : "0");
+      reflectInspect();
+    });
+    reflectInspect();
+
+    function colorRow(label: string, val: string): string {
+      const hex = toHex(val);
+      if (!hex) return "";
+      const toks = tokensForHex(hex);
+      const names = toks.length
+        ? toks.map((t) => t.name).join(" / ")
+        : `<span class="flag">raw — no token</span>`;
+      return `<div class="r"><span class="sw" style="background:${hex}"></span><b>${label}</b> ${hex} · ${names}</div>`;
+    }
+    function svgColor(node: Element, svg: SVGElement): string {
+      const shape = (node.closest("path,polyline,rect,circle,line") as Element | null) ?? node;
+      let c = shape.getAttribute?.("stroke") || shape.getAttribute?.("fill") || "";
+      if (!c || c === "none") c = svg.getAttribute("stroke") || svg.getAttribute("fill") || "";
+      if (!c || c === "currentColor") c = getComputedStyle(svg).color;
+      return c;
+    }
+    function describe(el: Element): string | null {
+      const sc = screenEl();
+      if (!sc || !sc.contains(el)) return null;
+      if (el.closest(".statusbar,.brandbar,.homebar")) return null; // chrome, not app surface
+
+      const svg = el.closest("svg") as SVGElement | null;
+      if (svg) {
+        const sig = Array.from(svg.querySelectorAll("path,polyline"))
+          .map((p) => p.getAttribute("d") || p.getAttribute("points") || "")
+          .join(" ");
+        const icon = matchIcon(sig);
+        const name = icon ? icon.name : `<span class="flag">unmapped icon — needs naming</span>`;
+        const kind = icon
+          ? (icon.sf ? `SF Symbol · <b>${icon.sf}</b>` : `Custom asset · export SVG`)
+          : `—`;
+        return `<div class="h">Icon</div><div class="r">${name}</div><div class="r">${kind}</div>${colorRow("color", svgColor(el, svg))}`;
+      }
+
+      const cs = getComputedStyle(el);
+      const rows: string[] = [];
+      const hasText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && (n.textContent || "").trim());
+      if (hasText) {
+        const size = parseFloat(cs.fontSize);
+        const weight = parseInt(cs.fontWeight, 10) || (cs.fontWeight === "bold" ? 700 : 400);
+        const lhPx = parseFloat(cs.lineHeight);
+        const lh = isNaN(lhPx) ? "" : ` · lh ${(lhPx / size).toFixed(2)}`;
+        const m = matchType(size, weight);
+        rows.push(
+          m
+            ? `<div class="r"><b>type</b> ${m.name} <span style="opacity:.7">(.${m.cls})</span></div>`
+            : `<div class="r"><b>type</b> ${Math.round(size)}px · ${weight}${lh} <span class="flag">off-scale</span></div>`
+        );
+        rows.push(colorRow("text", cs.color));
+      }
+      rows.push(colorRow("bg", cs.backgroundColor));
+      const bw = parseFloat(cs.borderTopWidth);
+      if (bw > 0) rows.push(colorRow("border", cs.borderTopColor));
+      if (!rows.filter(Boolean).length) return null;
+      return `<div class="h">${el.tagName.toLowerCase()}${el.className && typeof el.className === "string" ? "." + el.className.split(/\s+/)[0] : ""}</div>${rows.join("")}`;
+    }
+    function positionTip(x: number, y: number) {
+      const pad = 14;
+      const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+      let left = x + pad, top = y + pad;
+      if (left + w > window.innerWidth - 8) left = x - w - pad;
+      if (top + h > window.innerHeight - 8) top = y - h - pad;
+      tipEl.style.left = Math.max(8, left) + "px";
+      tipEl.style.top = Math.max(8, top) + "px";
+    }
+    let lastTarget: Element | null = null;
+    let rafQueued = false;
+    stage?.addEventListener("mousemove", (e) => {
+      if (!inspecting || arming) { tipEl.hidden = true; return; }
+      const t = e.target as Element;
+      const x = e.clientX, y = e.clientY;
+      if (t === lastTarget) { positionTip(x, y); return; }
+      lastTarget = t;
+      if (rafQueued) return;
+      rafQueued = true;
+      requestAnimationFrame(() => {
+        rafQueued = false;
+        const html = lastTarget ? describe(lastTarget) : null;
+        if (!html) { tipEl.hidden = true; return; }
+        tipEl.innerHTML = html;
+        tipEl.hidden = false;
+        positionTip(x, y);
+      });
+    });
+    stage?.addEventListener("mouseleave", () => { tipEl.hidden = true; lastTarget = null; });
 
     // --- prototype mode: the tab bar + primary CTA navigate through the app,
     // exactly like the real thing — without changing any screen. Clicks pass
