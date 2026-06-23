@@ -24,12 +24,20 @@
       "type": "sf-symbol",
       "usedIn": [
         "DashboardScreen",
-        "GlucoseDisplay",
         "HomeTipDefaultScreen",
         "HomeTipPostScreen",
         "IobHomeOnScreen"
       ],
       "sfSymbol": "arrow.up"
+    },
+    {
+      "name": "backspace",
+      "type": "sf-symbol",
+      "usedIn": [
+        "OnboardingChapter2Screen",
+        "OnboardingLongActingInsulinScreen"
+      ],
+      "sfSymbol": "delete.left"
     },
     {
       "name": "bell",
@@ -40,6 +48,31 @@
         "StudyRemindersSetupScreen"
       ],
       "sfSymbol": "bell.fill"
+    },
+    {
+      "name": "calendar",
+      "type": "sf-symbol",
+      "usedIn": [
+        "SessionHistoryScreen"
+      ],
+      "sfSymbol": "calendar"
+    },
+    {
+      "name": "cgm-graph",
+      "type": "custom",
+      "usedIn": [
+        "SessionHistoryScreen"
+      ],
+      "file": "icons/cgm-graph.svg"
+    },
+    {
+      "name": "cgm-trace-hero",
+      "type": "custom",
+      "usedIn": [
+        "ApolloCompleteScreen",
+        "ApolloMorningStartScreen"
+      ],
+      "file": "icons/cgm-trace-hero.svg"
     },
     {
       "name": "checkmark",
@@ -55,7 +88,8 @@
         "OnboardingSetupLandingScreen",
         "OnboardingTonightPanelStatesScreen",
         "StatusCard",
-        "StatusStrip"
+        "StatusStrip",
+        "Toast"
       ],
       "sfSymbol": "checkmark"
     },
@@ -95,6 +129,14 @@
       "sfSymbol": "clock"
     },
     {
+      "name": "device-chip",
+      "type": "custom",
+      "usedIn": [
+        "OnboardingSetupAppWalkthroughScreen"
+      ],
+      "file": "icons/device-chip.svg"
+    },
+    {
       "name": "droplet",
       "type": "sf-symbol",
       "usedIn": [
@@ -103,6 +145,14 @@
         "StatusStrip"
       ],
       "sfSymbol": "drop.fill"
+    },
+    {
+      "name": "filter",
+      "type": "sf-symbol",
+      "usedIn": [
+        "SessionHistoryScreen"
+      ],
+      "sfSymbol": "line.3.horizontal.decrease"
     },
     {
       "name": "home",
@@ -121,7 +171,9 @@
         "ApolloStep06Screen",
         "ApolloStep07Screen",
         "ApolloStep08Screen",
-        "ApolloTrainingGateScreen"
+        "ApolloTrainingGateScreen",
+        "GlucoseDisplay",
+        "StatusCard"
       ],
       "sfSymbol": "info.circle"
     },
@@ -133,6 +185,16 @@
         "StudyRemindersNotificationsScreen"
       ],
       "sfSymbol": "lock.fill"
+    },
+    {
+      "name": "loop",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ApolloEveningOutroScreen",
+        "ApolloMorningOutroScreen",
+        "ApolloStep"
+      ],
+      "sfSymbol": "arrow.triangle.2.circlepath"
     },
     {
       "name": "message",
@@ -153,6 +215,7 @@
         "ApolloOvernightHandoffScreen",
         "ApolloPendingScreen",
         "DashboardScreen",
+        "InsightCard",
         "IobHomeOnScreen",
         "IobPreSessionScreen",
         "OnboardingChapter1Screen",
@@ -170,9 +233,18 @@
       "usedIn": [
         "ApolloEveningOutroScreen",
         "ApolloMorningOutroScreen",
+        "ApolloReplayFromSettingsScreen",
         "ApolloStep"
       ],
       "sfSymbol": "play.fill"
+    },
+    {
+      "name": "plus",
+      "type": "sf-symbol",
+      "usedIn": [
+        "AskLuna"
+      ],
+      "sfSymbol": "plus"
     },
     {
       "name": "relearn",
@@ -183,12 +255,68 @@
       "sfSymbol": "arrow.triangle.2.circlepath"
     },
     {
+      "name": "reservoir",
+      "type": "custom",
+      "usedIn": [
+        "StatusStrip"
+      ],
+      "file": "icons/reservoir.svg"
+    },
+    {
+      "name": "restart",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ApolloReplayFromSettingsScreen"
+      ],
+      "sfSymbol": "arrow.clockwise"
+    },
+    {
       "name": "settings-gear",
       "type": "sf-symbol",
       "usedIn": [
         "TabBar"
       ],
       "sfSymbol": "gearshape.fill"
+    },
+    {
+      "name": "sprout",
+      "type": "custom",
+      "usedIn": [
+        "ApolloCompleteScreen"
+      ],
+      "file": "icons/sprout.svg"
+    },
+    {
+      "name": "sun",
+      "type": "sf-symbol",
+      "usedIn": [
+        "ApolloMidSessionResumeScreen"
+      ],
+      "sfSymbol": "sun.max.fill"
+    },
+    {
+      "name": "sun-rays",
+      "type": "custom",
+      "usedIn": [
+        "ApolloOvernightHandoffScreen"
+      ],
+      "file": "icons/sun-rays.svg"
+    },
+    {
+      "name": "wand",
+      "type": "custom",
+      "usedIn": [
+        "OnboardingChapter3Screen"
+      ],
+      "file": "icons/wand.svg"
+    },
+    {
+      "name": "wifi",
+      "type": "sf-symbol",
+      "usedIn": [
+        "StatusBar"
+      ],
+      "sfSymbol": "wifi"
     },
     {
       "name": "xmark",
@@ -199,39 +327,39 @@
       "sfSymbol": "xmark"
     }
   ],
-  "unmappedCount": 39,
+  "unmappedCount": 12,
   "unmappedSamples": [
-    {
-      "file": "ApolloCompleteScreen.astro",
-      "geom": "M 0,118 Q 200,112 400,122 T 750,116 L 930,118"
-    },
-    {
-      "file": "ApolloCompleteScreen.astro",
-      "geom": "M12 3v18M5 8c2.5 0 4 1.5 4 4M19 8c-2.5 0-4 1.5-4 4"
-    },
-    {
-      "file": "ApolloEveningOutroScreen.astro",
-      "geom": "M17 2l4 4-4 4M21 6H7a4 4 0 0 0-4 4v1M7 22l-4-4 4-4M3 18h14a4 4 0 0 0 4"
-    },
-    {
-      "file": "ApolloMidSessionResumeScreen.astro",
-      "geom": "M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 1"
-    },
     {
       "file": "ApolloMidSessionResumeScreen.astro",
       "geom": ""
     },
     {
-      "file": "ApolloMorningOutroScreen.astro",
-      "geom": "M17 2l4 4-4 4M21 6H7a4 4 0 0 0-4 4v1M7 22l-4-4 4-4M3 18h14a4 4 0 0 0 4"
+      "file": "OnboardingChapter1Screen.astro",
+      "geom": ""
     },
     {
-      "file": "ApolloMorningStartScreen.astro",
-      "geom": "M 0,118 Q 200,112 400,122 T 750,116 L 930,118"
+      "file": "OnboardingChapter1Screen.astro",
+      "geom": ""
     },
     {
-      "file": "ApolloOvernightHandoffScreen.astro",
-      "geom": "M12 2v3M4.5 6.5l1.5 1.5M19.5 6.5L18 8M3 13h2M19 13h2"
+      "file": "OnboardingSetupAppWalkthroughScreen.astro",
+      "geom": ""
+    },
+    {
+      "file": "OnboardingSetupAppWalkthroughScreen.astro",
+      "geom": ""
+    },
+    {
+      "file": "OnboardingUiWalkthroughScreen.astro",
+      "geom": ""
+    },
+    {
+      "file": "PushNotificationScreen.astro",
+      "geom": ""
+    },
+    {
+      "file": "SessionHistoryScreen.astro",
+      "geom": ""
     }
   ]
 }

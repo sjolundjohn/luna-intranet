@@ -135,6 +135,27 @@ export const ICONS: IconDef[] = [
   { d: "M12 2v4M12 18v4M2 12h4", name: "sun", sf: "sun.max.fill" },
   { d: "M19 12a7 7 0 0 0-.1-1", name: "settings-gear", sf: "gearshape.fill" },
   { d: "M21 12a9 9 0 1 1-3-6.7", name: "relearn", sf: "arrow.triangle.2.circlepath" },
+  // ── registry completion (audited from the wireframes) ──
+  { d: "A9 9 0 1111.2 3", name: "moon-mark", sf: null },
+  { d: "M17 2l4 4-4 4M21 6H7", name: "loop", sf: "arrow.triangle.2.circlepath" },
+  { d: "M12 11v5M12 8h.01", name: "info", sf: "info.circle" },
+  { d: "M12 2v2M12 20v2M4.2 4.2", name: "sun", sf: "sun.max.fill" },
+  { d: "6 4 20 12 6 20 6 4", name: "play", sf: "play.fill" },
+  { d: "1 4 1 10 7 10", name: "restart", sf: "arrow.clockwise" },
+  { d: "M3 9h18M8 3v4M16 3v4", name: "calendar", sf: "calendar" },
+  { d: "M4 6h16M7 12h10M10 18h4", name: "filter", sf: "line.3.horizontal.decrease" },
+  { d: "M12 5v14M5 12h14", name: "plus", sf: "plus" },
+  { d: "M8.5 12.5l2.5 2.5 4.5-5", name: "checkmark", sf: "checkmark" },
+  { d: "M21 4H8l-7 8 7 8h13", name: "backspace", sf: "delete.left" },
+  { d: "M1 4.5C3 2.5", name: "wifi", sf: "wifi" },
+  { d: "M9 7h6M9 10h6M9 13h6", name: "reservoir", sf: null },
+  // illustrations / hero art (custom; not SF Symbols)
+  { d: "M 0,118 Q 200,112", name: "cgm-trace-hero", sf: null },
+  { d: "M0,58 C30,54", name: "cgm-graph", sf: null },
+  { d: "M12 3v18M5 8c2.5 0 4 1.5 4 4", name: "sprout", sf: null },
+  { d: "M12 2v3M4.5 6.5l1.5 1.5", name: "sun-rays", sf: null },
+  { d: "M5 8h11a2 2 0 0 1 2 2v4", name: "device-chip", sf: null },
+  { d: "m7 7 10 10-5 5V2l5 5L7 17", name: "wand", sf: null },
 ];
 
 // ── lookups ───────────────────────────────────────────────────────────────

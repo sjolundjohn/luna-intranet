@@ -77,6 +77,7 @@ for (const dir of screenDirs) {
   for (const file of readdirSync(dir).filter((f) => f.endsWith(".astro"))) {
     const src = readFileSync(join(dir, file), "utf8");
     for (const m of src.match(svgRe) ?? []) {
+      if (m.includes("${")) continue; // skip JS template-literal artifacts
       let geom = "";
       let g: RegExpExecArray | null;
       geomRe.lastIndex = 0;

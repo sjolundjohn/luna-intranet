@@ -1,0 +1,149 @@
+---
+/**
+ * /tools/ux-review/icons — the in-tool icon library + downloader (engineering
+ * handoff). The SWE team has no repo access, so this lists every distinct icon
+ * used across the wireframes with a preview, its SF-Symbol mapping (if any),
+ * where it's used, and a client-side "Download SVG" button (works on static
+ * hosting — no server). Built from a build-time scan of the screen components;
+ * names/SF mappings come from src/lib/design-tokens.ts (same source the
+ * Inspector uses).
+ */
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import WhiteSection from "~/components/WhiteSection.astro";
+import CTAButton from "~/components/CTAButton.astro";
+import { matchIcon } from "~/lib/design-tokens";
+
+const dirs = ["src/components/ux/screens", "src/components/ux/ios"].map((d) => join(process.cwd(), d));
+const svgRe = /<svg[\s\S]*?<\/svg>/g;
+const geomRe = /\b(?:d|points)="([^"]+)"/g;
+
+interface Ico { slug: string; name: string; type: "sf-symbol" | "custom" | "unnamed"; sf: string | null; usedIn: Set<string>; markup: string; }
+const map = new Map<string, Ico>();
+let unnamed = 0;
+for (const dir of dirs) {
+  for (const file of readdirSync(dir).filter((f) => f.endsWith(".astro"))) {
+    const src = readFileSync(join(dir, file), "utf8");
+    for (const raw of src.match(svgRe) ?? []) {
+      if (raw.includes("${")) continue; // skip JS template-literal artifacts (DoseSheet icon() helper)
+      const key = raw.replace(/\s+/g, " ").trim();
+      let geom = ""; let g; geomRe.lastIndex = 0;
+      while ((g = geomRe.exec(raw))) geom += " " + g[1];
+      const icon = matchIcon(geom.trim());
+      if (!map.has(key)) {
+        const slug = icon ? icon.name : `unnamed-${++unnamed}`;
+        map.set(key, {
+          slug,
+          name: icon ? icon.name : "unnamed",
+          type: icon ? (icon.sf ? "sf-symbol" : "custom") : "unnamed",
+          sf: icon?.sf ?? null,
+          usedIn: new Set(),
+          markup: raw,
+        });
+      }
+      map.get(key)!.usedIn.add(file.replace(".astro", ""));
+    }
+  }
+}
+// one entry per NAMED icon (merge duplicate markup variants under the same name),
+// keeping unnamed ones distinct.
+const byName = new Map<string, Ico>();
+for (const ico of map.values()) {
+  const k = ico.type === "unnamed" ? ico.slug : ico.name;
+  if (!byName.has(k)) byName.set(k, ico);
+  else ico.usedIn.forEach((u) => byName.get(k)!.usedIn.add(u));
+}
+const icons = [...byName.values()].sort((a, b) => {
+  const order = { custom: 0, "sf-symbol": 1, unnamed: 2 } as const;
+  return order[a.type] - order[b.type] || a.name.localeCompare(b.name);
+});
+const dl = icons.filter((i) => i.type !== "sf-symbol").map((i) => ({ slug: i.slug, markup: i.markup }));
+const counts = {
+  custom: icons.filter((i) => i.type === "custom").length,
+  sf: icons.filter((i) => i.type === "sf-symbol").length,
+  unnamed: icons.filter((i) => i.type === "unnamed").length,
+};
+---
+<BaseLayout title="Icons · UX Review" description="Luna iOS icon library — preview, SF-Symbol mappings, and SVG downloads for engineering." heroIsDark={false}>
+  <WhiteSection size="compact">
+    <div class="mb-6 flex items-center justify-between gap-4 flex-wrap">
+      <CTAButton href="/tools/ux-review" variant="ghost">← All screens</CTAButton>
+      <a href="/tools/ux-review/design-system" class="text-graphite text-[13px] hover:text-ink transition-colors">Design system →</a>
+    </div>
+
+    <header class="mb-6">
+      <h1 class="font-display text-ink font-normal" style="font-size: clamp(28px,3.6vw,40px); line-height:1.05; letter-spacing:-0.02em;">Icons</h1>
+      <p class="mt-3 text-graphite text-[15px] leading-[1.55] max-w-[62ch]">
+        Every distinct icon used across the wireframes. <b>Custom</b> icons download as SVG
+        (drop into the Xcode asset catalog). <b>SF Symbol</b> icons aren't files — use the
+        named system symbol. <b>Unnamed</b> are still-uncategorized glyphs/illustrations
+        (downloadable; tell design what to call them). {counts.custom} custom · {counts.sf} SF Symbols · {counts.unnamed} unnamed.
+      </p>
+    </header>
+
+    <div class="ux-ico-grid">
+      {icons.map((i) => (
+        <div class="ux-ico-card">
+          <div class="ux-ico-preview" set:html={i.markup} />
+          <div class="ux-ico-meta">
+            <p class="ux-ico-name">{i.name === "unnamed" ? i.slug : i.name}</p>
+            {i.type === "sf-symbol" && <p class="ux-ico-sf">SF&nbsp;Symbol · <span>{i.sf}</span></p>}
+            {i.type === "custom" && <p class="ux-ico-tag">Custom asset</p>}
+            {i.type === "unnamed" && <p class="ux-ico-tag warn">Needs naming</p>}
+            <p class="ux-ico-used">{[...i.usedIn].length} screen{[...i.usedIn].length === 1 ? "" : "s"}</p>
+          </div>
+          {i.type === "sf-symbol"
+            ? <button class="ux-ico-btn ghost" type="button" data-copy={i.sf}>Copy symbol name</button>
+            : <button class="ux-ico-btn" type="button" data-dl={i.slug}>Download SVG</button>}
+        </div>
+      ))}
+    </div>
+  </WhiteSection>
+
+  <script type="application/json" id="ux-ico-data" set:html={JSON.stringify(dl)} />
+  <script>
+    const data = JSON.parse(document.getElementById("ux-ico-data")?.textContent || "[]");
+    const bySlug = new Map(data.map((d: any) => [d.slug, d.markup]));
+    document.querySelectorAll<HTMLButtonElement>("[data-dl]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const slug = btn.dataset.dl!;
+        const svg = bySlug.get(slug);
+        if (!svg) return;
+        const blob = new Blob([svg], { type: "image/svg+xml" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `${slug}.svg`;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        const t = btn.textContent; btn.textContent = "Downloaded ✓";
+        setTimeout(() => (btn.textContent = t), 1400);
+      });
+    });
+    document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        await navigator.clipboard?.writeText(btn.dataset.copy!);
+        const t = btn.textContent; btn.textContent = "Copied ✓";
+        setTimeout(() => (btn.textContent = t), 1400);
+      });
+    });
+  </script>
+
+  <style>
+    .ux-ico-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+    .ux-ico-card { border: 1px solid var(--color-border-subtle); border-radius: 14px; padding: 16px; background: var(--color-white); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+    .ux-ico-preview { height: 44px; display: flex; align-items: center; justify-content: center; color: var(--color-ink); }
+    .ux-ico-preview :global(svg) { width: auto; height: 32px; max-width: 120px; }
+    .ux-ico-meta { flex: 1; }
+    .ux-ico-name { font-family: var(--font-mono, ui-monospace, monospace); font-size: 13px; font-weight: 700; color: var(--color-ink); word-break: break-word; }
+    .ux-ico-sf { font-size: 11px; color: var(--color-slate); margin-top: 3px; }
+    .ux-ico-sf span { font-family: var(--font-mono, ui-monospace, monospace); color: var(--color-moonlight-deep); }
+    .ux-ico-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-moonlight-deep); margin-top: 3px; }
+    .ux-ico-tag.warn { color: var(--color-warning-ink); }
+    .ux-ico-used { font-size: 11px; color: var(--color-slate); margin-top: 4px; }
+    .ux-ico-btn { width: 100%; border: none; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 700; cursor: pointer; background: var(--color-midnight); color: #fff; }
+    .ux-ico-btn:hover { background: var(--color-midnight-deep); }
+    .ux-ico-btn.ghost { background: transparent; color: var(--color-graphite); border: 1px solid var(--color-border-default); }
+    .ux-ico-btn.ghost:hover { color: var(--color-ink); border-color: var(--color-ink); }
+  </style>
+</BaseLayout>

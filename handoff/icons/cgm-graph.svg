@@ -1,0 +1,16 @@
+<svg viewBox="0 0 320 96" width="100%" height="96" style="margin-top:18px;" aria-label="Overnight glucose for May 22">
+        <defs>
+          <linearGradient id="nightFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#68D2DF" stop-opacity="0.26"/>
+            <stop offset="1" stop-color="#68D2DF" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="28" x2="320" y2="28" stroke="#F9CD86" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+        <line x1="0" y1="70" x2="320" y2="70" stroke="#8E3655" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.85"/>
+        <path d="M0,58 C30,54 55,44 88,48 S150,60 184,52 224,38 256,46 300,50 320,48" fill="none" stroke="#68D2DF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M0,58 C30,54 55,44 88,48 S150,60 184,52 224,38 256,46 300,50 320,48 L320,96 L0,96 Z" fill="url(#nightFill)"/>
+        <g stroke="#68D2DF" stroke-width="2" stroke-linecap="round" opacity="0.95">
+          <line x1="150" y1="86" x2="150" y2="94"/>
+          <line x1="196" y1="86" x2="196" y2="94"/><line x1="202" y1="86" x2="202" y2="94"/>
+        </g>
+      </svg>
