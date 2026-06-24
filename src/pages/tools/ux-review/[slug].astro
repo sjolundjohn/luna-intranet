@@ -405,7 +405,7 @@ const states = statesFor(screen.id);
 </style>
 
 <script>
-  import { toHex, tokensForHex, matchType, matchIcon } from "~/lib/design-tokens";
+  import { toHex, tokensForHex, matchType, nearestType, matchIcon } from "~/lib/design-tokens";
 
   type Comment = {
     id: string; screenId: string; authorName: string; authorEmail: string;
@@ -803,6 +803,44 @@ const states = statesFor(screen.id);
       if (!c || c === "currentColor") c = getComputedStyle(svg).color;
       return c;
     }
+    // Typography: ALWAYS a design-system name; customizations in parens
+    // (e.g. "Title 1 (28 · 700 · 1.18)") when size/weight/line-height deviate.
+    function typeRow(cs: CSSStyleDeclaration): string {
+      const size = parseFloat(cs.fontSize);
+      const weight = parseInt(cs.fontWeight, 10) || (cs.fontWeight === "bold" ? 700 : 400);
+      const lhPx = parseFloat(cs.lineHeight);
+      const lhRatio = isNaN(lhPx) ? null : +(lhPx / size).toFixed(2);
+      const base = nearestType(size);
+      const exact = !!matchType(size, weight) && (lhRatio == null || Math.abs(lhRatio - base.lh) <= 0.02);
+      if (exact) return `<div class="r"><b>type</b> ${base.name}</div>`;
+      const lhStr = lhRatio == null ? "—" : lhRatio.toFixed(2);
+      return `<div class="r"><b>type</b> ${base.name} <span style="opacity:.75">(${Math.round(size)} · ${weight} · ${lhStr})</span></div>`;
+    }
+    // Background: solid → hex+token; gradient → type + each color stop.
+    function bgRows(cs: CSSStyleDeclaration): string[] {
+      const rows: string[] = [];
+      const img = cs.backgroundImage;
+      if (img && img !== "none" && /gradient/.test(img)) {
+        const type = img.slice(0, img.indexOf("(")).trim();
+        rows.push(`<div class="r"><b>bg</b> ${type}</div>`);
+        for (const m of img.matchAll(/(rgba?\([^)]+\))\s*([\d.]+%)?/g)) {
+          const hex = toHex(m[1]);
+          if (!hex) continue;
+          const toks = tokensForHex(hex);
+          const names = toks.length ? toks.map((t) => t.name).join(" / ") : `<span class="flag">raw</span>`;
+          rows.push(`<div class="r" style="padding-left:16px"><span class="sw" style="background:${hex}"></span>${m[2] || ""} ${hex} · ${names}</div>`);
+        }
+      } else {
+        const r = colorRow("bg", cs.backgroundColor);
+        if (r) rows.push(r);
+      }
+      return rows;
+    }
+    function radiusRow(cs: CSSStyleDeclaration): string {
+      const r = cs.borderRadius;
+      if (!r || r === "0px" || r === "0") return "";
+      return `<div class="r"><b>radius</b> ${r}</div>`;
+    }
     function describe(el: Element): string | null {
       const sc = screenEl();
       if (!sc || !sc.contains(el)) return null;
@@ -825,23 +863,16 @@ const states = statesFor(screen.id);
       const rows: string[] = [];
       const hasText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && (n.textContent || "").trim());
       if (hasText) {
-        const size = parseFloat(cs.fontSize);
-        const weight = parseInt(cs.fontWeight, 10) || (cs.fontWeight === "bold" ? 700 : 400);
-        const lhPx = parseFloat(cs.lineHeight);
-        const lh = isNaN(lhPx) ? "" : ` · lh ${(lhPx / size).toFixed(2)}`;
-        const m = matchType(size, weight);
-        rows.push(
-          m
-            ? `<div class="r"><b>type</b> ${m.name} <span style="opacity:.7">(.${m.cls})</span></div>`
-            : `<div class="r"><b>type</b> ${Math.round(size)}px · ${weight}${lh} <span class="flag">off-scale</span></div>`
-        );
+        rows.push(typeRow(cs));
         rows.push(colorRow("text", cs.color));
       }
-      rows.push(colorRow("bg", cs.backgroundColor));
+      rows.push(...bgRows(cs));
+      rows.push(radiusRow(cs));
       const bw = parseFloat(cs.borderTopWidth);
       if (bw > 0) rows.push(colorRow("border", cs.borderTopColor));
-      if (!rows.filter(Boolean).length) return null;
-      return `<div class="h">${el.tagName.toLowerCase()}${el.className && typeof el.className === "string" ? "." + el.className.split(/\s+/)[0] : ""}</div>${rows.join("")}`;
+      const out = rows.filter(Boolean);
+      if (!out.length) return null;
+      return `<div class="h">${el.tagName.toLowerCase()}${el.className && typeof el.className === "string" ? "." + el.className.split(/\s+/)[0] : ""}</div>${out.join("")}`;
     }
     function positionTip(x: number, y: number) {
       const pad = 14;

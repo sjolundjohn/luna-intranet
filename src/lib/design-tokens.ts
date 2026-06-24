@@ -198,6 +198,13 @@ export function matchType(size: number, weight: number): TypeToken | null {
   );
 }
 
+/** The design-system type token whose size is closest to `size` (always returns one). */
+export function nearestType(size: number): TypeToken {
+  return TYPE_SCALE.reduce((best, t) =>
+    Math.abs(t.size - size) < Math.abs(best.size - size) ? t : best
+  );
+}
+
 /** Recognise an icon from a concatenated geometry signature (all child path `d`s). null = unmapped. */
 export function matchIcon(signature: string): IconDef | null {
   return ICONS.find((i) => signature.includes(i.d)) ?? null;
