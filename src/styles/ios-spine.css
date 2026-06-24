@@ -102,7 +102,7 @@
   margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); width: 100%;
 }
 .ux-ios .glucose { display: flex; align-items: center; justify-content: center; gap: 10px; }
-.ux-ios .glucose .num { font-size: 34px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: var(--color-on-dark); font-variant-numeric: tabular-nums; }
+.ux-ios .glucose .num { font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; color: var(--color-on-dark); font-variant-numeric: tabular-nums; }
 .ux-ios .insight { display: flex; gap: 14px; align-items: flex-start; }
 .ux-ios .insight .ic { flex: none; margin-top: 2px; color: var(--color-moonlight); }
 .ux-ios .flag {
@@ -198,7 +198,7 @@
 .ux-ios .statusstrip .lbl .v { font-size: 13px; font-weight: 700; color: var(--color-on-dark); }
 .ux-ios .statusstrip .lbl .v.ok { color: var(--color-success-light); }
 .ux-ios .gluc-hero { display: flex; flex-direction: column; align-items: center; gap: 0; }
-.ux-ios .gluc-hero .glucose .num { font-size: 34px; }
+.ux-ios .gluc-hero .glucose .num { font-size: 56px; }
 .ux-ios .cgm-hero { position: relative; margin: 6px 0 0; }
 /* fill mode: the graph grows to take the freed column space (insight bar moves
    to the bottom). preserveAspectRatio="none" lets it stretch vertically. */
@@ -539,7 +539,7 @@
 .ux-ios .tdbd-hero { display: flex; flex-direction: column; gap: 0; padding: 20px 18px; }
 .ux-ios .tdbd-hero .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-moonlight); margin-bottom: 8px; }
 .ux-ios .tdbd-hero .valrow { display: flex; align-items: baseline; gap: 8px; }
-.ux-ios .tdbd-hero .val { font-family: var(--font-display); font-size: 34px; font-weight: 700; line-height: 0.95; letter-spacing: -0.03em; color: var(--color-on-dark); font-variant-numeric: tabular-nums; }
+.ux-ios .tdbd-hero .val { font-family: var(--font-display); font-size: 56px; font-weight: 700; line-height: 0.95; letter-spacing: -0.03em; color: var(--color-on-dark); font-variant-numeric: tabular-nums; }
 .ux-ios .tdbd-hero .u { font-size: 22px; font-weight: 700; color: var(--color-on-dark); }
 .ux-ios .tdbd-hero .sub { font-size: 13px; color: var(--color-on-dark-sub); margin-top: 8px; line-height: 1.45; }
 .ux-ios .lp { display: flex; flex-direction: column; gap: 14px; }
@@ -565,7 +565,7 @@
    ============================================================ */
 .ux-ios .lockface { flex: none; text-align: center; padding: 26px 0 6px; }
 .ux-ios .lockface .date { font-size: 15px; font-weight: 600; color: var(--color-on-dark-sub); letter-spacing: 0.01em; }
-.ux-ios .lockface .time { font-size: 34px; font-weight: 400; color: var(--color-on-dark); letter-spacing: -0.02em; line-height: 1.02; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.ux-ios .lockface .time { font-size: 56px; font-weight: 400; color: var(--color-on-dark); letter-spacing: -0.02em; line-height: 1.02; font-variant-numeric: tabular-nums; margin-top: 2px; }
 .ux-ios .lockface .lock { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--color-on-dark-sub); }
 .ux-ios .notif-zone { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 12px 8px; gap: 10px; }
 .ux-ios .push { display: flex; align-items: flex-start; gap: 12px; padding: 14px 14px; background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.14); border-radius: 20px; backdrop-filter: saturate(160%) blur(14px); cursor: pointer; text-align: left; width: 100%; font: inherit; }
@@ -682,7 +682,7 @@
 .ux-ios .wt-preview .mini { padding: 18px 16px; }
 .ux-ios .spotlight { outline: 2px dashed var(--color-moonlight); outline-offset: 3px; border-radius: 12px; }
 .ux-ios .wt-glucose { display: flex; align-items: baseline; gap: 8px; justify-content: center; }
-.ux-ios .wt-glucose .num { font-size: 34px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.ux-ios .wt-glucose .num { font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
 .ux-ios .wt-glucose .un { font-size: 15px; color: var(--color-on-dark-sub); font-weight: 600; }
 .ux-ios .wt-callout { display: flex; gap: 12px; align-items: flex-start; margin-top: 20px; }
 .ux-ios .wt-callout .ic { flex: none; color: var(--color-moonlight); margin-top: 2px; }

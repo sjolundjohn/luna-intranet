@@ -79,6 +79,7 @@ export interface TypeToken {
 
 /** The 11-level iOS HIG type scale (mirrors ios-tokens.css ~L128–139). */
 export const TYPE_SCALE: TypeToken[] = [
+  { cls: "display", name: "Display", size: 56, weight: 700, lh: 1.0 },
   { cls: "large-title", name: "Large Title", size: 34, weight: 400, lh: 1.12 },
   { cls: "title-1", name: "Title 1", size: 28, weight: 400, lh: 1.18 },
   { cls: "title-2", name: "Title 2", size: 22, weight: 400, lh: 1.25 },

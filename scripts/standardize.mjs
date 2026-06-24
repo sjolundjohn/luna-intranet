@@ -10,7 +10,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const TOKENS = [11, 12, 13, 15, 16, 17, 20, 22, 28, 34]; // HIG scale (px)
+const TOKENS = [11, 12, 13, 15, 16, 17, 20, 22, 28, 34, 56]; // HIG scale + Display 56 (px)
 
 function snap(v) {
   let best = TOKENS[0];

@@ -126,6 +126,7 @@
   --shadow-toast: 0 8px 24px rgba(4, 30, 66, 0.24);
 
   /* ============ TYPE SCALE — iOS HIG Dynamic Type ======= */
+  --type-display: 56px;     --w-display: 700;     --lh-display: 1;
   --type-large-title: 34px; --w-large-title: 400; --lh-large-title: 1.12;
   --type-title-1: 28px;     --w-title-1: 400;     --lh-title-1: 1.18;
   --type-title-2: 22px;     --w-title-2: 400;     --lh-title-2: 1.25;
@@ -148,6 +149,7 @@
 /* ============================================================
    Semantic type classes — scoped. Use HIG names in iOS markup.
    ============================================================ */
+.ux-ios .display     { font-family: var(--ios-font-brand); font-size: var(--type-display);     font-weight: var(--w-display);     line-height: var(--lh-display);     letter-spacing: -0.03em; }
 .ux-ios .large-title { font-family: var(--ios-font-brand); font-size: var(--type-large-title); font-weight: var(--w-large-title); line-height: var(--lh-large-title); letter-spacing: -0.02em; }
 .ux-ios .title-1     { font-family: var(--ios-font-brand); font-size: var(--type-title-1);     font-weight: var(--w-title-1);     line-height: var(--lh-title-1);     letter-spacing: -0.015em; }
 .ux-ios .title-2     { font-family: var(--ios-font-brand); font-size: var(--type-title-2);     font-weight: var(--w-title-2);     line-height: var(--lh-title-2);     letter-spacing: -0.01em; }
