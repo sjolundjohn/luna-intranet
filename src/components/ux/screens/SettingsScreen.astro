@@ -1,4 +1,6 @@
 ---
+import Icon from "../Icon.astro";
+import { iconSvg } from "../../../lib/icon-svg";
 /**
  * SettingsScreen — Settings root (spine 05). Moonlight back + bold title (no
  * divider), grouped lists: Hypo Shield (Active) + IOB Display (default OFF),
@@ -11,13 +13,13 @@ import Toggle from "../ios/Toggle.astro";
 interface Props {
   variant?: "current" | "legacy";
 }
-const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+const chev = iconSvg("chevron-right", 18, 1.8);
 ---
 <div class="content">
   {/* nav header: Moonlight back + "Settings", NO divider */}
   <div class="navbar">
     <button class="back" aria-label="Back">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <Icon name="chevron-left" size={22} sw={2} />
     </button>
     <h1>Settings</h1>
   </div>

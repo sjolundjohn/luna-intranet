@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * IobPreSessionScreen — Pre-session IOB announcement (clock 10:18). The dim
  * backdrop carries the IOB insight card (the announcement that IOB Display is
@@ -23,7 +24,7 @@ interface Props {
   <div class="pad" style="margin-top:16px;">
     <div class="card-dark iob-insight">
       <span class="ic" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <Icon name="moon-mark" size={22} sw={1.8} />
       </span>
       <span class="txt"><span class="lead">New: see your insulin on board.</span> Luna can show how much of your Luna-delivered insulin is still active — e.g. <span class="sample">0.4 U</span> — during a session and after, so you can avoid stacking. Off until you turn it on.</span>
     </div>

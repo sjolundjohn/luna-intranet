@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * OnboardingChapter5Screen — Chapter 5 of 5: clean handoff into Apollo Training
  * (coordinator closeout — onboarding owns this beat, BR E8). Tonight panel
@@ -24,7 +25,7 @@ interface Props {
   <div class="pad" style="margin-top:8px; flex:1; display:flex; flex-direction:column; overflow-y:auto;">
     <div class="moon-hero">
       <span class="halo" style="width:84px; height:84px;">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <Icon name="moon-mark" size={40} sw={1.5} color="#68D2DF" />
       </span>
     </div>
 
@@ -36,20 +37,20 @@ interface Props {
 
     <div class="card-dark tonight-panel decompressed">
       <div class="ph">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <Icon name="moon-mark" size={16} sw={1.8} color="#68D2DF" />
         <span class="ttl">Your first night</span>
         <span class="frac">3 of 3 ready</span>
       </div>
       <div class="setup-step">
-        <span class="mark done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="mark done"><Icon name="check" size={14} sw={3} color="#041E42" /></span>
         <span class="txt">Pair your Luna Capsule</span>
       </div>
       <div class="setup-step">
-        <span class="mark done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="mark done"><Icon name="check" size={14} sw={3} color="#041E42" /></span>
         <span class="txt">Pair your CGM sensor</span>
       </div>
       <div class="setup-step">
-        <span class="mark done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="mark done"><Icon name="check" size={14} sw={3} color="#041E42" /></span>
         <span class="txt">Enter your TDBD</span>
       </div>
     </div>

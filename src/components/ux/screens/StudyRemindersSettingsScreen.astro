@@ -1,4 +1,6 @@
 ---
+import Icon from "../Icon.astro";
+import { iconSvg } from "../../../lib/icon-svg";
 /**
  * StudyRemindersSettingsScreen — Settings › Study reminders (v0.1). White-card
  * layout matching Hypo / IOB settings. An on/off toggle + clear state, the two
@@ -7,13 +9,13 @@
  */
 import TabBar from "../ios/TabBar.astro";
 interface Props { variant?: "current" | "legacy"; }
-const bell = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
-const nudge = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+const bell = iconSvg("bell", 18, 1.8);
+const nudge = iconSvg("message", 18, 1.8);
 ---
 <div class="content">
   <div class="navbar">
     <button class="back" aria-label="Back to Settings">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <Icon name="chevron-left" size={22} sw={2} />
       Settings
     </button>
   </div>

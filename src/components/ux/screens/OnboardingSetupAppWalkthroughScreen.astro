@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * OnboardingSetupAppWalkthroughScreen — Setup App Walkthrough (1 of 5 + Done).
  * Brief guided UI tour that reads as one continuous onboarding; module-scoped
@@ -51,7 +52,7 @@ interface Props {
     </div>
 
     <div class="wt-callout">
-      <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+      <span class="ic"><Icon name="info-lined" size={20} sw={1.9} /></span>
       <span class="ln">This strip leads your home screen. A glance tells you Luna is automating, your reservoir is filled, and the controller is charged.</span>
     </div>
 

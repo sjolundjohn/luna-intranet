@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * StatusStrip — the thin System · Long-acting · Reservoir · Battery row that
  * LEADS every Home surface (spine 01 + all hypo/iob home variants). The
@@ -15,7 +16,7 @@ const { dose = "12 U" } = Astro.props;
   <div class="card-dark" style="padding:0;">
     <div class="statusstrip">
       <div class="item">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B0F9B3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12.5l2 2 4.5-5"/></svg>
+        <Icon name="check-circle" size={20} sw={1.8} color="#B0F9B3" />
         <span class="lbl"><span class="k">System</span><span class="v ok">Automating</span></span>
       </div>
       <div class="item">

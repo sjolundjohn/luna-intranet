@@ -1,4 +1,6 @@
 ---
+import Icon from "../Icon.astro";
+import { iconSvg } from "../../../lib/icon-svg";
 /**
  * SessionHistoryScreen — Session History (spine 07). Mirrors the 2021 6.x:
  * date-range selector, in-range ring + Total insulin delivered / Highest /
@@ -12,7 +14,7 @@ import TabBar from "../ios/TabBar.astro";
 interface Props {
   variant?: "current" | "legacy";
 }
-const chev = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+const chev = iconSvg("chevron-right", 18, 1.8);
 const cal = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>';
 ---
 <div class="content" style="overflow-y:auto;">
@@ -30,7 +32,7 @@ const cal = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke=
         <span class="cal" set:html={cal} />
         <span class="seg"><span class="k">Start</span><span class="v">19 Feb 2021</span></span>
       </button>
-      <span class="arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      <span class="arrow"><Icon name="arrow-right" size={16} sw={1.8} /></span>
       <button style="all:unset; cursor:pointer; flex:1;" class="daterange" aria-label="End date">
         <span class="seg" style="text-align:right;"><span class="k">End</span><span class="v">21 Feb 2021</span></span>
         <span class="cal" set:html={cal} />
@@ -80,7 +82,7 @@ const cal = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke=
 
       {/* residual IOB line — 0.1 precision, capital U */}
       <div class="iobline">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S5 9.5 5 14.5a7 7 0 0 0 14 0C19 9.5 12 2.7 12 2.7z"/></svg>
+        <Icon name="droplet" size={16} sw={1.8} />
         <span class="v">0.1 U</span>
         <span class="t">on board at wake</span>
       </div>

@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 import ApolloStep from "../ios/ApolloStep.astro";
 interface Props { variant?: "current" | "legacy"; }
 // OPEN FLAG: dose value [X] is undecided (Eng/Clinical) — rendered as a real
@@ -9,7 +10,7 @@ interface Props { variant?: "current" | "legacy"; }
   instrHtml={'Based on your long-acting dose, we recommend that you dial <span class="token-flag">XXX</span> units for your upcoming Luna session. Insert your rapid-acting insulin pen into the Single-Sleep Reservoir, then press the injection button to fill with insulin.'}
   caption="asset: Cam+A-7" poster="/ux-review/apollo-posters/cam-a-7.jpg" posterAlt="Filling the Single-Sleep Reservoir with insulin">
   <div class="warn-banner" style="margin-top:18px;">
-    <span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+    <span class="ic" aria-hidden="true"><Icon name="warning-triangle" size={20} sw={1.8} /></span>
     <span class="tx">Only fill Luna with your rapid-acting insulin.</span>
   </div>
   <div style="margin-top:10px;"><span class="flag"><span class="k">Flag</span>dose value XXX — pending Eng/Clinical</span></div>

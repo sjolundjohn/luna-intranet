@@ -13,11 +13,16 @@ import { join } from "node:path";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import WhiteSection from "~/components/WhiteSection.astro";
 import CTAButton from "~/components/CTAButton.astro";
-import { matchIcon } from "~/lib/design-tokens";
+import { matchIcon, ICONS } from "~/lib/design-tokens";
+import { ICON_GEOM } from "~/lib/icon-geom";
+import { iconSvg } from "~/lib/icon-svg";
 
 const dirs = ["src/components/ux/screens", "src/components/ux/ios"].map((d) => join(process.cwd(), d));
 const svgRe = /<svg[\s\S]*?<\/svg>/g;
 const geomRe = /\b(?:d|points)="([^"]+)"/g;
+// Shared glyphs now render via <Icon name="…"> / iconSvg("…") rather than inline
+// SVG, so scan those references too (for the "used in" list).
+const refRe = /(?:<Icon\s+name=|iconSvg\(\s*)["']([a-z0-9-]+)["']/g;
 
 interface Ico { slug: string; name: string; type: "sf-symbol" | "custom" | "unnamed"; sf: string | null; usedIn: Set<string>; markup: string; }
 const map = new Map<string, Ico>();
@@ -53,6 +58,26 @@ for (const ico of map.values()) {
   const k = ico.type === "unnamed" ? ico.slug : ico.name;
   if (!byName.has(k)) byName.set(k, ico);
   else ico.usedIn.forEach((u) => byName.get(k)!.usedIn.add(u));
+}
+// Seed the canonical shared glyphs (icon-geom.ts) so the library stays complete
+// even though they're no longer inline. Markup = clean 24px reference SVG.
+const sfByName = new Map(ICONS.map((i) => [i.name, i.sf]));
+for (const name of Object.keys(ICON_GEOM)) {
+  if (!byName.has(name)) {
+    const sf = sfByName.get(name) ?? null;
+    byName.set(name, {
+      slug: name, name, type: sf ? "sf-symbol" : "custom", sf,
+      usedIn: new Set(), markup: iconSvg(name as keyof typeof ICON_GEOM, 24, 2),
+    });
+  }
+}
+// Reference scan: attribute "used in" screens for <Icon>/iconSvg glyph usages.
+for (const dir of dirs) {
+  for (const file of readdirSync(dir).filter((f) => f.endsWith(".astro"))) {
+    const src = readFileSync(join(dir, file), "utf8");
+    let r; refRe.lastIndex = 0;
+    while ((r = refRe.exec(src))) byName.get(r[1])?.usedIn.add(file.replace(".astro", ""));
+  }
 }
 const icons = [...byName.values()].sort((a, b) => {
   const order = { custom: 0, "sf-symbol": 1, unnamed: 2 } as const;

@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * OnboardingLongActingInsulinScreen — long-acting insulin capture (Your routine
  * 2 of 3). PLAIN DATA CAPTURE — a numeric field, NOT the two-step dose gesture.
@@ -43,7 +44,7 @@ interface Props {
       <button>4</button><button>5</button><button>6</button>
       <button>7</button><button>8</button><button>9</button>
       <button class="blank"></button><button>0</button>
-      <button><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ACC1DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg></button>
+      <button><Icon name="backspace" size={22} sw={1.8} color="#ACC1DF" /></button>
     </div>
 
     <div style="flex:1; min-height:14px;"></div>

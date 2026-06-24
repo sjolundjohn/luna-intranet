@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * DashboardScreen — Home dashboard (spine 01). The CGM graph is the HERO.
  * System-status strip leads, then glucose + trend, the full-width overnight
@@ -44,7 +45,7 @@ interface Props {
       <AskLuna anchor="card" />
       <div class="card-dark insight-card">
         <span class="ic" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          <Icon name="moon-mark" size={20} sw={1.8} />
         </span>
         <span class="txt"><span class="lead">Steady night.</span> Your glucose held in range and Luna made a few small adjustments while you slept.</span>
       </div>

@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * IobHomeOnScreen — Home dashboard with IOB Display ON (opted-in). Identical to
  * the spine Home, plus the Active-Insulin (IOB) row that is OFF by default and
@@ -36,7 +37,7 @@ interface Props {
       <AskLuna anchor="card" />
       <div class="card-dark insight-card">
         <span class="ic" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+          <Icon name="moon-mark" size={20} sw={1.8} />
         </span>
         <span class="txt"><span class="lead">Steady night.</span> Your glucose held in range and Luna made a few small adjustments while you slept.</span>
       </div>
@@ -44,7 +45,7 @@ interface Props {
     {/* Active insulin (IOB) — decision-support; 0.1 U, capital U, Luna-delivered only. */}
     <div class="card-dark aic" style="margin-top:12px;">
       <span class="ico" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S5 9.5 5 14.5a7 7 0 0 0 14 0C19 9.5 12 2.7 12 2.7z"/></svg>
+        <Icon name="droplet" size={22} sw={1.7} />
       </span>
       <span class="meta">
         <span class="k">Active insulin · Luna</span>

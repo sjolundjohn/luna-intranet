@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * ApolloStep — the Apollo training-step archetype (spine 02). Per-module DOTS
  * ("Evening setup · Step N of 7" / "Morning removal · Step N of 3"), an
@@ -53,7 +54,7 @@ const hasCheckpoint = Astro.slots.has("checkpoint");
     </button>
     <span class="cap">{caption}</span>
     <span class="loop">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4M21 6H7a4 4 0 0 0-4 4v1M7 22l-4-4 4-4M3 18h14a4 4 0 0 0 4-4v-1"/></svg>
+      <Icon name="loop" size={12} sw={2} />
       Auto-loops
     </span>
   </div>

@@ -1,4 +1,5 @@
 ---
+import { iconSvg } from "../../../lib/icon-svg";
 /**
  * LearningStateScreen — Home, Hypo Shield learning takeover (v0.5 r2). The
  * conservative "we're still getting to know you" mode, shown until the first
@@ -18,7 +19,7 @@ import TabBar from "../ios/TabBar.astro";
 interface Props {
   variant?: "current" | "legacy";
 }
-const arrow = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
+const arrow = iconSvg("arrow-right", 15, 2.2);
 // 7-segment session graph: `done` of 7 filled.
 const seg = (done: number) => Array.from({ length: 7 }, (_, i) => `<div class="d${i < done ? ' on' : ''}"><span class="seg"></span></div>`).join("");
 ---

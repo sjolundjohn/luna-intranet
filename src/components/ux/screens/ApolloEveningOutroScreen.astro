@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * ApolloEveningOutroScreen — evening outro (personal "Tonight" video). Auto-loops,
  * NO "Watch again". Lifted verbatim from `apollo-training/evening-outro.html`.
@@ -15,7 +16,7 @@ interface Props {
     </button>
     <span class="cap">video: Personal · Tonight — poster TBD</span>
     <span class="loop">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4M21 6H7a4 4 0 0 0-4 4v1M7 22l-4-4 4-4M3 18h14a4 4 0 0 0 4-4v-1"/></svg>
+      <Icon name="loop" size={12} sw={2} />
       Auto-loops
     </span>
   </div>

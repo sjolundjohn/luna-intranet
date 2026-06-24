@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * StudyRemindersNotificationsScreen — the two study reminders as native Apple
  * Health reminder notifications (v0.1 r2). Because Luna schedules these through
@@ -15,7 +16,7 @@ interface Props { variant?: "current" | "legacy"; }
     <div class="date">Tuesday, May 26</div>
     <div class="time">9:30</div>
     <div class="lock" aria-hidden="true">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <Icon name="lock" size={13} sw={2} />
       Locked
     </div>
   </div>
@@ -24,7 +25,7 @@ interface Props { variant?: "current" | "legacy"; }
   <div class="notif-zone">
     <div class="flow-note">
       <span class="ic" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <Icon name="info-lined" size={16} sw={1.9} />
       </span>
       <span class="ln"><b>Native Apple Health reminders.</b> Luna schedules these in Apple Health, so they arrive from the <b>Health</b> app and fire even when Luna is closed — not a Luna-branded push.</span>
     </div>

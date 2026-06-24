@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * OnboardingUiWalkthroughScreen — UI Walkthrough (1 of 5). Reads as ONE
  * onboarding with Apollo Training (BR-B5); module-scoped dot progress. A
@@ -39,7 +40,7 @@ interface Props {
     </div>
 
     <div class="wt-callout">
-      <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+      <span class="ic"><Icon name="info-lined" size={20} sw={1.9} /></span>
       <span class="ln">After the tour, your coordinator picks up right here to set up your device for tonight — it's all one walkthrough.</span>
     </div>
 

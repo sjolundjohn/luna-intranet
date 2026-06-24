@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * AskLuna — the discreet "+" launcher (SPINE-NOTES r3). Collapsed: a small
  * circular Moonlight "+" FAB pinned bottom-right of the content area. Tapping
@@ -41,7 +42,7 @@ const { bottom = 104, anchor = "screen" } = Astro.props;
     <div class="ask-luna">
       <span class="moon-ic" aria-hidden="true"></span>
       <span class="ph">Ask Luna anything…</span>
-      <span class="send"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      <span class="send"><Icon name="arrow-right" size={20} sw={1.9} /></span>
     </div>
   </div>
   <button class="ask-fab" type="button" aria-label="Ask Luna" aria-expanded="false" data-ask-open>

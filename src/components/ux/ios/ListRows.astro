@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * ListRows — Settings / Session History rows. Pebble-blue dividers,
  * Moonlight chevron. Pass `rows` as [{ label, value }].
@@ -25,7 +26,7 @@ const {
       <span class="ios-listrow-label">{r.label}</span>
       {r.value && <span class="ios-listrow-value">{r.value}</span>}
       <span class="ios-listrow-chevron" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <Icon name="chevron-right" size={18} sw={1.8} />
       </span>
     </div>
   ))}

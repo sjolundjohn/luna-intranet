@@ -45,7 +45,11 @@ function screenMarkup(html) {
     // strip Astro's per-build scoped-style / view-transition hashes (volatile,
     // not visual) so the gate only flags real markup/structure changes.
     .replace(/\s*data-astro-cid-[a-z0-9]+(="[^"]*")?/g, "")
-    .replace(/\s*data-astro-transition-(scope|persist|name)="[^"]*"/g, "");
+    .replace(/\s*data-astro-transition-(scope|persist|name)="[^"]*"/g, "")
+    // CgmHero mints a per-build random gradient id (Math.random) — volatile, not
+    // visual (the def + its url(#…) reference always agree within a build). Strip
+    // so the gate doesn't false-positive on every CGM screen.
+    .replace(/cgmFill-[a-z0-9]+/g, "cgmFill-X");
 }
 
 function snapshot() {

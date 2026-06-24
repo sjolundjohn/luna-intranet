@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * ApolloPendingFailureScreen — troubleshooting/error state for the "Luna is
  * checking…" Pending step. Shown ONLY when the pre-session check fails after the
@@ -13,7 +14,7 @@ interface Props { variant?: "current" | "legacy"; }
     <div style="text-align:center; padding:6px 0 2px;">
       <div style="display:flex; justify-content:center; margin-bottom:16px;">
         <span style="display:inline-flex; align-items:center; justify-content:center; width:60px; height:60px; border-radius:50%; background:rgba(249,205,134,0.12); border:1px solid rgba(249,205,134,0.35);">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-warning)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          <Icon name="warning-triangle" size={28} sw={1.8} color="var(--color-warning)" />
         </span>
       </div>
       <h1 class="title-1" style="font-weight:700; letter-spacing:-0.02em; margin:0;">Let's get this sorted</h1>
@@ -37,7 +38,7 @@ interface Props { variant?: "current" | "legacy"; }
     </div>
 
     <div class="warn-banner" style="margin-top:16px;">
-      <span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+      <span class="ic" aria-hidden="true"><Icon name="warning-triangle" size={20} sw={1.8} /></span>
       <span class="tx">Make sure the Capsule is snapped firmly onto the Single-Sleep Reservoir, then try again.</span>
     </div>
 

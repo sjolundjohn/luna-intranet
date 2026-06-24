@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 /**
  * PushNotificationScreen — Hypo Shield push (clock 10:18). An iOS lock screen
  * with a single prompt-to-open banner: NO dose value and NO confirmable action
@@ -17,7 +18,7 @@ interface Props {
     <div class="date">Tuesday, May 26</div>
     <div class="time">10:18</div>
     <div class="lock" aria-hidden="true">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <Icon name="lock" size={13} sw={2} />
       Locked
     </div>
   </div>
@@ -29,7 +30,7 @@ interface Props {
         THE BOTTOM; top banners only appear while the phone is unlocked. */}
     <div class="flow-note">
       <span class="ic" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <Icon name="info-lined" size={16} sw={1.9} />
       </span>
       <span class="ln"><b>Prompt-to-open only.</b> No dose value and no action on the lock screen — tapping the banner opens the full-screen suggestion review in the app. Bottom-stacked placement matches stock iOS 16+ lock-screen notifications.</span>
     </div>

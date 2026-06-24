@@ -1,4 +1,5 @@
 ---
+import { iconSvg } from "../../../lib/icon-svg";
 /**
  * OnboardingTonightPanelStatesScreen — review aid: the recurring "Tonight" panel
  * filling across the arc (States 0–3). Order is locked: pair Luna Capsule → pair
@@ -8,8 +9,8 @@
 interface Props {
   variant?: "current" | "legacy";
 }
-const moon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#68D2DF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
-const check = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#041E42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const moon = iconSvg("moon-mark", 16, 1.8, "#68D2DF");
+const check = iconSvg("check", 14, 3, "#041E42");
 const states = [
   { label: "State 0 · Nothing paired", frac: "0 of 3 ready", luna: false, cgm: false, tdbd: false, next: "luna" },
   { label: "State 1 · Luna Capsule paired", frac: "1 of 3 ready", luna: true, cgm: false, tdbd: false, next: "cgm" },

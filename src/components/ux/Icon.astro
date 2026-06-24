@@ -1,0 +1,30 @@
+---
+/**
+ * Icon.astro — shared inline-SVG glyph (Phase 2 icon de-dup, v0.6).
+ *
+ * Re-emits the canonical stroked-icon skeleton used throughout the wireframes:
+ *   <svg width height viewBox fill="none" stroke stroke-width
+ *        stroke-linecap="round" stroke-linejoin="round">{geometry}</svg>
+ * The attribute order + the per-glyph geometry (from icon-geom.ts, copied
+ * verbatim from source) are chosen so the built HTML is byte-identical to the
+ * inline SVGs it replaces — verified by scripts/gate.mjs. Geometry lives in ONE
+ * place per glyph; size/color/stroke-width vary per usage via props.
+ */
+import { ICON_GEOM } from "../../lib/icon-geom";
+
+interface Props {
+  name: keyof typeof ICON_GEOM;
+  size: number;
+  sw: number | string;
+  color?: string;
+  vb?: string;
+}
+const { name, size, sw, color = "currentColor", vb } = Astro.props;
+const g = ICON_GEOM[name];
+const viewBox = vb ?? g.vb;
+// icon-geom stores RAW self-closing bodies (for iconSvg string parity); Astro
+// expands self-closing SVG children in its own output, so expand here too to
+// keep <Icon>'s rendered HTML byte-identical to the inline SVGs it replaces.
+const html = g.body.replace(/<(path|circle|line|rect|polyline|polygon|ellipse|stop)\b([^>]*?)\s*\/>/g, "<$1$2></$1>");
+---
+<svg width={size} height={size} viewBox={viewBox} fill="none" stroke={color} stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" set:html={html} />
