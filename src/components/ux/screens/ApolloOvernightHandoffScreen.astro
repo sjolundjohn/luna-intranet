@@ -29,7 +29,7 @@ interface Props { variant?: "current" | "legacy"; }
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="4"/><path d="M12 2v3M4.5 6.5l1.5 1.5M19.5 6.5L18 8M3 13h2M19 13h2"/></svg>
       </span>
       <div>
-        <div style="font-weight:700; color:var(--color-on-dark); font-size:14px;">In the morning</div>
+        <div style="font-weight:700; color:var(--color-on-dark); font-size:15px;">In the morning</div>
         <div class="subhead muted" style="margin-top:3px;">When you wake, we'll guide you through removing Luna and charging it — that's Phase 2 of your training.</div>
       </div>
     </div>
@@ -42,7 +42,7 @@ interface Props { variant?: "current" | "legacy"; }
 
 <style is:global>
   .ux-ios .sleep-hero {
-    position: relative; width: 100%; height: 168px; border-radius: 22px; overflow: hidden;
+    position: relative; width: 100%; height: 168px; border-radius: 20px; overflow: hidden;
     display: flex; align-items: center; justify-content: center; margin-bottom: 24px;
     background: radial-gradient(120% 90% at 50% 25%, #0c3a6e 0%, #061f3f 55%, #04132b 100%);
     border: 1px solid rgba(255,255,255,0.06);
@@ -54,7 +54,7 @@ interface Props { variant?: "current" | "legacy"; }
   }
   .ux-ios .sleep-hero .sleep-moon { position: relative; z-index: 1; filter: drop-shadow(0 0 14px rgba(104,210,223,0.4)); animation: sleepFloat 7s ease-in-out infinite; }
   .ux-ios .sleep-hero .sleep-cap {
-    position: absolute; bottom: 10px; left: 12px; font-size: 9.5px; letter-spacing: 0.06em;
+    position: absolute; bottom: 10px; left: 12px; font-size: 11px; letter-spacing: 0.06em;
     text-transform: uppercase; color: rgba(255,255,255,0.4); font-family: var(--font-brand);
   }
   @keyframes sleepBreathe { 0%, 100% { transform: scale(0.9); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.9; } }

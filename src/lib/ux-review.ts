@@ -26,8 +26,8 @@ export interface Screen {
 export const SCREENS: Screen[] = rawManifest as Screen[];
 
 /** Design versions a comment can be stamped against (newest last). */
-export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026", "v0.3 — Jun 2026", "v0.4 — Jun 2026", "v0.5 — Jun 2026"] as const;
-export const CURRENT_DESIGN_VERSION = "v0.5 — Jun 2026";
+export const DESIGN_VERSIONS = ["v0.1 — Apr 2026", "v0.2 — May 2026", "v0.3 — Jun 2026", "v0.4 — Jun 2026", "v0.5 — Jun 2026", "v0.6 — Jun 2026"] as const;
+export const CURRENT_DESIGN_VERSION = "v0.6 — Jun 2026";
 
 export const STATUS_ORDER: ScreenStatus[] = ["Work in Progress", "Approved"];
 
